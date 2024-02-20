@@ -17,6 +17,13 @@ jobs:
 
       - name: Download Fern
         run: npm install -g fern-api
+      
+      - name: Build Navigation
+        run: |
+          cd custom-app
+          yarn
+          yarn build
+          cd ../
 
       - name: Generate and Publish Docs
         env:

@@ -23,7 +23,7 @@ jobs:
       
       - name: Build Navigation
         run: |
-          cd custom-app
+          cd custom-implementation
           yarn
           yarn build
           cd ../

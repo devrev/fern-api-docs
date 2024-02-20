@@ -12,16 +12,14 @@ const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {
       value={{
         origin: 'https://devrev.ai',
       }}>
-      <div className="w-full">
-        <SharedFooter
-          className="border-none"
-          list={list}
-          logo={logo}
-          status={status}
-          compliance={compliance}
-          {...rest}
-        />
-      </div>
+      <SharedFooter
+        className="border-none"
+        list={list}
+        logo={logo}
+        status={status}
+        compliance={compliance}
+        {...rest}
+      />
     </ComponentConfigContext.Provider>
   )
 }

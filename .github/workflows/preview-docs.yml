@@ -21,12 +21,22 @@ jobs:
       - name: Install Fern
         run: npm install -g fern-api
       
+      - name: Setup Npm
+        uses: actions/setup-node@v1
+        with:
+          always-auth: true
+          node-version: ‘16.0’
+          registry-url: https://npm.pkg.github.com/
+        env:
+          GITHUB_AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
+
       - name: Build Navigation
         run: |
           cd custom-implementation
           yarn
           yarn build
           cd ../
+        
 
       - name: Generate Documentation Preview with Fern
         id: generate_docs

@@ -7,6 +7,7 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {
+  // Footer
   return (
     <ComponentConfigContext.Provider
       value={{

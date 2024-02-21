@@ -24,6 +24,8 @@ jobs:
           yarn
           yarn build
           cd ../
+        env:
+          GITHUB_AUTH_TOKEN: ${{secrets.GITHUB_AUTH_TOKEN}}
 
       - name: Generate and Publish Docs
         env:

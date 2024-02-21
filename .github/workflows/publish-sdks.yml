@@ -23,6 +23,8 @@ jobs:
           yarn
           yarn build
           cd ../
+        env:
+          GITHUB_AUTH_TOKEN: ${{secrets.GITHUB_AUTH_TOKEN}}
 
       - name: Check Fern API is valid
         run: fern check

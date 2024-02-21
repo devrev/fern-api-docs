@@ -28,7 +28,7 @@ jobs:
           yarn build
           cd ../
         env:
-          GITHUB_AUTH_TOKEN: ${{secrets.GITHUB_AUTH_TOKEN}}
+          GITHUB_AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
 
       - name: Generate Documentation Preview with Fern
         id: generate_docs

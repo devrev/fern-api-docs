@@ -3,7 +3,7 @@
 import {
   ComponentConfigContext,
   HeaderV30 as SharedHeader,
-} from '@devrev/marketing-shared-components'
+} from '@devrev/marketing-shared-components/dist/cjs'
 
 const Header = ({
   logo,

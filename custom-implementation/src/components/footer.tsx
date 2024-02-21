@@ -3,7 +3,7 @@
 import {
   ComponentConfigContext,
   FooterV30 as SharedFooter,
-} from '@devrev/marketing-shared-components'
+} from '@devrev/marketing-shared-components/dist/cjs'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {

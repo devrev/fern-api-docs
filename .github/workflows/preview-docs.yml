@@ -27,13 +27,11 @@ jobs:
           yarn
           yarn build
           cd ../
-    
         uses: actions/setup-node@v1
         with:
           always-auth: true
           node-version: ‘16.0’
           registry-url: https://npm.pkg.github.com/
-
         env:
           GITHUB_AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
 

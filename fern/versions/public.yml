@@ -1,15 +1,16 @@
 navigation:
   - section: Welcome
     contents:
-      - page: For Developers
+      - page: For developers
         path: ../docs/pages/developer-intro.mdx
       - page: Getting started
         path: ../docs/pages/welcome.mdx
   - section: API
+    contents:
+      - page: Overview
+        path: ../docs/pages/api-overview.mdx
       - section: About
         contents:
-          - page: Overview
-            path: ../docs/pages/api-overview.mdx
           - page: Entities
             path: ../docs/pages/entities.mdx
           - page: Errors

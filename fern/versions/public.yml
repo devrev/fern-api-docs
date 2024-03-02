@@ -33,6 +33,20 @@ navigation:
     contents:
       - page: Concepts
         path: ../docs/pages/snapin-concepts.mdx
+      - section: About
+        contents:
+          - page: Development best practices
+            path: ../docs/pages/best_practices.mdx
+          - page: Debugging
+            path: ../docs/pages/debugging.mdx
+          - page: Quotas and limits
+            path: ../docs/pages/limits.mdx
+          - page: Upgrade snap-ins
+            path: ../docs/pages/upgrades.mdx
+          - page: Code Samples
+            path: ../docs/pages/examples/samples.mdx
+          - page: Resources
+            path: ../docs/pages/resources.mdx
       - section: Tutorials
         contents:
           - page: Overview
@@ -75,15 +89,3 @@ navigation:
             path: ../docs/pages/references/snapkit.mdx
           - page: Snap-in resources
             path: ../docs/pages/references/snap-in-resources.mdx
-      - page: Development best practices
-        path: ../docs/pages/best_practices.mdx
-      - page: Debugging
-        path: ../docs/pages/debugging.mdx
-      - page: Quotas and limits
-        path: ../docs/pages/limits.mdx
-      - page: Upgrade snap-ins
-        path: ../docs/pages/upgrades.mdx
-      - page: Code Samples
-        path: ../docs/pages/examples/samples.mdx
-      - page: Resources
-        path: ../docs/pages/resources.mdx

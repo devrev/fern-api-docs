@@ -4,6 +4,7 @@ All of the DevRev APIs are organized around REST - if you've interacted with a R
 
 <CodeBlock title= "API base URL">
 ```yml
+DevRev API endpoint: {protocol}://{hostname}
 hostname `string`
 API hostname.
 Default: `api.devrev.ai`
@@ -14,7 +15,7 @@ Default: `https`
 </CodeBlock>
 
 <Callout intent="Security: API key">
-All the DevRev APIs require a token to authenticate the user. Provide `Authorization: <token>` as a header to every API request. [How do I find my token?](/welcome/authentication#generate-a-personal-access-token--pat-)
+All the DevRev APIs require a token to authenticate the user. Provide `Authorization: <token>` as a header for every API request. [How do I find my token?](/welcome/about-the-dev-rev-api/authentication)
 
 An API key is a token that you provide when making API calls. Include the token in a header parameter called Authorization.
 

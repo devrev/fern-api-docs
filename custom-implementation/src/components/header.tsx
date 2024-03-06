@@ -17,7 +17,7 @@ any) => {
     <div>
       <ComponentConfigContext.Provider
         value={{
-          origin: 'https://devrev.ai',
+          origin: 'https://api.docs.devrev.ai',
         }}>
         <SharedHeader
           logo={logo}

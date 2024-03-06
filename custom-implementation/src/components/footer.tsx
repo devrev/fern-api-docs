@@ -11,7 +11,7 @@ const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {
   return (
     <ComponentConfigContext.Provider
       value={{
-        origin: 'https://devrev.ai',
+        origin: 'https://api.docs.devrev.ai',
       }}>
       <SharedFooter
         className="border-none"

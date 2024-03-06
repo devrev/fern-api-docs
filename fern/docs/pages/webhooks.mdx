@@ -14,27 +14,21 @@ The types of events that can be received through webhooks are object mutation ev
 Events are delivered concurrently in a semi-ordered (but not guaranteed) manner,
 where object timestamps and versions enable you to determine the order of events for a particular object.
 
-![sequence diagram](../img/diagram_4.png)
+![diagram_4](https://github.com/devrev/fern-api-docs/assets/74637789/8c950f32-0ad3-4c9b-9597-1a283134a195)
 
 ## Webhook event handling
 
-<a href="https://devrev.ai/docs/apis/methods#/schemas/webhook-event-request">
-  API Reference: Webhook Event
-</a>
-
 All events are delivered to the same registered endpoint, and there is a single request schema to encompass all events that contains the following fields:
 
-```
-webhook_id: Identifies the webhook that the event is being delivered for.
-timestamp: The timestamp for the event.
-type: The event type. This is always followed by a field of the type’s name that contains the event’s data.
-```
+- `webhook_id`: Identifies the webhook that the event is being delivered for.
+- `timestamp`: The timestamp for the event.
+- `type`: The event type. This is always followed by a field of the type’s name that contains the event’s data.
 
 ### Event POST `[json]`
 
 Event POST from DevRev to your endpoint
 
-```
+```json
 POST your-webhook-endpoint-url
 X-DevRev-Signature: z1BY0e8JYzEGfxZ8e4k8agCdWQyTr2An
 
@@ -63,13 +57,13 @@ is created or deleted on DevRev.
 You can start receiving event notifications using the following steps:
 
 1. Set up a secure HTTP server and expose a publicly accessible endpoint, which serves as the webhook invocation target.
-   Insert your endpoint where the following is mentioned: your-webhook-endpoint-url
+   Insert your endpoint where the following is mentioned: `your-webhook-endpoint-url`.
 
 2. Identify the events you want to monitor and the event payloads to parse.
-   Please look up the supported events and event payloads in our API Methods section.
+   Look up the supported events and event payloads in our API Methods section.
    A general guideline here is to only subscribe to event types which you require in order
    to avoid overwhelming your HTTP server.
-   In the above example, you may be interested in work_created and work_deleted
+   In the above example, you may be interested in `work_created` and `work_deleted`.
 
 3. Register webhook endpoint
 
@@ -80,7 +74,7 @@ You can start receiving event notifications using the following steps:
    (using TLS), however the webhook request contains a derivative of the secret that you will use to verify
    DevRev as the originator.
 
-     [API Reference: Create Webhook](https://devrev.docs.buildwithfern.com/dev-rev-rest-api/api-reference/webhooks/create)
+     [API Reference: Create Webhook](/welcome/ap-is-and-webhooks/dev-rev-rest-api/api-reference/webhooks/create)
 
    You will invoke DevRev webhook create with the following fields for our example:
 
@@ -100,7 +94,7 @@ The following response is sent by DevRev
 
 ### Webhook create response `[json]`
 
-```
+```json
 201 Created
 
 {
@@ -120,7 +114,7 @@ To perform a successful verification, your endpoint must echo the provided chall
 
 ### Verify request `[json]`
 
-```
+```json
 POST your-webhook-endpoint-url
 X-DevRev-Signature: GfxZ8e4k8agCdWQyTr2z1BY0e8JYzEAn
 {
@@ -138,7 +132,7 @@ The following response is expected from your endpoint
 
 ### Echo challenge `[json]`
 
-```
+```json
 200 OK
 
 {

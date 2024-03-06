@@ -24,11 +24,11 @@ const render = async () => {
 }
 
 let observations = 0
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOMContentLoaded')
-  void render()
-  new MutationObserver((e, o) => {
-    void render()
+  void (await render())
+  new MutationObserver(async (e, o) => {
+    void (await render())
     for (const item of e) {
       if (item.target instanceof HTMLElement) {
         const target = item.target

@@ -8,17 +8,15 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 
-// import { getPageData } from './modules/sanity/utils'
+import { data } from './content/page'
 
 const render = () => {
-  // const data = await getPageData()
-
   ReactDOM.render(
-    React.createElement(Header),
+    React.createElement(Header, { ...data.header }),
     document.getElementById('fern-header'),
   )
   ReactDOM.render(
-    React.createElement(Footer),
+    React.createElement(Footer, { ...data.footer }),
     document.getElementById('fern-footer'),
   )
 }

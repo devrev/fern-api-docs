@@ -8,9 +8,15 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 
+// import { getPageData } from './modules/sanity/utils'
 import { data } from './content/page'
 
 const render = () => {
+  /*
+   * This is a where we try to make async data call.
+   */
+  // const data = await getPageData()
+
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
     document.getElementById('fern-header'),

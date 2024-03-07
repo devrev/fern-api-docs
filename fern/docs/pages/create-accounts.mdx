@@ -1,5 +1,5 @@
 In this tutorial, you'll learn how to create an account and contacts associated with it in DevRev via `accounts-create` API. You can also [create accounts manually in DevRev app](https://docs.devrev.ai/product/customers#add-new-customers).
-The `accounts-create` API is used to create accounts which represents an organization or a customer. 
+The `accounts-create` API is used to create accounts which represents an organization or a customer.
 
 ## Create an account
 
@@ -11,7 +11,7 @@ The payload to make a request is given below:
 }
 ```
 
-- `display_name` must be of type string.
+- `display_name` must be of type string and can be any name you want to create the account with.
 
 Make a POST request to "https://api.devrev.ai/accounts.create" and include the PAT created in the authorization header of the request along with the payload with replaced IDs.
 In this example, you are using curl to make the requests but you can use any tool you prefer.

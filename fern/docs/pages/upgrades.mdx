@@ -6,6 +6,9 @@ For example:
 
 ```bash
 $ devrev snap_in_version upgrade -h
+```
+
+```bash
 Upgrades a snap-in version.
 
 Usage:
@@ -71,9 +74,7 @@ The following are some examples of when you might need to run these upgrades:
 If you run the upgrade command for the same snap-in version multiple times, the command does the following:
 
 1. Returns an already existing error if an upgrade is currently in progress or completed for the same snap-in version.
-2. When the previous upgrade failed, starts another upgrade if :
-   - the manifest is different.
-   - the _--archive_ or _--path_ parameter is passed to the upgrade command.
+2. When the previous upgrade failed, starts another upgrade if the manifest is different or if the `--archive` or `--path` parameter is passed to the upgrade command.
 
 ## Checking status of the upgrade
 

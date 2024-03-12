@@ -1,5 +1,7 @@
-In this tutorial, you'll learn how to create an account and contacts associated with it in DevRev via `accounts-create` API. You can also [create accounts manually in DevRev app](https://docs.devrev.ai/product/customers#add-new-customers).
-The `accounts-create` API is used to create accounts which represents an organization or a customer. 
+In this tutorial, you'll learn how to create an account and contacts associated with it in DevRev via `accounts-create` and `rev-users.create` API. You can also [create accounts manually in DevRev app](https://docs.devrev.ai/product/customers#add-new-customers).
+The `accounts-create` API is used to create [accounts](https://docs.devrev.ai/product/grow#-account) which represents a customer organization and it holds information about the company, including its name, address, industry, domain, and website address.
+
+The `rev-users.create` API is used to create [contacts](https://docs.devrev.ai/product/grow#-contact) which represents an individual user associated with the account of the organization. In order to create a contact, we also need to use `rev-orgs.list` API to get the default [workspace](https://docs.devrev.ai/product/grow#-workspace)(rev-org) created at with the account. We will be creating a contact under the workspace(rev-org) of the account as contacts(rev-users) cannot exist individually without being assoiciated with a workspace(rev-org).
 
 ## Create an account
 

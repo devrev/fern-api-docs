@@ -25,8 +25,6 @@ navigation:
         path: ../docs/pages/webhooks.mdx
       - page: Restricted messages on a timeline
         path: ../docs/pages/timeline-entries.mdx
-      - page: Create accounts and contacts
-        path: ../docs/pages/create-accounts.mdx
   - section: Snap-in development
     contents:
       - page: Concepts

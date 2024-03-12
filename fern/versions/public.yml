@@ -18,9 +18,9 @@ navigation:
       - page: Errors
         path: ../docs/pages/responses.mdx
   - api: API Reference
-    api-name: public
   - page: Overview
     path: ../docs/pages/api-overview.mdx
+    api-name: public
   - section: Guides
     contents: 
       - page: Getting started with webhooks

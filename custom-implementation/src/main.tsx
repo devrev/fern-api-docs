@@ -8,14 +8,14 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 
-// import { getPageData } from './modules/sanity/utils'
-import { data } from './content/page'
+import { getPageData } from './modules/sanity/utils'
+// import { data } from './content/page'
 
-const render = () => {
+const render = async () => {
   /*
    * This is a where we try to make async data call.
    */
-  // const data = await getPageData()
+  const data = await getPageData()
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
@@ -30,9 +30,9 @@ const render = () => {
 let observations = 0
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOMContentLoaded')
-  render()
+  void render()
   new MutationObserver(async (e, o) => {
-    render()
+    void render()
     for (const item of e) {
       if (item.target instanceof HTMLElement) {
         const target = item.target

@@ -1,4 +1,4 @@
-import { createClient } from 'next-sanity'
+import { createClient } from '@sanity/client'
 import { FOOTER_V3_SCHEMA, HEADER_V3_SCHEMA } from './schema'
 
 export const CLIENT = createClient({

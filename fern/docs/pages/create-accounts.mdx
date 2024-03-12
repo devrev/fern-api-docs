@@ -110,15 +110,15 @@ Get the default rev org created along with the account using `rev-orgs.list` API
 1. Make a GET/POST request to "https://api.devrev.ai/rev-orgs.list" using cURL with the `account` filter. Use the `external_ref` from previous response as `account` filter.
 
    ```bash
-          curl -X POST https://api.devrev.ai/rev-orgs.list \
+    curl -X POST https://api.devrev.ai/rev-orgs.list \
         -H "Authorization: <apiKey>" \
         -H "Content-Type: application/json" \
         -d '
-       {
+        {
         "account": [
-           "<external reference of the account>"
-         ]
-       }'
+            "<external reference of the account>"
+            ]
+        }'
    ```
 
    It returns the following response:
@@ -167,13 +167,13 @@ Get the default rev org created along with the account using `rev-orgs.list` API
 
    In the request, set `rev_org` to the value of the `display_id` from the previous reponse.
 
-   ```json
-               curl -X POST https://api.devrev.ai/rev-users.create \
-                   -H "Authorization: <apiKey>" \
-                   -H "Content-Type: application/json" \
-                   -d '{
-               "rev_org": "<rev org display-id>"
-           }'
+   ```bash
+    curl -X POST https://api.devrev.ai/rev-users.create \
+            -H "Authorization: <apiKey>" \
+            -H "Content-Type: application/json" \
+            -d '{
+        "rev_org": "<rev org display-id>"
+    }'
    ```
 
    You receive the following response:

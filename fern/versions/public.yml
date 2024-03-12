@@ -3,6 +3,8 @@ navigation:
     contents:
       - page: For Developers
         path: ../docs/pages/developer-intro.mdx
+      - page: API Overview
+        path: ../docs/pages/api-overview.mdx
       - page: Getting started
         path: ../docs/pages/welcome.mdx
       - page: Authentication
@@ -17,8 +19,6 @@ navigation:
         path: ../docs/pages/rate-limits.mdx
       - page: Errors
         path: ../docs/pages/responses.mdx
-  - page: API Overview
-    path: ../docs/pages/api-overview.mdx
   - api: API Reference
     api-name: public
   - section: Guides

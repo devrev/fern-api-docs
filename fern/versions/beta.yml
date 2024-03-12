@@ -1,8 +1,8 @@
 navigation:
-  - section: DevRev REST API
+  - section: About
     contents:
-      - page: Overview
-        path: ../docs/pages/api-overview.mdx
+      - page: For Developers
+        path: ../docs/pages/developer-intro.mdx
   - api: API Reference
     api-name: beta
   - section: Guides

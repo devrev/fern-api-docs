@@ -17,16 +17,18 @@ navigation:
         path: ../docs/pages/rate-limits.mdx
       - page: Errors
         path: ../docs/pages/responses.mdx
+  - page: API Overview
+    path: ../docs/pages/api-overview.mdx
   - api: API Reference
     api-name: public
-  - page: Overview
-    path: ../docs/pages/api-overview.mdx
   - section: Guides
     contents: 
       - page: Getting started with webhooks
         path: ../docs/pages/webhooks.mdx
       - page: Restricted messages on a timeline
         path: ../docs/pages/timeline-entries.mdx
+      - page: Create accounts and contacts
+        path: ../docs/pages/create-accounts.mdx
   - section: Snap-in development
     contents:
       - page: Concepts

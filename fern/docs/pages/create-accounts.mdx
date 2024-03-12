@@ -1,5 +1,7 @@
-In this tutorial, you'll learn how to create an account and associated contacts in DevRev with the `accounts-create` API. You can also [create accounts manually in the DevRev app](https://docs.devrev.ai/product/customers#add-new-customers).
-An account in DevRev represents an organization or a customer.
+In this tutorial, you'll learn how to create an account and contacts associated with it in DevRev via `accounts-create` and `rev-users.create` API. You can also [create accounts manually in DevRev app](https://docs.devrev.ai/product/customers#add-new-customers).
+The `accounts-create` API is used to create [accounts](https://docs.devrev.ai/product/grow#-account) which represents a customer organization and it holds information about the company, including its name, address, industry, domain, and website address.
+
+The `rev-users.create` API is used to create [contacts](https://docs.devrev.ai/product/grow#-contact) which represents an individual user associated with the account of the organization. In order to create a contact, we also need to use `rev-orgs.list` API to get the default [workspace](https://docs.devrev.ai/product/grow#-workspace)(rev org) created at with the account. We will be creating a contact under the workspace(rev org) of the account as contacts(rev-users) cannot exist individually without being assoiciated with a workspace(rev org).
 
 ## Create an account
 
@@ -102,8 +104,8 @@ In this example, you are using curl to make the requests but can use any tool yo
 
 To create a contact associated with the account you created, follow the steps listed below:
 
-Get the default rev-org created along with the account using `rev-orgs.list` API. 
-    - Make a GET/POST request to "https://api.devrev.ai/rev-orgs.list" using cURL with the `account` filter. Use the `external_ref` from the previous response as an `account` filter.
+Get the default rev org created along with the account using `rev-orgs.list` API. 
+    - Make a GET/POST request to "https://api.devrev.ai/rev-orgs.list" using cURL with the `account` filter. Use the `external_ref` from previous response as `account` filter.
     ```bash
            curl -X POST https://api.devrev.ai/rev-orgs.list \
          -H "Authorization: <apiKey>" \
@@ -155,7 +157,7 @@ Get the default rev-org created along with the account using `rev-orgs.list` API
     }
     ```
 
-    - Note the `display_id` (example: `REV-abcd`) of the rev-org from the response. 
+    - Note the `display_id` (example: `REV-abcd`) of the rev org from the response. 
     - Now make a POST request to the `rev-users.create` "https://api.devrev.ai/rev-users.create" API to create a rev-user.
     - Using cURL, make the following request, here `rev_org` takes the `display_id` from the previous reposnse:
 
@@ -164,7 +166,7 @@ Get the default rev-org created along with the account using `rev-orgs.list` API
                     -H "Authorization: <apiKey>" \
                     -H "Content-Type: application/json" \
                     -d '{
-                "rev_org": "<rev-org display-id>"
+                "rev_org": "<rev org display-id>"
             }'
     ```
 

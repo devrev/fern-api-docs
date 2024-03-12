@@ -78,7 +78,7 @@ UserExperior SDK by default takes the device id as a user identifier. However, y
 [UserExperior setUserIdentifier:@"pass-your-user-id-here"];
 ```
 
-> Example:
+Example:
 
 ```
 [UserExperior setUserIdentifier:@"abc@xyz.com"];
@@ -90,7 +90,7 @@ UserExperior SDK by default takes the device id as a user identifier. However, y
 UserExperior.setUserIdentifier("pass-your-user-id-here")
 ```
 
-> Example:
+Example:
 
 ```
 [UserExperior setUserIdentifier:"abc@xyz.com"];
@@ -105,7 +105,7 @@ UserExperior.setUserIdentifier("pass-your-user-id-here")
                                       @"key2":@value2, ...}];
 ```
 
-> Example:
+Example:
 
 ```
 [UserExperior setUserProperties:@{@"start_date":@"2020/11/25", // Date Format YYYY/MM/DD
@@ -123,7 +123,7 @@ UserExperior.setUserProperties(["key1:"value1",
                                     "key2:"value2", ...])
 ```
 
-> Example:
+Example:
 ```
 UserExperior.setUserProperties(["start_date": "2020/12/31", // Date-Format: YYYY/MM/DD
                                      "plan_subscribed": "trial"])
@@ -144,7 +144,7 @@ UserExperior SDK lets you log user events based on the scenario. An event is the
 [UserExperior logEventWithName:@"YOUR_EVENT"];
 ```
 
-> Example:
+Example:
 ```
 [UserExperior logEventWithName:@"Onboarding successful!"]; 
 ```
@@ -154,7 +154,7 @@ UserExperior SDK lets you log user events based on the scenario. An event is the
 UserExperior.logEvent("YOUR_EVENT")
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.logEvent("Onboarding successful!")
@@ -173,11 +173,11 @@ UserExperior.logEvent("Onboarding successful!")
                                                      @"key2":@value2, ...}]; 
 ```
 
-> Example:
+Example:
 
 ```
 [UserExperior logEventWithName:@"Health Profile created" properties:@{@"age":@35,  
-                                                                 @"weight":@70.5}];        
+                                                                 @"weight":@70.5}];
 ```
 
 * **For Swift:**
@@ -187,7 +187,7 @@ UserExperior.logEvent("YOUR_EVENT", properties:["key1:"value1",
                                                "key2:"value2", ...])
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.logEvent("Health Profile created", properties:["age":35,  
@@ -208,7 +208,7 @@ UserExperior SDK complies with GDPR policy and masks all the user input fields i
 
 ##### 1. Manual masking of views:
 
-If you wish to explicitly mask any UI element in your app,  you can mask it by using:
+If you wish to explicitly mask any UI element in your app, you can mask it by using:
 
 * **For Objective-C:**
 
@@ -216,7 +216,7 @@ If you wish to explicitly mask any UI element in your app,  you can mask it by 
 [UserExperior markSensitiveViewsWithViewToSecure:@[VIEWS_TO_SECURE]];
 ```
 
-> Example:
+Example:
 
 ```
 [UserExperior markSensitiveViewsWithViewToSecure:@[phoneLabel, userInfoView]];
@@ -228,7 +228,7 @@ If you wish to explicitly mask any UI element in your app,  you can mask it by 
 UserExperior.markSensitiveViews([VIEWS_TO_SECURE])
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.markSensitiveViews([phoneLabel, userInfoView])
@@ -244,7 +244,7 @@ If you wish to explicitly un-mask any manually masked UI element, you can un-mas
 [UserExperior unmarkSensitiveViewsWithViewToUnBlock:@[VIEWS_TO_UNBLOCK]];
 ```
 
-> Example:
+Example:
 
 ```
 [UserExperior unmarkSensitiveViewsWithViewToUnBlock:@[phoneLabel, userInfoView]];
@@ -256,7 +256,7 @@ If you wish to explicitly un-mask any manually masked UI element, you can un-mas
 UserExperior.unmarkSensitiveViews([VIEWS_TO_UNBLOCK])
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.unmarkSensitiveViews([phoneLabel, userInfoView])
@@ -296,10 +296,10 @@ If you wish to explicitly un-mask the automatically masked UI element, you can d
 [UserExperior exposeSensitiveViewsWithViewsToExpose:@[VIEWS_TO_EXPOSE]];
 ```
 
-> Example:
+Example:
 
 ```
-[UserExperior exposeSensitiveViewsWithViewsToExpose:@[cityTextField, countryTextField]];        
+[UserExperior exposeSensitiveViewsWithViewsToExpose:@[cityTextField, countryTextField]];
 ```
 
 * **For Swift:**
@@ -308,7 +308,7 @@ If you wish to explicitly un-mask the automatically masked UI element, you can d
 UserExperior.exposeSensitiveViews([VIEWS_TO_EXPOSE])
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.exposeSensitiveViews([cityTextField, countryTextField])
@@ -326,7 +326,7 @@ UserExperior SDK complies with GDPR policy and masks all the user input fields (
 
 If you wish to mask any WebView element on a Web page explicitly, you can mask it by using class `ue-mask`.
 
-> Example:
+Example:
 
 ```
 <label class="ue-mask">OTP: 12345</label>
@@ -336,7 +336,7 @@ If you wish to mask any WebView element on a Web page explicitly, you can mask i
 
 If you wish to explicitly un-mask any manually masked WebView element, you can un-mask it by using class `ue-unmask`.
 
-> Example:
+Example:
 
 ```
 <input type="text" placeholder="Enter Username" name="username" required class="ue-unmask">
@@ -352,7 +352,7 @@ UserExperior SDK automatically detects ViewController and defines them as screen
 [UserExperior startScreenWithName:@"SCREEN_NAME"];
 ```
 
-> Example:
+Example:
 
 ```
 [UserExperior startScreenWithName:@"OTPViewController"];
@@ -364,7 +364,7 @@ UserExperior SDK automatically detects ViewController and defines them as screen
 UserExperior.startScreen("SCREEN_NAME")
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.startScreen("OTPViewController")
@@ -378,7 +378,7 @@ Max screenName limit is 250 chars only.
 
 UserExperior SDK allows you to track the load / response time of the components in your app using a method called `startTimer` and `stopTimer`. You can call `startTimer` method at any event on the app from which you want to track the load / response time and call a `stopTimer` method at the event completion. This method will calculate the complete response time. You can also pass timer properties while tracking response time.
 
-> Example: Suppose, you have a TableView on your screen which gets loaded with data you receive from the server. You can call startTimer method when the view resumes to the user and call stopTimer method when data gets successfully shown in TableView. Now, you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any method call and endTimer on method response.
+Example: Suppose, you have a TableView on your screen which gets loaded with data you receive from the server. You can call startTimer method when the view resumes to the user and call stopTimer method when data gets successfully shown in TableView. Now, you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any method call and endTimer on method response.
 
 #### a. Start and end timer with properties
 

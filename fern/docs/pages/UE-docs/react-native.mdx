@@ -54,7 +54,7 @@ Syntax:
 void setUserIdentifier(String userIdentifier)
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.setUserIdentifier("abc@xyz.com");
@@ -73,7 +73,7 @@ UserExperior.setUserProperties({key1: value1,
 key2: value2, ...});
 ```
 
-> Example:
+Example:
 
 ```
  UserExperior.setUserProperties({"start_date": "2020/12/31", // Date-Format: YYYY/MM/DD  
@@ -96,7 +96,7 @@ Syntax:
 UserExperior.logEvent("YOUR_EVENT");
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.logEvent("Registration Successful");
@@ -112,14 +112,14 @@ Syntax:
 
 ```
 UserExperior.logEvent("YOUR_EVENT", {"key1:"value1",  
-                                     "key2:"value2", ...})        
+                                     "key2:"value2", ...})
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.logEvent("Health Profile created", {"age":35,  
-                                                 "weight":70.5})        
+                                                 "weight":70.5})
 ```
 
 <Callout intent="info">
@@ -140,7 +140,7 @@ void addInSecureViewBucket(ref)
 ```
 `ref` is the reference to your UI element which needs to be masked.
 
-> Example:
+Example:
 
 ```
 <Button ref= {view =>UserExperior.addInSecureViewBucket(view)}/>
@@ -156,7 +156,7 @@ void removeFromSecureViewBucket(ref)
 
 `ref` is the reference to your UI element which needs to be unmasked.
 
-> Example:
+Example:
 
 ```
 <Button ref= {view =>UserExperior.removeFromSecureViewBucket(view)}/>
@@ -180,7 +180,7 @@ If you wish to mask any WebView element on a Web page explicitly, you can mask i
 
 If you wish to explicitly un-mask any manually masked WebView element, you can un-mask it by using class `ue-unmask`.
 
-> Example:
+Example:
 
 ```
 <input type="text" placeholder="Enter Username" name="username" required class="ue-unmask">
@@ -202,7 +202,7 @@ Max screenName limit is 250 chars only.
 Pass hardcoded/fixed values for screen names, do not pass incremental values.
 </Callout>
 
-> Example:
+Example:
 
 ```
 UserExperior.startScreen("Notification Page");
@@ -216,7 +216,7 @@ This method should be usually called when your page loads.
 
 UserExperior SDK allows you to track the load/response time of the components in your app using APIs called startTimer and endTimer. You can call startTimer API at any event on the app from which you want to track the load/response time and call an endTimer API at the event completion. These APIs will calculate the complete response time. You can also pass timer properties while tracking response time.
 
-> Example: Suppose, you have a ListView on your screen which gets loaded with data you receive from the server. You can call startTimer API when the screen resumes to the user and call endTimer API when data gets successfully shown in the ListView. Now you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any API call and an endTimer on API response.
+Example: Suppose, you have a ListView on your screen which gets loaded with data you receive from the server. You can call startTimer API when the screen resumes to the user and call endTimer API when data gets successfully shown in the ListView. Now you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any API call and an endTimer on API response.
 
 #### a. Start and end timer with properties
 
@@ -294,7 +294,7 @@ This API resumes the recording if it is paused.
 boolean isRecording()
 ```
 
-‍> Example:
+Example:
 
 ```
 UserExperior.isRecording().then((isRecording: boolean) => {    alert("isRecording " + isRecording);  })
@@ -320,7 +320,7 @@ SDK by default opts-in users for session recording on app installs. If the user 
 boolean getOptOutStatus()
 ```
 
-‍> Example:
+Example:
 
 ```
 UserExperior.getOptOutStatus().then((optOutStatus: boolean) => { alert("getOptOutStatus " + optOutStatus); });

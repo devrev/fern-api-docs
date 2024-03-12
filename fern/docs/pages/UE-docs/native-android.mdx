@@ -22,7 +22,7 @@ implementation 'com.userexperior:userexperior-android:7.3.0'
 
 Call the above method in every activity that is an entry point to your app! Entry activities are usually those which have a custom `<intent-filter>` element in the AndroidManifest.xml file.
 
-> Example: MainActivity, Deep Linking Activity, etc. 
+Example: MainActivity, Deep Linking Activity, etc. 
 
 <Callout intent="info">
 Now the integration is completed, build the apk. Install apk in your android device and use the application. After performing activities minimize the app. UserExperior will upload the data, which could be seen within two-three minutes on the UserExperior portal.
@@ -51,7 +51,7 @@ Syntax:
 UserExperior.setUserIdentifier("pass-your-user-id-here");
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.setUserIdentifier("abc@xyz.com");
@@ -70,7 +70,7 @@ userProperties.put("keyN", valueN);
 UserExperior.setUserProperties(userProperties);
 ```
 
-> Example:
+Example:
 
 ```
 HashMap<String, Object> userProperties = new HashMap<>();  
@@ -98,7 +98,7 @@ Syntax:
 UserExperior.logEvent("Pass-Your-Event-Name-Here");
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.logEvent("Registration Successful");
@@ -121,7 +121,7 @@ eventProp.put("keyN", valN);
 UserExperior.logEvent("Your-Event-Name", eventProp);
 ```
 
-> Example:
+Example:
 
 ```
 HashMap<String, Object> eventProp = new HashMap<>();  
@@ -231,7 +231,7 @@ UserExperior SDK complies with GDPR policy and masks all the user input fields (
 
 If you wish to mask any WebView element on a Web page explicitly, you can mask it by using class `ue-mask`.
 
-> Example:
+Example:
 
 ```
 <label class="ue-mask">OTP: 12345</label>
@@ -241,7 +241,7 @@ If you wish to mask any WebView element on a Web page explicitly, you can mask i
 
 If you wish to explicitly un-mask any manually masked WebView element, you can un-mask it by using class `ue-unmask`.
 
-> Example:
+Example:
 
 ```
 <input type="text" placeholder="Enter Username" name="username" required class="ue-unmask">
@@ -281,11 +281,11 @@ This method should be usually called from the `onResume()` method.
 
 UserExperior SDK allows you to track the load/response time of the components in your app using APIs called startTimer and endTimer. You can call startTimer API at any event on the app from which you want to track the load/response time and call an endTimer API at the event completion. These APIs will calculate the complete response time. You can also pass timer properties while tracking response time.
 
-> Example: Suppose, you have a ListView on your screen which gets loaded with data you receive from the server. You can call startTimer API when the screen resumes to the user and call endTimer API when data gets successfully shown in the ListView. Now you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any API call and an endTimer on API response.
+Example: Suppose, you have a ListView on your screen which gets loaded with data you receive from the server. You can call startTimer API when the screen resumes to the user and call endTimer API when data gets successfully shown in the ListView. Now you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any API call and an endTimer on API response.
 
 #### a. Start and End Timer with Properties
 
-‍**Syntax:**
+**Syntax:**
 
 ```
 HashMap<String, String> requestLevelProperties = new HashMap<>();
@@ -293,7 +293,7 @@ requestLevelProperties.put("key1", value1);
 requestLevelProperties.put("key2", value2);
 requestLevelProperties.put("keyN", valueN);
 UserExperior.startTimer(String timerName, HashMap<String, String> requestLevelProperties);
-‍
+
 HashMap<String, String> responseLevelProperties = new HashMap<>();
 responseLevelProperties.put("key1", value1);
 responseLevelProperties.put("key2", value2);

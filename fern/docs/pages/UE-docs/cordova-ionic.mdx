@@ -87,7 +87,7 @@ Syntax:
 void setUserIdentifier(String userIdentifier)
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.setUserIdentifier("abc@xyz.com");
@@ -100,13 +100,15 @@ Max userIdentifier limit is 250 chars only
 
 Syntax:
 
-``` UserExperior.setUserProperties({key1: value1,  
+```
+UserExperior.setUserProperties({key1: value1,  
                                  key2: value2, ...});
 ```
 
-> Example:
+Example:
 
-``` UserExperior.setUserProperties({"start_date": "2020/12/31", // Date-Format: YYYY/MM/DD  
+```
+UserExperior.setUserProperties({"start_date": "2020/12/31", // Date-Format: YYYY/MM/DD  
                                  "plan_subscribed": "trial"});
 ```
 
@@ -126,7 +128,7 @@ Syntax:
   UserExperior.logEvent("YOUR_EVENT");
 ```
 
-> Example:
+Example:
 
 ```
  UserExperior.logEvent("Registration Successful");
@@ -145,7 +147,7 @@ UserExperior.logEventWithProperties("YOUR_EVENT", {"key1:"value1",
                                      "key2:"value2", ...})        
 ```
 
-> Example:
+Example:
 
 ```
 UserExperior.logEventWithProperties("Health Profile created", {"age":35,  
@@ -166,7 +168,7 @@ UserExperior SDK complies with GDPR policy and masks all the user input fields (
 
 If you wish to mask any WebView element on a Web page explicitly, you can mask it by using class `ue-mask`.
 
-> Example:
+Example:
 
 ```
 <label class="ue-mask">OTP: 12345</label>
@@ -176,7 +178,7 @@ If you wish to mask any WebView element on a Web page explicitly, you can mask i
 
 If you wish to explicitly un-mask any manually masked WebView element, you can un-mask it by using class `ue-unmask`.
 
-> Example:
+Example:
 
 ```
 <input type="text" placeholder="Enter Username" name="username" required class="ue-unmask">
@@ -211,7 +213,7 @@ This method should be usually called when your page loads.
 
 UserExperior SDK allows you to track the load / response time of the components in your app using APIs called startTimer and endTimer. You can call startTimer API at any event on the app from which you want to track the load/response time and call an endTimer API at the event completion. These APIs will calculate the complete response time. You can also pass timer properties while tracking response time.
 
-> Example: Suppose, you have a ListView on your screen which gets loaded with data you receive from the server. You can call startTimer API when the screen resumes to the user and call endTimer API when data gets successfully shown in the ListView. Now you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any API call and an endTimer on API response.
+Example: Suppose, you have a ListView on your screen which gets loaded with data you receive from the server. You can call startTimer API when the screen resumes to the user and call endTimer API when data gets successfully shown in the ListView. Now you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any API call and an endTimer on API response.
 
 #### a. Start and End Timer with Properties
 
@@ -235,7 +237,7 @@ UserExperior.endTimer(timerName,{key1: value1,
 
 We have provision for some predefined property parameters for `startTimer` and `endTimer` as follows:
 
-‍**`startTimer` property parameters:**
+**`startTimer` property parameters:**
 
 | Property parameter | Description                                     | Example                                      |
 |--------------------|-------------------------------------------------|----------------------------------------------|

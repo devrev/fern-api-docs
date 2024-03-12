@@ -145,6 +145,8 @@ navigation:
         path: ../docs/pages/resources.mdx
   - section: UE SDK
     contents:
+      - page: Overview
+        path: ../docs/pages/ue-overview.mdx
       - page: Cordova Ionic
         path: ../docs/pages/UE-docs/cordova-ionic.mdx
       - page: Flutter

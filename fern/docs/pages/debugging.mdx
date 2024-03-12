@@ -10,15 +10,15 @@ Using DevRev CLI, you can retrieve build logs and runtime logs for your snap-ins
 
 - To retrieve logs for all snap-in packages/versions in your dev org after a particular timestamp, run the following command:
 
-```bash
-devrev snap_in_package logs --after "2023-06-06T00:00:00Z" | jq
-```
+    ```bash
+    devrev snap_in_package logs --after "2023-06-06T00:00:00Z" | jq
+    ```
 
 - To retrieve logs between two timestamps and use a cursor for pagination, run the following command:
 
-```bash
-devrev snap_in_package logs --after "2023-06-06T10:24:17Z" --before "2023-06-07T00:00:00Z" --cursor cursor_from_previous_page | jq | code -
-```
+    ```bash
+    devrev snap_in_package logs --after "2023-06-06T10:24:17Z" --before "2023-06-07T00:00:00Z" --cursor cursor_from_previous_page | jq | code -
+    ```
 
 <Callout intent="info">
 By default, not specifying `--before` lists all logs until the current timestamp in descending order (latest logs at the top).
@@ -26,21 +26,21 @@ By default, not specifying `--before` lists all logs until the current timestamp
 
 - To retrieve logs for a specific snap-in package, run the following command:
 
-```bash
-devrev snap_in_package logs --after "2023-06-06T00:00:00Z" --filters '{"snap_in_package": {"values": ["don:integration:dvrv-us-1:devo/abcd:snap_in_package/abcdef"]}}' | jq | code -
-```
+    ```bash
+    devrev snap_in_package logs --after "2023-06-06T00:00:00Z" --filters '{"snap_in_package": {"values": ["don:integration:dvrv-us-1:devo/abcd:snap_in_package/abcdef"]}}' | jq | code -
+    ```
 
 - To retrieve logs containing the text "failed" but exclude logs with level "info", run the following command:
 
-```bash
-devrev snap_in_package logs --after "2023-06-06T00:00:00Z" --query "failed" --filters '{"level": {"values": ["info"], "exclude": true}}' | jq | code -
-```
+    ```bash
+    devrev snap_in_package logs --after "2023-06-06T00:00:00Z" --query "failed" --filters '{"level": {"values": ["info"], "exclude": true}}' | jq | code -
+    ```
 
 The JSON response fields are filterable. For example, to view snap-in version execution logs only, add the filter on `process` field to match `function` and run the following command:
 
-```bash
-devrev snap_in_package logs --after "2023-06-06T00:00:00Z" --filters '{"snap_in_version": {"values": ["don:integration:dvrv-us-1:devo/abcd:snap_in_package/abcdef:snap_in_version/abcdef"]}, "process":{"values": ["function"]}}' | jq | code -
-```
+    ```bash
+    devrev snap_in_package logs --after "2023-06-06T00:00:00Z" --filters '{"snap_in_version": {"values": ["don:integration:dvrv-us-1:devo/abcd:snap_in_package/abcdef:snap_in_version/abcdef"]}, "process":{"values": ["function"]}}' | jq | code -
+    ```
 
 Similarly, you can filter only for build logs by filtering for `process = build`.
 
@@ -56,7 +56,7 @@ devrev snap_in_package logs --after "2023-06-06T00:00:00Z" --filters '{}' | jq -
 
 ## Troubleshooting
 
-### snap_in draft command returns: "You are not authorized to perform this operation"
+### Error "You are not authorized to perform this operation"
 
 ```bash
 devrev snap_in draft

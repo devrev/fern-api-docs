@@ -1,16 +1,10 @@
-## Prerequisites
+## Introduction
 
-- [Getting Started](../start.mdx)
-- [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
-- [Snap-in that takes an action](/snap-in-development/tutorials/using-a-snap-in-to-perform-a-dev-rev-action)
-
-## Objective
-
-This section enables users to create a dynamic snap-in that responds to both DevRev Webhook events triggered by the creation of a [work](https://docs.devrev.ai/product/core) and specialized [command](/snap-in-development/references/commands) within DevRev. 
+In this tutorial, you'll learn to create a dynamic snap-in that responds to both DevRev Webhook events triggered by the creation of a [work](https://docs.devrev.ai/product/core) and specialized [command](/snap-in-development/references/commands) within DevRev. 
 
 The focus is on the process of working with the payload associated with these events. The objective is to adeptly extract pertinent fields from the payload within the defined functions, subsequently executing a well-defined action. This action involves the addition of a comment to the object timeline, a feature that can be conveniently customized.
 
-## Key objectives
+## Background context
 
 1. **Webhook event handling**: Understand the intricacies of responding to a
    DevRev webhook event, specifically focused on work creation.
@@ -24,15 +18,35 @@ The focus is on the process of working with the payload associated with these ev
 4. **Action execution**: Become proficient in executing a specified action - adding
    a customizable comment to the object timeline.
 
+To learn more, refer to the [Using a snap-in to perform a DevRev action](/snap-in-development/tutorials/using-a-snap-in-to-perform-a-dev-rev-action) tutorial.
+
+## Installation guide
+
+- Install [DevRev CLI](welcome/snap-in-development/references/install-dev-rev-cli)
+- Install [jq](https://stedolan.github.io/jq)
+- Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
+
+<Callout intent="info">
+If you did not follow the [getting started](/snap-in-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
+
+```bash
+devrev profiles authenticate -o <dev-org-slug> -u <youremail@yourdomain.com>
+```
+
+```bash
+devrev snap_in_version init
+```
+</Callout>
+
 ### Trigger
 
 To invoke the snap-in, two distinct triggers are implemented:
 
 1. **Creation of work item**: This trigger is activated when new objects of type
-   Issue or Ticket are created in DevRev.
+   **Issue** or **Ticket** are created in DevRev.
 
 2. **Text command**: This manual trigger is achieved by utilizing a slash
-   command in the **Discussion** section of the objects that support this feature.
+   command in the **Discussions** tab of the objects that support this feature.
 
 ### Action
 
@@ -42,14 +56,7 @@ for this task. In this scenario, the `/timeline-entries.create` API is the
 designated choice for executing the action of adding a text comment from the
 snap-in. To accomplish this task, the DevRev SDK is employed.
 
-## Implementation steps
-
-As discussed in the previous sections, the initial step involves initializing
-the snap-in template. This can be achieved using the following command:
-
-```bash
-devrev snap_in_version init
-```
+## Creating the snap-in
 
 ### Updating the manifest
 
@@ -68,7 +75,7 @@ service_account:
   display_name: "DevRev Bot"
 ```
 
-#### Event source
+### Event source
 
 Following the manifest update, the next step is to incorporate the [event source](/snap-in-development/references/event-sources).
 For this scenario, events from DevRev are essential. Therefore, an event source
@@ -86,7 +93,7 @@ event_sources:
           - work_created
 ```
 
-#### Input fields
+### Input fields
 
 To enable users to configure specific comments, input fields must be defined.
 For our use case, the following input fields are specified:
@@ -132,7 +139,7 @@ inputs:
         display_name: List of extra names!
 ```
 
-#### Functions
+### Functions
 
 With the groundwork laid out, the next crucial step involves defining the
 functions responsible for handling the logic in TypeScript to add comments using
@@ -150,7 +157,7 @@ functions:
       comment is added.
 ```
 
-#### Automations
+### Automations
 
 With the building blocks in place, the final piece of the puzzle involves
 defining automations. These automations encapsulate a trigger and a
@@ -165,7 +172,7 @@ automations:
     function: function_1
 ```
 
-#### Commands
+### Commands
 
 To accommodate the additional trigger, a [command](/snap-in-development/references/commands) must be defined within the
 manifest file:
@@ -191,7 +198,7 @@ triggers, and outlined the overall workflow, the next crucial phase involves
 crafting the functions - `function_1` and `function_2`. These functions serve as
 the engines driving the business logic behind the snap-in's behavior.
 
-#### Getting the payload
+### Getting the payload
 
 To kickstart the implementation process, understanding the structure of the
 payload is paramount. Whether dealing with a work creation event or a command
@@ -209,7 +216,7 @@ export const run = async (events: any[]) => {
 export default run;
 ```
 
-#### Handling DevRev event
+### Handling DevRev event
 
 Having gained clarity on the expected payload structure, the next step involves
 crafting custom code to handle the incoming events. In this context, the
@@ -271,7 +278,7 @@ information from the payload, and utilizing the DevRev SDK to create a timeline
 entry comment. It serves as a foundational template that can be adapted based on
 specific use cases and requirements.
 
-#### Handling command event
+### Handling command event
 
 For scenarios where a command event is triggered, a dedicated function,
 `handleCommandEvent`, can be implemented to handle the event appropriately. The
@@ -312,7 +319,7 @@ async function handleCommandEvent(event: any) {
 }
 ```
 
-#### Deployment to your organization
+### Deploying the snap-in to your organization
 
 Upon completing and validating the code changes, the next crucial step is
 deploying the snap-in to your organization. Follow these steps for a seamless

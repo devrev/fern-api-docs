@@ -1,16 +1,10 @@
-## Prerequisites
+## Introduction
 
-- [Getting Started](/snap-in-development/tutorials/getting-started)
-- [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
-- [Custom Event Source](/snap-in-development/references/event-sources)
-
-## Objective
-
-In this section, the focus is on creating a snap-in that responds to an external
+In this tutorial, you'll learn how to create a snap-in that responds to an external
 source, particularly GitHub. The objective is to seamlessly integrate commit
 comments from GitHub into the DevRev platform.
 
-## Key objectives
+## Background context
 
 1. **Understanding webhooks in GitHub**: Explore the fundamentals of
    [webhooks](/guides/getting-started-with-webhooks) and learn how
@@ -27,6 +21,24 @@ comments from GitHub into the DevRev platform.
    secret key. Learn the security measures involved in ensuring the integrity
    and authenticity of data transmitted via webhooks from GitHub to DevRev.
 
+## Installation guide
+
+- Install [DevRev CLI](welcome/snap-in-development/references/install-dev-rev-cli)
+- Install [jq](https://stedolan.github.io/jq)
+- Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
+
+<Callout intent="info">
+If you did not follow the [getting started](/snap-in-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
+
+```bash
+devrev profiles authenticate -o <dev-org-slug> -u <youremail@yourdomain.com>
+```
+
+```bash
+devrev snap_in_version init
+```
+</Callout>
+
 ### Trigger
 
 The main trigger for this snap-in is an
@@ -41,10 +53,7 @@ messages and displaying them on the discussion tab of the specified Product
 section. The configuration for this action can be customized through the input
 parameters of the snap-in.
 
-## Implementation steps
-
-Following the initialization of the snap-in TypeScript template repository, the
-subsequent steps involve modeling our snap-in.
+## Creating the snap-in
 
 ### Updating the manifest
 
@@ -64,7 +73,7 @@ service_account:
   display_name: "GitHub-Commit Bot"
 ```
 
-#### Configuration
+### Configuration
 
 To enhance the flexibility and adaptability of the snap-in, configurable inputs
 need to be incorporated. In this instance, organization-level inputs are
@@ -87,7 +96,7 @@ inputs:
         display_name: The part on which to post commits.
 ```
 
-#### Event source
+### Event source
 
 To establish the event source from which the snap-in will receive events, the
 `flow-custom-webhook` event is introduced. This event source serves as the
@@ -145,7 +154,7 @@ Here, in the configuration, two crucial tasks are primarily addressed:
    they intend to subscribe, with a focus on the events pertinent to this
    snap-in: `push`.
 
-#### Functions and automations
+### Functions and automations
 
 With the foundational configurations in place, the next step involves defining
 the functions and automations that orchestrate the core logic of the snap-in.
@@ -233,7 +242,7 @@ async function handleEvent(event: any) {
 }
 ```
 
-#### Deployment to your organization
+### Deploying the snap-in to your organization
 
 Upon completion and validation of the code changes, the subsequent crucial step
 involves deploying the snap-in to your organization. Execute the following steps

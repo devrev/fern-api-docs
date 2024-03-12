@@ -1,17 +1,10 @@
-## Prerequisites
+## Introduction
 
-- [Getting Started](/snap-in-development/tutorials/getting-started)
-- [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
-- [Keyrings](../references/keyrings.mdx)
-- [GitHub API](https://docs.github.com/en/rest)
-
-## Objective
-
-In this section, the goal is to develop a snap-in that mirrors an issue from
+In this tutorial, you'll lean how to develop a snap-in that mirrors an issue from
 DevRev to GitHub. This requires addition of a command that can be run from
-the discussion section of an issue, which creates an issue in GitHub.
+the **Discussions** tab of an issue in DevRev, which creates an issue in GitHub.
 
-## Key objectives
+## Background context
 
 1. **GitHub APIs mastery:**
 
@@ -27,6 +20,24 @@ the discussion section of an issue, which creates an issue in GitHub.
    - Gain proficiency in creating and using
      [commands](/snap-in-development/references/commands) in DevRev.
 
+## Installation guide
+
+- Install [DevRev CLI](welcome/snap-in-development/references/install-dev-rev-cli)
+- Install [jq](https://stedolan.github.io/jq)
+- Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
+
+<Callout intent="info">
+If you did not follow the [getting started](/snap-in-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
+
+```bash
+devrev profiles authenticate -o <dev-org-slug> -u <youremail@yourdomain.com>
+```
+
+```bash
+devrev snap_in_version init
+```
+</Callout>
+
 ### Trigger
 
 To initiate the process of creating a GitHub issue directly from a DevRev issue,
@@ -41,10 +52,7 @@ The primary action involves leveraging the issue creation API provided by
 GitHub. This API is utilized to create the GitHub issue seamlessly from the
 corresponding issue in DevRev.
 
-## Implementation steps
-
-After initializing the snap-in TypeScript template repository, the subsequent
-steps revolve around modeling the snap-in.
+## Creating the snap-in
 
 ### Updating the manifest
 
@@ -61,7 +69,7 @@ service_account:
   display_name: GitHub Issue Creator
 ```
 
-#### Keyrings
+### Keyrings
 
 To facilitate authentication for our API calls, the initial step involves
 creating a Personal Access Token (PAT) in GitHub. This PAT can be stored as a
@@ -78,7 +86,7 @@ keyrings:
         - snap_in_secret
 ```
 
-#### Functions and commands
+### Functions and commands
 
 Having established the foundational configurations, the subsequent step is to
 define the functions and commands responsible for orchestrating the core logic
@@ -90,8 +98,10 @@ functions:
     description: Function to create a GitHub issue
 ```
 
-The command clearly states where you can use it – for example, in the
-**Discussion** section of issues. It also explains the different situations and
+The command clearly states where you can use it. For example, in the
+**Discussions** tab of issues. 
+
+It also explains the different situations and
 ways in which you can make use of this command.
 
 ```yml
@@ -107,20 +117,16 @@ commands:
     function: command_handler
 ```
 
-To utilize this command, execute `/gh_issue OrgName RepoName` in the **Discussion**
-section of the issue. Within the function logic, validations are implemented to
+To utilize this command, execute `/gh_issue OrgName RepoName` in the **Discussions**
+tab of the issue. Within the function logic, validations are implemented to
 ensure the correctness of both the organization name (`OrgName`) and repository
 name (`RepoName`) before proceeding with the issue creation.
 
 ### Function logic
 
-With the manifest in place, outlining the overall logic of the snap-in, the
-subsequent step entails defining the function logic responsible for handling the
-business logic. Having knowledge of the payload structure when a command is
-executed, the next steps involve further implementation.
+After creating the manifest and establishing the snap-in's logic, the next step is to define the function logic that handles business logic. Once you understand the payload structure of a command, you can proceed with its implementation.
 
-To proceed, it's imperative to define the handler function that manages the
-command events.
+To proceed, define the handler function for command events.
 
 ```ts
 const handleEvent = async (event: any) => {
@@ -156,7 +162,7 @@ With the SDKs successfully initialized, the next step is to invoke the necessary
 APIs.
 
 As a preliminary step, the required fields for creating a GitHub Issue, namely
-Title and Body, need to be extracted. These details are sourced from the issue.
+**title** and **body**, need to be extracted. These details are sourced from the issue.
 To facilitate this, introduce a function defined for this specific purpose:
 
 ```ts
@@ -190,8 +196,8 @@ const workId = event.payload.source_id;
 const issueDetails = await getIssueDetails(workId, devrevSDK);
 ```
 
-Following this, the next step involves parsing the parameters—Organization and
-Repository Name—that were passed in the command:
+Following this, the next step involves parsing the parameters `Organization` and
+`Repository Name` that were passed in the command:
 
 ```ts
 const getOrgAndRepoNames = (paramString: string): string[] => {
@@ -204,9 +210,7 @@ const getOrgAndRepoNames = (paramString: string): string[] => {
 };
 ```
 
-Now, the
-[GitHub REST API](https://docs.github.com/en/rest/orgs/orgs?apiVersion=2022-11-28#get-an-organization)
-is employed to validate whether the provided organization name is valid.
+The GitHub REST API (https://docs.github.com/en/rest/orgs/orgs?apiVersion=2022-11-28#get-an-organization) is used to confirm the specified organisation name.
 
 ```ts
 const verifyOrgName = async (orgName: string, octokit: Octokit) => {
@@ -226,7 +230,7 @@ const verifyOrgName = async (orgName: string, octokit: Octokit) => {
 
 Similarly, the
 [GET Repository](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository)
-is utilized to validate whether the entered repository name is correct.
+is used to validate whether the entered repository name is correct.
 
 ```ts
 const verifyRepoName = async (
@@ -277,18 +281,17 @@ const createGitHubIssue = async (
 };
 ```
 
-The conclusion of the functional logic signifies a pivotal milestone in the
-overall process. With the groundwork now laid, the subsequent phase involves a
-comprehensive exploration of the detailed installation procedures.
+The completion of functional logic is a key milestone in the process. After laying the framework, now you'll learn how to install this snap-in for your organization.
 
-### Deployment to your organization
+### Deploying the snap-in to your organization
 
 Once the code has been validated, the next steps involve creating the snap-in
 version and subsequently creating the snap-in itself. Before installing the
 snap-in, it's essential to set up a GitHub Personal Access Token (PAT) and add
 it to the connections in DevRev as a snap-in secret. Ensure that the secret is
-shared within the organization so that the snap-in can utilize it. Follow these
-steps for a smooth installation:
+shared within the organization so that the snap-in can utilize it. 
+
+Follow these steps to install the snap-in in your organization:
 
 #### Step 1: Create a GitHub personal access token 
 

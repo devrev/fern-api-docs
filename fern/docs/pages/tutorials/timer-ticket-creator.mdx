@@ -1,26 +1,43 @@
-## Prerequisites
-
-- [Getting Started](/snap-in-development/tutorials/getting-started): Deploying a snap-in
-  to your dev org.
-- [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk): TypeScript
-  SDK to ease in calling DevRev APIs.
-
-## Objective
+## Introduction
 
 The objective is to build a snap-in that creates a new ticket every 10 minutes.
 
-## Blueprinting the solution
+## Background context
 
-The [Getting Started](/snap-in-development/tutorials/getting-started) section shows a
-hello-world snap-in which prints a log message when a work item is created. This
-snap-in has the following changes:
+In the [Getting Started](/snap-in-development/tutorials/getting-started) tutorial, you learned how to create a
+hello-world snap-in which prints a log message when a work item is created. In this tutorial, you will make the following changes to the snap-in:
 
 1. Update the trigger condition to run every 10 minutes instead of work
    creation.
 2. Create a ticket whenever the snap-in is triggered.
 
-Do ensure that you have at least one part in your Organization since every
+Ensure that you have at least one [part](https://docs.devrev.ai/product/parts#product-or-service) in your organization since every
 ticket must be linked to a part and have an owner.
+
+Since a DevRev ticket is created whenever the function is triggered,
+DevRev APIs need to be called that allow this
+functionality. Although one can directly make HTTP requests to the endpoint,
+it's strongly suggested to use the
+[DevRev TypeScript SDK](https://www.npmjs.com/package/@devrev/typescript-sdk)
+since it provides additional types and helper methods which ease development.
+
+## Installation guide
+
+- Install [DevRev CLI](welcome/snap-in-development/references/install-dev-rev-cli)
+- Install [jq](https://stedolan.github.io/jq)
+- Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
+
+<Callout intent="info">
+If you did not follow the [getting started](/snap-in-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
+
+```bash
+devrev profiles authenticate -o <dev-org-slug> -u <youremail@yourdomain.com>
+```
+
+```bash
+devrev snap_in_version init
+```
+</Callout>
 
 ### Trigger
 
@@ -38,47 +55,7 @@ that, use the
 [DevRev TypeScript SDK](https://www.npmjs.com/package/@devrev/typescript-sdk) to
 make API calls for creating the ticket.
 
-## Starting the implementation
-
-### Initialize a snap-in template
-
-Initialize the snap-in template for the hello-world snap-in.
-
-```bash
-devrev snap_in_version init
-```
-
-After the command runs, a new folder `devrev-snaps-typescript-template` is
-created in the filesystem.
-
-```
-devrev-snaps-typescript-template/
-├── code
-│   ├── babel.config.js
-│   ├── jest.config.js
-│   ├── nodemon.json
-│   ├── package.json
-│   ├── src
-│   │   ├── fixtures
-│   │   │   └── on_work_created_event.json
-│   │   ├── function-factory.ts
-│   │   ├── functions
-│   │   │   └── on_work_creation
-│   │   │       ├── index.test.ts
-│   │   │       └── index.ts
-│   │   ├── index.ts
-│   │   ├── main.ts
-│   │   └── test-runner
-│   │       ├── example.test.ts
-│   │       └── test-runner.ts
-│   ├── tsconfig.eslint.json
-│   └── tsconfig.json
-├── manifest.yaml
-└── README.md
-```
-
-As discussed in the [Getting Started](/snap-in-development/tutorials/getting-started),
-the `code` folder contains the starter code for the snap-in.
+## Creating the snap-in
 
 ### Updating the manifest
 
@@ -138,24 +115,7 @@ automations:
 After these changes, the final version of the manifest can be found
 [here](https://github.com/devrev/snap-in-examples/blob/main/6-timer-ticket-creator/manifest.yaml).
 
-### Changes in code
-
-#### Using the DevRev SDK
-
-Since a DevRev ticket is created whenever the function is triggered,
-DevRev APIs need to be called that allow this
-functionality. Although one can directly make HTTP requests to the endpoint,
-it's strongly suggested to use the
-[DevRev TypeScript SDK](https://www.npmjs.com/package/@devrev/typescript-sdk)
-since it provides additional types and helper methods which ease development.
-
-In the `code` folder, run
-
-```
-npm install @devrev/typescript-sdk
-```
-
-#### Renaming the function
+### Renaming the function
 
 Next, the function name in the `src/functions` folder needs to be renamed to
 'ticket_creator' which is the one put in the manifest.
@@ -170,7 +130,7 @@ These changes need to be reflected in the following files as well:
 - `src/test-runner/example.test.ts`
 - `src/functions/ticket_creator/index.test.ts`
 
-#### Event received by the snap-in function
+### Event received by the snap-in function
 
 In the hello-world snap-in, the ID of the created work-item gets extracted from
 the input event as such.
@@ -219,7 +179,7 @@ are two fields to be concerned about in the input payload:
 2. `service_account_token` which is a short-lived token provisioned by each
    snap-in. This is required when making API calls to DevRev.
 
-#### Update to code
+### Updating the code
 
 Update the code in `src/functions/ticket_creator/index.ts` to reflect the
 behavior.
@@ -270,7 +230,7 @@ export const run = async (events: any[]) => {
 export default run;
 ```
 
-#### Deployment to your organization
+#### Deploying the snap-in to your organization
 
 Once satisfied with the code changes, move to the `code` folder, and run
 

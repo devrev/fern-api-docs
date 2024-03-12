@@ -41,12 +41,12 @@ navigation:
             path: ../docs/pages/start.mdx
           - page: Using a snap-in to perform a DevRev action
             path: ../docs/pages/tutorials/timer-ticket-creator.mdx
+          - page: Using a snap-in to perform an external action
+            path: ../docs/pages/tutorials/perform-external-action.mdx
           - page: Snap-in triggered by a DevRev event
             path: ../docs/pages/tutorials/triggered-event.mdx
           - page: Snap-in triggered by an external source
             path: ../docs/pages/tutorials/triggered-external-source.mdx
-          - page: Using snap-in to perform an external action
-            path: ../docs/pages/tutorials/perform-external-action.mdx
       - section: References
         contents:
           - page: Install DevRev CLI

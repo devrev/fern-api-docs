@@ -19,6 +19,34 @@ To initialize a snap-in template, run the following command:
 ```bash
 devrev snap_in_version init
 ```
+After the command runs, a new folder `devrev-snaps-typescript-template` is
+created in the filesystem.
+
+```
+devrev-snaps-typescript-template/
+├── code
+│   ├── babel.config.js
+│   ├── jest.config.js
+│   ├── nodemon.json
+│   ├── package.json
+│   ├── src
+│   │   ├── fixtures
+│   │   │   └── on_work_created_event.json
+│   │   ├── function-factory.ts
+│   │   ├── functions
+│   │   │   └── on_work_creation
+│   │   │       ├── index.test.ts
+│   │   │       └── index.ts
+│   │   ├── index.ts
+│   │   ├── main.ts
+│   │   └── test-runner
+│   │       ├── example.test.ts
+│   │       └── test-runner.ts
+│   ├── tsconfig.eslint.json
+│   └── tsconfig.json
+├── manifest.yaml
+└── README.md
+```
 
 The command creates a folder `devrev-snaps-typescript-template`. This contains a `manifest.yaml` file and a `code` folder.
 

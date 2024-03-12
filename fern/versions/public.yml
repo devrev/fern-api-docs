@@ -85,3 +85,15 @@ navigation:
             path: ../docs/pages/examples/samples.mdx
           - page: Resources
             path: ../docs/pages/resources.mdx
+  - section: UE SDK
+    contents:
+      - page: Cordova Ionic
+        path: ../docs/pages/UE-docs/cordova-ionic.mdx
+      - page: Flutter
+        path: ../docs/pages/UE-docs/flutter.mdx
+      - page: Native iOS
+        path: ../docs/pages/UE-docs/native_ios.mdx
+      - page: Native Android
+        path: ../docs/pages/UE-docs/native-android.mdx
+      - page: React Native
+        path: ../docs/pages/UE-docs/react-native.mdx

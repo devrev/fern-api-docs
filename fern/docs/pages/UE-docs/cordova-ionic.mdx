@@ -1,0 +1,359 @@
+<Callout intent="info">
+*   UserExperior supports os versions from Android Lollipop (5.0) API Level 21 to Android 13 API Level 33.
+*   XCode Support: 11.5 and above.
+*   We do not recommend testing on Emulators/Simulators, conduct testing on real devices.
+</Callout>
+
+### 1. Add UserExperior plugin to your project
+
+- Remove UserExperior plugin, if it is already installed.
+
+<Callout intent="info"> 
+The latest version of _userexperior-cordova-plugin_ is **3.0.5**
+</Callout>
+
+**For Cordova app:**
+
+```
+cordova plugin remove userexperior-cordova-plugin
+```
+
+**For Ionic-Cordova app:**
+
+```
+ionic cordova plugin remove userexperior-cordova-plugin
+```
+
+- Add UserExperior plugin.
+
+**For Cordova app:**
+
+```
+cordova plugin add userexperior-cordova-plugin@3.0.5
+```
+
+**For Ionic-Cordova app:**
+
+```
+ionic cordova plugin add userexperior-cordova-plugin@3.0.5
+```
+
+### 2. Start UserExperior plugin
+
+```
+ UserExperior.startRecording("your-version-key-here");
+```
+
+Call the above method when your app starts, preferably when the `DeviceReady` event fires.
+
+If you're using TypeScript (default in ionic 2 and ionic 3), put the following line under the imports:
+
+```
+ declare var UserExperior:any;
+```
+
+**For iOS:** 
+
+Perform pod install in ../platforms/ios directory.
+
+```
+pod install
+```
+
+**For Android: Proguard Rules**
+
+If you are using Proguard in your project, you must add the following lines to your configuration:
+
+```
+-dontwarn com.userexperior.**  
+-keep class com.userexperior.** { *; }
+```
+
+<Callout intent="info">
+Now the integration is completed, build the apk. Install apk in your android device and use the application. After performing activities minimize the app. UserExperior will upload the data, which could be seen within 2-3 minutes on the UserExperior portal.
+</Callout>
+
+## Customizing UserExperior with Key APIs
+
+### 1. Set user identifier & additional properties
+
+#### a. Set user identifier
+
+UserExperior SDK by default takes device id as a user identifier. However, you can specify any unique user identifier of your choice (eg. Email Id, Phone Number, etc.) as a custom user identifier. This identifier will show up in the UserExperior portal.
+
+Syntax:
+
+```
+void setUserIdentifier(String userIdentifier)
+```
+
+> Example:
+
+```
+UserExperior.setUserIdentifier("abc@xyz.com");
+```
+<Callout intent="info">
+Max userIdentifier limit is 250 chars only
+</Callout>
+
+#### b. Send additional user information
+
+Syntax:
+
+``` UserExperior.setUserProperties({key1: value1,  
+                                 key2: value2, ...});
+```
+
+> Example:
+
+``` UserExperior.setUserProperties({"start_date": "2020/12/31", // Date-Format: YYYY/MM/DD  
+                                 "plan_subscribed": "trial"});
+```
+
+<Callout intent="info">
+Send the date property in "YYYY/MM/DD" format only, if any.
+</Callout>
+
+### 2. Log Event
+
+UserExperior SDK lets you log user events based on the scenario. An event is the indication of progress in the user's session. `LogEvent()` can be used as follows
+
+#### a. Log event with the name
+
+Syntax:
+
+```
+  UserExperior.logEvent("YOUR_EVENT");
+```
+
+> Example:
+
+```
+ UserExperior.logEvent("Registration Successful");
+```
+
+<Callout intent="info">
+Max eventName limit is 250 chars only.
+</Callout>
+
+#### b. Log event with name and properties
+
+Syntax:
+
+```
+UserExperior.logEventWithProperties("YOUR_EVENT", {"key1:"value1",  
+                                     "key2:"value2", ...})        
+```
+
+> Example:
+
+```
+UserExperior.logEventWithProperties("Health Profile created", {"age":35,  
+                                                  "weight":70.5})        
+```
+
+<Callout intent="info">
+*   Max eventName limit is 250 chars only.
+*   Send the date property in "YYYY/MM/DD" format only, if any.
+*   Send primitive data types only in the property value e.g. String, integer, boolean.
+</Callout>
+
+### 3. Mask / Unmask Web-View Element
+
+UserExperior SDK complies with GDPR policy and masks all the user input fields (Example, name, password, email, etc.) automatically in the Webview.
+
+#### a. Manual Mask:
+
+If you wish to mask any WebView element on a Web page explicitly, you can mask it by using class `ue-mask`.
+
+> Example:
+
+```
+<label class="ue-mask">OTP: 12345</label>
+```
+
+#### b. Manual Unmask:
+
+If you wish to explicitly un-mask any manually masked WebView element, you can un-mask it by using class `ue-unmask`.
+
+> Example:
+
+```
+<input type="text" placeholder="Enter Username" name="username" required class="ue-unmask">
+```
+
+### 4. Identify Screens
+
+UserExperior SDK automatically detects Activities / ViewControllers and defines them as screens. However, If you have used js or anything else to represent your screens, then we recommend using the startScreen API. This API allows you to manually define screens.
+
+```
+void startScreen(String screenName)
+```
+<Callout intent="info">
+Max screenName limit is 250 chars only
+</Callout>
+
+</Callout>tip
+Pass hardcoded/fixed values for screen names, do not pass incremental values.
+</Callout>
+
+**Code example:**
+
+```
+UserExperior.startScreen("Notification Page");
+```
+
+<Callout intent="info">
+This method should be usually called when your page loads.
+</Callout>
+
+### 5. Track Response Time of Methods / API Calls
+
+UserExperior SDK allows you to track the load / response time of the components in your app using APIs called startTimer and endTimer. You can call startTimer API at any event on the app from which you want to track the load/response time and call an endTimer API at the event completion. These APIs will calculate the complete response time. You can also pass timer properties while tracking response time.
+
+> Example: Suppose, you have a ListView on your screen which gets loaded with data you receive from the server. You can call startTimer API when the screen resumes to the user and call endTimer API when data gets successfully shown in the ListView. Now you can know how much time it takes to load data after the screen is visible to the user. Similarly, you can use startTimer at any API call and an endTimer on API response.
+
+#### a. Start and End Timer with Properties
+
+Syntax:
+
+```
+UserExperior.startTimer(timerName,{key1: value1,
+                             key2: value2, ...});
+.
+.
+UserExperior.endTimer(timerName,{key1: value1,
+                             key2: value2, ...});
+```
+
+<Callout intent="info">
+*   Max timerName limit is 250 chars only.
+*   Max key & value limit is 250 chars only respectively.
+*   Timer name has to be same for both start and end timer.
+*   Send primitive data types only in the property value e.g. String, integer, boolean.
+</Callout>
+
+We have provision for some predefined property parameters for `startTimer` and `endTimer` as follows:
+
+‍**`startTimer` property parameters:**
+
+| Property parameter | Description                                     | Example                                      |
+|--------------------|-------------------------------------------------|----------------------------------------------|
+| ue_process         | Functionality Module, e.g. Onboarding, Credit Card etc. | Onboarding, Credit Card, etc are business processes.            |
+| ue_sub_process     | Functionality Sub Module e.g View Card Details, OTP Sent etc. | OTP Sent, View Card Details, etc. are part of the business functions. Multiple sub functions make up a business process.           |
+
+**`endTimer` property parameters:**
+
+| Property parameter   | Description                   | Example                               |
+|----------------------|-------------------------------|---------------------------------------|
+| ue_api_status        | API status                    | Success or Failure                    |
+| ue_response_code     | Response status code          | 2XX, 3XX, 4XX, 5XX, or custom codes    |
+| ue_response_code_desc| Status code description       | Description of the status code, e.g., Unauthorized request |
+
+**Code example for Cordova/Ionic:**
+
+```
+// Call this while sending the API request
+UserExperior.startTimer("User Login API Call", {"ue_process":"Login Module", "ue_sub_process":"User Authentication", "request-url":reqUrl, "request-method":reqMethod});
+.
+.
+// Call this when you get the response
+UserExperior.endTimer("User Login API Call", {"ue_api_status":"Success", "ue_response_code":"200", "ue_response_code_desc":"valid user", "response":response});
+```
+
+### 6. Control recording
+
+UserExperior SDK has the following APIs which can be used to control the recording. The APIs stopRecording, pauseRecording, resumeRecording are optional and they should be only called when you explicitly want to override the default behaviour. Basically, you can use pauseRecording and resumeRecording to bypass any user flow which you don't want UserExperior to capture.
+
+```
+void stopRecording()
+```
+
+By default, recording stops automatically once the app goes to the background. However, you can stop at the desired point by calling this API.
+
+```
+void pauseRecording()
+```
+
+This API pauses the recording, you can use resumeRecording API to resume.
+
+```
+void resumeRecording()
+```
+
+This API resumes the recording if it is paused.
+
+`isRecording()` method returns the status of the SDK recording whether the SDK is active mode or in-active mode. The boolean value `true` indicates that the SDK is active and `false` indicates that the SDK is in-active.  
+
+```
+boolean isRecording()
+```
+
+### 7. Opt-in / Opt-out
+
+UserExperior by default opts-in users for session recording. If you want to enable or disable recording, you can use our APIs optIn()/optOut().
+
+```
+void optOut()
+```
+
+This method stops and deletes the current session recording and also disables the session recording by our SDK for this user in the future.
+
+```
+void optIn()
+```
+
+SDK by default opts-in users for session recording on app installs. If the user was disabled for session recording by using the `optOut()` method, you can use this method to enable recording at runtime.
+
+```
+boolean getOptOutStatus()
+```
+
+This method returns the status of the user whether the user is currently opted-in or opted-out. The boolean value true indicates that the user is opted-out and false indicates that the user is opted-in.
+
+User recording resets to opt-in if the user un-installs and re-installs the app.
+
+FAQs
+----
+
+**When can we see the videos of the user's session?**
+
+When the app is minimized to the background then UserExperior SDK processes the session captured and sends the information to the UserExperior server.
+
+**How long does it take for the video session to appear on the dashboard?**
+
+From the time the app is minimized to the background the session captured will take 5 to 7 minutes to be reflected on the UserExperior dashboard.
+
+**Will the session upload if I kill the app?**
+
+If the app is killed without minimizing the app to the background, then the session which was killed will not get uploaded. UserExperior will be able to send the data whenever the app is minimized to the background.
+
+**What if the user does not have a network on the mobile device? Will the video get captured?**
+
+If the user does not have an active internet on their device at the time of the start of the session or during the end while uploading, then UserExperior stores the session locally in the apps secure memory. This stored session is sent to the UserExperior server when the users access the app again with an active internet.
+
+**Does UserExperior Track events?**
+
+Yes, By default UserExperior tracks native events. But if you want to track events done on custom controls you can track these events by calling a logEvent().
+
+**Can I add my own custom event, as we do for other SDK's?**
+
+Yes you can add custom events using logEvent() API.
+
+**Can I uniquely identify users session on the dashboard?**
+
+Yes, use SetUserIdentifier API.
+
+**We use fragments in our app, does UserExperior also detect fragments?**
+
+Yes, user StartScreen API for fragments. This will allow UserExperior to recognize fragment as a screen.
+
+**Can UserExperior also work on Cordova/Phone gap kind of frameworks?**
+
+Yes
+
+**I am getting a crash which has the following UserExperior entry in the trace com.userexperior.*.dispatchTouchEvent ?**
+
+UserExperior intercepts and logs every touch gesture that is occurring within the app, then dispatch it back to the original implementation. The DispatchTouchEvent/ DispatchkeyEvent class is the class that is responsible for this behavior. The reason you see UserExperior in the stack-trace is that the UserExperior SDK was active (had a running thread) during the crash, but it did not cause the app to crash.
+
+You can see the full list of Android methods that could be in the stack-trace here: [**https://developer.android.com/reference/android/view/Window.Callback.html**](https://developer.android.com/reference/android/view/Window.Callback.html)

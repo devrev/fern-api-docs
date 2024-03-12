@@ -17,9 +17,9 @@ navigation:
         path: ../docs/pages/rate-limits.mdx
       - page: Errors
         path: ../docs/pages/responses.mdx
-  - api: API Reference
   - page: Overview
     path: ../docs/pages/api-overview.mdx
+  - api: API Reference
     api-name: public
   - section: Guides
     contents: 

@@ -9,5 +9,5 @@ navigation:
     contents:
       - page: Object Customization
         path: ../docs/pages/customization.mdx
-      - page: Create accounts in DevRev
+      - page: Create accounts and contacts in DevRev
         path: ../docs/pages/create-accounts.mdx

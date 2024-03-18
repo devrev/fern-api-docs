@@ -1,0 +1,7 @@
+navigation:
+  - section: DevRev REST API
+    contents:
+      - page: Overview
+        path: ../docs/pages/api-overview.mdx
+  - api: API Reference
+    api-name: sdk

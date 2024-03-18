@@ -1,0 +1,14 @@
+default-group: sdks
+groups: 
+  sdks:
+    generators:
+      - name: fernapi/fern-typescript-sdk
+        version: 0.7.2
+        output:
+          location: npm
+          package-name: "@fern-api/devrev"
+          token: ${NPM_TOKEN}
+        github:
+          repository: fern-devrev/devrev-node
+        config:
+          namespaceExport: DevRev

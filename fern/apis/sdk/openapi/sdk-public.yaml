@@ -438,9 +438,9 @@ components:
       type: string
       x-fern-enum:
         urn:devrev:params:oauth:grant-type:token-issue:
-          name: urn-devrev-params-oauth-grant-type-token-issue
+          name: urn_devrev_params_oauth_grant_type_token_issue
         urn:ietf:params:oauth:grant-type:token-exchange:
-          name: urn-ietf-params-oauth-grant-type-token-exchange
+          name: urn_ietf_params_oauth_grant_type_token_exchange
     auth-token-requested-token-type:
       description: The type of the requested token.
       enum:
@@ -461,33 +461,33 @@ components:
       type: string
       x-fern-enum:
         urn:devrev:params:oauth:token-type:aat:
-          name: urn-devrev-params-oauth-token-type-aat
+          name: urn_devrev_params_oauth_token_type_aat
         urn:devrev:params:oauth:token-type:aat:public:
-          name: urn-devrev-params-oauth-token-type-aat-public
+          name: urn_devrev_params_oauth_token_type_aat_public
         urn:devrev:params:oauth:token-type:dev:
-          name: urn-devrev-params-oauth-token-type-dev
+          name: urn_devrev_params_oauth_token_type_dev
         urn:devrev:params:oauth:token-type:gat:
-          name: urn-devrev-params-oauth-token-type-gat
+          name: urn_devrev_params_oauth_token_type_gat
         urn:devrev:params:oauth:token-type:pat:
-          name: urn-devrev-params-oauth-token-type-pat
+          name: urn_devrev_params_oauth_token_type_pat
         urn:devrev:params:oauth:token-type:pat:act-as:
-          name: urn-devrev-params-oauth-token-type-pat-act-as
+          name: urn_devrev_params_oauth_token_type_pat_act_as
         urn:devrev:params:oauth:token-type:rat:
-          name: urn-devrev-params-oauth-token-type-rat
+          name: urn_devrev_params_oauth_token_type_rat
         urn:devrev:params:oauth:token-type:rev:
-          name: urn-devrev-params-oauth-token-type-rev
+          name: urn_devrev_params_oauth_token_type_rev
         urn:devrev:params:oauth:token-type:session:
-          name: urn-devrev-params-oauth-token-type-session
+          name: urn_devrev_params_oauth_token_type_session
         urn:devrev:params:oauth:token-type:session:dev0:
-          name: urn-devrev-params-oauth-token-type-session-dev0
+          name: urn_devrev_params_oauth_token_type_session_dev0
         urn:devrev:params:oauth:token-type:session:onetime:
-          name: urn-devrev-params-oauth-token-type-session-onetime
+          name: urn_devrev_params_oauth_token_type_session_onetime
         urn:devrev:params:oauth:token-type:super:
-          name: urn-devrev-params-oauth-token-type-super
+          name: urn_devrev_params_oauth_token_type_super
         urn:devrev:params:oauth:token-type:sys:
-          name: urn-devrev-params-oauth-token-type-sys
+          name: urn_devrev_params_oauth_token_type_sys
         urn:ietf:params:oauth:token-type:jwt:
-          name: urn-ietf-params-oauth-token-type-jwt
+          name: urn_ietf_params_oauth_token_type_jwt
     auth-token-status:
       description: The status of the token.
       enum:
@@ -510,23 +510,23 @@ components:
       type: string
       x-fern-enum:
         urn:devrev:params:oauth:token-type:jwt:auth0:
-          name: urn-devrev-params-oauth-token-type-jwt-auth0
+          name: urn_devrev_params_oauth_token_type_jwt_auth0
         urn:devrev:params:oauth:token-type:jwt:dev:
-          name: urn-devrev-params-oauth-token-type-jwt-dev
+          name: urn_devrev_params_oauth_token_type_jwt_dev
         urn:devrev:params:oauth:token-type:rat:
-          name: urn-devrev-params-oauth-token-type-rat
+          name: urn_devrev_params_oauth_token_type_rat
         urn:devrev:params:oauth:token-type:revinfo:
-          name: urn-devrev-params-oauth-token-type-revinfo
+          name: urn_devrev_params_oauth_token_type_revinfo
         urn:devrev:params:oauth:token-type:session:
-          name: urn-devrev-params-oauth-token-type-session
+          name: urn_devrev_params_oauth_token_type_session
         urn:devrev:params:oauth:token-type:sysu:
-          name: urn-devrev-params-oauth-token-type-sysu
+          name: urn_devrev_params_oauth_token_type_sysu
         urn:devrev:params:oauth:token-type:userinfo:
-          name: urn-devrev-params-oauth-token-type-userinfo
+          name: urn_devrev_params_oauth_token_type_userinfo
         urn:devrev:params:oauth:token-type:userinfo:profile:
-          name: urn-devrev-params-oauth-token-type-userinfo-profile
+          name: urn_devrev_params_oauth_token_type_userinfo_profile
         urn:ietf:params:oauth:token-type:jwt:
-          name: urn-ietf-params-oauth-token-type-jwt
+          name: urn_ietf_params_oauth_token_type_jwt
     auth-token-token-type:
       description: |
         The type of the issued token. Bearer is the only supported token type.

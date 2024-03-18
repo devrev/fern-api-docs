@@ -5,6 +5,8 @@ navigation:
         path: ../docs/pages/developer-intro.mdx
       - page: Getting started
         path: ../docs/pages/welcome.mdx
+      - page: DevRev SDKs
+        path: ../docs/pages/sdk-overview.mdx
       - page: Authentication
         path: ../docs/pages/authentication.mdx
       - page: Entities
@@ -13,12 +15,16 @@ navigation:
         path: ../docs/pages/pagination.mdx
       - page: Versioning
         path: ../docs/pages/versioning.mdx
-      - page: Rate Limits
+      - page: Rate limits
         path: ../docs/pages/rate-limits.mdx
       - page: Errors
         path: ../docs/pages/responses.mdx
-  - api: API Reference
+  - api: API reference
     api-name: public
+  - api: SDK
+    api-name: sdk
+    snippets:
+      typescript: "@fern-api/devrev"
   - section: Guides
     contents: 
       - page: Getting started with webhooks

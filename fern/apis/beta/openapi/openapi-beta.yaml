@@ -11628,7 +11628,7 @@ paths:
     post:
       description: |
         Creates a Rev user for a Rev organization. Rev user can be a customer
-        or a lead of an organization.
+        or a lead of an organization. A Rev user is also known as a [contact]](https://docs.devrev.ai/product/grow#-contact) in DevRev.
       operationId: rev-users-create
       requestBody:
         content:

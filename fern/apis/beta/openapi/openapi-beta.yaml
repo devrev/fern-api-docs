@@ -118,7 +118,7 @@ components:
       title: account-summary
     accounts-create-request:
       description: |
-        Request object to create a new account in the Dev organization.
+        Request object to create a new account in the dev org.
       properties:
         artifacts:
           description: The IDs of the artifacts to associate with the account.
@@ -1030,7 +1030,7 @@ components:
           format: date-time
           type: string
         display_id:
-          description: Human-readable object ID unique to the Dev organization.
+          description: Human-readable object ID unique to the dev org.
           type: string
         id:
           description: Globally unique object ID.
@@ -1049,7 +1049,7 @@ components:
     atom-base-summary:
       properties:
         display_id:
-          description: Human-readable object ID unique to the Dev organization.
+          description: Human-readable object ID unique to the dev org.
           type: string
         id:
           description: Globally unique object ID.
@@ -1267,7 +1267,7 @@ components:
         rev_org:
           description: |
             Filters for conversations that are associated with any of the
-            provided Rev organizations.
+            provided rev orgs.
           example:
           - REV-AbCdEfGh
           items:
@@ -1386,7 +1386,7 @@ components:
         rev_org:
           description: |
             Filters for conversations that are associated with any of the
-            provided Rev organizations.
+            provided rev orgs.
           example:
           - REV-AbCdEfGh
           items:
@@ -2542,7 +2542,7 @@ components:
     event-rev-org-deleted:
       properties:
         id:
-          description: The ID of the Rev organization that was deleted.
+          description: The ID of the rev org that was deleted.
           example: REV-AbCdEfGh
           type: string
       required:
@@ -4381,7 +4381,7 @@ components:
           account:
             $ref: '#/components/schemas/account-summary'
           artifacts:
-            description: The artifacts attached to the Rev organization.
+            description: The artifacts attached to the rev org.
             items:
               $ref: '#/components/schemas/artifact-summary'
             type: array
@@ -4396,7 +4396,7 @@ components:
               type: string
             type: array
           description:
-            description: Description of the Rev organization.
+            description: Description of the rev org.
             type: string
           domain:
             description: Company's domain name. Example - 'devrev.ai'.
@@ -4420,16 +4420,16 @@ components:
       title: rev-org-summary
     rev-orgs-create-request:
       description: |
-        Request object to create a new Rev organization in the Dev
+        Request object to create a new rev org in the Dev
         organization.
       properties:
         account:
-          description: Account Id to associate with this Rev organization.
+          description: Account Id to associate with this rev org.
           example: ACC-12345
           type: string
         artifacts:
           description: |
-            The IDs of the artifacts to associate with the Rev organization.
+            The IDs of the artifacts to associate with the rev org.
           example:
           - ARTIFACT-12345
           items:
@@ -4440,17 +4440,17 @@ components:
           type: object
         custom_schema_fragments:
           description: |
-            Schema fragment IDs associated with this Rev organization.
+            Schema fragment IDs associated with this rev org.
           example:
           - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
           items:
             type: string
           type: array
         description:
-          description: Description of the Rev organization.
+          description: Description of the rev org.
           type: string
         display_name:
-          description: Name of the Rev organization.
+          description: Name of the rev org.
           type: string
         domain:
           description: Company's domain name. Example - 'devrev.ai'.
@@ -4472,7 +4472,7 @@ components:
       type: object
     rev-orgs-create-response:
       description: |
-        Response object for request to create a new Rev organization.
+        Response object for request to create a new rev org.
       properties:
         rev_org:
           $ref: '#/components/schemas/rev-org'
@@ -4482,22 +4482,22 @@ components:
       type: object
       x-go-name: RevOrgsCreateResponseBody
     rev-orgs-get-request:
-      description: Request object to get Rev organization's information.
+      description: Request object to get rev org's information.
       properties:
         account:
           description: |
-            The ID of account for which default Rev organization is to be
+            The ID of account for which default rev org is to be
             fetched.
           example: ACC-12345
           type: string
         id:
-          description: The ID of the required Rev organization.
+          description: The ID of the required rev org.
           example: REV-AbCdEfGh
           type: string
       title: rev-orgs-get-request
       type: object
     rev-orgs-get-response:
-      description: The response to getting a Rev organization's information.
+      description: The response to getting a rev org's information.
       properties:
         rev_org:
           $ref: '#/components/schemas/rev-org'
@@ -4508,8 +4508,8 @@ components:
       x-go-name: RevOrgsGetResponseBody
     rev-orgs-list-request:
       description: |
-        A request to get the list of Rev organizations for the authenticated
-        user's Dev organization.
+        A request to get the list of rev orgs for the authenticated
+        user's dev org.
       properties:
         account:
           description: Filters by account.
@@ -4538,13 +4538,13 @@ components:
             type: string
           type: array
         external_ref:
-          description: List of external refs to filter Rev organizations for.
+          description: List of external refs to filter rev orgs for.
           items:
             type: string
           type: array
         limit:
           description: |
-            The maximum number of Rev organizations to be retrieved per page.
+            The maximum number of rev orgs to be retrieved per page.
           format: int32
           type: integer
         mode:
@@ -4553,7 +4553,7 @@ components:
           $ref: '#/components/schemas/date-time-filter'
         sort_by:
           description: |
-            Fields to sort the Rev organizations by and the direction to sort
+            Fields to sort the rev orgs by and the direction to sort
             them.
           items:
             type: string
@@ -4562,7 +4562,7 @@ components:
       type: object
     rev-orgs-list-response:
       description: |
-        The response to getting a list of Rev organizations' information.
+        The response to getting a list of rev orgs' information.
       properties:
         next_cursor:
           description: |
@@ -4575,7 +4575,7 @@ components:
             sort order. If not set, then no prior elements exist.
           type: string
         rev_orgs:
-          description: List with all of the Rev organizations' information.
+          description: List with all of the rev orgs' information.
           items:
             $ref: '#/components/schemas/rev-org'
           type: array
@@ -4586,27 +4586,27 @@ components:
       x-go-name: RevOrgsListResponseBody
     rev-orgs-update-request:
       description: |
-        Request object to update information of the Rev organization.
+        Request object to update information of the rev org.
       properties:
         account:
-          description: New account ID to associate with this Rev organization.
+          description: New account ID to associate with this rev org.
           example: ACC-12345
           type: string
         artifacts:
           $ref: '#/components/schemas/rev-orgs-update-request-artifacts'
         custom_schema_fragments:
           description: |
-            Schema fragment IDs associated with this Rev organization.
+            Schema fragment IDs associated with this rev org.
           example:
           - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
           items:
             type: string
           type: array
         description:
-          description: Description of the Rev organization.
+          description: Description of the rev org.
           type: string
         display_name:
-          description: Customer chosen name for the Rev organization.
+          description: Customer chosen name for the rev org.
           type: string
         domain:
           description: Company's domain name. Example - 'devrev.ai'.
@@ -4620,7 +4620,7 @@ components:
             records.
           type: string
         id:
-          description: The ID of Rev organization to update.
+          description: The ID of rev org to update.
           example: REV-AbCdEfGh
           type: string
         tier:
@@ -4642,7 +4642,7 @@ components:
       title: rev-orgs-update-request-artifacts
       type: object
     rev-orgs-update-response:
-      description: Response object to updating Rev organization's information.
+      description: Response object to updating rev org's information.
       properties:
         rev_org:
           $ref: '#/components/schemas/rev-org'
@@ -4676,7 +4676,7 @@ components:
           external_ref:
             description: |
               External ref is a mutable unique identifier for a user within the
-              Rev organization from your primary customer record. If none is
+              rev org from your primary customer record. If none is
               available, a good alternative is the email address/phone number
               which could uniquely identify the user. If none is specified, a
               system-generated identifier will be assigned to the user.
@@ -4699,7 +4699,7 @@ components:
           external_ref:
             description: |
               External ref is a mutable unique identifier for a user within the
-              Rev organization from your primary customer record. If none is
+              rev org from your primary customer record. If none is
               available, a good alternative is the email address/phone number
               which could uniquely identify the user. If none is specified, a
               system-generated identifier will be assigned to the user.
@@ -4710,7 +4710,7 @@ components:
       title: rev-user-summary
     rev-users-create-request:
       description: |
-        Request object to create a new Rev user for a Rev organization.
+        Request object to create a new Rev user for a rev org.
       properties:
         artifacts:
           description: The IDs of the artifacts to associate with the Rev user.
@@ -4742,7 +4742,7 @@ components:
         external_ref:
           description: |
             External ref is a mutable unique identifier for a user within the
-            Dev organization from your primary customer record. If none is
+            dev org from your primary customer record. If none is
             available, a good alternative is the email address/phone number
             which could uniquely identify the user. If none is specified, a
             system-generated identifier will be assigned to the user.
@@ -4754,14 +4754,14 @@ components:
           type: array
         rev_org:
           description: |
-            The ID of Rev organization for which a Rev user is to be created.
+            The ID of rev org for which a Rev user is to be created.
           example: REV-AbCdEfGh
           type: string
       title: rev-users-create-request
       type: object
     rev-users-create-response:
       description: |
-        Response object for creating a new Rev user for Rev organization.
+        Response object for creating a new Rev user for rev org.
       properties:
         rev_user:
           $ref: '#/components/schemas/rev-user'
@@ -4781,7 +4781,7 @@ components:
       title: rev-users-delete-request
       type: object
     rev-users-delete-response:
-      description: The response to deleting a Rev user of a Rev organization.
+      description: The response to deleting a Rev user of a rev org.
       title: rev-users-delete-response
       type: object
       x-go-name: RevUsersDeleteResponseBody
@@ -4851,7 +4851,7 @@ components:
             type: string
           type: array
         rev_org:
-          description: List of IDs of Rev organizations to be filtered.
+          description: List of IDs of rev orgs to be filtered.
           example:
           - REV-AbCdEfGh
           items:
@@ -5803,12 +5803,12 @@ components:
       properties:
         id:
           description: |
-            The SLA which would be assigned to the Rev organizations. If
-            omitted, the SLA of all the rev organizations referenced will be
+            The SLA which would be assigned to the rev orgs. If
+            omitted, the SLA of all the rev orgs referenced will be
             unset.
           type: string
         rev_orgs:
-          description: The Rev organizations to apply the SLA to.
+          description: The rev orgs to apply the SLA to.
           example:
           - REV-AbCdEfGh
           items:
@@ -5821,7 +5821,7 @@ components:
     slas-assign-response:
       properties:
         results:
-          description: The list of outcomes for each Rev organization.
+          description: The list of outcomes for each rev org.
           items:
             $ref: '#/components/schemas/sla-assign-result'
           type: array
@@ -7508,7 +7508,7 @@ components:
           description: Whether the ticket is spam.
           type: boolean
         rev_org:
-          description: The Rev organization that the ticket is associated with.
+          description: The rev org that the ticket is associated with.
           example: REV-AbCdEfGh
           type: string
         severity:
@@ -7630,7 +7630,7 @@ components:
           type: array
         rev_orgs:
           description: |
-            Filters for issues with any of the provided Rev organizations.
+            Filters for issues with any of the provided rev orgs.
           example:
           - REV-AbCdEfGh
           items:
@@ -7673,7 +7673,7 @@ components:
         rev_org:
           description: |
             Filters for tickets that are associated with any of the provided
-            Rev organizations.
+            rev orgs.
           example:
           - REV-AbCdEfGh
           items:
@@ -7994,7 +7994,7 @@ components:
           type: boolean
         rev_org:
           description: |
-            Updates the Rev organization that the ticket is associated with.
+            Updates the rev org that the ticket is associated with.
           example: REV-AbCdEfGh
           nullable: true
           type: string
@@ -9108,7 +9108,7 @@ paths:
           type: array
       - description: |
           Filters for conversations that are associated with any of the
-          provided Rev organizations.
+          provided rev orgs.
         explode: false
         in: query
         name: rev_org
@@ -9363,7 +9363,7 @@ paths:
           type: array
       - description: |
           Filters for conversations that are associated with any of the
-          provided Rev organizations.
+          provided rev orgs.
         explode: false
         in: query
         name: rev_org
@@ -11314,7 +11314,7 @@ paths:
   /rev-orgs.create:
     post:
       description: |
-        Creates a [RevOrg](https://docs.devrev.ai/product/glossary#organization) in the authenticated user's DevOrg.
+        Creates a [rev org](https://docs.devrev.ai/product/glossary#workspace) in the authenticated user's dev org. A rev org is also known as a workspace in DevRev. A dev org is an organization that is DevRev's direct customer and that provides products and/or services to their customers (workspaces).
       operationId: rev-orgs-create
       requestBody:
         content:
@@ -11344,11 +11344,11 @@ paths:
       - rev-orgs
   /rev-orgs.get:
     get:
-      description: Retrieves the Rev organization's information.
+      description: Retrieves the rev org's information. A rev org is also known as a [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev.
       operationId: rev-orgs-get
       parameters:
       - description: |
-          The ID of account for which default Rev organization is to be
+          The ID of account for which default rev org is to be
           fetched.
         explode: false
         in: query
@@ -11356,7 +11356,7 @@ paths:
         schema:
           example: ACC-12345
           type: string
-      - description: The ID of the required Rev organization.
+      - description: The ID of the required rev org.
         explode: false
         in: query
         name: id
@@ -11388,7 +11388,7 @@ paths:
       - rev-orgs
       x-request-name: RevOrgsGetQuery
     post:
-      description: Retrieves the Rev organization's information.
+      description: Retrieves the rev org's information. A rev org is also known as a [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev.
       operationId: rev-orgs-get-post
       requestBody:
         content:
@@ -11421,9 +11421,9 @@ paths:
   /rev-orgs.list:
     get:
       description: |
-        Gets the list of Rev organizations' information belonging to the
-        authenticated user's Dev Organization which the user is also authorized
-        to access.
+        Gets the list of rev orgs' information belonging to the
+        authenticated user's dev org which the user is also authorized
+        to access. A rev org is also known as a [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev. A dev org is an organization that is DevRev's direct customer and that provides products and/or services to their customers (workspaces).
       operationId: rev-orgs-list
       parameters:
       - description: Filters by account.
@@ -11481,7 +11481,7 @@ paths:
           items:
             type: string
           type: array
-      - description: List of external refs to filter Rev organizations for.
+      - description: List of external refs to filter rev orgs for.
         explode: false
         in: query
         name: external_ref
@@ -11490,7 +11490,7 @@ paths:
             type: string
           type: array
       - description: |
-          The maximum number of Rev organizations to be retrieved per page.
+          The maximum number of rev orgs to be retrieved per page.
         explode: false
         in: query
         name: limit
@@ -11525,7 +11525,7 @@ paths:
           format: date-time
           type: string
       - description: |
-          Fields to sort the Rev organizations by and the direction to sort
+          Fields to sort the rev orgs by and the direction to sort
           them.
         explode: false
         in: query
@@ -11560,9 +11560,9 @@ paths:
       x-request-name: RevOrgsListQuery
     post:
       description: |
-        Gets the list of Rev organizations' information belonging to the
-        authenticated user's Dev Organization which the user is also authorized
-        to access.
+        Gets the list of rev orgs' information belonging to the
+        authenticated user's dev org which the user is also authorized
+        to access. A rev org is also known as a [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev. A dev org is an organization that is DevRev's direct customer and that provides products and/or services to their customers (workspaces).
       operationId: rev-orgs-list-post
       requestBody:
         content:
@@ -11594,7 +11594,7 @@ paths:
       - rev-orgs
   /rev-orgs.update:
     post:
-      description: Updates the Rev organization's information.
+      description: Updates the rev org's information. A rev org is also known as a [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev.
       operationId: rev-orgs-update
       requestBody:
         content:
@@ -11627,8 +11627,8 @@ paths:
   /rev-users.create:
     post:
       description: |
-        Creates a Rev user for a Rev organization. Rev user can be a customer
-        or a lead of an organization. A Rev user is also known as a [contact]](https://docs.devrev.ai/product/grow#-contact) in DevRev.
+        Creates a Rev user for a rev org. Rev user can be a customer
+        or a lead of an organization. A Rev user is also known as a [contact](https://docs.devrev.ai/product/grow#-contact) in DevRev.
       operationId: rev-users-create
       requestBody:
         content:
@@ -11658,7 +11658,7 @@ paths:
       - rev-users
   /rev-users.delete:
     post:
-      description: Deletes a Rev user.
+      description: Deletes a Rev user. A Rev user is also known as a [contact](https://docs.devrev.ai/product/grow#-contact) in DevRev.
       operationId: rev-users-delete
       requestBody:
         content:
@@ -11690,10 +11690,10 @@ paths:
       - rev-users
   /rev-users.get:
     get:
-      description: Returns the Rev user of a Rev organization by its ID.
+      description: Returns the Rev user of a rev org by its ID. A Rev user is known as a [contact](https://docs.devrev.ai/product/grow#-contact) and rev org as [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev.
       operationId: rev-users-get
       parameters:
-      - description: The ID of Rev user to be retrieved.
+      - description: The ID of Rev user to be retrieved. 
         explode: false
         in: query
         name: id
@@ -11725,7 +11725,7 @@ paths:
       - rev-users
       x-request-name: RevUsersGetQuery
     post:
-      description: Returns the Rev user of a Rev organization by its ID.
+      description: Returns the Rev user of a rev org by its ID. A Rev user is known as a [contact](https://docs.devrev.ai/product/grow#-contact) and rev org as [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev.
       operationId: rev-users-get-post
       requestBody:
         content:
@@ -11757,7 +11757,7 @@ paths:
       - rev-users
   /rev-users.link:
     post:
-      description: Links a rev user to a rev org.
+      description: Links a rev user to a rev org. A Rev user is known as a [contact](https://docs.devrev.ai/product/grow#-contact) and rev org as [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev.
       operationId: link-rev-user-to-rev-org
       requestBody:
         content:
@@ -11791,7 +11791,7 @@ paths:
     get:
       description: |
         Returns a list of all Rev Users belonging to the authenticated user's
-        Dev Organization.
+        dev org. A Rev user is known as a [contact](https://docs.devrev.ai/product/grow#-contact) and [dev org](https://docs.devrev.ai/product/glossary#workspace) is an organization that is DevRev's direct customer and that provides products and/or services to their customers (workspaces).
       operationId: rev-users-list
       parameters:
       - description: |
@@ -11895,7 +11895,7 @@ paths:
           items:
             type: string
           type: array
-      - description: List of IDs of Rev organizations to be filtered.
+      - description: List of IDs of rev orgs to be filtered.
         explode: false
         in: query
         name: rev_org
@@ -11941,7 +11941,7 @@ paths:
     post:
       description: |
         Returns a list of all Rev Users belonging to the authenticated user's
-        Dev Organization.
+        dev org. A Rev user is known as a [contact](https://docs.devrev.ai/product/grow#-contact) and [dev org](https://docs.devrev.ai/product/glossary#workspace) is an organization that is DevRev's direct customer and that provides products and/or services to their customers (workspaces).
       operationId: rev-users-list-post
       requestBody:
         content:
@@ -11973,7 +11973,7 @@ paths:
       - rev-users
   /rev-users.unlink:
     post:
-      description: Unlinks a rev user from a rev org.
+      description: Unlinks a rev user from a rev org. A Rev user is known as a [contact](https://docs.devrev.ai/product/grow#-contact) and rev org as [workspace](https://docs.devrev.ai/product/glossary#workspace) in DevRev.
       operationId: unlink-rev-user-from-rev-org
       requestBody:
         content:
@@ -12005,7 +12005,7 @@ paths:
       - rev-users
   /rev-users.update:
     post:
-      description: Updates a Rev user.
+      description: Updates a Rev user. A Rev user is known as a [contact](https://docs.devrev.ai/product/grow#-contact) in DevRev.
       operationId: rev-users-update
       requestBody:
         content:
@@ -12460,7 +12460,7 @@ paths:
       - service-accounts
   /slas.assign:
     post:
-      description: ' Assigns the SLA to a set of Rev organizations.'
+      description: ' Assigns the SLA to a set of rev orgs.'
       operationId: slas-assign
       requestBody:
         content:
@@ -13463,7 +13463,7 @@ paths:
             $ref: '#/components/schemas/issue-priority'
           type: array
       - description: |
-          Filters for issues with any of the provided Rev organizations.
+          Filters for issues with any of the provided rev orgs.
         explode: false
         in: query
         name: issue.rev_orgs
@@ -13754,7 +13754,7 @@ paths:
             $ref: '#/components/schemas/issue-priority'
           type: array
       - description: |
-          Filters for issues with any of the provided Rev organizations.
+          Filters for issues with any of the provided rev orgs.
         explode: false
         in: query
         name: issue.rev_orgs
@@ -14004,7 +14004,7 @@ tags:
   name: engagements
 - description: Event source interactions.
   name: event-source
-- description: Manages groups in a Dev organization.
+- description: Manages groups in a dev org.
   name: groups
 - description: DevRev link interactions.
   name: links
@@ -14012,7 +14012,7 @@ tags:
   name: parts
 - description: Product Usage APIs
   name: product-usage
-- description: Rev organization interactions.
+- description: rev org interactions.
   name: rev-orgs
 - description: Rev user interactions.
   name: rev-users

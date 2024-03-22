@@ -107,62 +107,72 @@ The response contains `"external_ref": "don:identity:dvrv-us-1:devo/<devo-id>:ac
 
 To create a contact associated with the account you created, follow the steps listed below:
 
-Get the default rev org created along with the account using the `rev-orgs.list` API.
+Get the default rev org created along with the newly created account using the `rev-orgs.list` API:
 
-1. Make a GET/POST request to "https://api.devrev.ai/rev-orgs.list" using cURL with the `account` filter. Use the `external_ref` from the previous response as an `account` filter.
-
-   ```bash
-    curl -X POST https://api.devrev.ai/rev-orgs.list \
-        -H "Authorization: <apiKey>" \
-        -H "Content-Type: application/json" \
-        -d '{"account": [
-                "<external reference of the account>"
-            ]
-        }'
-   ```
-
-   It returns the following response:
-
-   ```json
-   {
-     "rev_orgs": [
+    1. Make a GET/POST request to "https://api.devrev.ai/rev-orgs.list" using cURL with the `account` filter. Use the `external_ref` from the previous response as an `account` filter.
+    
+       ```bash
+        curl -X POST https://api.devrev.ai/rev-orgs.list \
+            -H "Authorization: <apiKey>" \
+            -H "Content-Type: application/json" \
+            -d '{"account": [
+                    "<external reference of the account>"
+                ]
+            }'
+       ```
+    
+       It returns the following response:
+    
+       ```json
        {
-         "account": {
-           "display_id": "ACC-id",
-           "display_name": "John Doe",
-           "id": "don:identity:dvrv-us-1:devo/<devo-id>:account/<acc-id>"
-         },
-         "created_by": {
-           "type": "dev_user",
-           "display_id": "DEVU-1",
-           "display_name": "someorg",
-           "email": "someorg@someorg.com",
-           "full_name": "some org",
-           "id": "don:identity:dvrv-us-1:devo/<devo-id>:devu//<devu-id>",
-           "state": "active"
-         },
-         "created_date": "2024-03-07T08:33:18.608Z",
-         "display_id": "REV-<revo-id>",
-         "display_name": "John Doe",
-         "external_ref": "don:identity:dvrv-us-1:devo/<devo-id>:account/<acc-id>",
-         "id": "don:identity:dvrv-us-1:devo/<devo-id>:revo/<revo-id>",
-         "modified_by": {
-           "type": "sys_user",
-           "display_id": "SYSU-1",
-           "display_name": "devrev-bot",
-           "full_name": "DevRev Bot",
-           "id": "don:identity:dvrv-us-1:devo/<devo-id>:sysu/1",
-           "state": "active"
-         },
-         "modified_date": "2024-03-07T08:47:04.346Z",
-         "stock_schema_fragment": "don:core:dvrv-us-1:stock_sf/32027"
+         "rev_orgs": [
+           {
+             "account": {
+               "display_id": "ACC-id",
+               "display_name": "John Doe",
+               "id": "don:identity:dvrv-us-1:devo/<devo-id>:account/<acc-id>"
+             },
+             "created_by": {
+               "type": "dev_user",
+               "display_id": "DEVU-1",
+               "display_name": "someorg",
+               "email": "someorg@someorg.com",
+               "full_name": "some org",
+               "id": "don:identity:dvrv-us-1:devo/<devo-id>:devu//<devu-id>",
+               "state": "active"
+             },
+             "created_date": "2024-03-07T08:33:18.608Z",
+             "display_id": "REV-<revo-id>",
+             "display_name": "John Doe",
+             "external_ref": "don:identity:dvrv-us-1:devo/<devo-id>:account/<acc-id>",
+             "id": "don:identity:dvrv-us-1:devo/<devo-id>:revo/<revo-id>",
+             "modified_by": {
+               "type": "sys_user",
+               "display_id": "SYSU-1",
+               "display_name": "devrev-bot",
+               "full_name": "DevRev Bot",
+               "id": "don:identity:dvrv-us-1:devo/<devo-id>:sysu/1",
+               "state": "active"
+             },
+             "modified_date": "2024-03-07T08:47:04.346Z",
+             "stock_schema_fragment": "don:core:dvrv-us-1:stock_sf/32027"
+           }
+         ]
        }
-     ]
-   }
-   ```
+       ```
+    
+       Note the `display_id` (example: `REV-abcd`) of the rev org from the response.
 
-   Note the `display_id` (example: `REV-abcd`) of the rev org from the response.
+- If there is an existing account then you can get the default rev org using the `rev-orgs.get` API:
 
+    - Make a GET request to "https://api.devrev.ai/rev-orgs.get" using cURL with the `account` filter.
+    
+       ```bash
+          curl -G https://api.devrev.ai/rev-orgs.get \
+               -H "Authorization: <apiKey>" \
+               -d account=ACC-12345 \
+       ```
+    
 2. Make a POST request to "https://api.devrev.ai/rev-users.create" to create a rev-user.
 
    In the request, set `rev_org` to the value of the `display_id` from the previous reponse.

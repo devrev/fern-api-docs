@@ -34,5 +34,4 @@ versions:
     slug: public
   - display-name: Beta
     path: ./versions/beta.yml
-    availability: beta
     slug: beta

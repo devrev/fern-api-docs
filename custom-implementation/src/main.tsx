@@ -9,12 +9,21 @@ import Header from './components/header'
 import Footer from './components/footer'
 
 import { getPageData } from './modules/sanity/utils'
-// import { data } from './content/page'
 
 const render = async () => {
   /*
    * This is a where we try to make async data call.
    */
+  const header = document.getElementById('fern-header')
+  const footer = document.getElementById('fern-footer')
+
+  if (header != null) {
+    header.innerHTML = ''
+  }
+  if (footer != null) {
+    footer.innerHTML = ''
+  }
+
   const data = await getPageData()
 
   ReactDOM.render(

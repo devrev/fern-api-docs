@@ -17,7 +17,7 @@ export const getPageData = async (): Promise<{
   footer: object
 }> => {
   const header = await CLIENT.fetch(
-    `*[_type == 'headerV2' && slug.current == 'default']{
+    `*[_type == 'headerV2' && slug.current == 'default-light']{
         ${HEADER_V3_SCHEMA}
       }[0]`,
   )

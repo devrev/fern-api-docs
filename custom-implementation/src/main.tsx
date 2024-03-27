@@ -14,25 +14,25 @@ const render = async () => {
   /*
    * This is a where we try to make async data call.
    */
-  const header = document.getElementById('fern-header')
-  const footer = document.getElementById('fern-footer')
-
-  if (header != null) {
-    header.innerHTML = ''
-  }
-  if (footer != null) {
-    footer.innerHTML = ''
-  }
-
   const data = await getPageData()
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
     document.getElementById('fern-header'),
+    () => {
+      // Once the header component is loaded, make it visible
+      const header = document.getElementById('fern-header')
+      if (header) header.style.display = 'block'
+    },
   )
   ReactDOM.render(
     React.createElement(Footer, { ...data.footer }),
     document.getElementById('fern-footer'),
+    () => {
+      // Once the footer component is loaded, make it visible
+      const footer = document.getElementById('fern-footer')
+      if (footer) footer.style.display = 'block'
+    },
   )
 }
 

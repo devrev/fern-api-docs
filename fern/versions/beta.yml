@@ -1,11 +1,13 @@
 navigation:
-  - section: Welcome
+  - section: About
+    contents:
+      - page: For Developers
+        path: ../docs/pages/developer-intro.mdx
+  - api: API Reference
+    api-name: beta
+  - section: Guides
     contents:
       - page: Object Customization
         path: ../docs/pages/customization.mdx
-  - section: DevRev REST API
-    contents:
-      - page: Overview
-        path: ../docs/pages/api-overview.mdx
-      - api: API Reference
-        api-name: beta
+      - page: Create accounts and contacts in DevRev
+        path: ../docs/pages/create-accounts.mdx

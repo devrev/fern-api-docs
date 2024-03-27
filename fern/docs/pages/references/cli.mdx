@@ -67,7 +67,7 @@ devrev snap_in_package create-one --slug github | jq .
 When the snap-in package is created, its ID is stored in the [snap-in context](#snap-in-context). Run the following command to view the ID:
 
 ```bash
-devrev snap_in_package show
+devrev snap_in_package show [id]
 ```
 
 For example:
@@ -209,7 +209,7 @@ devrev snap_in_version list | jq .
 To create a snap-in draft instance, run the following command:
 
 ```bash
-devrev snap_in draft --snap_in_version <id>
+devrev snap_in draft --snap_in_version [id]
 ```
 
 For example:
@@ -219,7 +219,7 @@ devrev snap_in draft | jq .
 ```
 
 **Additional flags**:
-- `--snap_in_version <id>`: Optional. If not provided, it uses the snap-in version ID from the [snap-in context](#snap-in-context).
+- `--snap_in_version [id]`: Optional. If not provided, it uses the snap-in version ID from the [snap-in context](#snap-in-context).
 
 Once the snap_in draft command is successful, it also generates the interface link.
 
@@ -228,7 +228,7 @@ Once the snap_in draft command is successful, it also generates the interface li
 To update the snap-in with keyrings and inputs, run the following command:
 
 ```bash
-devrev snap_in update [snap_in id]
+devrev snap_in update [id]
 ```
 
 For example:
@@ -250,32 +250,32 @@ echo '{"connection":[{"name":"github-oauth", "reference":"test 1"},{"name":"gith
 To activate a snap-in, run the following command:
 
 ```bash
-devrev snap_in activate [snap_in_id]
+devrev snap_in activate [id]
 ```
 
-`[snap_in_id]` is optional. If not provided, it uses the ID stored in the local profile.
+`[id]` is optional. If not provided, it uses the ID stored in the local profile.
 
 ### Deactivate the snap-in
 
 To deactivate a snap-in, run the following command:
 
 ```bash
-devrev snap_in deactivate [snap_in_id] [--force]
+devrev snap_in deactivate [id] [--force]
 ```
 
-`[snap_in_id]` is optional. If not provided, it uses the ID stored in the local profile.
+`[id]` is optional. If not provided, it uses the ID stored in the local profile.
 
-`--force` flag deactivates the snap-in even if the _deactivate_ hook fails. If the flag isn't specified, then the snap-in moves to the _Error_ state if the deactivate hook fails.
+`--force` flag deactivates the snap-in even if the `deactivate` hook fails. If the flag isn't specified, then the snap-in moves to the _Error_ state if the `deactivate` hook fails.
 
 ### Show the snap-in details
 
 To show the snap-in details, run the following command:
 
 ```bash
-devrev snap_in show [snap-in id]
+devrev snap_in show [id]
 ```
 
-`[snap_in_id]` is optional. If not provided, it uses the ID stored in the local profile.
+`[id]` is optional. If not provided, it uses the ID stored in the local profile.
 
 ### List the snap-ins
 
@@ -296,12 +296,12 @@ devrev snap_in list | jq .
 To delete a snap-in, run the following command:
 
 ```bash
-devrev snap_in delete-one [snap-in id] [--force]
+devrev snap_in delete-one [id] [--force]
 ```
 
-`[snap-in id]` is optional. If not provided, it uses the id stored in the [snap-in context](#snap-in-context).
+`[id]` is optional. If not provided, it uses the id stored in the [snap-in context](#snap-in-context).
 
-The `--force` flag deletes the snap-in even if the _deactivate_ hook fails. If the flag isn't specified, then the snap-in moves to the _Error_ state if the deactivate hook fails.
+The `--force` flag deletes the snap-in even if the `deactivate` hook fails. If the flag isn't specified, then the snap-in moves to the _Error_ state if the `deactivate` hook fails.
 
 ## Snap-in context
 

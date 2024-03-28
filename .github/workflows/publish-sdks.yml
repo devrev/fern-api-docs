@@ -5,7 +5,7 @@ on: push
 jobs:
   fern-check:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -13,21 +13,10 @@ jobs:
       - name: Setup Node.js 
         uses: actions/setup-node@v4
         with:
-          always-auth: true
-          node-version: '18'
-          registry-url: https://npm.pkg.github.com/
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
+          node-version: "18"
 
       - name: Install Fern
         run: npm install -g fern-api
-
-      - name: Build Navigation
-        run: |
-          cd custom-implementation
-          yarn
-          yarn build
-          cd ../
 
       - name: Check Fern API is valid
         run: fern check

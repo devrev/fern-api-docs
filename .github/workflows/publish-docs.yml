@@ -8,29 +8,16 @@ on:
 jobs:
   publish-docs:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Node.js 
         uses: actions/setup-node@v4
-        with:
-          always-auth: true
-          node-version: '18'
-          registry-url: https://npm.pkg.github.com/
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
 
       - name: Download Fern
-        run: npm install -g fern-api
-      
-      - name: Build Navigation
-        run: |
-          cd custom-implementation
-          yarn
-          yarn build
-          cd ../
+        run: npm install -g fern-api   
 
       - name: Generate and Publish Docs
         env:

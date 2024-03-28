@@ -16,10 +16,22 @@ jobs:
       - name: Setup Node.js 
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          always-auth: true
+          node-version: '18'
+          registry-url: https://npm.pkg.github.com/
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
 
       - name: Install Fern
         run: npm install -g fern-api
+
+      - name: Build Navigation
+        run: |
+          cd custom-implementation
+          yarn
+          yarn build
+          cd ../
+        
 
       - name: Generate Documentation Preview with Fern
         id: generate_docs

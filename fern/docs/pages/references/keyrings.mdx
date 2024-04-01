@@ -1,10 +1,10 @@
-Keyrings are a DevRev-specific mechanism for managing authentication with external services. Keyrings are called connections in the DevRev app.
+Keyrings are a DevRev-specific mechanism for managing authentication with external services. Keyrings are called _connections_ in the DevRev app.
 
 Keyrings provide a secure way to store and manage credentials for external services within your DevRev snap-in. This eliminates the need to expose sensitive information like passwords or access tokens directly within your code or configuration files, enhancing overall security.
 
 Keyrings are defined in the snap-in manifest under the `keyrings` section. They can be categorized into two main types:
 
-1. **Default Keyrings**:
+1. **Default keyrings**:
  - **Organization scoped keyrings**: These are secrets used by the entire organization, for example a Slack token for a workspace.
  - **User scoped keyrings**: These are secrets for a single user, for example the token to interact with a single person's Google Calendar.
 
@@ -31,13 +31,13 @@ keyrings:
 
 Breakdown:
 
-**name**: A unique identifier for the keyring in the snap-in.
+- **name**: A unique identifier for the keyring in the snap-in.
 
-**description**: A human-readable description of the keyring shown to the user at the time of snap-in installation.
+- **description**: A human-readable description of the keyring shown to the user at the time of snap-in installation.
 
-**types**: The list of possible keyring types that the user can provide.
+- **types**: The list of possible keyring types that the user can provide.
 
-**display_name**: The name that's shown to the user when they're asked to provide a keyring.
+- **display_name**: The name that's shown to the user when they're asked to provide a keyring.
 
 All user scoped keyrings are optional in the snap-in, and developers must handle the case where a user scoped keyring isn't found.
 
@@ -56,19 +56,19 @@ developer_keyrings:
 ```
 Breakdown:
 
-**name**: A unique identifier for the keyring in the snap-in.
+- **name**: A unique identifier for the keyring in the snap-in.
 
-**description**: A human-readable description of the keyring shown to the user at the time of snap-in installation.
+- **description**: A human-readable description of the keyring shown to the user at the time of snap-in installation.
 
-**display_name**: The name that's shown to the user when they're asked to provide a keyring.
-
-
-## Enable External Service Connections with Keyring Types
-
-While DevRev offers pre-defined keyring_types for common services, you can leverage this mechanism further to create custom types for specific service integrations.
+- **display_name**: The name that's shown to the user when they're asked to provide a keyring.
 
 
-### Pre-defined Keyring Types:
+## Enable external service connections with keyring types
+
+While DevRev offers pre-defined keyring types for common services, you can leverage this mechanism further to create custom types for specific service integrations.
+
+
+### Pre-defined keyring types:
 
     - **devrev-snap-in-secret**: Stores simple string tokens utilized by the snap-in itself.
 
@@ -92,8 +92,6 @@ While DevRev offers pre-defined keyring_types for common services, you can lever
         ```text
         scopes: read tickets:write
         ```
-    [//]: # (TODO Will be adding more)
-
 
     Manifest Declaration:
     ```yaml
@@ -112,28 +110,28 @@ While DevRev offers pre-defined keyring_types for common services, you can lever
              display_name: Your secret token
     ```
 
-### Reuse Pre-defined Keyring Types:
+### Reuse pre-defined keyring types:
 While DevRev offers pre-defined keyring types for common services,  these types provide further customization options for specific use cases. This section explores how you can leverage these predefined types and tailor them to your needs:
 
-    - **Client Credentials**: These are credentials associated with your application, typically obtained from the service provider's developer console.
+    - **Client credentials**: These are credentials associated with your application, typically obtained from the service provider's developer console.
     - **Scopes**: These define the specific permissions your application requests from the service.
 
-    1. Creating a Developer Keyring:
+    1. Creating a developer keyring
 
-        1.1 **CLI Command**:
+        1.1 **CLI command**:
             ```bash
                 echo $CLIENT_CREDENTIALS | devrev keyring create `oauth-secret`
             ```
-            Replace $CLIENT_CREDENTIALS with your actual OAuth client credentials.
+            Replace `$CLIENT_CREDENTIALS` with your actual OAuth client credentials.
 
-        1.2 **Manifest Declaration**:
+        1.2 **Manifest declaration**:
             ```yaml
            developer_keyrings:
               - name: my-oauth-secret
                 description: A secret for the developer to use during development
                 display_name: Developer secret token
             ```
-    2. Customize Predefined Keyring Type in Manifest:
+    2. Customize predefined keyring type in manifest
         ``` yaml
         keyring_types:
           - id: reference-oauth-example-connection
@@ -167,7 +165,7 @@ While DevRev offers pre-defined keyring types for common services,  these types 
 
                 **reference_keyring**: Utilizes pre-defined Example OAuth logic for handling the OAuth flow.
 
-    3. Keyring Usage in Manifest:
+    3. Keyring usage in manifest
         ```yaml
         keyrings:
           organization:
@@ -178,7 +176,7 @@ While DevRev offers pre-defined keyring types for common services,  these types 
               display_name: Organization secret token
         ```
 
-### Custom Keyring Type Definition:
+### Custom keyring type definition:
 
 This document details the complete configuration of a custom keyring type for establishing secure OAuth connections within your DevRev snap-in.
 In this example, we'll create a custom keyring type for an OAuth2 connection with Example.
@@ -227,42 +225,26 @@ In this example, we'll create a custom keyring type for an OAuth2 connection wit
 
 Breakdown:
 
-    **id**: A unique identifier for your custom type.
+- **id**: A unique identifier for your custom type.
+- **name**: User-friendly name displayed in the manifest.
+- **description**: Clear explanation of the type's purpose.
+- **kind**: Specifies the authentication method (OAuth2).
+- **scopes**: Permissions requested from Example (adjust based on your needs).
+- **oauth_secret**: References the developer keyring containing your credentials.
 
-    **name**: User-friendly name displayed in the manifest.
+Additional configuration:
 
-    **description**: Clear explanation of the type's purpose.
+- **authorize**: Defines the OAuth authorization flow.
+  - **type**: Set to "config" as configuration details are provided. Currently, only "config" is supported.
+  - **auth_url**: URL for user authorization.
+  - **token_url**: URL to obtain access and refresh tokens.
+  - **grant_type**: Grant type used in the authorization request. Currently, only "authorization_code" is supported.
 
-    **kind**: Specifies the authentication method (OAuth2).
-
-    **scopes**: Permissions requested from Example (adjust based on your needs).
-
-    **oauth_secret**: References the developer keyring containing your credentials.
-
-Additional Configuration:
-
-    **authorize**: Defines the OAuth authorization flow.
-
-        **type**: Set to "config" as configuration details are provided. Currently, only "config" is supported.
-
-        **auth_url**: URL for user authorization.
-
-        **token_url**: URL to obtain access and refresh tokens.
-
-        **grant_type**: Grant type used in the authorization request. Currently, only "authorization_code" is supported.
-
-    **organization_data**: Retrieves organization information after successful authorization.
-
-    **refresh**: Defines how to refresh access tokens when they expire.
-
-    **revoke**: Defines how to revoke access tokens when necessary.
-
-        **url**: Endpoint for fetching organization data.
-
-        **method**: HTTP method for the request.
-
-        **headers**: Required headers for the request.
-
-        **query_parameters**: Optional query parameters for the request.
-
-        **response_jq**: JQ expression to extract relevant data from the response.
+- **organization_data**: Retrieves organization information after successful authorization.
+- **refresh**: Defines how to refresh access tokens when they expire.
+- **revoke**: Defines how to revoke access tokens when necessary.
+  - **url**: Endpoint for fetching organization data.
+  - **method**: HTTP method for the request.
+  - **headers**: Required headers for the request.
+  - **query_parameters**: Optional query parameters for the request.
+  - **response_jq**: JQ expression to extract relevant data from the response.

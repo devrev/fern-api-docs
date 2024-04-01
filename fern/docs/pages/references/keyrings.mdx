@@ -70,28 +70,28 @@ While DevRev offers pre-defined keyring types for common services, you can lever
 
 ### Pre-defined keyring types:
 
-    - **devrev-snap-in-secret**: Stores simple string tokens utilized by the snap-in itself.
+- **devrev-snap-in-secret**: Stores simple string tokens utilized by the snap-in itself.
 
-    - **devrev-atlassian-jira-oauth**: Facilitates OAuth connections for integrating with Jira.
-        ```text
-        scopes: offline_access read:me read:application-role:jira read:audit-log:jira read:issue-security-level:jira read:issue-security-scheme:jira read:project-role:jira read:avatar:jira read:project-category:jira read:project:jira read:permission-scheme:jira read:user:jira read:field:jira read:permission:jira read:group:jira read:project.component:jira read:issue-details:jira read:issue-meta:jira read:field-configuration:jira read:attachment:jira read:issue-link-type:jira read:issue-type-hierarchy:jira read:issue-type:jira read:label:jira read:priority:jira read:project.property:jira read:project-version:jira read:resolution:jira read:status:jira read:issue.changelog:jira read:issue:jira read:issue.vote:jira write:jira-work read:jira-work write:issue:jira write:issue.property:jira read:issue.transition:jira manage:jira-project manage:jira-configuration
-        ```
-    - **devrev-slack-oauth**: Facilitates OAuth connections for integrating with Slack.
-        ```text
-        scopes: app_mentions:read,channels:history,channels:read,channels:write.invites,channels:manage,chat:write,chat:write.customize,chat:write.public,commands,groups:history,groups:read,im:read,im:write,links:read,links:write,metadata.message:read,mpim:read,mpim:write,team:read,users.profile:read,users:read,users:read.email,im:history,mpim:history,files:read,files:write,pins:read,pins:write
-        ```
-    - **devrev-google--oauth**: Facilitates OAuth connections for integrating with Google.
-        ```text
-        scopes: https://www.googleapis.com/auth/gmail.send
-        ```
-    - **devrev-github-oauth**: Facilitates OAuth connections for integrating with GitHub.
-        ```text
-        scopes: repo admin:repo_hook admin:org notifications user write:discussion
-        ```
-    - **devrev-zendesk-oauth**: Facilitates OAuth connections for integrating with Microsoft.
-        ```text
-        scopes: read tickets:write
-        ```
+- **devrev-atlassian-jira-oauth**: Facilitates OAuth connections for integrating with Jira.
+    ```text
+    scopes: offline_access read:me read:application-role:jira read:audit-log:jira read:issue-security-level:jira read:issue-security-scheme:jira read:project-role:jira read:avatar:jira read:project-category:jira read:project:jira read:permission-scheme:jira read:user:jira read:field:jira read:permission:jira read:group:jira read:project.component:jira read:issue-details:jira read:issue-meta:jira read:field-configuration:jira read:attachment:jira read:issue-link-type:jira read:issue-type-hierarchy:jira read:issue-type:jira read:label:jira read:priority:jira read:project.property:jira read:project-version:jira read:resolution:jira read:status:jira read:issue.changelog:jira read:issue:jira read:issue.vote:jira write:jira-work read:jira-work write:issue:jira write:issue.property:jira read:issue.transition:jira manage:jira-project manage:jira-configuration
+    ```
+- **devrev-slack-oauth**: Facilitates OAuth connections for integrating with Slack.
+    ```text
+    scopes: app_mentions:read,channels:history,channels:read,channels:write.invites,channels:manage,chat:write,chat:write.customize,chat:write.public,commands,groups:history,groups:read,im:read,im:write,links:read,links:write,metadata.message:read,mpim:read,mpim:write,team:read,users.profile:read,users:read,users:read.email,im:history,mpim:history,files:read,files:write,pins:read,pins:write
+    ```
+- **devrev-google--oauth**: Facilitates OAuth connections for integrating with Google.
+    ```text
+    scopes: https://www.googleapis.com/auth/gmail.send
+    ```
+- **devrev-github-oauth**: Facilitates OAuth connections for integrating with GitHub.
+    ```text
+    scopes: repo admin:repo_hook admin:org notifications user write:discussion
+    ```
+- **devrev-zendesk-oauth**: Facilitates OAuth connections for integrating with Microsoft.
+    ```text
+    scopes: read tickets:write
+    ```
 
     Manifest Declaration:
     ```yaml
@@ -113,68 +113,61 @@ While DevRev offers pre-defined keyring types for common services, you can lever
 ### Reuse pre-defined keyring types:
 While DevRev offers pre-defined keyring types for common services,  these types provide further customization options for specific use cases. This section explores how you can leverage these predefined types and tailor them to your needs:
 
-    - **Client credentials**: These are credentials associated with your application, typically obtained from the service provider's developer console.
-    - **Scopes**: These define the specific permissions your application requests from the service.
+- **Client credentials**: These are credentials associated with your application, typically obtained from the service provider's developer console.
+- **Scopes**: These define the specific permissions your application requests from the service.
 
-    1. Creating a developer keyring
+1. Creating a developer keyring
 
-        1.1 **CLI command**:
-            ```bash
-                echo $CLIENT_CREDENTIALS | devrev keyring create `oauth-secret`
-            ```
-            Replace `$CLIENT_CREDENTIALS` with your actual OAuth client credentials.
-
-        1.2 **Manifest declaration**:
-            ```yaml
-           developer_keyrings:
-              - name: my-oauth-secret
-                description: A secret for the developer to use during development
-                display_name: Developer secret token
-            ```
-    2. Customize predefined keyring type in manifest
-        ``` yaml
-        keyring_types:
-          - id: reference-oauth-example-connection
-            name: Example OAuth Connection
-            description: A custom keyring type for Example OAuth connections.
-            kind: OAuth2
-            scopes:
-                - name: read
-                  description: Read access to Example resources
-                  value: read
-                - name: write
-                  description: Write access to Example resources
-                  value: write
-                  is_optional: true
-            oauth_secret: my-oauth-secret
-            reference_keyring: devrev-example-oauth
+    - 1.1 **CLI command**:
+        ```bash
+            echo $CLIENT_CREDENTIALS | devrev keyring create `oauth-secret`
         ```
-        **Breakdown** :
+        Replace `$CLIENT_CREDENTIALS` with your actual OAuth client credentials.
 
-                **id**: A unique identifier for your custom type.
-
-                **name**: A human-readable name for users.
-
-                **description**: A clear explanation of the type's purpose.
-
-                **kind**: Specifies the authentication method (here, OAuth2). Currently, only OAuth2 is supported.
-
-                **scopes**: Adjust scopes as needed based on your requirements.
-
-                **oauth_secret**: References the developer keyring where your credentials are stored.
-
-                **reference_keyring**: Utilizes pre-defined Example OAuth logic for handling the OAuth flow.
-
-    3. Keyring usage in manifest
+    - 1.2 **Manifest declaration**:
         ```yaml
-        keyrings:
-          organization:
-            - name: my-secret-org-token
-              description: Enables access to organization-wide resources (e.g., Slack workspace)
-              types:
-                - reference-oauth-example-connection
-              display_name: Organization secret token
+       developer_keyrings:
+          - name: my-oauth-secret
+            description: A secret for the developer to use during development
+            display_name: Developer secret token
         ```
+2. Customize predefined keyring type in manifest
+    ``` yaml
+    keyring_types:
+      - id: reference-oauth-example-connection
+        name: Example OAuth Connection
+        description: A custom keyring type for Example OAuth connections.
+        kind: OAuth2
+        scopes:
+            - name: read
+              description: Read access to Example resources
+              value: read
+            - name: write
+              description: Write access to Example resources
+              value: write
+              is_optional: true
+        oauth_secret: my-oauth-secret
+        reference_keyring: devrev-example-oauth
+    ```
+    **Breakdown** :
+    - **id**: A unique identifier for your custom type.
+    - **name**: A human-readable name for users.
+    - **description**: A clear explanation of the type's purpose.
+    - **kind**: Specifies the authentication method (here, OAuth2). Currently, only OAuth2 is supported.
+    - **scopes**: Adjust scopes as needed based on your requirements.
+    - **oauth_secret**: References the developer keyring where your credentials are stored.
+    - **reference_keyring**: Utilizes pre-defined Example OAuth logic for handling the OAuth flow.
+
+3. Keyring usage in manifest
+    ```yaml
+    keyrings:
+      organization:
+        - name: my-secret-org-token
+          description: Enables access to organization-wide resources (e.g., Slack workspace)
+          types:
+            - reference-oauth-example-connection
+          display_name: Organization secret token
+    ```
 
 ### Custom keyring type definition:
 

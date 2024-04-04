@@ -14,7 +14,10 @@ const Header = ({
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
 any) => {
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: 'white',
+      }}>
       <ComponentConfigContext.Provider
         value={{
           origin: 'https://api.docs.devrev.ai',

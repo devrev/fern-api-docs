@@ -5,6 +5,8 @@ import {
   HeaderV30 as SharedHeader,
 } from '@devrev/marketing-shared-components/dist/cjs'
 
+import styles from './header.module.css'
+
 const Header = ({
   logo,
   links,
@@ -14,10 +16,7 @@ const Header = ({
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
 any) => {
   return (
-    <div
-      style={{
-        backgroundColor: 'white',
-      }}>
+    <div>
       <ComponentConfigContext.Provider
         value={{
           origin: 'https://api.docs.devrev.ai',
@@ -28,6 +27,7 @@ any) => {
           actions={actions}
           version={version}
           collapseOnScroll={collapseOnScroll}
+          wrapperClassName={styles.header}
         />
       </ComponentConfigContext.Provider>
     </div>

@@ -15,13 +15,15 @@ const render = async () => {
   /*
    * This is a where we try to make async data call.
    */
-  const data = await getPageData()
+
   const body = document.getElementsByTagName('body')[0]
 
   ReactDOM.render(
     ReactDOM.createPortal(React.createElement(PLuG), body),
     document.createElement('div'),
   )
+
+  const data = await getPageData()
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
@@ -41,6 +43,14 @@ const render = async () => {
       if (footer) footer.style.display = 'block'
     },
   )
+
+  setTimeout(() => {
+    console.log('init plug')
+    window?.plugSDK?.init?.({
+      app_id: 'don:core:dvrv-us-1:devo/0:plug_setting/1',
+    })
+    console.log('init plug done')
+  }, 2000)
 }
 
 let observations = 0

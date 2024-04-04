@@ -11,6 +11,7 @@ declare global {
 export const PLuG = () => {
   return (
     <script
+      src={PLUG_URL}
       onLoad={() => {
         window?.plugSDK?.init?.({
           app_id: PLUG_ID,
@@ -18,7 +19,7 @@ export const PLuG = () => {
       }}
       defer
       async
-      src={PLUG_URL}
+      data-nscript="lazyOnload"
     />
   )
 }

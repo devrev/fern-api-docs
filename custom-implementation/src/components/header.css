@@ -2,7 +2,7 @@
     background-color: white; 
 }
 
-.header a {
+.header nav a {
 	text-decoration: none;
 	color: black;
 	cursor: pointer;

@@ -16,7 +16,7 @@ const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {
         origin: 'https://api.docs.devrev.ai',
       }}>
       <SharedFooter
-        className="border-none"
+        className="footer"
         list={list}
         logo={logo}
         status={status}

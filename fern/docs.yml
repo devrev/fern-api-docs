@@ -23,9 +23,6 @@ js:
   - path: ./dist/output.js
     strategy: beforeInteractive
 
-html:
-  - path: ./dist/index.html
-
 
 favicon: ./docs/assets/favicon.ico
 

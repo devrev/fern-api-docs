@@ -7,6 +7,7 @@ import React from 'react'
 
 import Header from './components/header'
 import Footer from './components/footer'
+import PLuG from './components/widget'
 
 import { getPageData } from './modules/sanity/utils'
 
@@ -15,6 +16,12 @@ const render = async () => {
    * This is a where we try to make async data call.
    */
   const data = await getPageData()
+  const body = document.getElementsByTagName('body')[0]
+
+  ReactDOM.render(
+    ReactDOM.createPortal(React.createElement(PLuG), body),
+    document.createElement('div'),
+  )
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),

@@ -5,7 +5,7 @@ import {
   FooterV30 as SharedFooter,
 } from '@devrev/marketing-shared-components/dist/cjs'
 
-import './styles.css'
+import './footer.css'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {

@@ -5,7 +5,7 @@ import {
   HeaderV30 as SharedHeader,
 } from '@devrev/marketing-shared-components/dist/cjs'
 
-import './styles.css'
+import './header.css'
 
 const Header = ({
   logo,

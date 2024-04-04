@@ -5,7 +5,7 @@ import {
   HeaderV30 as SharedHeader,
 } from '@devrev/marketing-shared-components/dist/cjs'
 
-import styles from './header.module.css'
+import './styles.css'
 
 const Header = ({
   logo,
@@ -27,7 +27,7 @@ any) => {
           actions={actions}
           version={version}
           collapseOnScroll={collapseOnScroll}
-          wrapperClassName={styles.header}
+          wrapperClassName="header"
         />
       </ComponentConfigContext.Provider>
     </div>

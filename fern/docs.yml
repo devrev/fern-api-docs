@@ -16,8 +16,6 @@ colors:
 
 logo: {}
 
-css:
-  - ./dist/output.css
 
 js:
   - path: ./dist/output.js

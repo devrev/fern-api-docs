@@ -5,6 +5,8 @@ import {
   FooterV30 as SharedFooter,
 } from '@devrev/marketing-shared-components/dist/cjs'
 
+import './footer.css'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {
   // Footer
@@ -14,6 +16,7 @@ const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {
         origin: 'https://api.docs.devrev.ai',
       }}>
       <SharedFooter
+        className="footer"
         list={list}
         logo={logo}
         status={status}

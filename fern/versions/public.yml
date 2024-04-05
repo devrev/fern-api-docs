@@ -25,6 +25,16 @@ navigation:
         path: ../docs/pages/webhooks.mdx
       - page: Restricted messages on a timeline
         path: ../docs/pages/timeline-entries.mdx
+  - section: SDKs
+    contents:
+      - section: PLuG SDK
+        contents:
+          - page: Overview
+            path: ../docs/pages/plug-sdk/sdk-intro.mdx
+          - page: Methods
+            path: ../docs/pages/plug-sdk/methods.mdx
+          - page: Customization
+            path: ../docs/pages/plug-sdk/customize.mdx
   - section: Snap-in development
     contents:
       - page: Concepts

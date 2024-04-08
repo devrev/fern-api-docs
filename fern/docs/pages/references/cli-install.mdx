@@ -1,105 +1,101 @@
 The DevRev CLI is a command-line interface tool that simplifies working with the DevRev REST APIs.
 
-<CodeBlocks>
-  <CodeBlock title = "Debian">
-    ## Supported architectures:
-    - Linux amd64
-    - Linux arm64
+# Debian
 
-    ## Installation
+## Supported architectures:
+- Linux amd64
+- Linux arm64
 
-    [Download the Debian package](https://github.com/devrev/cli/releases/latest) and install it using the following command:
+## Installation
 
-    ```bash
-    sudo dpkg -i devrev_0.4.0-linux_amd64.deb
-    ```
+[Download the Debian package](https://github.com/devrev/cli/releases/latest) and install it using the following command:
 
-    or
+```bash
+sudo dpkg -i devrev_0.4.0-linux_amd64.deb
+```
 
-    ```bash
-    sudo dpkg -i devrev_0.4.0-linux_arm64.deb
-    ```
+or
 
-    Run the following command to install the completions:
+```bash
+sudo dpkg -i devrev_0.4.0-linux_arm64.deb
+```
 
-    ```bash
-    wget https://raw.githubusercontent.com/devrev/cli/main/install_completions.sh && sh install_completions.sh /usr/local/bin/devrev
-    ```
+Run the following command to install the completions:
 
-    <Callout intent="info">
-    The Debian path `/usr/local/bin/devrev` may vary based on your Debian installation.
-    </Callout>
+```bash
+wget https://raw.githubusercontent.com/devrev/cli/main/install_completions.sh && sh install_completions.sh /usr/local/bin/devrev
+```
 
-    ## Uninstallation
+<Callout intent="info">
+The Debian path `/usr/local/bin/devrev` may vary based on your Debian installation.
+</Callout>
 
-    ```bash
-    sudo dpkg -r devrev
-    ```
-  </CodeBlock>
-  <CodeBlock title = "Mac OS">
-    ## Supported architectures:
+## Uninstallation
 
-    - Darwin amd64
-    - Darwin arm64
-    - Linux arm64
-    - Linux amd64
+```bash
+sudo dpkg -r devrev
+```
+# MacOS
 
-    ## Installation
+## Supported architectures:
 
-    Download the Homebrew formula [devrev.rb](https://github.com/devrev/cli/releases/latest/download/devrev.rb) or run the following command:
+- Darwin amd64
+- Darwin arm64
+- Linux arm64
+- Linux amd64
 
-    ```bash
-    wget https://github.com/devrev/cli/releases/latest/download/devrev.rb
-    ```
+## Installation
 
-    Install the downloaded Homebrew formula file devrev.rb using the following command:
+Download the Homebrew formula [devrev.rb](https://github.com/devrev/cli/releases/latest/download/devrev.rb) or run the following command:
 
-    ```bash
-    brew install ./devrev.rb
-    ```
+```bash
+wget https://github.com/devrev/cli/releases/latest/download/devrev.rb
+```
 
-    Run the following command to install the completions:
+Install the downloaded Homebrew formula file devrev.rb using the following command:
 
-    ```bash
-    wget https://raw.githubusercontent.com/devrev/cli/main/install_completions.sh && sh install_completions.sh /opt/homebrew/bin/devrev
-    ```
+```bash
+brew install ./devrev.rb
+```
 
-    <Callout intent="info">
-    The Homebrew path `/opt/homebrew/bin/devrev` may vary based on your Homebrew installation
-    </Callout>
+Run the following command to install the completions:
 
-    ## Uninstallation
+```bash
+wget https://raw.githubusercontent.com/devrev/cli/main/install_completions.sh && sh install_completions.sh /opt/homebrew/bin/devrev
+```
 
-    ```bash
-    brew uninstall devrev
-    ```
-  </CodeBlock>
-  <CodeBlock title = "Windows">
-  
-    ## Supported architectures:
+<Callout intent="info">
+The Homebrew path `/opt/homebrew/bin/devrev` may vary based on your Homebrew installation
+</Callout>
 
-    - Windows amd64
+## Uninstallation
 
-    ## Installation
+```bash
+brew uninstall devrev
+```
+# Windows
 
-    Download the [Windows executable](https://github.com/devrev/cli/releases/latest).
+## Supported architectures:
 
-    Unzip the downloaded file and add the path to the environment variable.
+- Windows amd64
 
-    Add the directory to the system PATH variable under **System Properties** > **This PC** > **Properties**.
+## Installation
 
-    In the System window, click **Advanced system settings** > **Environment Variables** > **Path** > **Edit**.
-    In the **Edit environment variable** window, click **New**. Enter the path to the directory you want to add. For example: `C:\Program Files\devrev\`
-    Click **OK** to save the changes. Close all remaining windows by clicking **OK**.
+Download the [Windows executable](https://github.com/devrev/cli/releases/latest).
 
-    <Callout intent="info">
-    You may need to restart your computer for the changes to take effect.
-    </Callout>
+Unzip the downloaded file and add the path to the environment variable.
 
-    ## Uninstallation
+Add the directory to the system PATH variable under **System Properties** > **This PC** > **Properties**.
 
-    1. Remove the path from the environment variable.
-    2. Delete the downloaded executable file and its folder.
+In the System window, click **Advanced system settings** > **Environment Variables** > **Path** > **Edit**.
+In the **Edit environment variable** window, click **New**. Enter the path to the directory you want to add. For example: `C:\Program Files\devrev\`
+Click **OK** to save the changes. Close all remaining windows by clicking **OK**.
 
-  </CodeBlock>
-</CodeBlocks>
+<Callout intent="info">
+You may need to restart your computer for the changes to take effect.
+</Callout>
+
+## Uninstallation
+
+1. Remove the path from the environment variable.
+2. Delete the downloaded executable file and its folder.

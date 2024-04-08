@@ -14,8 +14,8 @@ navbar-links:
 
 colors:
   accentPrimary: 
-    dark: "#5D65EE"
-    light: "#5D65EE"
+    dark: "#5D65EE1A"
+    light: "#5D65EE1A"
   background: 
     dark: "#131414"
     light: '#ffffff'

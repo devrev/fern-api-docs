@@ -4,11 +4,15 @@ The following entities are accessible through the DevRev [public API](/about/get
 
 An artifact is any attachment to an object inside DevRev. Artifacts include videos, log files, and user profile pictures.
 
+📄 `artifacts` [API reference](/api-reference/artifacts)
+
 ## Identity provider: `auth-connection`
 
 An authentication connection enables users to log in to DevRev through an external identity provider such as Azure AD, Google Workspace, Jump Cloud, or Okta.
 
 For more information for about authentication connections, refer to [External identity provider setup](https://docs.devrev.ai/product/sso-saml).
+
+📄 `auth-connection` [API reference](/api-reference/auth-connection)
 
 ## Security tokens: `auth-tokens`
 
@@ -21,9 +25,13 @@ Security tokens are required for accessing DevRev. There are four types of secur
 
 For more information about security tokens, refer to [Authentication](/about/authentication).
 
-## Product builders: `dev-users`
+📄 `auth-tokens` [API reference](/api-reference/auth-tokens)
 
-Dev users are product builders and maintainers within an organization.
+## Product builders and service providers: `dev-users`
+
+Dev users belong to the organization that develops, builds, or provides products or services to customers.
+
+📄 `dev-users` [API reference](/api-reference/dev-users)
 
 ## Product components: `parts`
 
@@ -31,17 +39,27 @@ A part is a component of a product, and they can be made of other parts. Parts a
 
 For more information about parts, refer to [Parts & trails](https://docs.devrev.ai/product/parts).
 
+📄 `parts` [API reference](/api-reference/parts)
+
 ## Workspaces: `rev-orgs`
 
-Workspaces (or rev orgs) are the organizations that your customers belong to.
+Workspaces (or rev orgs) are the organizations that your customers belong to. A workspace offers more granularity than accounts to define the instances of your product. Users can be mapped to track usage per workspace.
 
-## Concepts: `tags` 
+For more information about workspaces, refer to [Customers](https://docs.devrev.ai/product/customers).
+
+📄 `rev-orgs` [API reference](/api-reference/rev-orgs)
+
+## Concepts: `tags`
 
 Tags are words that you can use as a label to give more context to tickets, issues, users, and every other object in DevRev. Tags create associations between objects and a logical concept. This concept is denoted by a tag's name and description. You can have filters on tags.
+
+📄 `tags` [API reference](/api-reference/tags)
 
 ## Discussions and events: `timeline-entries`
 
 Work items DevRev objects have a timeline that contains discussions and events. Discussions are comments added by a person or a bot, while events indicate a change of the object’s state.
+
+📄 `timeline-entries` [API reference](/api-reference/timeline-entries)
 
 ## Event responses: `webhooks`
 
@@ -49,8 +67,12 @@ Webhooks enable building custom workflows in response to events on the DevRev pl
 
 For more information about webhooks, refer to [Getting started with webhooks](/guides/getting-started-with-webhooks).
 
+📄 `webhooks` [API reference](/api-reference/webhooks)
+
 ## Tickets and issues: `works`
 
 A work item is a record of some work that has to be done for a customer (ticket) or for another builder or maintainer of a part (issue).
 
 For more information about work items, refer to [Tickets](https://docs.devrev.ai/product/tickets) and [Issues](https://docs.devrev.ai/product/issues).
+
+📄 `works` [API reference](/api-reference/works)

@@ -91,5 +91,3 @@ navigation:
         path: ../docs/pages/upgrades.mdx
       - page: Code Samples
         path: ../docs/pages/examples/samples.mdx
-      - page: Resources
-        path: ../docs/pages/resources.mdx

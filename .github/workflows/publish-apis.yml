@@ -21,9 +21,11 @@ jobs:
       - name: Generate public API
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: fern generate --api public
         
       - name: Generate beta API
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: fern generate --api beta

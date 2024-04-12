@@ -7,7 +7,7 @@ groups:
         output:
           location: npm
           package-name: "@fern-api/devrev-beta"
-          token: ${{ secrets.FERN_TOKEN }}
+          token: ${NPM_TOKEN}
         github:
           repository: fern-devrev/devrev-node-beta
         config:

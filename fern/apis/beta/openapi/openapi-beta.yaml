@@ -163,8 +163,7 @@ components:
         external_refs:
           description: |
             External refs are unique identifiers from your customer system of
-            records, stored as a list. Currently the length of this field is
-            limited to 1.
+            records, stored as a list.
           items:
             type: string
           type: array
@@ -224,6 +223,7 @@ components:
       title: accounts-delete-request
       type: object
     accounts-delete-response:
+      additionalProperties: false
       description: The response to deleting an account.
       title: accounts-delete-response
       type: object
@@ -478,9 +478,7 @@ components:
             type: string
           type: array
         external_refs:
-          description: |
-            Updated External Refs of account. Currently the length of this
-            field is limited to 1.
+          description: Updated External Refs of account.
           items:
             type: string
           type: array
@@ -535,6 +533,7 @@ components:
       type: object
       x-go-name: AccountsUpdateResponseBody
     aggregated-schema:
+      additionalProperties: false
       description: List of custom fields from multiple source fragments.
       title: aggregated-schema
       type: object
@@ -626,6 +625,11 @@ components:
       allOf:
       - $ref: '#/components/schemas/custom-schema-fragment-base-summary'
       title: app-fragment-summary
+    archetype-metric-target:
+      additionalProperties: false
+      description: Metric with corresponding target values.
+      title: archetype-metric-target
+      type: object
     article:
       allOf:
       - $ref: '#/components/schemas/atom-base'
@@ -643,6 +647,14 @@ components:
             items:
               $ref: '#/components/schemas/artifact-summary'
             type: array
+          num_downvotes:
+            description: Number of downvotes on the article.
+            format: int32
+            type: integer
+          num_upvotes:
+            description: Number of upvotes on the article.
+            format: int32
+            type: integer
           parent:
             $ref: '#/components/schemas/directory-summary'
           rank:
@@ -791,7 +803,7 @@ components:
           description: |
             Information about the role the member receives due to the share.
           items:
-            $ref: '#/components/schemas/shared-with-membership'
+            $ref: '#/components/schemas/set-shared-with-membership'
           type: array
         status:
           $ref: '#/components/schemas/article-status'
@@ -849,6 +861,7 @@ components:
       title: articles-delete-request
       type: object
     articles-delete-response:
+      additionalProperties: false
       title: articles-delete-response
       type: object
       x-go-name: ArticlesDeleteResponseBody
@@ -1082,7 +1095,7 @@ components:
         set:
           description: Sets the field to the provided membership list.
           items:
-            $ref: '#/components/schemas/shared-with-membership'
+            $ref: '#/components/schemas/set-shared-with-membership'
           type: array
       title: articles-update-request-shared-with
       type: object
@@ -1104,10 +1117,6 @@ components:
       title: articles-update-response
       type: object
       x-go-name: ArticlesUpdateResponseBody
-    artifact:
-      allOf:
-      - $ref: '#/components/schemas/atom-base'
-      title: artifact
     artifact-search-summary:
       allOf:
       - $ref: '#/components/schemas/search-summary-base'
@@ -1122,104 +1131,6 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       title: artifact-summary
-    artifact-version:
-      description: The version of the artifact.
-      properties:
-        modified_by:
-          $ref: '#/components/schemas/user-summary'
-        timestamp:
-          description: The timestamp at which the version was created.
-          example: "2023-01-01T12:00:00.000Z"
-          format: date-time
-          type: string
-        version:
-          description: The version of the artifact.
-          type: string
-      required:
-      - timestamp
-      - version
-      title: artifact-version
-      type: object
-    artifacts-get-request:
-      description: The request to get an artifact's information.
-      properties:
-        id:
-          description: The requested artifact's ID.
-          example: ARTIFACT-12345
-          type: string
-        version:
-          description: The version of the artifact that needs to be fetched.
-          type: string
-      required:
-      - id
-      title: artifacts-get-request
-      type: object
-    artifacts-get-response:
-      description: The response to getting an artifact's information.
-      properties:
-        artifact:
-          $ref: '#/components/schemas/artifact'
-        version:
-          $ref: '#/components/schemas/artifact-version'
-      required:
-      - artifact
-      - version
-      title: artifacts-get-response
-      type: object
-      x-go-name: ArtifactsGetResponseBody
-    artifacts-list-request:
-      description: The request to list artifacts attached to an object.
-      properties:
-        parent_id:
-          description: The ID of the object to filter artifacts.
-          type: string
-      required:
-      - parent_id
-      title: artifacts-list-request
-      type: object
-    artifacts-list-response:
-      description: The response to list artifacts attached to an object.
-      properties:
-        artifacts:
-          description: The artifact's information.
-          items:
-            $ref: '#/components/schemas/artifact'
-          type: array
-      required:
-      - artifacts
-      title: artifacts-list-response
-      type: object
-      x-go-name: ArtifactsListResponseBody
-    artifacts-locate-request:
-      description: The request to get an artifact's download URL.
-      properties:
-        id:
-          description: The ID of the artifact to get the URL for.
-          example: ARTIFACT-12345
-          type: string
-        version:
-          description: The version of the artifact that needs to be fetched.
-          type: string
-      required:
-      - id
-      title: artifacts-locate-request
-      type: object
-    artifacts-locate-response:
-      description: The response to getting an artifact's download URL.
-      properties:
-        expires_at:
-          description: The expiration timestamp of the URL.
-          example: "2023-01-01T12:00:00.000Z"
-          format: date-time
-          type: string
-        url:
-          description: The artifact's download URL.
-          type: string
-      required:
-      - url
-      title: artifacts-locate-response
-      type: object
-      x-go-name: ArtifactsLocateResponseBody
     artifacts-prepare-request:
       description: The request to prepare a URL to upload a file.
       properties:
@@ -1431,528 +1342,6 @@ components:
       - timeline_comment
       - webhook
       type: string
-    auth-connection:
-      description: |
-        Connection object that specifies the configuration for an
-        authentication connection that is set up for a Dev organization.
-      discriminator:
-        mapping:
-          google_apps: '#/components/schemas/auth-connection-options-google-apps'
-          oidc: '#/components/schemas/auth-connection-options-oidc'
-          samlp: '#/components/schemas/auth-connection-options-saml'
-          social: '#/components/schemas/auth-connection-options-social'
-          waad: '#/components/schemas/auth-connection-options-azure-ad'
-        propertyName: type
-      oneOf:
-      - $ref: '#/components/schemas/auth-connection-options-azure-ad'
-      - $ref: '#/components/schemas/auth-connection-options-google-apps'
-      - $ref: '#/components/schemas/auth-connection-options-oidc'
-      - $ref: '#/components/schemas/auth-connection-options-saml'
-      - $ref: '#/components/schemas/auth-connection-options-social'
-      properties:
-        display_name:
-          description: |
-            Display name of the authentication connection. This name will be
-            visible to all the users when they sign in to this Dev
-            organization. For example, if the display_name is 'abclogin', then
-            it would appear on the login button as 'Log in to abclogin'.
-          type: string
-        enabled:
-          description: |
-            Whether the authentication connection is enabled or disabled. If
-            set to false, the authentication connection will not show up on the
-            login screen as a login option.
-          type: boolean
-        id:
-          description: ID of the authentication connection.
-          type: string
-        type:
-          $ref: '#/components/schemas/auth-connection-type'
-      required:
-      - id
-      - type
-      title: auth-connection
-      type: object
-    auth-connection-options-azure-ad:
-      description: |
-        Object encapsulating the configuration parameters for an Azure AD
-        authentication connection.
-      properties:
-        client_id:
-          description: Client ID for the Azure authentication connection.
-          type: string
-        client_secret:
-          description: Client secret for the Azure authentication connection.
-          type: string
-        domain:
-          description: Domain URL of the Azure authentication connection.
-          type: string
-      title: auth-connection-options-azure-ad
-      type: object
-    auth-connection-options-google-apps:
-      description: |
-        Object encapsulating the configuration parameters for a Google Apps
-        authentication connection.
-      properties:
-        client_id:
-          description: Client ID for the Google Apps authentication connection.
-          type: string
-        client_secret:
-          description: |
-            Client secret for the Google Apps authentication connection.
-          type: string
-        tenant_domain:
-          description: |
-            Tenant domain URL of the Google Apps authentication connection.
-          type: string
-      title: auth-connection-options-google-apps
-      type: object
-    auth-connection-options-oidc:
-      description: |
-        Object encapsulating the configuration parameters for an OIDC
-        authentication connection.
-      properties:
-        client_id:
-          description: Client ID for the OIDC authentication connection.
-          type: string
-        client_secret:
-          description: Client secret for the OIDC authentication connection.
-          type: string
-        issuer:
-          description: Issuer URL of the OIDC authentication connection.
-          type: string
-      title: auth-connection-options-oidc
-      type: object
-    auth-connection-options-saml:
-      description: |
-        Object encapsulating the configuration parameters for a SAML
-        authentication connection.
-      properties:
-        sign_in_endpoint:
-          description: Sign In endpoint for the SAML authentication connection.
-          type: string
-        signing_cert:
-          description: |
-            Signing certificate for the SAML authentication connection.
-          type: string
-      title: auth-connection-options-saml
-      type: object
-    auth-connection-options-social:
-      title: auth-connection-options-social
-      type: object
-    auth-connection-toggle:
-      enum:
-      - disable
-      - enable
-      type: string
-    auth-connection-type:
-      description: |
-        Defines the type for the authentication connection. The configuration
-        for each authentication connection will depend on the type value.
-      enum:
-      - google_apps
-      - oidc
-      - samlp
-      - social
-      - waad
-      type: string
-    auth-token:
-      allOf:
-      - $ref: '#/components/schemas/atom-base'
-      - properties:
-          client_id:
-            description: |
-              An identifier that represents the application that requested the
-              token. Only applicable for application access tokens.
-            type: string
-          expires_at:
-            description: The time at which the token expires.
-            example: "2023-01-01T12:00:00.000Z"
-            format: date-time
-            type: string
-          issued_at:
-            description: The time at which the token was issued.
-            example: "2023-01-01T12:00:00.000Z"
-            format: date-time
-            type: string
-          requested_token_type:
-            $ref: '#/components/schemas/auth-token-requested-token-type'
-          scopes:
-            description: The scopes associated with the issued token.
-            items:
-              type: string
-            type: array
-          status:
-            $ref: '#/components/schemas/auth-token-status'
-          subject:
-            description: The subject of the token.
-            type: string
-          token_hint:
-            description: A hint that identifies the token.
-            type: string
-        type: object
-      title: auth-token
-    auth-token-grant-type:
-      description: Specifies the process of obtaining a token.
-      enum:
-      - urn:devrev:params:oauth:grant-type:token-issue
-      - urn:ietf:params:oauth:grant-type:token-exchange
-      type: string
-      x-fern-enum:
-        urn:devrev:params:oauth:grant-type:token-issue:
-          name: urn_devrev_params_oauth_grant_type_token_issue
-        urn:ietf:params:oauth:grant-type:token-exchange:
-          name: urn_ietf_params_oauth_grant_type_token_exchange
-    auth-token-requested-token-type:
-      description: The type of the requested token.
-      enum:
-      - urn:devrev:params:oauth:token-type:aat
-      - urn:devrev:params:oauth:token-type:aat:public
-      - urn:devrev:params:oauth:token-type:dev
-      - urn:devrev:params:oauth:token-type:gat
-      - urn:devrev:params:oauth:token-type:pat
-      - urn:devrev:params:oauth:token-type:pat:act-as
-      - urn:devrev:params:oauth:token-type:rat
-      - urn:devrev:params:oauth:token-type:rev
-      - urn:devrev:params:oauth:token-type:session
-      - urn:devrev:params:oauth:token-type:session:dev0
-      - urn:devrev:params:oauth:token-type:session:onetime
-      - urn:devrev:params:oauth:token-type:super
-      - urn:devrev:params:oauth:token-type:sys
-      - urn:ietf:params:oauth:token-type:jwt
-      type: string
-      x-fern-enum:
-        urn:devrev:params:oauth:token-type:aat:
-          name: urn_devrev_params_oauth_token_type_aat
-        urn:devrev:params:oauth:token-type:aat:public:
-          name: urn_devrev_params_oauth_token_type_aat_public
-        urn:devrev:params:oauth:token-type:dev:
-          name: urn_devrev_params_oauth_token_type_dev
-        urn:devrev:params:oauth:token-type:gat:
-          name: urn_devrev_params_oauth_token_type_gat
-        urn:devrev:params:oauth:token-type:pat:
-          name: urn_devrev_params_oauth_token_type_pat
-        urn:devrev:params:oauth:token-type:pat:act-as:
-          name: urn_devrev_params_oauth_token_type_pat_act_as
-        urn:devrev:params:oauth:token-type:rat:
-          name: urn_devrev_params_oauth_token_type_rat
-        urn:devrev:params:oauth:token-type:rev:
-          name: urn_devrev_params_oauth_token_type_rev
-        urn:devrev:params:oauth:token-type:session:
-          name: urn_devrev_params_oauth_token_type_session
-        urn:devrev:params:oauth:token-type:session:dev0:
-          name: urn_devrev_params_oauth_token_type_session_dev0
-        urn:devrev:params:oauth:token-type:session:onetime:
-          name: urn_devrev_params_oauth_token_type_session_onetime
-        urn:devrev:params:oauth:token-type:super:
-          name: urn_devrev_params_oauth_token_type_super
-        urn:devrev:params:oauth:token-type:sys:
-          name: urn_devrev_params_oauth_token_type_sys
-        urn:ietf:params:oauth:token-type:jwt:
-          name: urn_ietf_params_oauth_token_type_jwt
-    auth-token-status:
-      description: The status of the token.
-      enum:
-      - active
-      - expired
-      - revoked
-      type: string
-    auth-token-subject-token-type:
-      description: The type of the subject token.
-      enum:
-      - urn:devrev:params:oauth:token-type:jwt:auth0
-      - urn:devrev:params:oauth:token-type:jwt:dev
-      - urn:devrev:params:oauth:token-type:rat
-      - urn:devrev:params:oauth:token-type:revinfo
-      - urn:devrev:params:oauth:token-type:session
-      - urn:devrev:params:oauth:token-type:sysu
-      - urn:devrev:params:oauth:token-type:userinfo
-      - urn:devrev:params:oauth:token-type:userinfo:profile
-      - urn:ietf:params:oauth:token-type:jwt
-      type: string
-      x-fern-enum:
-        urn:devrev:params:oauth:token-type:jwt:auth0:
-          name: urn_devrev_params_oauth_token_type_jwt_auth0
-        urn:devrev:params:oauth:token-type:jwt:dev:
-          name: urn_devrev_params_oauth_token_type_jwt_dev
-        urn:devrev:params:oauth:token-type:rat:
-          name: urn_devrev_params_oauth_token_type_rat
-        urn:devrev:params:oauth:token-type:revinfo:
-          name: urn_devrev_params_oauth_token_type_revinfo
-        urn:devrev:params:oauth:token-type:session:
-          name: urn_devrev_params_oauth_token_type_session
-        urn:devrev:params:oauth:token-type:sysu:
-          name: urn_devrev_params_oauth_token_type_sysu
-        urn:devrev:params:oauth:token-type:userinfo:
-          name: urn_devrev_params_oauth_token_type_userinfo
-        urn:devrev:params:oauth:token-type:userinfo:profile:
-          name: urn_devrev_params_oauth_token_type_userinfo_profile
-        urn:ietf:params:oauth:token-type:jwt:
-          name: urn_ietf_params_oauth_token_type_jwt
-    auth-token-token-type:
-      description: |
-        The type of the issued token. Bearer is the only supported token type.
-      enum:
-      - bearer
-      type: string
-    auth-tokens-create-request:
-      description: |
-        A request to create a new token corresponding to the requested token
-        type.
-      properties:
-        act_as:
-          description: The unique ID of the Dev user to impersonate.
-          type: string
-        aud:
-          description: The expected audience values with respect to the token.
-          items:
-            type: string
-          type: array
-        client_id:
-          description: |
-            An identifier that represents the application which is requesting
-            the token. If no client_id is present in the request to generate an
-            application access token (AAT), DevRev will generate a client_id.
-            This client_id is only associated with an AAT.
-          type: string
-        expires_in:
-          description: |
-            The expected validity lifetime of the token in number of days. In
-            practice, the value should be based on the usage of the token.
-          maximum: 4294967295
-          minimum: 0
-          type: integer
-        grant_type:
-          $ref: '#/components/schemas/auth-token-grant-type'
-        requested_token_type:
-          $ref: '#/components/schemas/auth-token-requested-token-type'
-        rev_info:
-          $ref: '#/components/schemas/auth-tokens-rev-info'
-        scope:
-          description: |
-            The requested set of scopes associated with the issued token. A
-            space-delimited list of values in which the order of values does
-            not matter.
-          type: string
-        subject_token:
-          description: |
-            Represents the entity that requests the token. Not required when
-            requesting an application access token (AAT).
-          type: string
-        subject_token_type:
-          $ref: '#/components/schemas/auth-token-subject-token-type'
-        token_hint:
-          description: A hint that identifies the token.
-          type: string
-      title: auth-tokens-create-request
-      type: object
-    auth-tokens-create-response:
-      description: |
-        Response for the request to create a new token corresponding to the
-        requested token type.
-      properties:
-        access_token:
-          description: |
-            The issued JSON Web Token (JWT) corresponding to the requested
-            token type.
-          type: string
-        client_id:
-          description: |
-            An identifier that represents the application which is requesting
-            the token. Only present in a response corresponding to an
-            application access token (AAT).
-          type: string
-        expires_in:
-          description: |
-            The validity lifetime of the token specified in seconds since Unix
-            epoch.
-          format: int64
-          type: integer
-        refresh_token:
-          description: A token to refresh the issued token.
-          type: string
-        scope:
-          description: |
-            The scopes associated with the issued token. A space-delimited list
-            of values in which the order of values does not matter.
-          type: string
-        token_type:
-          $ref: '#/components/schemas/auth-token-token-type'
-      required:
-      - access_token
-      - expires_in
-      - token_type
-      title: auth-tokens-create-response
-      type: object
-      x-go-name: AuthTokensCreateResponseBody
-    auth-tokens-delete-request:
-      description: The request to revoke the token.
-      properties:
-        token_id:
-          description: |
-            The unique identifier for the token under a given Dev organization.
-            If no token ID is provided, then the token ID will be set from the
-            JTI claim of the token in the authorization header.
-          type: string
-      title: auth-tokens-delete-request
-      type: object
-    auth-tokens-get-request:
-      description: The request to get the token metadata.
-      properties:
-        token_id:
-          description: |
-            The unique identifier of the token under a given Dev organization.
-          type: string
-      required:
-      - token_id
-      title: auth-tokens-get-request
-      type: object
-    auth-tokens-get-response:
-      description: The response to get the token metadata.
-      properties:
-        token:
-          $ref: '#/components/schemas/auth-token'
-      required:
-      - token
-      title: auth-tokens-get-response
-      type: object
-      x-go-name: AuthTokensGetResponseBody
-    auth-tokens-list-request:
-      description: A request to list the token metadata.
-      properties:
-        client_id:
-          description: |
-            An identifier that represents the application, which requested the
-            token. Only relevant for application access tokens.
-          type: string
-        requested_token_type:
-          $ref: '#/components/schemas/auth-token-requested-token-type'
-        subject:
-          description: |
-            The subject associated with the token. In the absence of this
-            parameter, the ID of the authenticated entity is treated as the
-            subject.
-          type: string
-      title: auth-tokens-list-request
-      type: object
-    auth-tokens-list-response:
-      description: The response to list the token metadata.
-      properties:
-        tokens:
-          description: The list of token metadata.
-          items:
-            $ref: '#/components/schemas/auth-token'
-          type: array
-      required:
-      - tokens
-      title: auth-tokens-list-response
-      type: object
-      x-go-name: AuthTokensListResponseBody
-    auth-tokens-org-traits:
-      description: Carries Rev org info.
-      properties:
-        custom_fields:
-          description: Application-defined custom fields of the Rev org.
-          type: object
-        description:
-          description: The description of the Rev org.
-          type: string
-        display_name:
-          description: The display name of the Rev org.
-          type: string
-        domain:
-          description: The domain of the Rev org.
-          type: string
-        phone_numbers:
-          description: Phone numbers of the Rev org.
-          items:
-            type: string
-          type: array
-        tier:
-          description: The tier of the Rev org.
-          type: string
-      title: auth-tokens-org-traits
-      type: object
-    auth-tokens-rev-info:
-      description: |
-        Carries info corresponding to the Rev user to be provisioned and/or
-        issue a Rev session token.
-      properties:
-        org_ref:
-          description: An identifier which uniquely identifies a Rev org.
-          type: string
-        org_traits:
-          $ref: '#/components/schemas/auth-tokens-org-traits'
-        user_id:
-          description: The unique ID of the Rev user.
-          type: string
-        user_ref:
-          description: An identifier which uniquely identifies a Rev user.
-          type: string
-        user_traits:
-          $ref: '#/components/schemas/auth-tokens-user-traits'
-      title: auth-tokens-rev-info
-      type: object
-    auth-tokens-self-delete-request:
-      description: |
-        The request to delete all the tokens created by the authenticated user,
-        that match with the provided token type.
-      properties:
-        requested_token_type:
-          $ref: '#/components/schemas/auth-token-requested-token-type'
-      title: auth-tokens-self-delete-request
-      type: object
-    auth-tokens-update-request:
-      description: A request to update the token metadata.
-      properties:
-        token_hint:
-          description: A hint that identifies the token.
-          type: string
-        token_id:
-          description: |
-            The unique identifier of the token under a given Dev organization.
-          type: string
-      required:
-      - token_hint
-      - token_id
-      title: auth-tokens-update-request
-      type: object
-    auth-tokens-update-response:
-      description: Response for the request to update the token metadata.
-      properties:
-        token:
-          $ref: '#/components/schemas/auth-token'
-      required:
-      - token
-      title: auth-tokens-update-response
-      type: object
-      x-go-name: AuthTokensUpdateResponseBody
-    auth-tokens-user-traits:
-      description: Carries Rev user info.
-      properties:
-        custom_fields:
-          description: Application-defined custom fields of the Rev user.
-          type: object
-        description:
-          description: The description of the Rev user.
-          type: string
-        display_name:
-          description: The display name of the Rev user.
-          type: string
-        email:
-          description: The email address of the Rev user.
-          type: string
-        full_name:
-          deprecated: true
-          description: The full name of the Rev user.
-          type: string
-        phone_numbers:
-          description: Phone numbers of the Rev user.
-          items:
-            type: string
-          type: array
-      title: auth-tokens-user-traits
-      type: object
     capability:
       allOf:
       - $ref: '#/components/schemas/part-base'
@@ -2101,6 +1490,7 @@ components:
       - github
       type: string
     code-changes-create-request:
+      additionalProperties: false
       title: code-changes-create-request
       type: object
     code-changes-create-response:
@@ -2122,6 +1512,7 @@ components:
       title: code-changes-delete-request
       type: object
     code-changes-delete-response:
+      additionalProperties: false
       title: code-changes-delete-response
       type: object
       x-go-name: CodeChangesDeleteResponseBody
@@ -2369,6 +1760,7 @@ components:
       title: conversations-delete-request
       type: object
     conversations-delete-response:
+      additionalProperties: false
       description: The response for deleting a conversation.
       title: conversations-delete-response
       type: object
@@ -2878,6 +2270,7 @@ components:
       - $ref: '#/components/schemas/atom-base-summary'
       title: custom-schema-fragment-base-summary
     custom-schema-fragment-condition:
+      additionalProperties: false
       description: The condition associated with a field.
       title: custom-schema-fragment-condition
       type: object
@@ -3153,9 +2546,24 @@ components:
       - $ref: '#/components/schemas/custom-schema-fragment-base-summary'
       title: custom-type-fragment-summary
     custom-type-path-component:
+      additionalProperties: false
       description: Path component for rendering custom type lists in tree form.
       title: custom-type-path-component
       type: object
+    dashboard-search-summary:
+      allOf:
+      - $ref: '#/components/schemas/search-summary-base'
+      - properties:
+          dashboard:
+            $ref: '#/components/schemas/dashboard-summary'
+        required:
+        - dashboard
+        type: object
+      title: dashboard-search-summary
+    dashboard-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: dashboard-summary
     date-filter:
       description: Provides ways to specify date ranges on objects.
       discriminator:
@@ -3246,185 +2654,6 @@ components:
       - last_n_days
       - next_n_days
       type: string
-    dev-org-auth-connections-create-request:
-      description: |
-        Request to create a new enterprise authentication connection.
-      discriminator:
-        mapping:
-          google_apps: '#/components/schemas/auth-connection-options-google-apps'
-          oidc: '#/components/schemas/auth-connection-options-oidc'
-          samlp: '#/components/schemas/auth-connection-options-saml'
-          waad: '#/components/schemas/auth-connection-options-azure-ad'
-        propertyName: type
-      oneOf:
-      - $ref: '#/components/schemas/auth-connection-options-azure-ad'
-      - $ref: '#/components/schemas/auth-connection-options-google-apps'
-      - $ref: '#/components/schemas/auth-connection-options-oidc'
-      - $ref: '#/components/schemas/auth-connection-options-saml'
-      properties:
-        display_name:
-          description: |
-            Display name of the authentication connection. This name will be
-            visible to all the users when they sign in to this Dev
-            organization. For example, if the display_name is 'abclogin', then
-            it would appear on the login button as 'Log in to abclogin'.
-          type: string
-        type:
-          $ref: '#/components/schemas/dev-org-auth-connections-create-request-type'
-      required:
-      - type
-      title: dev-org-auth-connections-create-request
-      type: object
-    dev-org-auth-connections-create-request-type:
-      description: |
-        Defines the type for the authentication connection. Different types of
-        authentication connections have different configuration parameters.
-      enum:
-      - google_apps
-      - oidc
-      - samlp
-      - waad
-      type: string
-    dev-org-auth-connections-create-response:
-      description: |
-        Response for the request to create a new enterprise authentication
-        connection.
-      properties:
-        auth_connection:
-          $ref: '#/components/schemas/auth-connection'
-      required:
-      - auth_connection
-      title: dev-org-auth-connections-create-response
-      type: object
-      x-go-name: DevOrgAuthConnectionsCreateResponseBody
-    dev-org-auth-connections-delete-request:
-      description: |
-        Request to delete an enterprise authentication connection for a Dev
-        organization. A default connection and a connection which is currently
-        enabled cannot be deleted.
-      properties:
-        id:
-          description: ID of the authentication connection to be deleted.
-          type: string
-      required:
-      - id
-      title: dev-org-auth-connections-delete-request
-      type: object
-    dev-org-auth-connections-get-request:
-      description: |
-        Request to get configuration details of organization's authentication
-        Connection.
-      properties:
-        id:
-          description: ID of the authentication connection.
-          type: string
-      required:
-      - id
-      title: dev-org-auth-connections-get-request
-      type: object
-    dev-org-auth-connections-get-response:
-      description: |
-        Response object encapsulating the configuration details of an
-        authentication connection.
-      properties:
-        auth_connection:
-          $ref: '#/components/schemas/auth-connection'
-      required:
-      - auth_connection
-      title: dev-org-auth-connections-get-response
-      type: object
-      x-go-name: DevOrgAuthConnectionsGetResponseBody
-    dev-org-auth-connections-list-response:
-      description: |
-        Response object for the request to list all the social and enterprise
-        authentication connections configured for a Dev organization.
-      properties:
-        auth_connections:
-          description: |
-            List of all the authentication connections currently configured for
-            a Dev organization.
-          items:
-            $ref: '#/components/schemas/auth-connection'
-          type: array
-      required:
-      - auth_connections
-      title: dev-org-auth-connections-list-response
-      type: object
-      x-go-name: DevOrgAuthConnectionsListResponseBody
-    dev-org-auth-connections-toggle-request:
-      description: |
-        Request to enable or disable an authentication connection for a Dev
-        organization.
-      properties:
-        id:
-          description: ID of the authentication connection to be toggled.
-          type: string
-        toggle:
-          $ref: '#/components/schemas/auth-connection-toggle'
-      required:
-      - id
-      title: dev-org-auth-connections-toggle-request
-      type: object
-    dev-org-auth-connections-update-request:
-      description: |
-        Request to update an enterprise authentication connection for a Dev
-        organization.
-      discriminator:
-        mapping:
-          google_apps: '#/components/schemas/auth-connection-options-google-apps'
-          none: '#/components/schemas/empty'
-          oidc: '#/components/schemas/auth-connection-options-oidc'
-          samlp: '#/components/schemas/auth-connection-options-saml'
-          waad: '#/components/schemas/auth-connection-options-azure-ad'
-        propertyName: type
-      oneOf:
-      - $ref: '#/components/schemas/auth-connection-options-azure-ad'
-      - $ref: '#/components/schemas/auth-connection-options-google-apps'
-      - $ref: '#/components/schemas/auth-connection-options-oidc'
-      - $ref: '#/components/schemas/auth-connection-options-saml'
-      - $ref: '#/components/schemas/empty'
-      properties:
-        display_name:
-          description: |
-            New display name of the authentication connection. This name will
-            be visible to all the users when they sign in to this Dev
-            organization. For example, if the display_name is 'abclogin', then
-            it would appear on the login button as 'Log in to abclogin'.
-          type: string
-        id:
-          description: |
-            ID of the authentication connection which is to be updated.
-          type: string
-        type:
-          $ref: '#/components/schemas/dev-org-auth-connections-update-request-type'
-      required:
-      - id
-      title: dev-org-auth-connections-update-request
-      type: object
-    dev-org-auth-connections-update-request-type:
-      description: |
-        Specifies the type for the authentication connection. Different types
-        of authentication connections have different configuration parameters
-        that can be updated.
-      enum:
-      - google_apps
-      - none
-      - oidc
-      - samlp
-      - waad
-      type: string
-    dev-org-auth-connections-update-response:
-      description: |
-        Response for the request to update an enterprise authentication
-        connection.
-      properties:
-        auth_connection:
-          $ref: '#/components/schemas/auth-connection'
-      required:
-      - auth_connection
-      title: dev-org-auth-connections-update-response
-      type: object
-      x-go-name: DevOrgAuthConnectionsUpdateResponseBody
     dev-user:
       allOf:
       - $ref: '#/components/schemas/user-base'
@@ -3436,121 +2665,16 @@ components:
             type: array
         type: object
       title: dev-user
-    dev-user-external-identity-filter:
-      properties:
-        id:
-          description: Unique ID of the user in the external source.
-          type: string
-        issuer:
-          description: Issuer of the external identity of the user.
-          type: string
-      title: dev-user-external-identity-filter
-      type: object
     dev-user-summary:
       allOf:
       - $ref: '#/components/schemas/user-base-summary'
       title: dev-user-summary
-    dev-users-get-request:
-      description: A request to get a Dev user's information.
-      properties:
-        id:
-          description: User ID of the requested Dev user.
-          type: string
-      required:
-      - id
-      title: dev-users-get-request
-      type: object
-    dev-users-get-response:
-      description: The response to getting the information for the Dev user.
-      properties:
-        dev_user:
-          $ref: '#/components/schemas/dev-user'
-      required:
-      - dev_user
-      title: dev-users-get-response
-      type: object
-      x-go-name: DevUsersGetResponseBody
-    dev-users-list-request:
-      description: A request to get the list of Dev user's information.
-      properties:
-        cursor:
-          description: |
-            The cursor to resume iteration from. If not provided, then
-            iteration starts from the beginning.
-          type: string
-        email:
-          description: Filters Dev users based on email addresses.
-          items:
-            type: string
-          type: array
-        external_identity:
-          description: Filters Dev users based on external identity.
-          items:
-            $ref: '#/components/schemas/dev-user-external-identity-filter'
-          type: array
-        limit:
-          description: |
-            The maximum number of Dev users to return. The default is '50'.
-          format: int32
-          type: integer
-        mode:
-          $ref: '#/components/schemas/list-mode'
-        sort_by:
-          description: |
-            Fields to sort the Dev users by and the direction to sort them.
-          items:
-            type: string
-          type: array
-        state:
-          description: Filters Dev users based on state.
-          items:
-            $ref: '#/components/schemas/user-state'
-          type: array
-      title: dev-users-list-request
-      type: object
-    dev-users-list-response:
-      description: The response to listing the Dev users.
-      properties:
-        dev_users:
-          description: The list of Dev users.
-          items:
-            $ref: '#/components/schemas/dev-user'
-          type: array
-        next_cursor:
-          description: |
-            The cursor used to iterate subsequent results in accordance to the
-            sort order. If not set, then no later elements exist.
-          type: string
-        prev_cursor:
-          description: |
-            The cursor used to iterate preceding results in accordance to the
-            sort order. If not set, then no prior elements exist.
-          type: string
-      required:
-      - dev_users
-      title: dev-users-list-response
-      type: object
-      x-go-name: DevUsersListResponseBody
-    dev-users-self-request:
-      description: A request to get the authenticated user's information.
-      title: dev-users-self-request
-      type: object
-    dev-users-self-response:
-      description: |
-        The response to getting the information for the authenticated user.
-      properties:
-        dev_user:
-          $ref: '#/components/schemas/dev-user'
-      required:
-      - dev_user
-      title: dev-users-self-response
-      type: object
-      x-go-name: DevUsersSelfResponseBody
     directory-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       title: directory-summary
     dynamic-group-info:
+      additionalProperties: false
       description: Information to define dynamic groups.
       title: dynamic-group-info
       type: object
@@ -3656,6 +2780,7 @@ components:
         type: object
       title: email-preview-widget
     empty:
+      additionalProperties: false
       title: empty
       type: object
     engagement:
@@ -3805,6 +2930,7 @@ components:
       title: engagements-delete-request
       type: object
     engagements-delete-response:
+      additionalProperties: false
       title: engagements-delete-response
       type: object
       x-go-name: EngagementsDeleteResponseBody
@@ -4030,6 +3156,7 @@ components:
         type: object
       title: error-bad-request
     error-bad-request-bad-request:
+      additionalProperties: false
       title: error-bad-request-bad-request
       type: object
     error-bad-request-invalid-api-version:
@@ -4113,9 +3240,11 @@ components:
       title: error-bad-request-missing-required-field
       type: object
     error-bad-request-parse-error:
+      additionalProperties: false
       title: error-bad-request-parse-error
       type: object
     error-bad-request-stale-schema-fragments:
+      additionalProperties: false
       description: |
         Error indicating that the request contained one or more stale schema
         fragments, which are schema fragments that have been replaced by a
@@ -4205,6 +3334,7 @@ components:
         type: object
       title: error-conflict
     error-conflict-conflict:
+      additionalProperties: false
       title: error-conflict-conflict
       type: object
     error-conflict-type:
@@ -4228,6 +3358,7 @@ components:
         type: object
       title: error-forbidden
     error-forbidden-forbidden:
+      additionalProperties: false
       title: error-forbidden-forbidden
       type: object
     error-forbidden-type:
@@ -4256,6 +3387,7 @@ components:
         type: object
       title: error-internal-server-error
     error-internal-server-error-internal-error:
+      additionalProperties: false
       title: error-internal-server-error-internal-error
       type: object
     error-internal-server-error-type:
@@ -4279,6 +3411,7 @@ components:
         type: object
       title: error-not-found
     error-not-found-not-found:
+      additionalProperties: false
       title: error-not-found-not-found
       type: object
     error-not-found-type:
@@ -4302,6 +3435,7 @@ components:
         type: object
       title: error-service-unavailable
     error-service-unavailable-service-unavailable:
+      additionalProperties: false
       title: error-service-unavailable-service-unavailable
       type: object
     error-service-unavailable-type:
@@ -4330,6 +3464,7 @@ components:
         type: object
       title: error-too-many-requests
     error-too-many-requests-too-many-requests:
+      additionalProperties: false
       title: error-too-many-requests-too-many-requests
       type: object
     error-too-many-requests-type:
@@ -4357,6 +3492,7 @@ components:
       - unauthenticated
       type: string
     error-unauthorized-unauthenticated:
+      additionalProperties: false
       title: error-unauthorized-unauthenticated
       type: object
     event-account-created:
@@ -4761,6 +3897,7 @@ components:
       title: event-work-updated
       type: object
     external-identity:
+      additionalProperties: false
       description: External identity of a user.
       title: external-identity
       type: object
@@ -4773,6 +3910,7 @@ components:
       - $ref: '#/components/schemas/part-base-summary'
       title: feature-summary
     field-descriptor:
+      additionalProperties: false
       description: Set of field attributes.
       title: field-descriptor
       type: object
@@ -4819,6 +3957,7 @@ components:
       title: group-members-add-request
       type: object
     group-members-add-response:
+      additionalProperties: false
       title: group-members-add-response
       type: object
       x-go-name: GroupMembersAddResponseBody
@@ -4893,6 +4032,7 @@ components:
       title: group-members-remove-request
       type: object
     group-members-remove-response:
+      additionalProperties: false
       title: group-members-remove-response
       type: object
       x-go-name: GroupMembersRemoveResponseBody
@@ -5085,6 +4225,11 @@ components:
             type: array
           priority:
             $ref: '#/components/schemas/issue-priority'
+          target_start_date:
+            description: Target start date for the object.
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+            type: string
         type: object
       title: issue
     issue-priority:
@@ -5303,6 +4448,7 @@ components:
       title: links-delete-request
       type: object
     links-delete-response:
+      additionalProperties: false
       description: The response for deleting a link.
       title: links-delete-response
       type: object
@@ -5522,6 +4668,11 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           type: string
+        include_custom_metrics:
+          description: |
+            Whether to include custom metrics in the response. If not set, then
+            custom metrics are excluded.
+          type: boolean
         limit:
           description: |
             The maximum number of records to return. The default is '50'.
@@ -5770,6 +4921,7 @@ components:
         type: object
       title: org-schedule-fragment
     org-schedule-fragment-overview:
+      additionalProperties: false
       description: |
         The representation of the organization schedule fragment embedded
         inside a organization schedule, used to quickly look up the schedule
@@ -5874,6 +5026,7 @@ components:
       type: object
       x-go-name: OrgScheduleFragmentsTransitionResponseBody
     org-schedule-interval:
+      additionalProperties: false
       description: An optionally named period on day granularity.
       title: org-schedule-interval
       type: object
@@ -6370,6 +5523,7 @@ components:
       title: parts-create-request-feature
       type: object
     parts-create-request-product:
+      additionalProperties: false
       title: parts-create-request-product
       type: object
     parts-create-response:
@@ -6392,6 +5546,7 @@ components:
       title: parts-delete-request
       type: object
     parts-delete-response:
+      additionalProperties: false
       title: parts-delete-response
       type: object
       x-go-name: PartsDeleteResponseBody
@@ -6536,6 +5691,7 @@ components:
       title: parts-update-request-artifacts
       type: object
     parts-update-request-capability:
+      additionalProperties: false
       title: parts-update-request-capability
       type: object
     parts-update-request-enhancement:
@@ -6555,6 +5711,7 @@ components:
       title: parts-update-request-enhancement
       type: object
     parts-update-request-feature:
+      additionalProperties: false
       title: parts-update-request-feature
       type: object
     parts-update-request-owned-by:
@@ -6571,6 +5728,7 @@ components:
       title: parts-update-request-owned-by
       type: object
     parts-update-request-product:
+      additionalProperties: false
       title: parts-update-request-product
       type: object
     parts-update-response:
@@ -6755,22 +5913,6 @@ components:
       title: rev-orgs-create-response
       type: object
       x-go-name: RevOrgsCreateResponseBody
-    rev-orgs-delete-request:
-      description: Request object to delete a Rev organization.
-      properties:
-        id:
-          description: The ID of Rev organization to delete.
-          example: REV-AbCdEfGh
-          type: string
-      required:
-      - id
-      title: rev-orgs-delete-request
-      type: object
-    rev-orgs-delete-response:
-      description: The response to deleting a Rev organization.
-      title: rev-orgs-delete-response
-      type: object
-      x-go-name: RevOrgsDeleteResponseBody
     rev-orgs-get-request:
       description: Request object to get Rev organization's information.
       properties:
@@ -7070,7 +6212,8 @@ components:
           type: array
         rev_org:
           description: |
-            The ID of Rev organization for which a Rev user is to be created.
+            The ID of the Rev organization to which the created Rev user is
+            associated.
           example: REV-AbCdEfGh
           type: string
         tags:
@@ -7102,6 +6245,7 @@ components:
       title: rev-users-delete-request
       type: object
     rev-users-delete-response:
+      additionalProperties: false
       description: The response to deleting a Rev user of a Rev organization.
       title: rev-users-delete-response
       type: object
@@ -7525,6 +6669,9 @@ components:
           description: |
             Whether this field is filterable, groupable and sortable.
           type: boolean
+        is_immutable:
+          description: Whether this field is immutable or not.
+          type: boolean
         is_pii:
           description: |
             Whether this field can hold Personally Identifiable Information
@@ -7589,6 +6736,7 @@ components:
       title: schema-field-list-view-ui-metadata
       type: object
     schema-field-mfz-metadata:
+      additionalProperties: false
       description: The schema of MFZ specific fields.
       title: schema-field-mfz-metadata
       type: object
@@ -7601,6 +6749,7 @@ components:
       title: schema-field-summary-view-ui-metadata
       type: object
     schema-field-uenum-value:
+      additionalProperties: false
       description: A unified enum value.
       title: schema-field-uenum-value
       type: object
@@ -8063,6 +7212,7 @@ components:
       - conversation
       - custom_part
       - custom_work
+      - dashboard
       - dev_user
       - enhancement
       - feature
@@ -8092,6 +7242,7 @@ components:
           article: '#/components/schemas/article-search-summary'
           artifact: '#/components/schemas/artifact-search-summary'
           conversation: '#/components/schemas/conversation-search-summary'
+          dashboard: '#/components/schemas/dashboard-search-summary'
           group: '#/components/schemas/group-search-summary'
           link: '#/components/schemas/link-search-summary'
           object_member: '#/components/schemas/object-member-search-summary'
@@ -8108,6 +7259,7 @@ components:
       - $ref: '#/components/schemas/article-search-summary'
       - $ref: '#/components/schemas/artifact-search-summary'
       - $ref: '#/components/schemas/conversation-search-summary'
+      - $ref: '#/components/schemas/dashboard-search-summary'
       - $ref: '#/components/schemas/group-search-summary'
       - $ref: '#/components/schemas/link-search-summary'
       - $ref: '#/components/schemas/object-member-search-summary'
@@ -8131,6 +7283,7 @@ components:
       - article
       - artifact
       - conversation
+      - dashboard
       - group
       - link
       - object_member
@@ -8205,6 +7358,12 @@ components:
       required:
       - id
       title: set-org-schedule-fragment-summary
+      type: object
+    set-shared-with-membership:
+      additionalProperties: false
+      description: |
+        Information about the role the member receives due to the share.
+      title: set-shared-with-membership
       type: object
     set-sla-policy:
       properties:
@@ -8341,12 +7500,8 @@ components:
       - period_name
       title: set-weekly-org-schedule
       type: object
-    shared-with-membership:
-      description: |
-        Information about the role the member receives due to the share.
-      title: shared-with-membership
-      type: object
     shared-with-membership-filter:
+      additionalProperties: false
       description: Filter on target item based on intended audience.
       title: shared-with-membership-filter
       type: object
@@ -8389,6 +7544,7 @@ components:
       title: sla-assign-result
       type: object
     sla-compensation:
+      additionalProperties: false
       description: |
         Describes the compensation to be provided in case of SLA breach. It is
         not 'self-executing', it is the responsibility of the organization
@@ -8411,6 +7567,7 @@ components:
       - yearly
       type: string
     sla-policy:
+      additionalProperties: false
       description: A policy that represents a promise to your revs.
       title: sla-policy
       type: object
@@ -8446,6 +7603,20 @@ components:
       - draft
       - published
       type: string
+    sla-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      - properties:
+          name:
+            description: Human-readable name.
+            type: string
+          status:
+            $ref: '#/components/schemas/sla-status'
+        required:
+        - name
+        - status
+        type: object
+      title: sla-summary
     sla-summary-filter:
       description: The filter for SLA summary.
       properties:
@@ -8472,6 +7643,35 @@ components:
     sla-tracker:
       allOf:
       - $ref: '#/components/schemas/atom-base'
+      - properties:
+          applies_to_id:
+            description: Details of the object on which the SLA is being tracked.
+            type: string
+          metric_target_summaries:
+            description: |
+              Summary of the metrics target being tracked in the SLA tracker.
+            items:
+              $ref: '#/components/schemas/archetype-metric-target'
+            type: array
+          sla:
+            $ref: '#/components/schemas/sla-summary'
+          sla_policy_id:
+            description: |
+              Details of the applicable SLA policy. Can be omitted if no sla
+              applies, or if no policy of the sla applies at the moment.
+            type: string
+          stage:
+            description: SLA stage of the object being tracked.
+            type: string
+          status:
+            description: |
+              It is an indicator of whether the SLA has ever been breached
+              (missed). If not, it shows whether the SLA is completed, in
+              progress, or nil - if no policy is applied.
+            type: string
+        required:
+        - metric_target_summaries
+        type: object
       title: sla-tracker
     slas-assign-request:
       properties:
@@ -8844,6 +8044,7 @@ components:
       title: staged-info-filter
       type: object
     stock-field-override:
+      additionalProperties: false
       description: A stock field override.
       title: stock-field-override
       type: object
@@ -8997,10 +8198,298 @@ components:
       title: subtypes-list-response
       type: object
       x-go-name: SubtypesListResponseBody
+    survey:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          description:
+            description: Description of the survey.
+            type: string
+          name:
+            description: |
+              Survey name associated with schema. This name would be unique per
+              dev org.
+            type: string
+          schema:
+            description: List of all fields in the schema.
+            items:
+              $ref: '#/components/schemas/schema-field-descriptor'
+            type: array
+        required:
+        - schema
+        type: object
+      title: survey
     survey-aggregation-filter:
+      additionalProperties: false
       description: The filter for survey aggregation.
       title: survey-aggregation-filter
       type: object
+    survey-response:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          dispatch_id:
+            description: The unique ID associated with the dispatched survey.
+            type: string
+          object:
+            description: The ID of the object for which survey is taken.
+            type: string
+          response:
+            description: Response for the survey.
+            type: object
+          survey:
+            description: The ID of the survey for which response is taken.
+            type: string
+        type: object
+      title: survey-response
+      x-go-name: SurveyResponseBody
+    surveys-create-request:
+      properties:
+        description:
+          description: Description about the survey.
+          type: string
+        name:
+          description: The survey's name.
+          type: string
+        schema:
+          description: Schema for the survey.
+          items:
+            $ref: '#/components/schemas/field-descriptor'
+          type: array
+      required:
+      - name
+      - schema
+      title: surveys-create-request
+      type: object
+    surveys-create-response:
+      properties:
+        survey:
+          $ref: '#/components/schemas/survey'
+      required:
+      - survey
+      title: surveys-create-response
+      type: object
+      x-go-name: SurveysCreateResponseBody
+    surveys-delete-request:
+      properties:
+        id:
+          description: ID of the survey being deleted.
+          type: string
+      required:
+      - id
+      title: surveys-delete-request
+      type: object
+    surveys-delete-response:
+      additionalProperties: false
+      title: surveys-delete-response
+      type: object
+      x-go-name: SurveysDeleteResponseBody
+    surveys-list-request:
+      properties:
+        created_by:
+          description: Filters for surveys created by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        limit:
+          description: |
+            The maximum number of surveys to return. If not set, then the
+            default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        name:
+          description: Filters for surveys by name(s).
+          items:
+            type: string
+          type: array
+        sort_by:
+          description: |
+            Fields to sort the surveys by and the direction to sort them.
+          items:
+            type: string
+          type: array
+      title: surveys-list-request
+      type: object
+    surveys-list-response:
+      properties:
+        next_cursor:
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          type: string
+        surveys:
+          description: The list of the surveys.
+          items:
+            $ref: '#/components/schemas/survey'
+          type: array
+      required:
+      - surveys
+      title: surveys-list-response
+      type: object
+      x-go-name: SurveysListResponseBody
+    surveys-responses-list-request:
+      properties:
+        created_by:
+          description: |
+            Filters for survey responses created by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        limit:
+          description: |
+            The maximum number of survey responses to return. If not set, then
+            the default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        objects:
+          description: Filters for survey responses created for the objects.
+          example:
+          - ACC-12345
+          items:
+            type: string
+          type: array
+        sort_by:
+          description: |
+            Fields to sort the survey responses by and the direction to sort
+            them.
+          items:
+            type: string
+          type: array
+        surveys:
+          description: |
+            Filters for survey responses for the provided survey IDs.
+          items:
+            type: string
+          type: array
+      title: surveys-responses-list-request
+      type: object
+    surveys-responses-list-response:
+      properties:
+        next_cursor:
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          type: string
+        survey_responses:
+          description: The list of the survey responses.
+          items:
+            $ref: '#/components/schemas/survey-response'
+          type: array
+      required:
+      - survey_responses
+      title: surveys-responses-list-response
+      type: object
+      x-go-name: SurveysResponsesListResponseBody
+    surveys-send-request:
+      properties:
+        email:
+          $ref: '#/components/schemas/surveys-send-request-email'
+      required:
+      - email
+      title: surveys-send-request
+      type: object
+    surveys-send-request-email:
+      properties:
+        body:
+          description: Message body for a survey email.
+          type: string
+        recipients:
+          description: Recipients list for a survey email.
+          items:
+            type: string
+          type: array
+        sender:
+          description: Sender email address from which an email is sent.
+          type: string
+        subject:
+          description: Subject for an email where survey is sent.
+          type: string
+      required:
+      - body
+      - recipients
+      - sender
+      - subject
+      title: surveys-send-request-email
+      type: object
+    surveys-send-response:
+      additionalProperties: false
+      title: surveys-send-response
+      type: object
+      x-go-name: SurveysSendResponseBody
+    surveys-submit-request:
+      properties:
+        dispatch_id:
+          description: The unique ID associated with the dispatched survey.
+          type: string
+        object:
+          description: |
+            The ID of the object this survey is on (e.g. ticket, conversation,
+            etc).
+          example: ACC-12345
+          type: string
+        response:
+          description: Survey response submitted for the object.
+          type: object
+        response_score:
+          description: |
+            The response score for the survey. Only applicable for CSAT and
+            NPS.
+          format: int32
+          type: integer
+        source_channel:
+          description: |
+            The source channel from which survey response is submitted.
+          type: string
+        survey:
+          description: The ID of the survey to submit the response to.
+          type: string
+      required:
+      - object
+      - response
+      - survey
+      title: surveys-submit-request
+      type: object
+    surveys-submit-response:
+      additionalProperties: false
+      title: surveys-submit-response
+      type: object
+      x-go-name: SurveysSubmitResponseBody
     sync-metadata-filter:
       properties:
         last_sync_in:
@@ -9220,165 +8709,6 @@ components:
           type: string
       title: tag-with-value-filter
       type: object
-    tags-create-request:
-      description: The request to create a new tag.
-      properties:
-        allowed_values:
-          description: |
-            The allowed values for the tag, or empty if no values are
-            permitted.
-          items:
-            type: string
-          type: array
-        description:
-          description: The description for the tag.
-          type: string
-        name:
-          description: |
-            The name for the tag, which must be unique across all tags.
-          type: string
-      required:
-      - name
-      title: tags-create-request
-      type: object
-    tags-create-response:
-      description: The response to creating a new tag.
-      properties:
-        tag:
-          $ref: '#/components/schemas/tag'
-      required:
-      - tag
-      title: tags-create-response
-      type: object
-      x-go-name: TagsCreateResponseBody
-    tags-delete-request:
-      description: The request to delete a tag.
-      properties:
-        id:
-          description: The ID of the tag to delete.
-          example: TAG-12345
-          type: string
-      required:
-      - id
-      title: tags-delete-request
-      type: object
-    tags-delete-response:
-      description: The response for deleting a tag.
-      title: tags-delete-response
-      type: object
-      x-go-name: TagsDeleteResponseBody
-    tags-get-request:
-      description: The request to get a tag's information.
-      properties:
-        id:
-          description: The requested tag's ID.
-          example: TAG-12345
-          type: string
-      required:
-      - id
-      title: tags-get-request
-      type: object
-    tags-get-response:
-      description: The response to getting a tag's information.
-      properties:
-        tag:
-          $ref: '#/components/schemas/tag'
-      required:
-      - tag
-      title: tags-get-response
-      type: object
-      x-go-name: TagsGetResponseBody
-    tags-list-request:
-      description: The request to get information about a list of tags.
-      properties:
-        cursor:
-          description: |
-            The cursor to resume iteration from. If not provided, then
-            iteration starts from the beginning.
-          type: string
-        limit:
-          description: |
-            The maximum number of tags to return. The default is '50'.
-          format: int32
-          type: integer
-        mode:
-          $ref: '#/components/schemas/list-mode'
-        name:
-          description: Filters for tags with the provided names.
-          items:
-            type: string
-          type: array
-        sort_by:
-          description: Fields to sort tags by and the direction to sort them.
-          items:
-            type: string
-          type: array
-      title: tags-list-request
-      type: object
-    tags-list-response:
-      description: The response to listing the tags.
-      properties:
-        next_cursor:
-          description: |
-            The cursor used to iterate subsequent results in accordance to the
-            sort order. If not set, then no later elements exist.
-          type: string
-        prev_cursor:
-          description: |
-            The cursor used to iterate preceding results in accordance to the
-            sort order. If not set, then no prior elements exist.
-          type: string
-        tags:
-          description: The list of tags.
-          items:
-            $ref: '#/components/schemas/tag'
-          type: array
-      required:
-      - tags
-      title: tags-list-response
-      type: object
-      x-go-name: TagsListResponseBody
-    tags-update-allowed-values:
-      description: Specifies an update to a tag's allowed values.
-      properties:
-        set:
-          description: Sets the allowed values for the tag.
-          items:
-            type: string
-          type: array
-      title: tags-update-allowed-values
-      type: object
-    tags-update-request:
-      description: The request to update a tag.
-      properties:
-        allowed_values:
-          $ref: '#/components/schemas/tags-update-allowed-values'
-        description:
-          description: The updated description of the tag.
-          type: string
-        id:
-          description: The ID of the tag to update.
-          example: TAG-12345
-          type: string
-        name:
-          description: |
-            The updated name of the tag. The name must be unique across all
-            tags.
-          type: string
-      required:
-      - id
-      title: tags-update-request
-      type: object
-    tags-update-response:
-      description: The response for updating a tag.
-      properties:
-        tag:
-          $ref: '#/components/schemas/tag'
-      required:
-      - tag
-      title: tags-update-response
-      type: object
-      x-go-name: TagsUpdateResponseBody
     task:
       allOf:
       - $ref: '#/components/schemas/work-base'
@@ -9593,43 +8923,6 @@ components:
       title: timeline-entries-create-response
       type: object
       x-go-name: TimelineEntriesCreateResponseBody
-    timeline-entries-delete-request:
-      description: The request to delete a timeline entry from an object.
-      properties:
-        id:
-          description: The ID of the timeline entry to delete.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
-          type: string
-      required:
-      - id
-      title: timeline-entries-delete-request
-      type: object
-    timeline-entries-delete-response:
-      description: The response to deleting a timeline entry from an object.
-      title: timeline-entries-delete-response
-      type: object
-      x-go-name: TimelineEntriesDeleteResponseBody
-    timeline-entries-get-request:
-      description: The request to get a timeline entry.
-      properties:
-        id:
-          description: The ID of the timeline entry to get.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
-          type: string
-      required:
-      - id
-      title: timeline-entries-get-request
-      type: object
-    timeline-entries-get-response:
-      description: The request to getting a timeline entry.
-      properties:
-        timeline_entry:
-          $ref: '#/components/schemas/timeline-entry'
-      required:
-      - timeline_entry
-      title: timeline-entries-get-response
-      type: object
-      x-go-name: TimelineEntriesGetResponseBody
     timeline-entries-list-request:
       description: The request to list timeline entries for an object.
       properties:
@@ -9977,6 +9270,7 @@ components:
       title: track-events-publish-request
       type: object
     track-events-publish-response:
+      additionalProperties: false
       title: track-events-publish-response
       type: object
       x-go-name: TrackEventsPublishResponseBody
@@ -10085,6 +9379,57 @@ components:
       - org
       - user
       type: string
+    uoms-count-request:
+      properties:
+        aggregation_types:
+          description: List of aggregation types for filtering list of UOMs.
+          items:
+            $ref: '#/components/schemas/aggregation-detail-aggregation-type'
+          type: array
+        ids:
+          description: |
+            List of Unit of Measurement (UOM) DONs to be used in filtering
+            complete list of UOMs defined in a Dev Org.
+          items:
+            type: string
+          type: array
+        metric_names:
+          description: List of metric names for filtering list of UOMs.
+          items:
+            type: string
+          type: array
+        part_ids:
+          description: List of part IDs for filtering list of UOMs.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+        product_ids:
+          description: List of product IDs for filtering list of UOMs.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+        unit_types:
+          description: List of unit types for filtering list of UOMs.
+          items:
+            $ref: '#/components/schemas/unit-type'
+          type: array
+      title: uoms-count-request
+      type: object
+    uoms-count-response:
+      properties:
+        count:
+          description: Count of Unit of Measurements matching the filter.
+          format: int32
+          type: integer
+      required:
+      - count
+      title: uoms-count-response
+      type: object
+      x-go-name: UomsCountResponseBody
     uoms-create-request:
       properties:
         aggregation_detail:
@@ -10652,168 +9997,8 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       title: webhook-summary
-    webhooks-create-request:
-      description: The request to create a new webhook.
-      properties:
-        event_types:
-          description: The event types that the webhook endpoint will receive.
-          items:
-            $ref: '#/components/schemas/webhook-event-type'
-          type: array
-        secret:
-          description: |
-            The secret to use when verifying webhook events. If provided, the
-            secret must be between 8 and 32 bytes (inclusive). If not set, a
-            secret will be automatically generated and provided in the
-            response.
-          format: byte
-          type: string
-        url:
-          description: The URL of the webhook endpoint.
-          type: string
-      required:
-      - url
-      title: webhooks-create-request
-      type: object
-    webhooks-create-response:
-      description: The response to creating a new webhook.
-      properties:
-        webhook:
-          $ref: '#/components/schemas/webhook'
-      required:
-      - webhook
-      title: webhooks-create-response
-      type: object
-      x-go-name: WebhooksCreateResponseBody
-    webhooks-delete-request:
-      description: The request to delete a webhook.
-      properties:
-        id:
-          description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
-          type: string
-      required:
-      - id
-      title: webhooks-delete-request
-      type: object
-    webhooks-delete-response:
-      description: The response to deleting the webhook.
-      title: webhooks-delete-response
-      type: object
-      x-go-name: WebhooksDeleteResponseBody
-    webhooks-get-request:
-      description: The request to get a webhook's information.
-      properties:
-        id:
-          description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
-          type: string
-      required:
-      - id
-      title: webhooks-get-request
-      type: object
-    webhooks-get-response:
-      description: The response to getting the information for the webhook.
-      properties:
-        webhook:
-          $ref: '#/components/schemas/webhook'
-      required:
-      - webhook
-      title: webhooks-get-response
-      type: object
-      x-go-name: WebhooksGetResponseBody
-    webhooks-list-request:
-      description: The request to list the webhooks.
-      title: webhooks-list-request
-      type: object
-    webhooks-list-response:
-      description: The response to listing the webhooks.
-      properties:
-        webhooks:
-          description: The list of webhooks.
-          items:
-            $ref: '#/components/schemas/webhook'
-          type: array
-      required:
-      - webhooks
-      title: webhooks-list-response
-      type: object
-      x-go-name: WebhooksListResponseBody
-    webhooks-update-action:
-      description: The action to update the webhook's status.
-      enum:
-      - activate
-      - deactivate
-      type: string
-    webhooks-update-request:
-      description: The request to update a webhook.
-      properties:
-        action:
-          $ref: '#/components/schemas/webhooks-update-action'
-        event_types:
-          $ref: '#/components/schemas/webhooks-update-request-event-types'
-        id:
-          description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
-          type: string
-        secret:
-          description: |
-            If provided, updates the secret that's used when verifying webhook
-            events, which must be between 8 and 32 bytes (inclusive). Otherwise
-            if empty, then a new secret is generated. If the webhook is active,
-            then its status will transition to the 'unverified' state and it
-            won't receive any object events until successfully verified.
-          format: byte
-          type: string
-        url:
-          description: |
-            The webhook's updated URL. If the webhook is active, then the
-            webhook's status will transition to the 'unverified' state and it
-            won't receive any object events until successfully verified.
-          type: string
-      required:
-      - id
-      title: webhooks-update-request
-      type: object
-    webhooks-update-request-event-types:
-      properties:
-        add:
-          description: |
-            The event types to add. If a provided event type is already set for
-            the webhook, then nothing is done. Note this is mutually exclusive
-            with 'set'.
-          items:
-            $ref: '#/components/schemas/webhook-event-type'
-          type: array
-        remove:
-          description: |
-            The event types to remove. If a provided event type isn't set for
-            the webhook, then nothing is done. Note this is mutually exclusive
-            with 'set'.
-          items:
-            $ref: '#/components/schemas/webhook-event-type'
-          type: array
-        set:
-          description: |
-            The updated event types, which will replace the webhook's current
-            event types. Note this is mutually exclusive with 'add' and
-            'remove'.
-          items:
-            $ref: '#/components/schemas/webhook-event-type'
-          type: array
-      title: webhooks-update-request-event-types
-      type: object
-    webhooks-update-response:
-      description: The response to updating the webhook.
-      properties:
-        webhook:
-          $ref: '#/components/schemas/webhook'
-      required:
-      - webhook
-      title: webhooks-update-response
-      type: object
-      x-go-name: WebhooksUpdateResponseBody
     weekly-org-schedule:
+      additionalProperties: false
       description: The schedule for each week.
       title: weekly-org-schedule
       type: object
@@ -11056,6 +10241,11 @@ components:
         sprint:
           description: The sprint that the issue belongs to.
           type: string
+        target_start_date:
+          description: Timestamp for when the work is expected to start.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
       title: works-create-request-issue
       type: object
     works-create-request-opportunity:
@@ -11149,6 +10339,7 @@ components:
       title: works-delete-request
       type: object
     works-delete-response:
+      additionalProperties: false
       title: works-delete-response
       type: object
       x-go-name: WorksDeleteResponseBody
@@ -11252,6 +10443,8 @@ components:
           items:
             type: string
           type: array
+        actual_start_date:
+          $ref: '#/components/schemas/date-filter'
         priority:
           description: Filters for issues with any of the provided priorities.
           items:
@@ -11277,6 +10470,8 @@ components:
           items:
             type: string
           type: array
+        target_start_date:
+          $ref: '#/components/schemas/date-filter'
       title: works-filter-issue
       type: object
     works-filter-opportunity:
@@ -11500,7 +10695,7 @@ components:
           example: PROD-12345
           type: string
         artifacts:
-          $ref: '#/components/schemas/works-update-request-artifact-ids'
+          $ref: '#/components/schemas/works-update-request-artifacts'
         body:
           description: |
             Updated body of the work object, or unchanged if not provided.
@@ -11548,16 +10743,35 @@ components:
       - id
       title: works-update-request
       type: object
-    works-update-request-artifact-ids:
+    works-update-request-artifacts:
       properties:
-        set:
-          description: Sets the IDs to the provided artifact IDs.
+        add:
+          description: |
+            Adds the provided artifacts (if not already present) to the field.
           example:
           - ARTIFACT-12345
           items:
             type: string
+          maxItems: 50
           type: array
-      title: works-update-request-artifact-ids
+        remove:
+          description: |
+            Removes the provided artifacts (if they exist) from the field.
+          example:
+          - ARTIFACT-12345
+          items:
+            type: string
+          maxItems: 50
+          type: array
+        set:
+          description: Sets the field to the provided artifacts.
+          example:
+          - ARTIFACT-12345
+          items:
+            type: string
+          maxItems: 50
+          type: array
+      title: works-update-request-artifacts
       type: object
     works-update-request-issue:
       properties:
@@ -11572,6 +10786,13 @@ components:
           type: integer
         sprint:
           description: Updates the sprint that the issue belongs to.
+          nullable: true
+          type: string
+        target_start_date:
+          description: |
+            Updates the timestamp for when the work is expected to start.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
           nullable: true
           type: string
       title: works-update-request-issue
@@ -11734,9 +10955,9 @@ components:
       name: Authorization
       type: apiKey
 info:
-  description: DevRev's REST API.
-  title: DevRev REST API
-  version: "2024-01-24"
+  description: DevRev's BETA REST API Specification.
+  title: DevRev Beta REST API
+  version: BETA
 openapi: 3.0.3
 paths:
   /accounts.create:
@@ -12660,221 +11881,6 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - articles
-  /artifacts.get:
-    get:
-      description: Gets the requested artifact's information.
-      operationId: artifacts-get
-      parameters:
-      - description: The requested artifact's ID.
-        explode: false
-        in: query
-        name: id
-        required: true
-        schema:
-          example: ARTIFACT-12345
-          type: string
-      - description: The version of the artifact that needs to be fetched.
-        explode: false
-        in: query
-        name: version
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/artifacts-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - artifacts
-      x-request-name: ArtifactsGetQuery
-    post:
-      description: Gets the requested artifact's information.
-      operationId: artifacts-get-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/artifacts-get-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/artifacts-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - artifacts
-  /artifacts.list:
-    get:
-      description: List the artifacts attached to an object.
-      operationId: artifacts-list
-      parameters:
-      - description: The ID of the object to filter artifacts.
-        explode: false
-        in: query
-        name: parent_id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/artifacts-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - artifacts
-      x-request-name: ArtifactsListQuery
-    post:
-      description: List the artifacts attached to an object.
-      operationId: artifacts-list-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/artifacts-list-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/artifacts-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - artifacts
-  /artifacts.locate:
-    get:
-      description: Gets the download URL for the artifact.
-      operationId: artifacts-locate
-      parameters:
-      - description: The ID of the artifact to get the URL for.
-        explode: false
-        in: query
-        name: id
-        required: true
-        schema:
-          example: ARTIFACT-12345
-          type: string
-      - description: The version of the artifact that needs to be fetched.
-        explode: false
-        in: query
-        name: version
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/artifacts-locate-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - artifacts
-      x-request-name: ArtifactsLocateQuery
-    post:
-      description: Gets the download URL for the artifact.
-      operationId: artifacts-locate-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/artifacts-locate-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/artifacts-locate-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - artifacts
   /artifacts.prepare:
     post:
       description: |
@@ -12938,298 +11944,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - artifacts
-  /auth-tokens.create:
-    post:
-      description: |
-        Creates a JWT corresponding to the requested token type for the
-        authenticated user.
-      operationId: auth-tokens-create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/auth-tokens-create-request'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/auth-tokens-create-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "409":
-          $ref: '#/components/responses/conflict'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
-  /auth-tokens.delete:
-    post:
-      description: |
-        Revokes the token that matches the given token ID issued under the
-        given Dev organization.
-      operationId: auth-tokens-delete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/auth-tokens-delete-request'
-      responses:
-        "200":
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
-  /auth-tokens.get:
-    get:
-      description: |
-        Gets the token metadata corresponding to the given token ID under the
-        given Dev organization.
-      operationId: auth-tokens-get
-      parameters:
-      - description: |
-          The unique identifier of the token under a given Dev organization.
-        explode: false
-        in: query
-        name: token_id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/auth-tokens-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
-      x-request-name: AuthTokensGetQuery
-    post:
-      description: |
-        Gets the token metadata corresponding to the given token ID under the
-        given Dev organization.
-      operationId: auth-tokens-get-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/auth-tokens-get-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/auth-tokens-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
-  /auth-tokens.list:
-    get:
-      description: |
-        Gets the token metadata for all the tokens corresponding to the given
-        token type issued for a given subject.
-      operationId: auth-tokens-list
-      parameters:
-      - description: |
-          An identifier that represents the application, which requested the
-          token. Only relevant for application access tokens.
-        explode: false
-        in: query
-        name: client_id
-        schema:
-          type: string
-      - description: |
-          The type of the requested token. If no value is specified, the
-          response will include tokens of all the types.
-        explode: false
-        in: query
-        name: requested_token_type
-        schema:
-          $ref: '#/components/schemas/auth-token-requested-token-type'
-      - description: |
-          The subject associated with the token. In the absence of this
-          parameter, the ID of the authenticated entity is treated as the
-          subject.
-        explode: false
-        in: query
-        name: subject
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/auth-tokens-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
-      x-request-name: AuthTokensListQuery
-    post:
-      description: |
-        Gets the token metadata for all the tokens corresponding to the given
-        token type issued for a given subject.
-      operationId: auth-tokens-list-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/auth-tokens-list-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/auth-tokens-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
-  /auth-tokens.self.delete:
-    post:
-      description: |
-        Revokes all the tokens that matches the given token type created by the
-        authenticated user.
-      operationId: auth-tokens-self-delete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/auth-tokens-self-delete-request'
-      responses:
-        "200":
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
-  /auth-tokens.update:
-    post:
-      description: |
-        Updates token metadata of a token issued under a given Dev
-        organization.
-      operationId: auth-tokens-update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/auth-tokens-update-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/auth-tokens-update-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-tokens
   /code-changes.create:
     post:
-      description: Create CodeChange object.
+      description: Creates a code change object.
       operationId: code-changes-create
       requestBody:
         content:
@@ -13256,10 +11973,10 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - works
+      - code-changes
   /code-changes.delete:
     post:
-      description: Delete CodeChange object.
+      description: Deletes a code change object.
       operationId: code-changes-delete
       requestBody:
         content:
@@ -13286,10 +12003,10 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - works
+      - code-changes
   /code-changes.get:
     get:
-      description: Get CodeChange object.
+      description: Gets a code change object.
       operationId: code-changes-get
       parameters:
       - description: The code change object ID.
@@ -13319,10 +12036,10 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - works
+      - code-changes
       x-request-name: CodeChangesGetQuery
     post:
-      description: Get CodeChange object.
+      description: Gets a code change object.
       operationId: code-changes-get-post
       requestBody:
         content:
@@ -13349,10 +12066,10 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - works
+      - code-changes
   /code-changes.list:
     get:
-      description: List CodeChange objects.
+      description: Lists code change objects.
       operationId: code-changes-list
       parameters:
       - description: |
@@ -13400,10 +12117,10 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - works
+      - code-changes
       x-request-name: CodeChangesListQuery
     post:
-      description: List CodeChange objects.
+      description: Lists code change objects.
       operationId: code-changes-list-post
       requestBody:
         content:
@@ -13430,10 +12147,10 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - works
+      - code-changes
   /code-changes.update:
     post:
-      description: Update CodeChange object.
+      description: Updates a code change object.
       operationId: code-changes-update
       requestBody:
         content:
@@ -13460,7 +12177,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - works
+      - code-changes
   /conversations.create:
     post:
       description: Creates a conversation.
@@ -13999,515 +12716,6 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - conversations
-  /dev-orgs.auth-connections.create:
-    post:
-      description: |
-        Creates a new enterprise authentication connection for a Dev
-        organization. This authentication connection will not be enabled by
-        default for the organization and the user will need to explicitly
-        enable this. Keep in mind that at a time, only one authentication
-        connection can be enabled for a Dev organization. At present, only 5
-        enterprise connections can be created by an organization.
-      operationId: dev-org-auth-connections-create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-org-auth-connections-create-request'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-org-auth-connections-create-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-  /dev-orgs.auth-connections.delete:
-    post:
-      description: |
-        Deletes an authentication connection. Only enterprise connections which
-        are explicitly set up for a Dev organization can be deleted. Default
-        connections can not be deleted using this method.
-      operationId: dev-org-auth-connections-delete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-org-auth-connections-delete-request'
-      responses:
-        "200":
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-  /dev-orgs.auth-connections.get:
-    get:
-      description: Retrieves the details for an authentication connection.
-      operationId: dev-org-auth-connections-get
-      parameters:
-      - description: ID of the authentication connection.
-        explode: false
-        in: query
-        name: id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-org-auth-connections-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-      x-request-name: DevOrgAuthConnectionsGetQuery
-    post:
-      description: Retrieves the details for an authentication connection.
-      operationId: dev-org-auth-connections-get-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-org-auth-connections-get-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-org-auth-connections-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-  /dev-orgs.auth-connections.list:
-    get:
-      description: |
-        Lists all the authentication connections available for a Dev
-        organization. This list will include both social and enterprise
-        connections which are either available by default or are explicitly
-        created by the user.
-      operationId: dev-org-auth-connections-list
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-org-auth-connections-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-      x-request-name: DevOrgAuthConnectionsListQuery
-    post:
-      description: |
-        Lists all the authentication connections available for a Dev
-        organization. This list will include both social and enterprise
-        connections which are either available by default or are explicitly
-        created by the user.
-      operationId: dev-org-auth-connections-list-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/empty'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-org-auth-connections-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-  /dev-orgs.auth-connections.toggle:
-    post:
-      description: |
-        Enable or disable an authentication connection for a Dev organization.
-        Currently, only 1 authentication connection can be enabled at a time.
-        When a new authentication connection is enabled, the connection which
-        is currently enabled for the Dev organization is automatically
-        disabled.
-      operationId: dev-org-auth-connections-toggle
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-org-auth-connections-toggle-request'
-      responses:
-        "200":
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-  /dev-orgs.auth-connections.update:
-    post:
-      description: Updates an authentication connection.
-      operationId: dev-org-auth-connections-update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-org-auth-connections-update-request'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-org-auth-connections-update-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - auth-connection
-      - dev-orgs
-  /dev-users.get:
-    get:
-      description: Gets the requested user's information.
-      operationId: dev-users-get
-      parameters:
-      - description: User ID of the requested Dev user.
-        explode: false
-        in: query
-        name: id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-users-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - dev-users
-      x-request-name: DevUsersGetQuery
-    post:
-      description: Gets the requested user's information.
-      operationId: dev-users-get-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-users-get-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-users-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - dev-users
-  /dev-users.list:
-    get:
-      description: Lists users within your organization.
-      operationId: dev-users-list
-      parameters:
-      - description: |
-          The cursor to resume iteration from. If not provided, then iteration
-          starts from the beginning.
-        explode: false
-        in: query
-        name: cursor
-        schema:
-          type: string
-      - description: Filters Dev users based on email addresses.
-        explode: false
-        in: query
-        name: email
-        schema:
-          items:
-            type: string
-          type: array
-      - description: Unique ID of the user in the external source.
-        explode: false
-        in: query
-        name: external_identity.id
-        schema:
-          type: string
-      - description: Issuer of the external identity of the user.
-        explode: false
-        in: query
-        name: external_identity.issuer
-        schema:
-          type: string
-      - description: |
-          The maximum number of Dev users to return. The default is '50'.
-        explode: false
-        in: query
-        name: limit
-        schema:
-          format: int32
-          type: integer
-      - description: |
-          The iteration mode to use, otherwise if not set, then "after" is
-          used.
-        explode: false
-        in: query
-        name: mode
-        schema:
-          $ref: '#/components/schemas/list-mode'
-      - description: |
-          Fields to sort the Dev users by and the direction to sort them.
-        explode: false
-        in: query
-        name: sort_by
-        schema:
-          items:
-            type: string
-          type: array
-      - description: Filters Dev users based on state.
-        explode: false
-        in: query
-        name: state
-        schema:
-          items:
-            $ref: '#/components/schemas/user-state'
-          type: array
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-users-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - dev-users
-      x-request-name: DevUsersListQuery
-    post:
-      description: Lists users within your organization.
-      operationId: dev-users-list-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-users-list-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-users-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - dev-users
-  /dev-users.self:
-    get:
-      description: Gets the authenticated user's information.
-      operationId: dev-users-self
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-users-self-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - dev-users
-      x-request-name: DevUsersSelfQuery
-    post:
-      description: Gets the authenticated user's information.
-      operationId: dev-users-self-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/dev-users-self-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/dev-users-self-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - dev-users
   /engagements.count:
     get:
       description: Counts the engagement records.
@@ -15667,6 +13875,14 @@ paths:
         schema:
           type: string
       - description: |
+          Whether to include custom metrics in the response. If not set, then
+          custom metrics are excluded.
+        explode: false
+        in: query
+        name: include_custom_metrics
+        schema:
+          type: boolean
+      - description: |
           The maximum number of records to return. The default is '50'.
         explode: false
         in: query
@@ -16506,38 +14722,6 @@ paths:
           $ref: '#/components/responses/forbidden'
         "409":
           $ref: '#/components/responses/conflict'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - rev-orgs
-  /rev-orgs.delete:
-    post:
-      description: Deletes the Rev organization.
-      operationId: rev-orgs-delete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/rev-orgs-delete-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/rev-orgs-delete-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -18382,6 +16566,359 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - snap-widgets
+  /surveys.create:
+    post:
+      description: |
+        Creates a schema for survey, which includes name and description of
+        schema.
+      operationId: surveys-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
+  /surveys.delete:
+    post:
+      description: Deletes the specified survey.
+      operationId: surveys-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-delete-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
+  /surveys.list:
+    get:
+      description: List surveys requested by the user.
+      operationId: surveys-list
+      parameters:
+      - description: Filters for surveys created by any of these users.
+        explode: false
+        in: query
+        name: created_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+      - description: |
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: |
+          The maximum number of surveys to return. If not set, then the default
+          is '50'.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
+      - description: Filters for surveys by name(s).
+        explode: false
+        in: query
+        name: name
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Fields to sort the surveys by and the direction to sort them.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
+      x-request-name: SurveysListQuery
+    post:
+      description: List surveys requested by the user.
+      operationId: surveys-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
+  /surveys.responses.list:
+    get:
+      description: List survey responses requested by the user.
+      operationId: surveys-responses-list
+      parameters:
+      - description: |
+          Filters for survey responses created by any of these users.
+        explode: false
+        in: query
+        name: created_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+      - description: |
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: |
+          The maximum number of survey responses to return. If not set, then
+          the default is '50'.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
+      - description: Filters for survey responses created for the objects.
+        explode: false
+        in: query
+        name: objects
+        schema:
+          example:
+          - ACC-12345
+          items:
+            type: string
+          type: array
+      - description: |
+          Fields to sort the survey responses by and the direction to sort
+          them.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Filters for survey responses for the provided survey IDs.
+        explode: false
+        in: query
+        name: surveys
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-responses-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
+      x-request-name: SurveysResponsesListQuery
+    post:
+      description: List survey responses requested by the user.
+      operationId: surveys-responses-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-responses-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-responses-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
+  /surveys.send:
+    post:
+      description: Sends a survey on the specified channels.
+      operationId: surveys-send
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-send-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-send-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
+  /surveys.submit:
+    post:
+      description: |
+        Submits a user response to a survey, which is defined by the survey ID.
+      operationId: surveys-submit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-submit-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-submit-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - surveys
   /sys-users.list:
     get:
       description: Lists system users within your organization.
@@ -18504,265 +17041,6 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - sys-users
-  /tags.create:
-    post:
-      description: |
-        Creates a new tag, which is used to create associations between objects
-        and a logical concept denoted by the tag's name.
-      operationId: tags-create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/tags-create-request'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tags-create-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - tags
-  /tags.delete:
-    post:
-      description: Deletes a tag.
-      operationId: tags-delete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/tags-delete-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tags-delete-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - tags
-  /tags.get:
-    get:
-      description: Gets a tag's information.
-      operationId: tags-get
-      parameters:
-      - description: The requested tag's ID.
-        explode: false
-        in: query
-        name: id
-        required: true
-        schema:
-          example: TAG-12345
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tags-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - tags
-      x-request-name: TagsGetQuery
-    post:
-      description: Gets a tag's information.
-      operationId: tags-get-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/tags-get-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tags-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - tags
-  /tags.list:
-    get:
-      description: Lists the available tags.
-      operationId: tags-list
-      parameters:
-      - description: |
-          The cursor to resume iteration from. If not provided, then iteration
-          starts from the beginning.
-        explode: false
-        in: query
-        name: cursor
-        schema:
-          type: string
-      - description: The maximum number of tags to return. The default is '50'.
-        explode: false
-        in: query
-        name: limit
-        schema:
-          format: int32
-          type: integer
-      - description: |
-          The iteration mode to use, otherwise if not set, then "after" is
-          used.
-        explode: false
-        in: query
-        name: mode
-        schema:
-          $ref: '#/components/schemas/list-mode'
-      - description: Filters for tags with the provided names.
-        explode: false
-        in: query
-        name: name
-        schema:
-          items:
-            type: string
-          type: array
-      - description: Fields to sort tags by and the direction to sort them.
-        explode: false
-        in: query
-        name: sort_by
-        schema:
-          items:
-            type: string
-          type: array
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tags-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - tags
-      x-request-name: TagsListQuery
-    post:
-      description: Lists the available tags.
-      operationId: tags-list-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/tags-list-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tags-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - tags
-  /tags.update:
-    post:
-      description: Updates a tag's information.
-      operationId: tags-update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/tags-update-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tags-update-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - tags
   /timeline-entries.create:
     post:
       description: Creates a new entry on an object's timeline.
@@ -18785,104 +17063,6 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - timeline-entries
-  /timeline-entries.delete:
-    post:
-      description: Deletes an entry from an object's timeline.
-      operationId: timeline-entries-delete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/timeline-entries-delete-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/timeline-entries-delete-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - timeline-entries
-  /timeline-entries.get:
-    get:
-      description: Gets an entry on an object's timeline.
-      operationId: timeline-entries-get
-      parameters:
-      - description: The ID of the timeline entry to get.
-        explode: false
-        in: query
-        name: id
-        required: true
-        schema:
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/timeline-entries-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - timeline-entries
-      x-request-name: TimelineEntriesGetQuery
-    post:
-      description: Gets an entry on an object's timeline.
-      operationId: timeline-entries-get-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/timeline-entries-get-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/timeline-entries-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -19077,6 +17257,118 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - event-source
+  /uoms.count:
+    get:
+      description: |
+        Counts the number of Unit of Measurements based on the given filters.
+      operationId: uoms-count
+      parameters:
+      - description: List of aggregation types for filtering list of UOMs.
+        explode: false
+        in: query
+        name: aggregation_types
+        schema:
+          items:
+            $ref: '#/components/schemas/aggregation-detail-aggregation-type'
+          type: array
+      - description: |
+          List of Unit of Measurement (UOM) DONs to be used in filtering
+          complete list of UOMs defined in a Dev Org.
+        explode: false
+        in: query
+        name: ids
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of metric names for filtering list of UOMs.
+        explode: false
+        in: query
+        name: metric_names
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of part IDs for filtering list of UOMs.
+        explode: false
+        in: query
+        name: part_ids
+        schema:
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+      - description: List of product IDs for filtering list of UOMs.
+        explode: false
+        in: query
+        name: product_ids
+        schema:
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+      - description: List of unit types for filtering list of UOMs.
+        explode: false
+        in: query
+        name: unit_types
+        schema:
+          items:
+            $ref: '#/components/schemas/unit-type'
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uoms-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - product-usage
+      x-request-name: UomsCountQuery
+    post:
+      description: |
+        Counts the number of Unit of Measurements based on the given filters.
+      operationId: uoms-count-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/uoms-count-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uoms-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - product-usage
   /uoms.create:
     post:
       description: Creates a Unit of Measurement on a part.
@@ -19379,223 +17671,6 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - product-usage
-  /webhooks.create:
-    post:
-      description: Creates a new webhook target.
-      operationId: webhooks-create
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/webhooks-create-request'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhooks-create-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - webhooks
-  /webhooks.delete:
-    post:
-      description: Deletes the requested webhook.
-      operationId: webhooks-delete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/webhooks-delete-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhooks-delete-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - webhooks
-  /webhooks.get:
-    get:
-      description: Gets the requested webhook's information.
-      operationId: webhooks-get
-      parameters:
-      - description: ID for the webhook.
-        explode: false
-        in: query
-        name: id
-        required: true
-        schema:
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhooks-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - webhooks
-      x-request-name: WebhooksGetQuery
-    post:
-      description: Gets the requested webhook's information.
-      operationId: webhooks-get-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/webhooks-get-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhooks-get-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - webhooks
-  /webhooks.list:
-    get:
-      description: Lists the webhooks.
-      operationId: webhooks-list
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhooks-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - webhooks
-      x-request-name: WebhooksListQuery
-    post:
-      description: Lists the webhooks.
-      operationId: webhooks-list-post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/webhooks-list-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhooks-list-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - webhooks
-  /webhooks.update:
-    post:
-      description: Updates the requested webhook.
-      operationId: webhooks-update
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/webhooks-update-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhooks-update-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "404":
-          $ref: '#/components/responses/not-found'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-      - webhooks
   /works.create:
     post:
       description: |
@@ -20478,18 +18553,12 @@ tags:
   name: articles
 - description: Artifact (file) management APIs.
   name: artifacts
-- description: Auth Connections of DevOrg.
-  name: auth-connection
-- description: Security token interactions.
-  name: auth-tokens
+- description: Code change interactions.
+  name: code-changes
 - description: DevRev conversation interaction.
   name: conversations
 - description: DevRev customization.
   name: customization
-- description: Dev organization interactions.
-  name: dev-orgs
-- description: Dev user interactions.
-  name: dev-users
 - description: DevRev engagements.
   name: engagements
 - description: Event source interactions.
@@ -20518,13 +18587,11 @@ tags:
   name: snap-ins
 - description: SnapWidget APIs
   name: snap-widgets
+- description: Surveys
+  name: surveys
 - description: System user interactions
   name: sys-users
-- description: DevRev tag interactions.
-  name: tags
 - description: APIs to manage timeline entries for objects.
   name: timeline-entries
-- description: Webhook event APIs.
-  name: webhooks
 - description: DevRev work interactions.
   name: works

@@ -4,6 +4,7 @@ navigation:
       - page: For Developers
         path: ../docs/pages/developer-intro.mdx
   - api: API Reference
+    display-errors: true
     api-name: beta
   - section: Guides
     contents:

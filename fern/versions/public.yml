@@ -5,8 +5,6 @@ navigation:
         path: ../docs/pages/developer-intro.mdx
       - page: Getting started
         path: ../docs/pages/welcome.mdx
-      - page: DevRev SDKs
-        path: ../docs/pages/sdk-overview.mdx
       - page: Authentication
         path: ../docs/pages/authentication.mdx
       - page: Entities
@@ -20,17 +18,23 @@ navigation:
       - page: Errors
         path: ../docs/pages/responses.mdx
   - api: API reference
+    display-errors: true
     api-name: public
-  - api: SDK
-    api-name: sdk
     snippets:
       typescript: "@fern-api/devrev"
+      python: "@fern-api/devrev" 
   - section: Guides
     contents: 
       - page: Getting started with webhooks
         path: ../docs/pages/webhooks.mdx
       - page: Restricted messages on a timeline
         path: ../docs/pages/timeline-entries.mdx
+  - section: SDKs
+    contents:
+      - section: Typescript SDK
+        contents:
+          - page: Overview
+            path: ../docs/pages/sdk-overview.mdx
   - section: Snap-in development
     contents:
       - page: Concepts

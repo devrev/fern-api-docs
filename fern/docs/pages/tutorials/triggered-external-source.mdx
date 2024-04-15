@@ -21,7 +21,9 @@ comments from GitHub into the DevRev platform.
    secret key. Learn the security measures involved in ensuring the integrity
    and authenticity of data transmitted via webhooks from GitHub to DevRev.
 
-## Installation guide
+<Steps>
+
+### Installation guide
 
 - Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
 - Install [jq](https://stedolan.github.io/jq)
@@ -39,23 +41,23 @@ devrev snap_in_version init
 ```
 </Callout>
 
-### Trigger
+#### Trigger
 
 The main trigger for this snap-in is an
 [external webhook](/snap-in-development/references/event-sources), which necessitates
 registration within GitHub. This ensures that the relevant payloads are
 dispatched to our designated endpoint.
 
-### Action
+#### Action
 
 The primary action involves a straightforward process of examining our commit
 messages and displaying them on the discussion tab of the specified Product
 section. The configuration for this action can be customized through the input
 parameters of the snap-in.
 
-## Creating the snap-in
+### Creating the snap-in
 
-### Updating the manifest
+#### Updating the manifest
 
 To outline the structure of the snap-in, the initial step is to define key
 attributes in the snap-in's manifest. Begin by specifying the name, description,
@@ -265,6 +267,8 @@ for a seamless deployment:
 4. During the installation of the snap-in, crucial inputs such as the product
    part description need to be provided. Additionally, it's imperative to
    register the webhook in GitHub during this process.
+
+</Steps>
 
 ## Resources
 

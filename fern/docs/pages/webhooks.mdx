@@ -44,7 +44,7 @@ X-DevRev-Signature: z1BY0e8JYzEGfxZ8e4k8agCdWQyTr2An
 Supported events include the standard create/update/delete operations. When providing objects in webhook payloads, the schema for the objects is the same as those from the OpenAPI specification, which enables interoperability between REST and Webhook events APIs.
 Multiple events may be invoked concurrently for the same webhook endpoint.
 
-<Callout intent="info">
+<Callout intent="note">
 It's strongly recommended that the webhook endpoint respond immediately to webhook invocations such that any non-trivial processing is done asynchronously. If a response isn’t returned within 3 seconds, the invocation will be aborted and retried at a later time.
 </Callout>
 
@@ -153,6 +153,6 @@ To mitigate intermittent and/or transient failures, DevRev retries unacknowledge
 
 A header signature `X-DevRev-Signature` is always provided, which is a hash-based message authentication code (HMAC) utilizing SHA256 consisting of the secret as the key and the raw request payload as the message. Any adversary that intercepts and modifies the request is unable to reproduce the proper signature, and therefore should be discarded by the webhook endpoint. Note that this method is still subject to replay attacks, such that an adversary could intercept the request and replay it at different points in time, however the timestamp should be used to validate the proximity of the request and be discarded if stale.
 
-<Callout intent="info">
+<Callout intent="note">
 The webhook endpoint must handle duplicate deliveries of the same event.
 </Callout>

@@ -4,7 +4,9 @@ In this tutorial, you'll learn to create and deploy a snap-in. Additionally, you
 
 Snap-ins are collections of objects that extend DevRev's core platform value. These objects include automation, event sources, keyrings, custom types, and vistas. Snap-ins are packaged and installed separately from the DevRev core platform. To create your very own snap-in, create a [dev org](https://app.devrev.ai/) where you will be installing your snap-in.
 
-## Installation guide
+<Steps>
+
+### Installation guide
 
 - Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
 - Install [jq](https://stedolan.github.io/jq)
@@ -171,3 +173,5 @@ devrev snap_in_version upgrade --path ./
 The above expects the manifest file to be present in the current directory by the name `manifest.yaml` and the code to be present in the `code` directory.
 
 Refer to [upgrade command](/snap-in-development/upgrade-snap-ins) for more information.
+
+</Steps>

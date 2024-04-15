@@ -18,13 +18,13 @@ jobs:
       - name: Download Fern
         run: npm install -g fern-api
 
-      - name: Release beta SDKs
+      - name: Release beta API
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: fern generate --api beta
 
-      - name: Release public SDKs
+      - name: Release public API
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}

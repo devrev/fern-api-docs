@@ -19,6 +19,40 @@ navigation:
         path: ../docs/pages/responses.mdx
   - api: API Reference
     api-name: public
+    layout:
+      - artifacts:
+        - page: Attachments
+          path: ../docs/pages/entities.mdx
+      - authConnection:
+        - page: Identity provider
+          path: ../docs/pages/entities.mdx
+      - authTokens:
+        - page: Security tokens
+          path: ../docs/pages/entities.mdx
+      - devUsers:
+        - page: Product builders and service providers
+          path: ../docs/pages/entities.mdx
+      - parts:
+        - page: Product components
+          path: ../docs/pages/entities.mdx
+      - revOrgs:
+        - page: Workspaces
+          path: ../docs/pages/entities.mdx
+      - slas:
+        - page: Service level agreements
+          path: ../docs/pages/entities.mdx
+      - tags:
+        - page: Concepts
+          path: ../docs/pages/entities.mdx
+      - timelineEntries:
+        - page: Discussions and events
+          path: ../docs/pages/entities.mdx
+      - webhooks:
+        - page: Event responses
+          path: ../docs/pages/entities.mdx
+      - works:
+        - page: Tickets and issues
+          path: ../docs/pages/entities.mdx
   - section: Guides
     contents: 
       - page: Getting started with webhooks

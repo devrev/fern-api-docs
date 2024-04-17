@@ -1,6 +1,5 @@
 navigation:
   - section: About
-    slug: developers
     contents:
       - page: For Developers
         path: ../docs/pages/developer-intro.mdx

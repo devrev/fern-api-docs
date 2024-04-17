@@ -12,7 +12,7 @@ To send a restricted visibility message, follow the steps listed below:
 The payload to make a request would look like given below: 
 
 <CodeBlock title="Payload">
-```json
+```json {4-6}
     {
         "object": "don:core:<partition>:devo/<dev-org-id>:<object-type>/<object-id>",
         "body": "<private message to post on timeline>",
@@ -58,7 +58,7 @@ curl -X POST -H "Content-Type: application/json" -d
 
 You receive the following `json` response.
 
-```json
+```json {19}
 {
     "timeline_entry": {
         "type": "timeline_comment",

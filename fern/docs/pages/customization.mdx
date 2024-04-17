@@ -56,7 +56,7 @@ Fields defined by different schema fragments are held in different namespaces in
 For illustration, a fully populated object might look like this:
 
 <CodeBlock title="Object">
-```json
+```json {14,15}
 {
     "id": "don:core:dvrv-us-1:devo/test:issue/1",
     "dev_oid": "don:identity:dvrv-us-1:devo/test",
@@ -85,7 +85,7 @@ For illustration, a fully populated object might look like this:
 
 An example usage of custom fields is to extend the [DevRev schema](https://devrev.ai/docs/apis/beta-api-spec#/operations/custom-schema-fragments-set) for ticket to track incidents across various environments (dev, QA, prod). This can be done by creating a subtype called "Incident". The following API call describes the custom attributes introduced by the subtype.
 
-```curl
+```curl maxLines=10
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -158,7 +158,7 @@ The list variants of all the supported custom field types are also supported (`[
 
 Custom schema fragments can be marked as deprecated to avoid creating work items with them. The following POST request payload can be used for the same.
 
-```json
+```json {9}
 {
     "type": "custom_type_fragment",
     "description": "Attributes for tracking an incident",

@@ -1,5 +1,5 @@
 default-group: sdks
-groups: 
+groups:
   sdks:
     generators:
       - name: fernapi/fern-typescript-sdk

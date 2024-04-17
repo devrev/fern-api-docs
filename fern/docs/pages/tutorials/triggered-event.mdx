@@ -20,9 +20,11 @@ The focus is on the process of working with the payload associated with these ev
 
 To learn more, refer to the [Using a snap-in to perform a DevRev action](/snap-in-development/tutorials/using-a-snap-in-to-perform-a-dev-rev-action) tutorial.
 
-## Installation guide
+<Steps>
 
-- Install [DevRev CLI](welcome/snap-in-development/references/install-dev-rev-cli)
+### Installation guide
+
+- Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
 - Install [jq](https://stedolan.github.io/jq)
 - Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
 
@@ -38,7 +40,7 @@ devrev snap_in_version init
 ```
 </Callout>
 
-### Trigger
+#### Trigger
 
 To invoke the snap-in, two distinct triggers are implemented:
 
@@ -48,7 +50,7 @@ To invoke the snap-in, two distinct triggers are implemented:
 2. **Text command**: This manual trigger is achieved by utilizing a slash
    command in the **Discussions** tab of the objects that support this feature.
 
-### Action
+#### Action
 
 To implement the desired action of adding a comment to the object timeline, it
 is essential to identify the appropriate [API]
@@ -56,9 +58,9 @@ for this task. In this scenario, the `/timeline-entries.create` API is the
 designated choice for executing the action of adding a text comment from the
 snap-in. To accomplish this task, the DevRev SDK is employed.
 
-## Creating the snap-in
+### Creating the snap-in
 
-### Updating the manifest
+#### Updating the manifest
 
 The next step involves updating the manifest to define key attributes of
 the snap-in. This includes deciding on the name and providing a descriptive
@@ -335,6 +337,9 @@ deployment:
    npm run build
    npm run package
    ```
+
+</Steps>
+
 ## Resources
 
 The final snap-in code and manifest can be found

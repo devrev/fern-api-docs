@@ -20,9 +20,11 @@ the **Discussions** tab of an issue in DevRev, which creates an issue in GitHub.
    - Gain proficiency in creating and using
      [commands](/snap-in-development/references/commands) in DevRev.
 
-## Installation guide
+<Steps>
 
-- Install [DevRev CLI](welcome/snap-in-development/references/install-dev-rev-cli)
+### Installation guide
+
+- Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
 - Install [jq](https://stedolan.github.io/jq)
 - Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
 
@@ -38,7 +40,7 @@ devrev snap_in_version init
 ```
 </Callout>
 
-### Trigger
+#### Trigger
 
 To initiate the process of creating a GitHub issue directly from a DevRev issue,
 a trigger mechanism is essential. In this context, the implementation involves
@@ -46,15 +48,15 @@ the introduction of a specialized command. This command is designed to be
 executed exclusively from the discussion section of a DevRev issue, serving as
 the catalyst for replicating the issue on GitHub.
 
-### Action
+#### Action
 
 The primary action involves leveraging the issue creation API provided by
 GitHub. This API is utilized to create the GitHub issue seamlessly from the
 corresponding issue in DevRev.
 
-## Creating the snap-in
+### Creating the snap-in
 
-### Updating the manifest
+#### Updating the manifest
 
 To outline the structure of the snap-in, the initial step is to define key
 attributes in the snap-in's manifest. Begin by specifying the name, description,
@@ -309,6 +311,8 @@ the organization to allow the snap-in to access it.
 During the installation of the snap-in, utilize the shared secret to
 authenticate and connect with GitHub. This ensures that the snap-in has the
 necessary permissions to interact with GitHub APIs.
+
+</Steps>
 
 ## Resources
 

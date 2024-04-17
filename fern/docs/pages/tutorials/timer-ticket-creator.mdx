@@ -21,9 +21,11 @@ it's strongly suggested to use the
 [DevRev TypeScript SDK](https://www.npmjs.com/package/@devrev/typescript-sdk)
 since it provides additional types and helper methods which ease development.
 
-## Installation guide
+<Steps>
 
-- Install [DevRev CLI](welcome/snap-in-development/references/install-dev-rev-cli)
+### Installation guide
+
+- Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
 - Install [jq](https://stedolan.github.io/jq)
 - Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
 
@@ -39,7 +41,7 @@ devrev snap_in_version init
 ```
 </Callout>
 
-### Trigger
+#### Trigger
 
 The trigger condition for the snap-in is dictated by the
 [Event Sources](/snap-in-development/references/event-sources)
@@ -47,7 +49,7 @@ section in the manifest. The [`timer-events`](/snap-in-development/references/ev
 event source is suitable for the use-case, since it allows trigger of snap-ins
 using [CRON expression](https://crontab.guru/).
 
-### Action
+#### Action
 
 The hello-world snap-in prints a log message whenever the snap-in is triggered.
 Here, the snap-in should create a work-item of type ticket when triggered. To do
@@ -55,9 +57,9 @@ that, use the
 [DevRev TypeScript SDK](https://www.npmjs.com/package/@devrev/typescript-sdk) to
 make API calls for creating the ticket.
 
-## Creating the snap-in
+### Creating the snap-in
 
-### Updating the manifest
+#### Updating the manifest
 
 Update the manifest file to reflect the objective. Update the name, the
 description, and the service account's display name to better reflect the
@@ -246,7 +248,7 @@ npm run package
 This builds and packages your snap-in and creates a `build.tar.gz`. The `tar.gz`
 and `manifest.yaml` file is used when creating the snap-in version.
 
-<Callout intent="info">
+<Callout intent="note">
 
 Always remember to build and package the snap-in whenever there are code changes
 and it needs to be re-deployed.
@@ -255,6 +257,8 @@ and it needs to be re-deployed.
 
 Steps for deploying this snap-in have been discussed in the
 [Getting Started](/snap-in-development/tutorials/getting-started) section.
+
+</Steps>
 
 ## Resources
 

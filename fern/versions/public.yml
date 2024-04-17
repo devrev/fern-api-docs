@@ -1,5 +1,6 @@
 navigation:
   - section: About
+    slug: developers
     contents:
       - page: For Developers
         path: ../docs/pages/developer-intro.mdx
@@ -20,52 +21,75 @@ navigation:
   - api: API Reference
     api-name: public
   - section: Guides
+    slug: guides
     contents: 
       - page: Getting started with webhooks
+        slug: webhooks
         path: ../docs/pages/webhooks.mdx
       - page: Restricted messages on a timeline
+        slug: timeline-entries
         path: ../docs/pages/timeline-entries.mdx
   - section: SDKs
+    slug: sdks
     contents:
       - section: PLuG SDK
+        slug: plug
         contents:
           - page: Overview
+            slug: overview
             path: ../docs/pages/plug-sdk/sdk-intro.mdx
           - page: Methods
+            slug: methods
             path: ../docs/pages/plug-sdk/methods.mdx
           - page: Customization
+            slug: customization
             path: ../docs/pages/plug-sdk/customize.mdx
   - section: Snap-in development
+    slug: snapin-development
     contents:
       - page: Concepts
         path: ../docs/pages/snapin-concepts.mdx
       - section: Tutorials
+        slug: tutorials
         contents:
           - page: Overview
+            slug: overview
             path: ../docs/pages/tutorial.mdx
           - page: Getting started
+            slug: getting-started
             path: ../docs/pages/start.mdx
           - page: Using a snap-in to perform a DevRev action
+            slug: timer-ticket-creator
             path: ../docs/pages/tutorials/timer-ticket-creator.mdx
           - page: Using a snap-in to perform an external action
+            slug: perform-external-action
             path: ../docs/pages/tutorials/perform-external-action.mdx
           - page: Snap-in triggered by a DevRev event
+            slug: triggered-event
             path: ../docs/pages/tutorials/triggered-event.mdx
           - page: Snap-in triggered by an external source
+            slug: triggered-external-source
             path: ../docs/pages/tutorials/triggered-external-source.mdx
       - section: References
+        slug: references
         contents:
           - page: Install DevRev CLI
+            slug: cli-install
             path: ../docs/pages/references/cli-install.mdx
           - page: DevRev CLI reference
+            slug: cli
             path: ../docs/pages/references/cli.mdx
           - page: Snap-in manifest
+            slug: manifest
             path: ../docs/pages/references/manifest.mdx
           - page: Snap-in V1 manifest
+            slug: v1-manifest
             path: ../docs/pages/references/v1-manifest.mdx
           - page: Keyrings
+            slug: keyrings
             path: ../docs/pages/references/keyrings.mdx
           - page: Event sources
+            slug: event-sources
             path: ../docs/pages/references/event_sources.mdx
           - page: Inputs
             path: ../docs/pages/references/inputs.mdx
@@ -74,18 +98,22 @@ navigation:
           - page: Functions
             path: ../docs/pages/references/functions.mdx
           - page: Function invocation
+            slug: function-invocation
             path: ../docs/pages/references/function_invocation.mdx
           - page: Hooks
             path: ../docs/pages/references/hooks.mdx
           - page: Snapkit
             path: ../docs/pages/references/snapkit.mdx
           - page: Snap-in resources
+            slug: snap-in-resources
             path: ../docs/pages/references/snap-in-resources.mdx
       - page: Development best practices
+        slug: best-practices
         path: ../docs/pages/best_practices.mdx
       - page: Debugging
         path: ../docs/pages/debugging.mdx
       - page: Quotas and limits
+        slug: quotas-limits
         path: ../docs/pages/limits.mdx
       - page: Upgrade snap-ins
         path: ../docs/pages/upgrades.mdx

@@ -8,7 +8,7 @@ Keyrings are defined in the snap-in manifest under the `keyrings` section. They 
  - **Organization scoped keyrings**: These are secrets used by the entire organization, for example a Slack token for a workspace.
  - **User scoped keyrings**: These are secrets for a single user, for example the token to interact with a single person's Google Calendar.
 
-<Callout intent="info">
+<Callout intent="note">
 During installation, the user will be prompted to provide credentials for each keyring.
 </Callout>
 
@@ -41,7 +41,7 @@ Breakdown:
 
 All user scoped keyrings are optional in the snap-in, and developers must handle the case where a user scoped keyring isn't found.
 
-<Callout intent="info">
+<Callout intent="note">
 If you are using version 1 of the manifest, you can omit the organization key in the keyring definition and directly provide the keyring definition as a list. All keyring defined in manifest version 1 are organization-scoped.
 Additionally, the keyword `connections` is used instead of `keyrings` in manifest version 1.
 </Callout>

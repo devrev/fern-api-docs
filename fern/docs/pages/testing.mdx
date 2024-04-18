@@ -14,48 +14,48 @@ To test out a snap-in version locally, follow the below steps:
 
 1. Run a server locally to ingest events from DevRev. The `port` parameter is optional. If not set, the server starts default on `8000`.
 
-```
-npm run test:server -- --port=<PORT>
-```
+  ```
+  npm run test:server -- --port=<PORT>
+  ```
 
 2. Expose the local port as a publicly available URL. We recommend using [`ngrok`](https://ngrok.com/download) since it is free and easy to set up. The command for running ngrok tunnelling on port `8000`:
 
-```
-ngrok http 8000
-```
+  ```
+  ngrok http 8000
+  ```
 
 This returns a public HTTP URL.
 
 3. Create a snap-in version with the `testing_url` flag set
 
-```
-devrev snap_in_version create-one --path <template path> --create-package --testing_url <HTTP_URL>
-```
+  ```
+  devrev snap_in_version create-one --path <template path> --create-package --testing_url <HTTP_URL>
+  ```
 
 Here, `HTTP_URL` is the publicly available URL from Step 2. The URL should start with `http` or `https`
 
-4. Once the snap-in version is ready, create a snap-in, update and activate it.
+4. Once the snap-in version is ready, create a snap-in, update, and activate it.
 
-```
-devrev snap_in draft
-```
+  ```
+  devrev snap_in draft
+  ```
 
-Update the snap-in through UI or using the CLI:
-
-```
-devrev snap_in update
-```
-
-Activate the snap-in through UI or through the CLI command:
-
-```
-devrev snap_in activate
-```
+  Update the snap-in through UI or using the CLI:
+  
+  ```
+  devrev snap_in update
+  ```
+  
+  Activate the snap-in through UI or the CLI command:
+  
+  ```
+  devrev snap_in activate
+  ```
 
 ### Receiving events locally
 
 After the snap-in has been activated, it can receive events locally from DevRev as a
-snap-in would. If the snap-in was listening to `work_created` event type, then creating a
+snap-in would. If the snap-in is listening to `work_created` event type, then creating a
 new work-item would send the event to the local server.
 
 If utilizing ngrok, accessing the ngrok UI is possible by opening http://127.0.0.1:4040/ in the browser. This interface offers a neat way to review the list of requests and replay them if necessary.
@@ -71,7 +71,7 @@ The code can be changed without the need to create a snap-in version or redeploy
 devrev snap_in_version upgrade --manifest <PATH_TO_MANIFEST> --testing-url <UPDATED_URL>
 ```
 
-In case of non-patch compatible updates, the `force` flag can be used to upgrade the version. However this will delete any
+In case of non-patch compatible updates, the `force` flag can be used to upgrade the version. However, this will delete any
 existing snap-ins that have been created from this version.
 
 ```

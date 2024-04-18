@@ -73,6 +73,8 @@ navigation:
             path: ../docs/pages/references/snap-in-resources.mdx
       - page: Development best practices
         path: ../docs/pages/best_practices.mdx
+      - page: Locally testing snap-ins
+        path: ../docs/pages/testing.mdx
       - page: Debugging
         path: ../docs/pages/debugging.mdx
       - page: Quotas and limits

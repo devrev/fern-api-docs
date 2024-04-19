@@ -545,6 +545,11 @@ components:
           items:
             type: string
           type: array
+        leaf_type:
+          description: |
+            The leaf type. Used for inferring the default stage diagram and
+            tenant fragment ID.
+          type: string
         per_object_schema:
           description: Per object schema, if associated with the leaf type.
           items:
@@ -626,8 +631,36 @@ components:
       - $ref: '#/components/schemas/custom-schema-fragment-base-summary'
       title: app-fragment-summary
     archetype-metric-target:
-      additionalProperties: false
       description: Metric with corresponding target values.
+      properties:
+        is_out_of_schedule:
+          description: |
+            If true, the schedule attached to this metric is out of schedule at
+            the time of the query.
+          type: boolean
+        metric_definition:
+          $ref: '#/components/schemas/metric-definition-summary'
+        org_schedule:
+          $ref: '#/components/schemas/org-schedule-summary'
+        remaining_time:
+          description: Time in minutes that remains on a paused metric.
+          format: int32
+          type: integer
+        target_time:
+          description: |
+            Time at which the metric would breach SLA if no action taken.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        warning_target_time:
+          description: |
+            Time at which the metric would reach the SLA warning limit if no
+            action taken.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      required:
+      - metric_definition
       title: archetype-metric-target
       type: object
     article:
@@ -1621,6 +1654,8 @@ components:
             items:
               $ref: '#/components/schemas/user-summary'
             type: array
+          sla_tracker:
+            $ref: '#/components/schemas/sla-tracker-summary'
           stage:
             $ref: '#/components/schemas/legacy-stage'
           tags:
@@ -2332,8 +2367,8 @@ components:
           type: array
         cursor:
           description: |
-            The cursor to resume iteration from, otherwise if not provided,
-            then iteration starts from the beginning.
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
           type: string
         deprecated:
           description: Whether only deprecated fragments should be filtered.
@@ -2347,6 +2382,8 @@ components:
           description: The maximum number of items.
           format: int32
           type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
         prune:
           description: |
             List of fields which are not required in the payload and can be
@@ -2379,10 +2416,15 @@ components:
       type: string
     custom-schema-fragments-list-response:
       properties:
-        cursor:
+        next_cursor:
           description: |
-            The cursor to resume iteration from, otherwise if not provided,
-            then iteration starts from the beginning.
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
           type: string
         result:
           description: The custom schema fragments.
@@ -2427,6 +2469,9 @@ components:
           items:
             $ref: '#/components/schemas/schema-field-descriptor'
           type: array
+        is_custom_leaf_type:
+          description: Whether the leaf type corresponds to a custom object
+          type: boolean
         leaf_type:
           description: The leaf type this fragment applies to.
           type: string
@@ -2477,6 +2522,9 @@ components:
       type: object
     custom-schema-fragments-set-request-tenant-fragment:
       properties:
+        id_prefix:
+          description: The display ID prefix for the custom object.
+          type: string
         stock_field_overrides:
           description: List of Per-DevOrg stock field overrides.
           items:
@@ -3792,6 +3840,31 @@ components:
       title: event-sources-schedule-event-response
       type: object
       x-go-name: EventSourcesScheduleEventResponseBody
+    event-survey-response-created:
+      properties:
+        survey_response:
+          $ref: '#/components/schemas/survey-response'
+      required:
+      - survey_response
+      title: event-survey-response-created
+      type: object
+    event-survey-response-deleted:
+      properties:
+        id:
+          description: The ID of the survey response that was deleted.
+          type: string
+      required:
+      - id
+      title: event-survey-response-deleted
+      type: object
+    event-survey-response-updated:
+      properties:
+        survey_response:
+          $ref: '#/components/schemas/survey-response'
+      required:
+      - survey_response
+      title: event-survey-response-updated
+      type: object
     event-tag-created:
       properties:
         tag:
@@ -4639,6 +4712,11 @@ components:
     metric-definition:
       allOf:
       - $ref: '#/components/schemas/atom-base'
+      - properties:
+          name:
+            description: Human readable name of the metric.
+            type: string
+        type: object
       title: metric-definition
     metric-definition-applies-to:
       description: The list of item types on which the metric might be applied.
@@ -4656,6 +4734,15 @@ components:
       - time
       - value
       type: string
+    metric-definition-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      - properties:
+          name:
+            description: Human readable name of the metric.
+            type: string
+        type: object
+      title: metric-definition-summary
     metric-definitions-list-request:
       properties:
         applies_to_type:
@@ -5040,6 +5127,34 @@ components:
       - draft
       - published
       type: string
+    org-schedule-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      - properties:
+          name:
+            description: Human-readable name.
+            type: string
+          status:
+            $ref: '#/components/schemas/org-schedule-status'
+          timezone:
+            description: |
+              Timezone in which this is defined. Only organization schedules in
+              the same timezone can be directly combined.
+            type: string
+          valid_until:
+            description: |
+              Derived field indicating when a valid organization schedule will
+              become invalid. If omitted, the schedule is already invalid. A
+              schedule is valid if it has a weekly schedule for all named periods
+              for all its schedule fragments, and if it has a schedule fragment
+              for the time period in question.
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+            type: string
+        required:
+        - status
+        type: object
+      title: org-schedule-summary
     org-schedules-create-request:
       properties:
         default_weekly_org_schedule:
@@ -5748,6 +5863,33 @@ components:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
       title: product-summary
+    question-answer:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          answer:
+            description: The Answer.
+            type: string
+          question:
+            description: The Question.
+            type: string
+          suggested_answer:
+            description: |
+              An alternative answer suggested by the Q/A generation algorithm.
+            type: string
+          suggested_for_deletion:
+            description: |
+              Whether the Q/A was marked for deletion by the Q/A generation
+              algorithm.
+            type: boolean
+          topic:
+            description: The topic to which the QA belongs.
+            type: string
+          verified:
+            description: Whether the Q/A was verified.
+            type: boolean
+        type: object
+      title: question-answer
     question-answer-search-summary:
       allOf:
       - $ref: '#/components/schemas/search-summary-base'
@@ -5758,6 +5900,14 @@ components:
         - question_answer
         type: object
       title: question-answer-search-summary
+    question-answer-status:
+      description: Status of the question answer.
+      enum:
+      - archived
+      - draft
+      - published
+      - review_needed
+      type: string
     question-answer-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -5767,6 +5917,335 @@ components:
             type: string
         type: object
       title: question-answer-summary
+    question-answers-create-request:
+      description: The request to create a question-answer.
+      properties:
+        access_level:
+          $ref: '#/components/schemas/access-level'
+        answer:
+          description: Answer of the question-answer.
+          type: string
+        applies_to_articles:
+          description: The articles that the question-answer applies to.
+          example:
+          - ARTICLE-12345
+          items:
+            type: string
+          type: array
+        applies_to_parts:
+          description: The parts that the question-answer applies to.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          minItems: 1
+          type: array
+        owned_by:
+          description: The users that own the question-answer.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        question:
+          description: Question of the question-answer.
+          type: string
+        shared_with:
+          description: |
+            Information about the role the member receives due to the share.
+          items:
+            $ref: '#/components/schemas/set-shared-with-membership'
+          type: array
+        sources:
+          description: The source of the question-answer.
+          example:
+          - ARTICLE-12345
+          items:
+            type: string
+          type: array
+        status:
+          $ref: '#/components/schemas/question-answer-status'
+        suggested_answer:
+          description: |
+            Alternative answer for the question-answer sugested by Q/A
+            Discovery.
+          type: string
+        suggested_for_deletion:
+          description: |
+            Whether the question-answer was suggeste to be deleted by Q/A
+            Discovery.
+          type: boolean
+        tags:
+          description: Tags associated with the question-answer.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
+        topic:
+          description: Topic of the question-answer.
+          type: string
+        verified:
+          description: |
+            Whether the question-answer was verified by a user or not.
+          type: boolean
+      required:
+      - answer
+      - applies_to_parts
+      - owned_by
+      - question
+      - status
+      title: question-answers-create-request
+      type: object
+    question-answers-create-response:
+      description: Create question-answer response.
+      properties:
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+      - question_answer
+      title: question-answers-create-response
+      type: object
+      x-go-name: QuestionAnswersCreateResponseBody
+    question-answers-delete-request:
+      description: The request to delete a question-answer.
+      properties:
+        id:
+          description: The ID of the question-answer.
+          type: string
+        question_answer_id:
+          deprecated: true
+          description: The ID of the question-answer.
+          type: string
+      required:
+      - id
+      title: question-answers-delete-request
+      type: object
+    question-answers-get-request:
+      description: The request to get a question-answer.
+      properties:
+        id:
+          description: The ID of the required question-answer.
+          type: string
+      required:
+      - id
+      title: question-answers-get-request
+      type: object
+    question-answers-get-response:
+      description: Get question-answer response.
+      properties:
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+      - question_answer
+      title: question-answers-get-response
+      type: object
+      x-go-name: QuestionAnswersGetResponseBody
+    question-answers-list-request:
+      description: The request to list question-answers.
+      properties:
+        applies_to_articles:
+          description: |
+            Filters for question-answer belonging to any of the provided
+            articles.
+          example:
+          - ARTICLE-12345
+          items:
+            type: string
+          type: array
+        applies_to_parts:
+          description: |
+            Filters for question-answer belonging to any of the provided parts.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+        created_by:
+          description: |
+            Filters for question-answers created by any of the provided users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        limit:
+          description: |
+            The maximum number of question-answers to return. The default is
+            '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        owned_by:
+          description: |
+            Filters for question-answers owned by any of the provided users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+      title: question-answers-list-request
+      type: object
+    question-answers-list-response:
+      description: List question-answers response.
+      properties:
+        next_cursor:
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          type: string
+        question_answers:
+          description: The question-answers entries matching the request.
+          items:
+            $ref: '#/components/schemas/question-answer'
+          type: array
+        total:
+          description: Total number of question-answer items for the request.
+          format: int32
+          type: integer
+      required:
+      - question_answers
+      - total
+      title: question-answers-list-response
+      type: object
+      x-go-name: QuestionAnswersListResponseBody
+    question-answers-update-request:
+      description: The request to update a question-answer.
+      properties:
+        access_level:
+          $ref: '#/components/schemas/access-level'
+        answer:
+          description: |
+            Updated answer of the question-answer object, or unchanged if not
+            provided.
+          type: string
+        applies_to_articles:
+          $ref: '#/components/schemas/question-answers-update-request-applies-to-articles'
+        applies_to_parts:
+          $ref: '#/components/schemas/question-answers-update-request-applies-to-parts'
+        id:
+          description: The question-answer's ID.
+          type: string
+        owned_by:
+          $ref: '#/components/schemas/question-answers-update-request-owned-by'
+        question:
+          description: |
+            Updated question of the question-answer object, or unchanged if not
+            provided.
+          type: string
+        shared_with:
+          $ref: '#/components/schemas/question-answers-update-request-shared-with'
+        sources:
+          $ref: '#/components/schemas/question-answers-update-request-sources'
+        status:
+          $ref: '#/components/schemas/question-answer-status'
+        suggested_answer:
+          description: |
+            Updated suggested_answer of the question-answer object, or
+            unchanged if not provided.
+          type: string
+        suggested_for_deletion:
+          description: |
+            Updated suggested_for_deletion of the question-answer object, or
+            unchanged if not provided.
+          type: boolean
+        tags:
+          $ref: '#/components/schemas/question-answers-update-request-tags'
+        topic:
+          description: |
+            Updated topic of the question-answer object, or unchanged if not
+            provided.
+          type: string
+        verified:
+          description: |
+            Updates whether the question-answer was verified by a user or not.
+          type: boolean
+      required:
+      - id
+      title: question-answers-update-request
+      type: object
+    question-answers-update-request-applies-to-articles:
+      properties:
+        set:
+          description: Updates the article that the question-answer applies to.
+          example:
+          - ARTICLE-12345
+          items:
+            type: string
+          type: array
+      title: question-answers-update-request-applies-to-articles
+      type: object
+    question-answers-update-request-applies-to-parts:
+      properties:
+        set:
+          description: Updates the parts that the question-answer applies to.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+      title: question-answers-update-request-applies-to-parts
+      type: object
+    question-answers-update-request-owned-by:
+      properties:
+        set:
+          description: |
+            Sets the owner IDs to the provided user IDs. This must not be
+            empty.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+      title: question-answers-update-request-owned-by
+      type: object
+    question-answers-update-request-shared-with:
+      properties:
+        set:
+          description: Sets the field to the provided membership list.
+          items:
+            $ref: '#/components/schemas/set-shared-with-membership'
+          type: array
+      title: question-answers-update-request-shared-with
+      type: object
+    question-answers-update-request-sources:
+      properties:
+        set:
+          description: Sets the sources that generated the question-answer.
+          example:
+          - ARTICLE-12345
+          items:
+            type: string
+          type: array
+      title: question-answers-update-request-sources
+      type: object
+    question-answers-update-request-tags:
+      properties:
+        set:
+          description: Sets the provided tags on the question-answer.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
+      title: question-answers-update-request-tags
+      type: object
+    question-answers-update-response:
+      properties:
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+      - question_answer
+      title: question-answers-update-response
+      type: object
+      x-go-name: QuestionAnswersUpdateResponseBody
     resource:
       description: Resource details.
       properties:
@@ -7673,6 +8152,10 @@ components:
         - metric_target_summaries
         type: object
       title: sla-tracker
+    sla-tracker-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: sla-tracker-summary
     slas-assign-request:
       properties:
         id:
@@ -8097,8 +8580,8 @@ components:
       properties:
         cursor:
           description: |
-            The cursor to resume iteration from, otherwise if not provided,
-            then iteration starts from the beginning.
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
           type: string
         filter_preset:
           $ref: '#/components/schemas/stock-schema-fragments-list-request-filter-preset'
@@ -8111,6 +8594,8 @@ components:
           description: The maximum number of items.
           format: int32
           type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
         prune:
           description: |
             List of fields which are not required in the payload and can be
@@ -8138,10 +8623,15 @@ components:
       type: string
     stock-schema-fragments-list-response:
       properties:
-        cursor:
+        next_cursor:
           description: |
-            The cursor to resume iteration from, otherwise if not provided,
-            then iteration starts from the beginning.
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
           type: string
         result:
           description: The stock schema fragments.
@@ -8748,6 +9238,8 @@ components:
             $ref: '#/components/schemas/org-summary'
           severity:
             $ref: '#/components/schemas/ticket-severity'
+          sla_tracker:
+            $ref: '#/components/schemas/sla-tracker-summary'
           source_channel:
             description: Source channel of the ticket.
             type: string
@@ -9884,6 +10376,12 @@ components:
           $ref: '#/components/schemas/event-sla-tracker-deleted'
         sla_tracker_updated:
           $ref: '#/components/schemas/event-sla-tracker-updated'
+        survey_response_created:
+          $ref: '#/components/schemas/event-survey-response-created'
+        survey_response_deleted:
+          $ref: '#/components/schemas/event-survey-response-deleted'
+        survey_response_updated:
+          $ref: '#/components/schemas/event-survey-response-updated'
         tag_created:
           $ref: '#/components/schemas/event-tag-created'
         tag_deleted:
@@ -9962,6 +10460,9 @@ components:
       - rev_user_created
       - rev_user_deleted
       - rev_user_updated
+      - sla_tracker_created
+      - sla_tracker_deleted
+      - sla_tracker_updated
       - tag_created
       - tag_deleted
       - tag_updated
@@ -14696,6 +15197,289 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - parts
+  /question-answers.create:
+    post:
+      description: Creates a question-answer.
+      operationId: create-question-answer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/question-answers-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question-answers-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - question-answers
+  /question-answers.delete:
+    post:
+      description: Deletes a question-answer.
+      operationId: delete-question-answer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/question-answers-delete-request'
+      responses:
+        "200":
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - question-answers
+  /question-answers.get:
+    get:
+      description: Gets a question-answer.
+      operationId: get-question-answer
+      parameters:
+      - description: The ID of the required question-answer.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question-answers-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - question-answers
+      x-request-name: GetQuestionAnswerQuery
+    post:
+      description: Gets a question-answer.
+      operationId: get-question-answer-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/question-answers-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question-answers-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - question-answers
+  /question-answers.list:
+    get:
+      description: Lists a collection of question-answers.
+      operationId: list-question-answers
+      parameters:
+      - description: |
+          Filters for question-answer belonging to any of the provided
+          articles.
+        explode: false
+        in: query
+        name: applies_to_articles
+        schema:
+          example:
+          - ARTICLE-12345
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters for question-answer belonging to any of the provided parts.
+        explode: false
+        in: query
+        name: applies_to_parts
+        schema:
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters for question-answers created by any of the provided users.
+        explode: false
+        in: query
+        name: created_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+      - description: |
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: |
+          The maximum number of question-answers to return. The default is
+          '50'.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
+      - description: |
+          Filters for question-answers owned by any of the provided users.
+        explode: false
+        in: query
+        name: owned_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question-answers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - question-answers
+      x-request-name: ListQuestionAnswersQuery
+    post:
+      description: Lists a collection of question-answers.
+      operationId: list-question-answers-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/question-answers-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question-answers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - question-answers
+  /question-answers.update:
+    post:
+      description: Updates a question-answer.
+      operationId: update-question-answer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/question-answers-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question-answers-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - question-answers
   /rev-orgs.create:
     post:
       description: |
@@ -15481,6 +16265,14 @@ paths:
           items:
             type: string
           type: array
+      - description: |
+          The leaf type. Used for inferring the default stage diagram and
+          tenant fragment ID.
+        explode: false
+        in: query
+        name: leaf_type
+        schema:
+          type: string
       - description: The stock schema fragment which is to be aggregated.
         explode: false
         in: query
@@ -15623,8 +16415,8 @@ paths:
             type: string
           type: array
       - description: |
-          The cursor to resume iteration from, otherwise if not provided, then
-          iteration starts from the beginning.
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
         explode: false
         in: query
         name: cursor
@@ -15651,6 +16443,14 @@ paths:
         schema:
           format: int32
           type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
       - description: |
           List of fields which are not required in the payload and can be
           pruned away.
@@ -15845,8 +16645,8 @@ paths:
       operationId: stock-schema-fragments-list
       parameters:
       - description: |
-          The cursor to resume iteration from, otherwise if not provided, then
-          iteration starts from the beginning.
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
         explode: false
         in: query
         name: cursor
@@ -15875,6 +16675,14 @@ paths:
         schema:
           format: int32
           type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
       - description: |
           List of fields which are not required in the payload and can be
           pruned away.
@@ -18571,6 +19379,8 @@ tags:
   name: parts
 - description: Product Usage APIs
   name: product-usage
+- description: Plug Question-Answer APIs
+  name: question-answers
 - description: Rev organization interactions.
   name: rev-orgs
 - description: Rev user interactions.

@@ -3,6 +3,13 @@ The `accounts-create` API is used to create [accounts](https://docs.devrev.ai/pr
 
 The `rev-users.create` API is used to create [contacts](https://docs.devrev.ai/product/grow#-contact) which represents an individual user associated with the account of the organization. To create a contact, we also need to use the `rev-orgs.list` API with the `accounts` filter to get the default [workspace](https://docs.devrev.ai/product/grow#-workspace)(rev org) created with the account. We will be creating a contact under the workspace (`rev_org`) of the account as contacts (`rev_user`) cannot exist individually without being associated with a workspace.
 
+
+<Callout intent="tip">
+Just want to get a token and get started? This [tutorial](/about/authentication#generate-a-personal-access-token-pat) teaches you the fastest way to get a token.
+</Callout>
+
+![mermaid-diagram-2024-04-19-142340](https://github.com/devrev/fern-api-docs/assets/74637789/ed067f3f-7ae7-47d6-9177-bc62904e1244)
+
 ## Create an account
 
 The payload to make a request is given below:

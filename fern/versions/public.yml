@@ -34,19 +34,19 @@ navigation:
         - page: Product components
           path: ../docs/pages/entities/parts.mdx
       - revOrgs:
-        - page: Workspaces `rev-orgs`
+        - page: Workspaces
           path: ../docs/pages/entities/revorgs.mdx
       - tags:
-        - page: Concepts `tags`
+        - page: Concepts
           path: ../docs/pages/entities/tags.mdx
       - timelineEntries:
-        - page: Discussions and events `timeline-entries`
+        - page: Discussions and events
           path: ../docs/pages/entities/timeline.mdx
       - webhooks:
-        - page: Event responses `webhooks`
+        - page: Event responses
           path: ../docs/pages/entities/webhooks.mdx
       - works:
-        - page: Tickets and issues `works`
+        - page: Tickets and issues
           path: ../docs/pages/entities/works.mdx
   - section: Guides
     contents: 

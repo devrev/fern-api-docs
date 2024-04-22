@@ -59,6 +59,7 @@ The function accepts the `DevRev.Identification` structure, with only user ID 
 	</Callout>
 
 For example:
+
 ```swift
 await DevRev.identify(Identification(userID: "foo@example.org"))
 ```
@@ -89,16 +90,20 @@ DevRev.showSupport(from: mainViewController)
 
 **SwiftUI**:
 
-For SwiftUI apps, a dedicated view is provided. Use the public view property:   
+For SwiftUI apps, a dedicated view is provided. Use the public view property:
+
 ```swift
 DevRev.supportView`
 ```
+
 **New conversation callback**:
 
 For convenience, a callback closure is added, so the host app can access the conversation ID.
+
 ```swift
 DevRev.conversationCreatedCompletion`
 ```
+
 For example:
 
 ```swift

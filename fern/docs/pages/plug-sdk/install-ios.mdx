@@ -1,6 +1,4 @@
-# Integrate PLuG with your iOS app
-
-This section describes how to integrate PLuG using DevRev SDK with your iOS app.
+This guide will help you to integrate PLuG using DevRev SDK with your iOS app.
 
 ## Requirements
 
@@ -21,13 +19,6 @@ Integrating DevRev SDK using Swift Package Manager (SPM).
 7. Now that the SDK is integrated, you can import and use it in your Swift code.
 
 ## Setting up the DevRev SDK
-
-- [Obtain credentials](#obtain-credentials)
-- [Initialization](#initialization)
-- [User identification](#user-identification)
-- [PLuG support chat](#PLuG-support-chat)
-- [Analytics](#analytics)
-- [Sample app](#sample-app)
 
 ### Obtain credentials
 
@@ -63,9 +54,9 @@ To use specific SDK features, user identification is mandatory. Follow these ste
 1. Utilize the `DevRev.identify(_:)` function for user identification.
 The function accepts the `DevRev.Identification` structure, with only user ID (`userID`) as a required property. All other properties are optional.
 
-	:::note
+	<Callout intent="note">
 	The `DevRev.identify(_:)` function is an asynchronous one ensure that you wrap it in a `Task` when calling it from a synchronous context.
-	:::
+	</Callout>
 
 For example:
 ```swift

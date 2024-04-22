@@ -1,0 +1,159 @@
+# Integrate PLuG with your iOS app
+
+This section describes how to integrate PLuG using DevRev SDK with your iOS app.
+
+## Requirements
+
+- The latest stable Xcode version, 14.0 or higher, available on the App Store
+- Swift 5.7 or later
+- Set the minimum deployment target for your iOS application as iOS 15
+
+## Setup
+
+Integrating DevRev SDK using Swift Package Manager (SPM).
+
+1. Launch Xcode and open your existing project.
+2. Go to the menu bar and select **File > Swift Packages > Add Package Dependency**.
+3. In the **Add Package Dependency** window, enter the `https://github.com/devrev/devrev-sdk-ios` URL in the **Enter Package URL** field.
+4. Click the **Add Package** button to fetch the DevRev SDK package.
+5. After successfully adding the package, navigate to the **Build Phases** tab of your app target.
+6. Confirm that the `DevRevSDK` is listed in the **Link Binary With Libraries** phase. If not, add it by clicking the **+** button and selecting DevRevSDK from the list.
+7. Now that the SDK is integrated, you can import and use it in your Swift code.
+
+## Setting up the DevRev SDK
+
+- [Obtain credentials](#obtain-credentials)
+- [Initialization](#initialization)
+- [User identification](#user-identification)
+- [PLuG support chat](#PLuG-support-chat)
+- [Analytics](#analytics)
+- [Sample app](#sample-app)
+
+### Obtain credentials
+
+1. To use the DevRev SDK, you must obtain credentials from the DevRev app **Settings** pages. Go to **Settings** > **Support** > **PLuG Tokens** through the settings icon in the top-left corner.
+
+2. Under the **App Credentials** section, generate the necessary credentials for SDK usage. Remember to save both the **App ID** and **App Secret** as they are required in the SDK configuration.
+
+3. Acquire the **Your Unique App ID** (referred to as `supportID` in the code) by visiting the **PLuG Settings** page.
+
+### Initialization
+
+After obtaining the necessary credentials, proceed to configure the DevRev SDK within your application.
+
+1. Initialization of the SDK is accomplished by invoking the configuration method:
+
+```swift
+DevRev.configure(appID:secret:supportID:)
+```
+
+For example:
+
+```swift
+DevRev.configure(appID: appID, secret: secret, supportID: supportID)
+```
+
+2. For UIKit apps, configure the SDK within the `AppDelegate.application(_:didFinishLaunchingWithOptions:)` method.
+3. For SwiftUI apps, depending on your app's architecture, perform SDK configuration either at the entry point or in the initial view of the app.
+
+### User identification
+
+To use specific SDK features, user identification is mandatory. Follow these steps to ensure proper user identification when using the DevRev SDK:
+
+1. Utilize the `DevRev.identify(_:)` function for user identification.
+The function accepts the `DevRev.Identification` structure, with only user ID (`userID`) as a required property. All other properties are optional.
+
+	:::note
+	The `DevRev.identify(_:)` function is an asynchronous one ensure that you wrap it in a `Task` when calling it from a synchronous context.
+	:::
+
+For example:
+```swift
+await DevRev.identify(Identification(userID: "foo@example.org"))
+```
+
+2. Place the identification function appropriately in your app, preferably after the user logs in. If user information is available at app launch, invoke the function following the `DevRev.configure(appID:secret:supportID:)` method.
+
+### PLuG support chat
+
+**UIKit**:
+
+The support chat feature in UIKit can be displayed either as a modal screen or pushed onto a navigation stack.
+
+To show the support screen, use the overloaded method:
+
+```swift
+DevRev.showSupport(from:isAnimated:)
+```
+
+- If a `UIViewController` is provided as the `from` parameter, the screen is presented modally.
+
+- If a `UINavigationController` is provided as the `from` parameter, the screen is pushed onto the navigation stack.
+
+For example:
+
+```swift
+DevRev.showSupport(from: mainViewController)
+```
+
+**SwiftUI**:
+
+For SwiftUI apps, a dedicated view is provided. Use the public view property:   
+```swift
+DevRev.supportView`
+```
+**New conversation callback**:
+
+For convenience, a callback closure is added, so the host app can access the conversation ID.
+```swift
+DevRev.conversationCreatedCompletion`
+```
+For example:
+
+```swift
+DevRev.conversationCreatedCompletion = { conversationID in
+	print("A new conversation has been created: \(conversationID).")
+}
+```
+
+### Analytics
+
+The DevRev SDK supports sending custom analytic events using a name and a string dictionary.
+To track these events, use the following function:
+```swift
+DevRev.trackEvent(name:properties:)
+```
+
+For example:
+
+```swift
+DevRev.trackEvent(name: "open-message-screen", properties: ["id": "foo-bar-1337"])
+```
+
+### Sample app
+
+The [repository](https://github.com/devrev/devrev-sdk-ios) includes a sample app showcasing use cases for both UIKit and SwiftUI.
+
+Before using the sample app, follow these steps to configure it with your Apple Developer team and DevRev credentials. For your convenience, the code is marked with compiler error directives (#error) at places that need attention.
+
+1. Add your credentials to either `ContentView.swift` (SwiftUI) or `AppDelegate.swift` (UIKit).
+2. Remove or comment out the compiler error lines in the respective files.
+3. Configure code signing for the sample target:   
+	a. Open the project settings.   
+	b. Select the appropriate target.   
+	c. Navigate to the **Signing & Capabilities** tab.   
+	d. From the **Team** drop-down, select your development team.
+
+## Troubleshooting
+
+- **Issue**: Can't import the SDK into my app.   
+	**Solution**: Double-check the setup process and ensure that `DevRevSDK` is correctly linked to your application.
+
+- **Issue**: How does the DevRev SDK handle errors?   
+	**Solution**: The DevRev SDK reports all errors in the console using Apple's Unified Logging System. Look for error messages in the subsystem `ai.devrev.sdk`.
+
+- **Issue**: Support chat won't show.   
+	**Solution**: Verify that you have called the identification method (`DevRev.identify(...)`) correctly.
+
+
+

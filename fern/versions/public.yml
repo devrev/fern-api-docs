@@ -37,11 +37,20 @@ navigation:
           - page: Overview
             slug: overview
             path: ../docs/pages/plug-sdk/sdk-intro.mdx
+          - page: Integrate PLuG with your Android app
+            slug: install-android
+            path: ../docs/pages/plug-sdk/install-android.mdx
+          - page: Integrate PLuG with your iOS app
+            slug: install-ios
+            path: ../docs/pages/plug-sdk/install-ios.mdx
+          - page: Track events
+            slug: track-events
+            path: ../docs/pages/plug-sdk/track-events.mdx
           - page: Methods
             slug: methods
             path: ../docs/pages/plug-sdk/methods.mdx
           - page: Customization
-            slug: customization
+            slug: customize
             path: ../docs/pages/plug-sdk/customize.mdx
   - section: Snap-in development
     slug: snapin-development

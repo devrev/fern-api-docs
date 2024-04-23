@@ -85,7 +85,8 @@ components:
             description: Description of the corresponding Account.
             type: string
           domains:
-            description: Company's domain names. Example - 'devrev.ai'.
+            description: Company's domain names. 
+            example: 'devrev.ai'
             items:
               type: string
             type: array
@@ -156,7 +157,8 @@ components:
           description: Name of the account.
           type: string
         domains:
-          description: List of company's domain names. Example - ['devrev.ai'].
+          description: List of company's domain names. 
+          example: ['devrev.ai']
           items:
             type: string
           type: array
@@ -189,8 +191,9 @@ components:
           type: string
         websites:
           description: |
-            List of company websites. Example - ['www.devrev.ai',
-            'www.marketplace.devrev.ai'].
+            List of company websites. 
+          example: ['www.devrev.ai',
+            'www.marketplace.devrev.ai']
           items:
             type: string
           type: array
@@ -473,7 +476,8 @@ components:
           type: string
         domains:
           description: |
-            Updated list of company's domain names. Example - ['devrev.ai'].
+            Updated list of company's domain names. 
+          example: ['devrev.ai']
           items:
             type: string
           type: array
@@ -1398,18 +1402,21 @@ components:
           description: IP address of the client.
           type: string
         locale:
-          description: 'The client''s locale, example: en-US.'
+          description: 'The client''s locale'
+          example: en-US
           type: string
         os:
           $ref: '#/components/schemas/client-context-os'
         page:
           $ref: '#/components/schemas/client-context-page'
         timezone:
-          description: 'The client''s timezone, example: Asia/Kolkata.'
+          description: 'The client''s timezone'
+          example: Asia/Kolkata
           type: string
         user_agent:
           description: |
-            User agent of the client, example: Mozilla/5.0 (Macintosh; Intel
+            User agent of the client
+          example: Mozilla/5.0 (Macintosh; Intel
             Mac OS X.
           type: string
       title: client-context
@@ -1418,10 +1425,12 @@ components:
       description: Properties of client's browser to be used in track API.
       properties:
         name:
-          description: 'The browser''s name, example: Chrome, Safari.'
+          description: 'The browser''s name'
+          example: Chrome, Safari
           type: string
         version:
-          description: 'The browser''s version, example: 53.0.2785.143.'
+          description: 'The browser''s version' 
+          example: '53.0.2785.143'
           type: string
       title: client-context-browser
       type: object
@@ -1429,7 +1438,8 @@ components:
       description: Properties of client's CPU to be used in track API.
       properties:
         architecture:
-          description: 'CPU architecture, example: amd64.'
+          description: 'CPU architecture'
+          example: amd64
           type: string
       title: client-context-cpu
       type: object
@@ -1437,13 +1447,16 @@ components:
       description: Properties of client's device to be used in track API.
       properties:
         manufacturer:
-          description: 'Device manufacturer, example: Apple.'
+          description: 'Device manufacturer'
+          example: Apple
           type: string
         model:
-          description: 'Device model, example: iphone 6s.'
+          description: 'Device model'
+          example: iphone 6s
           type: string
         type:
-          description: 'Device type, example: mobile, tablet, desktop.'
+          description: Device type
+          example: mobile, tablet, desktop
           type: string
       title: client-context-device
       type: object
@@ -1451,10 +1464,12 @@ components:
       description: Properties of client's engine to be used in track API.
       properties:
         name:
-          description: 'The engine''s name, example: Blink, WebKit.'
+          description: 'The engine''s name'
+          example: Blink, WebKit
           type: string
         version:
-          description: 'The engine''s version, example: 537.36.'
+          description: 'The engine''s version'
+          example: '537.36'
           type: string
       title: client-context-engine
       type: object
@@ -1462,10 +1477,12 @@ components:
       description: Properties of client's OS to be used in track API.
       properties:
         name:
-          description: 'The OS''s name, example : Windows, Mac OS X.'
+          description: 'The OS''s name'
+          example : Windows, Mac OS X
           type: string
         version:
-          description: 'The OS''s version, example : 10.11.1.'
+          description: 'The OS''s version'
+          example : '10.11.1.'
           type: string
       title: client-context-os
       type: object
@@ -1473,19 +1490,24 @@ components:
       description: Properties of client's page to be used in track API.
       properties:
         domain:
-          description: 'Page domain, example: devrev.ai'
+          description: Page domain
+          example: devrev.ai
           type: string
         path:
-          description: 'Page path, example: /pricing'
+          description: Page path
+          example: /pricing
           type: string
         referrer:
-          description: 'Page referrer, example: https://devrev.ai'
+          description: Page referrer
+          example: https://devrev.ai
           type: string
         title:
-          description: 'Page title, example: Pricing'
+          description: Page title 
+          example: Pricing
           type: string
         url:
-          description: 'Page URL, example: https://devrev.ai/pricing'
+          description: Page UR
+          example: https://devrev.ai/pricing
           type: string
       title: client-context-page
       type: object

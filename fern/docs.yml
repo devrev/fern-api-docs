@@ -26,6 +26,19 @@ logo:
   href: https://devrev.ai
   height: 24
 
+typography:
+  bodyFont:
+    name: SF Pro
+    path: ./fonts/SF-Pro-Text-Regular.woff2
+    weight: "400"
+  headingsFont:
+    name: SF Pro Semi-bold
+    path: ./fonts/SF-Pro-Text-Semibold.woff2
+    weight: "600"
+  codeFont: 
+    name: Unica
+    path:  ./fonts/Unica77MonoLLWeb-Regular.woff2
+
 favicon: ./docs/assets/favicon.ico
 
 versions: 

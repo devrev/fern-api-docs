@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ArtifactsPrepareRequest = exports.ArtifactsLocateRequest = exports.ArtifactsListRequest = exports.ArtifactsGetRequest = void 0;
+var ArtifactsGetRequest_1 = require("./ArtifactsGetRequest");
+Object.defineProperty(exports, "ArtifactsGetRequest", { enumerable: true, get: function () { return ArtifactsGetRequest_1.ArtifactsGetRequest; } });
+var ArtifactsListRequest_1 = require("./ArtifactsListRequest");
+Object.defineProperty(exports, "ArtifactsListRequest", { enumerable: true, get: function () { return ArtifactsListRequest_1.ArtifactsListRequest; } });
+var ArtifactsLocateRequest_1 = require("./ArtifactsLocateRequest");
+Object.defineProperty(exports, "ArtifactsLocateRequest", { enumerable: true, get: function () { return ArtifactsLocateRequest_1.ArtifactsLocateRequest; } });
+var ArtifactsPrepareRequest_1 = require("./ArtifactsPrepareRequest");
+Object.defineProperty(exports, "ArtifactsPrepareRequest", { enumerable: true, get: function () { return ArtifactsPrepareRequest_1.ArtifactsPrepareRequest; } });

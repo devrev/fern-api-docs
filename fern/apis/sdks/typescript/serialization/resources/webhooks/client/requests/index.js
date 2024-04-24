@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WebhooksUpdateRequest = exports.WebhooksGetRequest = exports.WebhooksDeleteRequest = exports.WebhooksCreateRequest = void 0;
+var WebhooksCreateRequest_1 = require("./WebhooksCreateRequest");
+Object.defineProperty(exports, "WebhooksCreateRequest", { enumerable: true, get: function () { return WebhooksCreateRequest_1.WebhooksCreateRequest; } });
+var WebhooksDeleteRequest_1 = require("./WebhooksDeleteRequest");
+Object.defineProperty(exports, "WebhooksDeleteRequest", { enumerable: true, get: function () { return WebhooksDeleteRequest_1.WebhooksDeleteRequest; } });
+var WebhooksGetRequest_1 = require("./WebhooksGetRequest");
+Object.defineProperty(exports, "WebhooksGetRequest", { enumerable: true, get: function () { return WebhooksGetRequest_1.WebhooksGetRequest; } });
+var WebhooksUpdateRequest_1 = require("./WebhooksUpdateRequest");
+Object.defineProperty(exports, "WebhooksUpdateRequest", { enumerable: true, get: function () { return WebhooksUpdateRequest_1.WebhooksUpdateRequest; } });

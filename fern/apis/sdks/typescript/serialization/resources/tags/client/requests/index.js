@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TagsUpdateRequest = exports.TagsListRequest = exports.TagsGetRequest = exports.TagsDeleteRequest = exports.TagsCreateRequest = void 0;
+var TagsCreateRequest_1 = require("./TagsCreateRequest");
+Object.defineProperty(exports, "TagsCreateRequest", { enumerable: true, get: function () { return TagsCreateRequest_1.TagsCreateRequest; } });
+var TagsDeleteRequest_1 = require("./TagsDeleteRequest");
+Object.defineProperty(exports, "TagsDeleteRequest", { enumerable: true, get: function () { return TagsDeleteRequest_1.TagsDeleteRequest; } });
+var TagsGetRequest_1 = require("./TagsGetRequest");
+Object.defineProperty(exports, "TagsGetRequest", { enumerable: true, get: function () { return TagsGetRequest_1.TagsGetRequest; } });
+var TagsListRequest_1 = require("./TagsListRequest");
+Object.defineProperty(exports, "TagsListRequest", { enumerable: true, get: function () { return TagsListRequest_1.TagsListRequest; } });
+var TagsUpdateRequest_1 = require("./TagsUpdateRequest");
+Object.defineProperty(exports, "TagsUpdateRequest", { enumerable: true, get: function () { return TagsUpdateRequest_1.TagsUpdateRequest; } });

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WorksListRequest = exports.WorksGetRequest = exports.WorksExportRequest = exports.WorksDeleteRequest = void 0;
+var WorksDeleteRequest_1 = require("./WorksDeleteRequest");
+Object.defineProperty(exports, "WorksDeleteRequest", { enumerable: true, get: function () { return WorksDeleteRequest_1.WorksDeleteRequest; } });
+var WorksExportRequest_1 = require("./WorksExportRequest");
+Object.defineProperty(exports, "WorksExportRequest", { enumerable: true, get: function () { return WorksExportRequest_1.WorksExportRequest; } });
+var WorksGetRequest_1 = require("./WorksGetRequest");
+Object.defineProperty(exports, "WorksGetRequest", { enumerable: true, get: function () { return WorksGetRequest_1.WorksGetRequest; } });
+var WorksListRequest_1 = require("./WorksListRequest");
+Object.defineProperty(exports, "WorksListRequest", { enumerable: true, get: function () { return WorksListRequest_1.WorksListRequest; } });

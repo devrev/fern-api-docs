@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RevOrgsUpdateRequest = exports.RevOrgsListRequest = exports.RevOrgsGetRequest = exports.RevOrgsDeleteRequest = exports.RevOrgsCreateRequest = void 0;
+var RevOrgsCreateRequest_1 = require("./RevOrgsCreateRequest");
+Object.defineProperty(exports, "RevOrgsCreateRequest", { enumerable: true, get: function () { return RevOrgsCreateRequest_1.RevOrgsCreateRequest; } });
+var RevOrgsDeleteRequest_1 = require("./RevOrgsDeleteRequest");
+Object.defineProperty(exports, "RevOrgsDeleteRequest", { enumerable: true, get: function () { return RevOrgsDeleteRequest_1.RevOrgsDeleteRequest; } });
+var RevOrgsGetRequest_1 = require("./RevOrgsGetRequest");
+Object.defineProperty(exports, "RevOrgsGetRequest", { enumerable: true, get: function () { return RevOrgsGetRequest_1.RevOrgsGetRequest; } });
+var RevOrgsListRequest_1 = require("./RevOrgsListRequest");
+Object.defineProperty(exports, "RevOrgsListRequest", { enumerable: true, get: function () { return RevOrgsListRequest_1.RevOrgsListRequest; } });
+var RevOrgsUpdateRequest_1 = require("./RevOrgsUpdateRequest");
+Object.defineProperty(exports, "RevOrgsUpdateRequest", { enumerable: true, get: function () { return RevOrgsUpdateRequest_1.RevOrgsUpdateRequest; } });

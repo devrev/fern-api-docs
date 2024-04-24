@@ -1,0 +1,7 @@
+navigation:
+  - section: About
+    contents:
+      - page: For Developers
+        path: ../docs/pages/developer-intro.mdx
+  - api: API Reference
+    api-name: beta

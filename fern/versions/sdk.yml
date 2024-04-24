@@ -4,4 +4,8 @@ navigation:
       - page: For Developers
         path: ../docs/pages/developer-intro.mdx
   - api: API Reference
-    api-name: beta
+    snippets:
+      typescript: "@fern-api/devrev"
+      python: "@fern-api/devrev"
+    display-errors: true
+    api-name: sdk

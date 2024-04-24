@@ -48,3 +48,6 @@ versions:
   - display-name: Beta
     path: ./versions/beta.yml
     slug: beta
+  - display-name: SDK
+    path: ./versions/sdk.yml
+    slug: sdk

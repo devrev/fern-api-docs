@@ -3,12 +3,8 @@ navigation:
     contents:
       - page: For Developers
         path: ../docs/pages/developer-intro.mdx
-      - page: Getting started
-        path: ../docs/pages/welcome.mdx
       - page: Authentication
         path: ../docs/pages/authentication.mdx
-      - page: Entities
-        path: ../docs/pages/entities.mdx
       - page: Pagination
         path: ../docs/pages/pagination.mdx
       - page: Versioning
@@ -23,6 +19,45 @@ navigation:
     snippets:
       typescript: "@fern-api/devrev"
       python: "@fern-api/devrev" 
+    layout:
+      - page: Getting started
+        path: ../docs/pages/welcome.mdx
+      - artifacts:
+        - page: Attachments
+          path: ../docs/pages/entities/artifacts.mdx
+      - authConnection:
+        - page: Identity provider
+          path: ../docs/pages/entities/identity.mdx
+      - authTokens:
+        - page: Security tokens
+          path: ../docs/pages/entities/security-token.mdx
+      - devUsers:
+        - page: Product builders and service providers
+          path: ../docs/pages/entities/dev-users.mdx
+      - parts:
+        - page: Product components
+          path: ../docs/pages/entities/parts.mdx
+      - revOrgs:
+        - page: Workspaces
+          path: ../docs/pages/entities/revorgs.mdx
+      - tags:
+        - page: Concepts
+          path: ../docs/pages/entities/tags.mdx
+      - timelineEntries:
+        - page: Discussions and events
+          path: ../docs/pages/entities/timeline.mdx
+      - webhooks:
+        - page: Event responses
+          path: ../docs/pages/entities/webhooks.mdx
+      - works:
+        - page: Tickets and issues
+          path: ../docs/pages/entities/works.mdx
+      - accounts:
+        - page: Accounts
+          path: ../docs/pages/entities/accounts.mdx
+      - slas:
+        - page: Service level agreement
+          path: ../docs/pages/entities/sla.mdx
   - section: Guides
     contents: 
       - page: Getting started with webhooks
@@ -83,6 +118,8 @@ navigation:
             path: ../docs/pages/references/snap-in-resources.mdx
       - page: Development best practices
         path: ../docs/pages/best_practices.mdx
+      - page: Locally testing snap-ins
+        path: ../docs/pages/testing.mdx
       - page: Debugging
         path: ../docs/pages/debugging.mdx
       - page: Quotas and limits

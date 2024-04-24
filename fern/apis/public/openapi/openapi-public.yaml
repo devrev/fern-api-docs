@@ -62,7 +62,8 @@ components:
             description: Description of the corresponding Account.
             type: string
           domains:
-            description: Company's domain names. Example - 'devrev.ai'.
+            description: Company's domain names
+            example: 'companyname.com'
             items:
               type: string
             type: array
@@ -86,9 +87,302 @@ components:
         - owned_by
         type: object
       title: account
-    archetype-metric-target:
+    accounts-create-request:
+      description: |
+        Request object to create a new account in the Dev organization.
+      properties:
+        description:
+          description: Description of the account.
+          type: string
+        display_name:
+          description: Name of the account.
+          type: string
+        domains:
+          description: List of company's domain names. 
+          example: 'companyname.com'
+          items:
+            type: string
+          type: array
+        external_refs:
+          description: |
+            External refs are unique identifiers from your customer system of
+            records, stored as a list.
+          items:
+            type: string
+          type: array
+        owned_by:
+          description: List of Dev users owning this account.
+          items:
+            type: string
+          type: array
+        tier:
+          description: The tier of the account.
+          type: string
+        websites:
+          description: |
+            List of company websites. 
+          example: ['www.companyname.com',
+            'www.marketplace.companyname.com']
+          items:
+            type: string
+          type: array
+      required:
+      - display_name
+      title: accounts-create-request
+      type: object
+    accounts-create-response:
+      description: The response to creating a new account.
+      properties:
+        account:
+          $ref: '#/components/schemas/account'
+      required:
+      - account
+      title: accounts-create-response
+      type: object
+      x-go-name: AccountsCreateResponseBody
+    accounts-delete-request:
+      description: Request object to delete an account.
+      properties:
+        id:
+          description: The ID of account to delete.
+          example: ACC-12345
+          type: string
+      required:
+      - id
+      title: accounts-delete-request
+      type: object
+    accounts-delete-response:
       additionalProperties: false
+      description: The response to deleting an account.
+      title: accounts-delete-response
+      type: object
+      x-go-name: AccountsDeleteResponseBody
+    accounts-export-request:
+      description: The request to export a collection of accounts.
+      properties:
+        created_by:
+          description: Filters for accounts created by the specified user(s).
+          items:
+            type: string
+          type: array
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        display_name:
+          description: Array of display names of accounts to be filtered.
+          items:
+            type: string
+          type: array
+        external_refs:
+          description: Array of references of accounts to be filtered.
+          items:
+            type: string
+          type: array
+        first:
+          description: The number of accounts to return. The default is '50'.
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        sort_by:
+          description: |
+            Fields to sort the accounts by and the direction to sort them in.
+          items:
+            type: string
+          type: array
+        stage:
+          description: Filters for accounts on specified stages.
+          items:
+            type: string
+          type: array
+      title: accounts-export-request
+      type: object
+    accounts-export-response:
+      description: The response to exporting a collection of accounts.
+      properties:
+        accounts:
+          description: The exported accounts.
+          items:
+            $ref: '#/components/schemas/account'
+          type: array
+      required:
+      - accounts
+      title: accounts-export-response
+      type: object
+      x-go-name: AccountsExportResponseBody
+    accounts-get-request:
+      description: Request object to get an account's information.
+      properties:
+        id:
+          description: The ID of the account to be retrieved.
+          example: ACC-12345
+          type: string
+      required:
+      - id
+      title: accounts-get-request
+      type: object
+    accounts-get-response:
+      description: The returned account.
+      properties:
+        account:
+          $ref: '#/components/schemas/account'
+      required:
+      - account
+      title: accounts-get-response
+      type: object
+      x-go-name: AccountsGetResponseBody
+    accounts-list-request:
+      description: List the accounts.
+      properties:
+        created_by:
+          description: Filters for accounts created by the specified user(s).
+          items:
+            type: string
+          type: array
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        display_name:
+          description: Array of display names of accounts to be filtered.
+          items:
+            type: string
+          type: array
+        external_refs:
+          description: Array of references of accounts to be filtered.
+          items:
+            type: string
+          type: array
+        limit:
+          description: |
+            The maximum number of accounts to return per page. The default is
+            '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        sort_by:
+          description: |
+            Fields to sort the accounts by and the direction to sort them in.
+          items:
+            type: string
+          type: array
+        stage:
+          description: Filters for accounts on specified stages.
+          items:
+            type: string
+          type: array
+      title: accounts-list-request
+      type: object
+    accounts-list-response:
+      description: |
+        The response to listing all accounts matching the filter criteria.
+      properties:
+        accounts:
+          description: List containing all the accounts
+          items:
+            $ref: '#/components/schemas/account'
+          type: array
+        next_cursor:
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          type: string
+      required:
+      - accounts
+      title: accounts-list-response
+      type: object
+      x-go-name: AccountsListResponseBody
+    accounts-update-request:
+      description: Request to update details of the account.
+      properties:
+        description:
+          description: Updated description of the account.
+          type: string
+        display_name:
+          description: Updated display name for the account.
+          type: string
+        domains:
+          description: |
+            Updated list of company's domain names.
+          example: '[companyname.com]'
+          items:
+            type: string
+          type: array
+        external_refs:
+          description: Updated External Refs of account.
+          items:
+            type: string
+          type: array
+        id:
+          description: The ID of account to update.
+          example: ACC-12345
+          type: string
+        owned_by:
+          description: Updated list of the users owning this account.
+          items:
+            type: string
+          type: array
+        tier:
+          description: Updated tier of the account.
+          nullable: true
+          type: string
+      required:
+      - id
+      title: accounts-update-request
+      type: object
+    accounts-update-response:
+      description: Updated account object.
+      properties:
+        account:
+          $ref: '#/components/schemas/account'
+      required:
+      - account
+      title: accounts-update-response
+      type: object
+      x-go-name: AccountsUpdateResponseBody
+    archetype-metric-target:
       description: Metric with corresponding target values.
+      properties:
+        is_out_of_schedule:
+          description: |
+            If true, the schedule attached to this metric is out of schedule at
+            the time of the query.
+          type: boolean
+        metric_definition:
+          $ref: '#/components/schemas/metric-definition-summary'
+        org_schedule:
+          $ref: '#/components/schemas/org-schedule-summary'
+        remaining_time:
+          description: Time in minutes that remains on a paused metric.
+          format: int32
+          type: integer
+        target_time:
+          description: |
+            Time at which the metric would breach SLA if no action taken.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        warning_target_time:
+          description: |
+            Time at which the metric would reach the SLA warning limit if no
+            action taken.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      required:
+      - metric_definition
       title: archetype-metric-target
       type: object
     artifact:
@@ -458,6 +752,7 @@ components:
       description: The type of the requested token.
       enum:
       - urn:devrev:params:oauth:token-type:aat
+      - urn:devrev:params:oauth:token-type:aat:act-as
       - urn:devrev:params:oauth:token-type:aat:public
       - urn:devrev:params:oauth:token-type:dev
       - urn:devrev:params:oauth:token-type:dev:connect
@@ -469,6 +764,7 @@ components:
       - urn:devrev:params:oauth:token-type:session
       - urn:devrev:params:oauth:token-type:session:dev0
       - urn:devrev:params:oauth:token-type:session:onetime
+      - urn:devrev:params:oauth:token-type:session:rev:act-as
       - urn:devrev:params:oauth:token-type:super
       - urn:devrev:params:oauth:token-type:sys
       - urn:ietf:params:oauth:token-type:jwt
@@ -476,6 +772,8 @@ components:
       x-fern-enum:
         urn:devrev:params:oauth:token-type:aat:
           name: urn-devrev-params-oauth-token-type-aat
+        urn:devrev:params:oauth:token-type:aat:act-as:
+          name: urn-devrev-params-oauth-token-type-aat-act-as
         urn:devrev:params:oauth:token-type:aat:public:
           name: urn-devrev-params-oauth-token-type-aat-public
         urn:devrev:params:oauth:token-type:dev:
@@ -498,6 +796,8 @@ components:
           name: urn-devrev-params-oauth-token-type-session-dev0
         urn:devrev:params:oauth:token-type:session:onetime:
           name: urn-devrev-params-oauth-token-type-session-onetime
+        urn:devrev:params:oauth:token-type:session:rev:act-as:
+          name: urn-devrev-params-oauth-token-type-session-rev-act-as
         urn:devrev:params:oauth:token-type:super:
           name: urn-devrev-params-oauth-token-type-super
         urn:devrev:params:oauth:token-type:sys:
@@ -555,7 +855,9 @@ components:
         type.
       properties:
         act_as:
-          description: The unique ID of the Dev user to impersonate.
+          description: |
+            The unique ID of the Dev user or the service account to
+            impersonate.
           type: string
         aud:
           description: The expected audience values with respect to the token.
@@ -841,6 +1143,8 @@ components:
             items:
               $ref: '#/components/schemas/user-summary'
             type: array
+          sla_tracker:
+            $ref: '#/components/schemas/sla-tracker-summary'
           stage:
             $ref: '#/components/schemas/legacy-stage'
           tags:
@@ -1820,6 +2124,31 @@ components:
       - sla_tracker
       title: event-sla-tracker-updated
       type: object
+    event-survey-response-created:
+      properties:
+        survey_response:
+          $ref: '#/components/schemas/survey-response'
+      required:
+      - survey_response
+      title: event-survey-response-created
+      type: object
+    event-survey-response-deleted:
+      properties:
+        id:
+          description: The ID of the survey response that was deleted.
+          type: string
+      required:
+      - id
+      title: event-survey-response-deleted
+      type: object
+    event-survey-response-updated:
+      properties:
+        survey_response:
+          $ref: '#/components/schemas/survey-response'
+      required:
+      - survey_response
+      title: event-survey-response-updated
+      type: object
     event-tag-created:
       properties:
         tag:
@@ -1988,6 +2317,15 @@ components:
       - after
       - before
       type: string
+    metric-definition-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      - properties:
+          name:
+            description: Human readable name of the metric.
+            type: string
+        type: object
+      title: metric-definition-summary
     org-base:
       allOf:
       - $ref: '#/components/schemas/atom-base'
@@ -2014,6 +2352,44 @@ components:
       - staging
       - test
       type: string
+    org-schedule-status:
+      description: |
+        Status determines how an item can be used. In 'draft' status an item
+        can be edited but can't be used. When 'published' the item can longer
+        be edited but can be used. 'Archived' is read-only.
+      enum:
+      - archived
+      - draft
+      - published
+      type: string
+    org-schedule-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      - properties:
+          name:
+            description: Human-readable name.
+            type: string
+          status:
+            $ref: '#/components/schemas/org-schedule-status'
+          timezone:
+            description: |
+              Timezone in which this is defined. Only organization schedules in
+              the same timezone can be directly combined.
+            type: string
+          valid_until:
+            description: |
+              Derived field indicating when a valid organization schedule will
+              become invalid. If omitted, the schedule is already invalid. A
+              schedule is valid if it has a weekly schedule for all named periods
+              for all its schedule fragments, and if it has a schedule fragment
+              for the time period in question.
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+            type: string
+        required:
+        - status
+        type: object
+      title: org-schedule-summary
     org-summary:
       discriminator:
         mapping:
@@ -2462,7 +2838,8 @@ components:
             description: Description of the Rev organization.
             type: string
           domain:
-            description: Company's domain name. Example - 'devrev.ai'.
+            description: Company's domain name.
+            example: 'companyname.com'
             type: string
           external_ref:
             description: |
@@ -2489,7 +2866,8 @@ components:
           description: Name of the Rev organization.
           type: string
         domain:
-          description: Company's domain name. Example - 'devrev.ai'.
+          description: Company's domain name.
+          example: 'companyname.com'
           type: string
         environment:
           $ref: '#/components/schemas/org-environment'
@@ -2639,7 +3017,8 @@ components:
           description: Customer chosen name for the Rev organization.
           type: string
         domain:
-          description: Company's domain name. Example - 'devrev.ai'.
+          description: Company's domain name. 
+          example: 'companyname.com'
           type: string
         environment:
           $ref: '#/components/schemas/org-environment'
@@ -2800,6 +3179,10 @@ components:
         - metric_target_summaries
         type: object
       title: sla-tracker
+    sla-tracker-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: sla-tracker-summary
     sla-trackers-get-request:
       properties:
         id:
@@ -2869,6 +3252,25 @@ components:
       description: The filter for survey aggregation.
       title: survey-aggregation-filter
       type: object
+    survey-response:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          dispatch_id:
+            description: The unique ID associated with the dispatched survey.
+            type: string
+          object:
+            description: The ID of the object for which survey is taken.
+            type: string
+          response:
+            description: Response for the survey.
+            type: object
+          survey:
+            description: The ID of the survey for which response is taken.
+            type: string
+        type: object
+      title: survey-response
+      x-go-name: SurveyResponseBody
     sync-metadata-filter:
       properties:
         last_sync_in:
@@ -3158,6 +3560,8 @@ components:
             $ref: '#/components/schemas/org-summary'
           severity:
             $ref: '#/components/schemas/ticket-severity'
+          sla_tracker:
+            $ref: '#/components/schemas/sla-tracker-summary'
           source_channel:
             description: Source channel of the ticket.
             type: string
@@ -3689,6 +4093,12 @@ components:
           $ref: '#/components/schemas/event-sla-tracker-deleted'
         sla_tracker_updated:
           $ref: '#/components/schemas/event-sla-tracker-updated'
+        survey_response_created:
+          $ref: '#/components/schemas/event-survey-response-created'
+        survey_response_deleted:
+          $ref: '#/components/schemas/event-survey-response-deleted'
+        survey_response_updated:
+          $ref: '#/components/schemas/event-survey-response-updated'
         tag_created:
           $ref: '#/components/schemas/event-tag-created'
         tag_deleted:
@@ -3767,6 +4177,9 @@ components:
       - rev_user_created
       - rev_user_deleted
       - rev_user_updated
+      - sla_tracker_created
+      - sla_tracker_deleted
+      - sla_tracker_updated
       - tag_created
       - tag_deleted
       - tag_updated
@@ -4131,6 +4544,9 @@ components:
           type: string
         is_spam:
           description: Whether the ticket is spam.
+          type: boolean
+        needs_response:
+          description: Whether the ticket needs a response.
           type: boolean
         rev_org:
           description: The Rev organization that the ticket is associated with.
@@ -4616,6 +5032,9 @@ components:
         is_spam:
           description: Updates whether the ticket is spam.
           type: boolean
+        needs_response:
+          description: Updates whether the ticket needs a response.
+          type: boolean
         rev_org:
           description: |
             Updates the Rev organization that the ticket is associated with.
@@ -4658,6 +5077,482 @@ info:
   version: "2024-01-24"
 openapi: 3.0.3
 paths:
+  /accounts.create:
+    post:
+      description: |
+        Creates an account, which is a record representing a customer or an
+        organization.
+      operationId: accounts-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accounts-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "409":
+          $ref: '#/components/responses/conflict'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+  /accounts.delete:
+    post:
+      description: Deletes an account.
+      operationId: accounts-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accounts-delete-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+  /accounts.export:
+    get:
+      description: Exports a collection of accounts.
+      operationId: accounts-export
+      parameters:
+      - description: Filters for accounts created by the specified user(s).
+        explode: false
+        in: query
+        name: created_by
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters for objects created after the provided timestamp (inclusive).
+        explode: false
+        in: query
+        name: created_date.after
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: |
+          Filters for objects created before the provided timestamp
+          (inclusive).
+        explode: false
+        in: query
+        name: created_date.before
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: Array of display names of accounts to be filtered.
+        explode: false
+        in: query
+        name: display_name
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Array of references of accounts to be filtered.
+        explode: false
+        in: query
+        name: external_refs
+        schema:
+          items:
+            type: string
+          type: array
+      - description: The number of accounts to return. The default is '50'.
+        explode: false
+        in: query
+        name: first
+        schema:
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+      - description: |
+          Filters for objects created after the provided timestamp (inclusive).
+        explode: false
+        in: query
+        name: modified_date.after
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: |
+          Filters for objects created before the provided timestamp
+          (inclusive).
+        explode: false
+        in: query
+        name: modified_date.before
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: |
+          Fields to sort the accounts by and the direction to sort them in.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Filters for accounts on specified stages.
+        explode: false
+        in: query
+        name: stage
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-export-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+      x-request-name: AccountsExportQuery
+    post:
+      description: Exports a collection of accounts.
+      operationId: accounts-export-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accounts-export-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-export-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+  /accounts.get:
+    get:
+      description: Retrieves an account's information.
+      operationId: accounts-get
+      parameters:
+      - description: The ID of the account to be retrieved.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          example: ACC-12345
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+      x-request-name: AccountsGetQuery
+    post:
+      description: Retrieves an account's information.
+      operationId: accounts-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accounts-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+  /accounts.list:
+    get:
+      description: Gets a list of accounts.
+      operationId: accounts-list
+      parameters:
+      - description: Filters for accounts created by the specified user(s).
+        explode: false
+        in: query
+        name: created_by
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters for objects created after the provided timestamp (inclusive).
+        explode: false
+        in: query
+        name: created_date.after
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: |
+          Filters for objects created before the provided timestamp
+          (inclusive).
+        explode: false
+        in: query
+        name: created_date.before
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: |
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: Array of display names of accounts to be filtered.
+        explode: false
+        in: query
+        name: display_name
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Array of references of accounts to be filtered.
+        explode: false
+        in: query
+        name: external_refs
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          The maximum number of accounts to return per page. The default is
+          '50'.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
+      - description: |
+          Filters for objects created after the provided timestamp (inclusive).
+        explode: false
+        in: query
+        name: modified_date.after
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: |
+          Filters for objects created before the provided timestamp
+          (inclusive).
+        explode: false
+        in: query
+        name: modified_date.before
+        schema:
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      - description: |
+          Fields to sort the accounts by and the direction to sort them in.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Filters for accounts on specified stages.
+        explode: false
+        in: query
+        name: stage
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+      x-request-name: AccountsListQuery
+    post:
+      description: Gets a list of accounts.
+      operationId: accounts-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accounts-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+  /accounts.update:
+    post:
+      description: Updates an account's information.
+      operationId: accounts-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accounts-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "409":
+          $ref: '#/components/responses/conflict'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
   /artifacts.get:
     get:
       description: Gets the requested artifact's information.
@@ -7906,6 +8801,8 @@ servers:
       default: https
       description: API protocol.
 tags:
+- description: Accounts management APIs
+  name: accounts
 - description: Artifact (file) management APIs.
   name: artifacts
 - description: Auth Connections of DevOrg.

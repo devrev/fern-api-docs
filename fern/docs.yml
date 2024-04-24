@@ -32,12 +32,12 @@ typography:
     path: ./fonts/SF-Pro-Text-Regular.woff2
     weight: "400"
   headingsFont:
-    name: SF Pro Semi-bold
-    path: ./fonts/SF-Pro-Text-Semibold.woff2
+    name: SF Pro Display
+    path: ./fonts/SF-Pro-Display-Regular.woff2
     weight: "600"
   codeFont: 
-    name: Unica
-    path:  ./fonts/Unica77MonoLLWeb-Regular.woff2
+    name: SF mono
+    path:  ./fonts/sf-mono-regular.woff2
 
 favicon: ./docs/assets/favicon.ico
 

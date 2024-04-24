@@ -733,6 +733,9 @@ components:
       title: article-summary
     articles-count-request:
       properties:
+        ancestor:
+          description: The ancestor directory of the articles.
+          type: string
         applies_to_parts:
           description: |
             Filters for articles belonging to any of the provided parts.
@@ -8439,6 +8442,7 @@ components:
     snap-widget-namespace:
       description: Logical grouping of snap widgets. Useful for filtering.
       enum:
+      - comment_suggestion_replies
       - email_preview
       - link_preview
       - plug_nudge
@@ -10809,6 +10813,9 @@ components:
         is_spam:
           description: Whether the ticket is spam.
           type: boolean
+        needs_response:
+          description: Whether the ticket needs a response.
+          type: boolean
         rev_org:
           description: The Rev organization that the ticket is associated with.
           example: REV-AbCdEfGh
@@ -11419,6 +11426,9 @@ components:
         is_spam:
           description: Updates whether the ticket is spam.
           type: boolean
+        needs_response:
+          description: Updates whether the ticket needs a response.
+          type: boolean
         rev_org:
           description: |
             Updates the Rev organization that the ticket is associated with.
@@ -12002,6 +12012,12 @@ paths:
       description: Get count of articles matching given filter.
       operationId: articles-count
       parameters:
+      - description: The ancestor directory of the articles.
+        explode: false
+        in: query
+        name: ancestor
+        schema:
+          type: string
       - description: |
           Filters for articles belonging to any of the provided parts.
         explode: false

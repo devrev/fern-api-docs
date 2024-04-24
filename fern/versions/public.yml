@@ -48,6 +48,12 @@ navigation:
       - works:
         - page: Tickets and issues
           path: ../docs/pages/entities/works.mdx
+      - accounts:
+        - page: Accounts
+          path: ../docs/pages/entities/accounts.mdx
+      - slas:
+        - page: Service level agreement
+          path: ../docs/pages/entities/sla.mdx
   - section: Guides
     slug: guides
     contents: 

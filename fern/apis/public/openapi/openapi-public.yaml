@@ -62,7 +62,8 @@ components:
             description: Description of the corresponding Account.
             type: string
           domains:
-            description: Company's domain names. Example - 'devrev.ai'.
+            description: Company's domain names
+            example: 'companyname.com'
             items:
               type: string
             type: array
@@ -97,7 +98,8 @@ components:
           description: Name of the account.
           type: string
         domains:
-          description: List of company's domain names. Example - ['devrev.ai'].
+          description: List of company's domain names. 
+          example: 'companyname.com'
           items:
             type: string
           type: array
@@ -118,8 +120,9 @@ components:
           type: string
         websites:
           description: |
-            List of company websites. Example - ['www.devrev.ai',
-            'www.marketplace.devrev.ai'].
+            List of company websites. 
+          example: ['www.companyname.com',
+            'www.marketplace.companyname.com']
           items:
             type: string
           type: array
@@ -312,7 +315,8 @@ components:
           type: string
         domains:
           description: |
-            Updated list of company's domain names. Example - ['devrev.ai'].
+            Updated list of company's domain names.
+          example: '[companyname.com]'
           items:
             type: string
           type: array
@@ -2834,7 +2838,8 @@ components:
             description: Description of the Rev organization.
             type: string
           domain:
-            description: Company's domain name. Example - 'devrev.ai'.
+            description: Company's domain name.
+            example: 'companyname.com'
             type: string
           external_ref:
             description: |
@@ -2861,7 +2866,8 @@ components:
           description: Name of the Rev organization.
           type: string
         domain:
-          description: Company's domain name. Example - 'devrev.ai'.
+          description: Company's domain name.
+          example: 'companyname.com'
           type: string
         environment:
           $ref: '#/components/schemas/org-environment'
@@ -3011,7 +3017,8 @@ components:
           description: Customer chosen name for the Rev organization.
           type: string
         domain:
-          description: Company's domain name. Example - 'devrev.ai'.
+          description: Company's domain name. 
+          example: 'companyname.com'
           type: string
         environment:
           $ref: '#/components/schemas/org-environment'

@@ -2,7 +2,7 @@ Keyrings are a DevRev-specific mechanism for managing authentication with extern
 
 Keyrings provide a secure way to store and manage credentials for external services within your DevRev snap-in. This eliminates the need to expose sensitive information like passwords or access tokens directly within your code or configuration files, enhancing overall security.
 
-Keyrings are defined in the snap-in manifest under the `keyrings` section. They can be categorized into two main types:
+For more clientInformation, refer to [Keyrings](/snapin-development/references/manifest#keyrings) in snap-in manifest. They can be categorized into two main types:
 
 1. **Default keyrings**:
  - **Organization scoped keyrings**: These are secrets used by the entire organization, for example a Slack token for a workspace.
@@ -48,12 +48,12 @@ Additionally, the keyword `connections` is used instead of `keyrings` in manifes
 
 2. **Developer scoped keyrings**: These are secrets accessible and usable only by the developer creating the snap-in, typically used for personal development workflows.
 
-```yaml
-developer_keyrings:
-  - name: my-secret-developer
-    description: A secret for the developer to use during development
-    display_name: Developer secret token
-```
+    ```yaml
+    developer_keyrings:
+      - name: my-secret-developer
+        description: A secret for the developer to use during development
+        display_name: Developer secret token
+    ```
 Breakdown:
 
 - **name**: A unique identifier for the keyring in the snap-in.
@@ -66,33 +66,41 @@ Breakdown:
 
 While DevRev offers pre-defined keyring types for common services, you can leverage this mechanism further to create custom types for specific service integrations.
 
-
 ### Pre-defined keyring types:
 
 - **devrev-snap-in-secret**: Stores simple string tokens utilized by the snap-in itself.
 
 - **devrev-atlassian-jira-oauth**: Facilitates OAuth connections for integrating with Jira.
+
     ```text
     scopes: offline_access read:me read:application-role:jira read:audit-log:jira read:issue-security-level:jira read:issue-security-scheme:jira read:project-role:jira read:avatar:jira read:project-category:jira read:project:jira read:permission-scheme:jira read:user:jira read:field:jira read:permission:jira read:group:jira read:project.component:jira read:issue-details:jira read:issue-meta:jira read:field-configuration:jira read:attachment:jira read:issue-link-type:jira read:issue-type-hierarchy:jira read:issue-type:jira read:label:jira read:priority:jira read:project.property:jira read:project-version:jira read:resolution:jira read:status:jira read:issue.changelog:jira read:issue:jira read:issue.vote:jira write:jira-work read:jira-work write:issue:jira write:issue.property:jira read:issue.transition:jira manage:jira-project manage:jira-configuration
     ```
+
 - **devrev-slack-oauth**: Facilitates OAuth connections for integrating with Slack.
+
     ```text
     scopes: app_mentions:read,channels:history,channels:read,channels:write.invites,channels:manage,chat:write,chat:write.customize,chat:write.public,commands,groups:history,groups:read,im:read,im:write,links:read,links:write,metadata.message:read,mpim:read,mpim:write,team:read,users.profile:read,users:read,users:read.email,im:history,mpim:history,files:read,files:write,pins:read,pins:write
     ```
+
 - **devrev-google-oauth**: Facilitates OAuth connections for integrating with Google.
+
     ```text
     scopes: https://www.googleapis.com/auth/gmail.send
     ```
+
 - **devrev-github-oauth**: Facilitates OAuth connections for integrating with GitHub.
+
     ```text
     scopes: repo admin:repo_hook admin:org notifications user write:discussion
     ```
 - **devrev-zendesk-oauth**: Facilitates OAuth connections for integrating with Microsoft.
+
     ```text
     scopes: read tickets:write
     ```
 
     Manifest Declaration:
+
     ```yaml
     keyrings:
         organization:
@@ -111,22 +119,27 @@ While DevRev offers pre-defined keyring types for common services, you can lever
 3. **Custom keyring types for OAuth**:
 
     Developer Keyring:
-        - The developer_keyrings type allows creating keyrings that hold sensitive information like client IDs and client secrets required for OAuth authorization with external services. These keyrings are intended for development environments and should not be used in production due to security concerns.
-    Here's an example configuration snippet demonstrating a developer_keyring named custom-oauth-credentials:
-    ```yaml
-    developer_keyrings:
-      - name: custom-oauth-credentials
-        description: A secret for the developer to use during development
-        display_name: Developer secret token
-    ```
+        - The `developer_keyrings` type allows creating keyrings that hold sensitive information like client IDs and client secrets required for OAuth authorization with external services. These keyrings are intended for development environments and should not be used in production due to security concerns.
+          Here's an example configuration snippet demonstrating a `developer_keyring` named `custom-oauth-credentials`:
+
+          ```yaml
+          developer_keyrings:
+            - name: custom-oauth-credentials
+              description: A secret for the developer to use during development
+              display_name: Developer secret token
+          ```
 
     To create a developer keyring, follow these steps:
-    - Replace $CLIENT_CREDENTIALS in the following command with your actual OAuth client ID and client secret combined into a JSON string.
-    - Execute Command: Run the following command, replacing < name of the keyring > with your desired keyring name.
-    ```bash
-   echo $CLIENT_CREDENTIALS | devrev developer_keyring create oauth-secret <name of the keyring>
-    ```
-    Note: the keyring will be passed while snap_in_version is being created.
+      - Replace $CLIENT_CREDENTIALS in the following command with your actual OAuth client ID and client secret combined into a JSON string.
+      - Execute Command: Run the following command, replacing < name of the keyring > with your desired keyring name.
+      
+        ```bash
+        echo $CLIENT_CREDENTIALS | devrev developer_keyring create oauth-secret <name of the keyring>
+        ```
+      
+      <Callout intent="note">
+      The keyring will be passed while snap_in_version is being created.
+      </Callout>
 
     Keyring usage in manifest
     ```yaml
@@ -144,70 +157,76 @@ While DevRev offers pre-defined keyring types for common services, you can lever
                   - custom-example-connection
                 display_name: Organization secret token
     ```
-    3.1 **Reusing Predefined keyring_type with Custom Scopes**:
+    
+    3.1. **Reusing Predefined keyring_type with Custom Scopes**:
         Here's an example of a custom keyring type for an existing OAuth2 keyring type while customizing the required scopes for your specific external service.
-    ```yaml
-    keyring_types:
-      - id: custom-example-connection
-        name: Example OAuth Connection
-        description: A custom keyring type for Example OAuth connections.
-        kind: OAuth2
-        oauth_secret: custom-oauth-credentials # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
-        reference_keyring: devrev-example-oauth # Predefined keyring type to be used as a reference for the custom keyring type
-        scopes:
-          - name: read
-            description: Read access to Example resources
-            value: read
-          - name: write
-            description: Write access to Example resources
-            value: write
-            is_optional: true
-    ```
-    3.2 **Custom keyring type definition**:
+
+        ```yaml
+        keyring_types:
+          - id: custom-example-connection
+            name: Example OAuth Connection
+            description: A custom keyring type for Example OAuth connections.
+            kind: OAuth2
+            oauth_secret: custom-oauth-credentials # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
+            reference_keyring: devrev-example-oauth # Predefined keyring type to be used as a reference for the custom keyring type
+            scopes:
+              - name: read
+                description: Read access to Example resources
+                value: read
+              - name: write
+                description: Write access to Example resources
+                value: write
+                is_optional: true
+        ```
+
+    3.2. **Custom keyring type definition**:
         This approach defines a new, entirely custom keyring type with complete control over the OAuth flow configuration.
-    ```yaml
-    keyring_types:
-      - id: custom-example-connection // Unique identifier for your custom type, used in the `keyring` section of the manifest.
-        name: "Example Connection"
-        description: "Example connection"
-        kind: "Oauth2"
-        scopes: # Configuration for the scopes required by the external service for authorization
-          - name: "read"
-            description: "Read access to Example resources"
-            value: "read"
-          - name: "write"
-            description: "Write access to Example resources"
-            value: "write"
-            is_optional: true
-        scope_delimiter: "," # Delimiter used to separate scopes in the authorization request
-        oauth_secret: custom-oauth-credentials  # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
-        authorize: # Configuration for the authorization request
-            type: "config"
-            grant_type: "authorization_code"
-            auth_url: "https://example.com/oauth/authorize"
-            token_url: "https://example.com/oauth/token"
-        organization_data: # Configuration for fetching organization data
-            type: "config"
-            url: "https://example.com/oauth/organization"
-            method: "POST"
-            headers:
-            "Content-type": "application/x-www-form-urlencoded"
-            "Authorization": "Bearer [ACCESS_TOKEN]"
-            response_jq: "{id:.team_id, name:.team}"
-        refresh: # Configuration for the refresh token request
-            type: "config"
-            url: "https://example.com/oauth/token"
-            method: "POST"
-        revoke: # Configuration for the token revocation of the token
-            type: "config"
-            url: "https://example.com/oauth/revoke"
-            method: "GET"
-            headers:
-            "Content-type": "application/x-www-form-urlencoded"
-            "Authorization": "Bearer [ACCESS_TOKEN]"
-    ```
-4. Define Basic keyring type
-    Here's an example of a custom keyring type for establishing secure Basic Auth connections within your snap-in:
+
+        ```yaml
+        keyring_types:
+          - id: custom-example-connection // Unique identifier for your custom type, used in the `keyring` section of the manifest.
+            name: "Example Connection"
+            description: "Example connection"
+            kind: "Oauth2"
+            scopes: # Configuration for the scopes required by the external service for authorization
+              - name: "read"
+                description: "Read access to Example resources"
+                value: "read"
+              - name: "write"
+                description: "Write access to Example resources"
+                value: "write"
+                is_optional: true
+            scope_delimiter: "," # Delimiter used to separate scopes in the authorization request
+            oauth_secret: custom-oauth-credentials  # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
+            authorize: # Configuration for the authorization request
+                type: "config"
+                grant_type: "authorization_code"
+                auth_url: "https://example.com/oauth/authorize"
+                token_url: "https://example.com/oauth/token"
+            organization_data: # Configuration for fetching organization data
+                type: "config"
+                url: "https://example.com/oauth/organization"
+                method: "POST"
+                headers:
+                "Content-type": "application/x-www-form-urlencoded"
+                "Authorization": "Bearer [ACCESS_TOKEN]"
+                response_jq: "{id:.team_id, name:.team}"
+            refresh: # Configuration for the refresh token request
+                type: "config"
+                url: "https://example.com/oauth/token"
+                method: "POST"
+            revoke: # Configuration for the token revocation of the token
+                type: "config"
+                url: "https://example.com/oauth/revoke"
+                method: "GET"
+                headers:
+                "Content-type": "application/x-www-form-urlencoded"
+                "Authorization": "Bearer [ACCESS_TOKEN]"
+        ```
+
+4. **Define Basic keyring type:**
+   Here's an example of a custom keyring type for establishing secure Basic Auth connections within your snap-in:
+
     ```yaml
     keyring_types:
       - id: custom-example-connection
@@ -227,8 +246,10 @@ While DevRev offers pre-defined keyring types for common services, you can lever
                 "Content-type": "application/x-www-form-urlencoded"
                 "Authorization": "Bearer [API_KEY]"
     ```
-5. Define Multi-filed keyring type
-        Here's an example of a custom keyring type for establishing secure connections with multiple fields within your snap-in:
+
+5. **Define Multi-filed keyring:**
+     Here's an example of a custom keyring type for establishing secure connections with multiple fields within your snap-in:
+
     ```yaml
     keyring_types:
     - id: custom-example-connection
@@ -248,14 +269,16 @@ While DevRev offers pre-defined keyring types for common services, you can lever
               description: Password for connection
     ```
 
+<Callout intent="note"> 
 
-Note: **Supported keywords in keyring_type configuration**:
-The supported keywords that can be dynamically inserted into URLs, headers, and query parameters within your custom keyring type configuration.
-- **[ACCESS_TOKEN]**: The access token obtained during the OAuth flow.
-- **[REFRESH_TOKEN]**: The refresh token obtained during the OAuth flow.
-- **[CLIENT_ID]**: The client ID obtained from the OAuth client credentials.
-- **[CLIENT_SECRET]**: The client secret obtained from the OAuth client credentials.
-- **[SCOPE]**: The scope of the OAuth flow.
-- **[API_KEY]**: The API key obtained from the basic flow.
+**Supported keywords in keyring_type configuration**:
+  The supported keywords that can be dynamically inserted into URLs, headers, and query parameters within your custom keyring type configuration.
+  - **[ACCESS_TOKEN]**: The access token obtained during the OAuth flow.
+  - **[REFRESH_TOKEN]**: The refresh token obtained during the OAuth flow.
+  - **[CLIENT_ID]**: The client ID obtained from the OAuth client credentials.
+  - **[CLIENT_SECRET]**: The client secret obtained from the OAuth client credentials.
+  - **[SCOPE]**: The scope of the OAuth flow.
+  - **[API_KEY]**: The API key obtained from the basic flow.
+</Callout>
 
 For examples of how to use keyrings in your snap-in, refer to the [Keyring API documentation](https://github.com/devrev/snap-in-examples/tree/main/13-keyring-type).

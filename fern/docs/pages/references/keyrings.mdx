@@ -130,15 +130,15 @@ While DevRev offers pre-defined keyring types for common services, you can lever
           ```
 
     To create a developer keyring, follow these steps:
-      - Replace $CLIENT_CREDENTIALS in the following command with your actual OAuth client ID and client secret combined into a JSON string.
-      - Execute Command: Run the following command, replacing < name of the keyring > with your desired keyring name.
+      - Replace `$CLIENT_CREDENTIALS` in the following command with your actual OAuth client ID and client secret combined into a JSON string.
+      - Execute Command: Run the following command, replacing `<name of the keyring>` with your desired keyring name.
       
         ```bash
         echo $CLIENT_CREDENTIALS | devrev developer_keyring create oauth-secret <name of the keyring>
         ```
       
       <Callout intent="note">
-      The keyring will be passed while snap_in_version is being created.
+      The keyring will be passed while `snap_in_version` is being created.
       </Callout>
 
     Keyring usage in manifest
@@ -159,70 +159,70 @@ While DevRev offers pre-defined keyring types for common services, you can lever
     ```
     
     3.1. **Reusing Predefined keyring_type with Custom Scopes**:
-        Here's an example of a custom keyring type for an existing OAuth2 keyring type while customizing the required scopes for your specific external service.
+          Here's an example of a custom keyring type for an existing OAuth2 keyring type while customizing the required scopes for your specific external service.
 
-        ```yaml
-        keyring_types:
-          - id: custom-example-connection
-            name: Example OAuth Connection
-            description: A custom keyring type for Example OAuth connections.
-            kind: OAuth2
-            oauth_secret: custom-oauth-credentials # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
-            reference_keyring: devrev-example-oauth # Predefined keyring type to be used as a reference for the custom keyring type
-            scopes:
-              - name: read
-                description: Read access to Example resources
-                value: read
-              - name: write
-                description: Write access to Example resources
-                value: write
-                is_optional: true
-        ```
+          ```yaml
+          keyring_types:
+            - id: custom-example-connection
+              name: Example OAuth Connection
+              description: A custom keyring type for Example OAuth connections.
+              kind: OAuth2
+              oauth_secret: custom-oauth-credentials # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
+              reference_keyring: devrev-example-oauth # Predefined keyring type to be used as a reference for the custom keyring type
+              scopes:
+                - name: read
+                  description: Read access to Example resources
+                  value: read
+                - name: write
+                  description: Write access to Example resources
+                  value: write
+                  is_optional: true
+          ```
 
     3.2. **Custom keyring type definition**:
-        This approach defines a new, entirely custom keyring type with complete control over the OAuth flow configuration.
+          This approach defines a new, entirely custom keyring type with complete control over the OAuth flow configuration.
 
-        ```yaml
-        keyring_types:
-          - id: custom-example-connection // Unique identifier for your custom type, used in the `keyring` section of the manifest.
-            name: "Example Connection"
-            description: "Example connection"
-            kind: "Oauth2"
-            scopes: # Configuration for the scopes required by the external service for authorization
-              - name: "read"
-                description: "Read access to Example resources"
-                value: "read"
-              - name: "write"
-                description: "Write access to Example resources"
-                value: "write"
-                is_optional: true
-            scope_delimiter: "," # Delimiter used to separate scopes in the authorization request
-            oauth_secret: custom-oauth-credentials  # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
-            authorize: # Configuration for the authorization request
-                type: "config"
-                grant_type: "authorization_code"
-                auth_url: "https://example.com/oauth/authorize"
-                token_url: "https://example.com/oauth/token"
-            organization_data: # Configuration for fetching organization data
-                type: "config"
-                url: "https://example.com/oauth/organization"
-                method: "POST"
-                headers:
-                "Content-type": "application/x-www-form-urlencoded"
-                "Authorization": "Bearer [ACCESS_TOKEN]"
-                response_jq: "{id:.team_id, name:.team}"
-            refresh: # Configuration for the refresh token request
-                type: "config"
-                url: "https://example.com/oauth/token"
-                method: "POST"
-            revoke: # Configuration for the token revocation of the token
-                type: "config"
-                url: "https://example.com/oauth/revoke"
-                method: "GET"
-                headers:
-                "Content-type": "application/x-www-form-urlencoded"
-                "Authorization": "Bearer [ACCESS_TOKEN]"
-        ```
+          ```yaml
+          keyring_types:
+            - id: custom-example-connection // Unique identifier for your custom type, used in the `keyring` section of the manifest.
+              name: "Example Connection"
+              description: "Example connection"
+              kind: "Oauth2"
+              scopes: # Configuration for the scopes required by the external service for authorization
+                - name: "read"
+                  description: "Read access to Example resources"
+                  value: "read"
+                - name: "write"
+                  description: "Write access to Example resources"
+                  value: "write"
+                  is_optional: true
+              scope_delimiter: "," # Delimiter used to separate scopes in the authorization request
+              oauth_secret: custom-oauth-credentials  # Developer keyring that contains OAuth2 client ID and client secret. Shall be of keyring type `oauth-secret`.
+              authorize: # Configuration for the authorization request
+                  type: "config"
+                  grant_type: "authorization_code"
+                  auth_url: "https://example.com/oauth/authorize"
+                  token_url: "https://example.com/oauth/token"
+              organization_data: # Configuration for fetching organization data
+                  type: "config"
+                  url: "https://example.com/oauth/organization"
+                  method: "POST"
+                  headers:
+                  "Content-type": "application/x-www-form-urlencoded"
+                  "Authorization": "Bearer [ACCESS_TOKEN]"
+                  response_jq: "{id:.team_id, name:.team}"
+              refresh: # Configuration for the refresh token request
+                  type: "config"
+                  url: "https://example.com/oauth/token"
+                  method: "POST"
+              revoke: # Configuration for the token revocation of the token
+                  type: "config"
+                  url: "https://example.com/oauth/revoke"
+                  method: "GET"
+                  headers:
+                  "Content-type": "application/x-www-form-urlencoded"
+                  "Authorization": "Bearer [ACCESS_TOKEN]"
+          ```
 
 4. **Define Basic keyring type:**
    Here's an example of a custom keyring type for establishing secure Basic Auth connections within your snap-in:

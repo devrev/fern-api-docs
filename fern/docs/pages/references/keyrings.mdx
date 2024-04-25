@@ -120,11 +120,11 @@ While DevRev offers pre-defined keyring types for common services, you can lever
         display_name: Developer secret token
     ```
     To create a developer keyring, follow these steps:
-    - Replace $CLIENT_CREDENTIALS in the following command with your actual OAuth client ID and client secret combined into a JSON string.
-    - Execute Command: Run the following command, replacing <name of the keyring> with your desired keyring name:
-        ```bash
-       echo $CLIENT_CREDENTIALS | devrev keyring create oauth-secret <name of the keyring>
-        ```
+        - Replace $CLIENT_CREDENTIALS in the following command with your actual OAuth client ID and client secret combined into a JSON string.
+        - Execute Command: Run the following command, replacing <name of the keyring> with your desired keyring name.
+    ```bash
+   echo $CLIENT_CREDENTIALS | devrev keyring create oauth-secret <name of the keyring>
+    ```
     Note: the keyring will be passed while snap_in_version is being created.
 
     Keyring usage in manifest

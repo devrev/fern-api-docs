@@ -1,12 +1,12 @@
 Keyrings are a DevRev-specific mechanism for managing authentication with external services. Keyrings are called **Connections** in the DevRev app.
 
-Keyrings provide a secure way to store and manage credentials for external services within your DevRev snap-in. This eliminates the need to expose sensitive information like passwords or access tokens directly within your code or configuration files, enhancing overall security.
+Keyrings provides a secure way to store and manage credentials for external services within your DevRev snap-in. This eliminates the need to expose sensitive information like passwords or access tokens directly within your code or configuration files, enhancing overall security.
 
-For more clientInformation, refer to [Keyrings](/snapin-development/references/manifest#keyrings) in snap-in manifest. They can be categorized into two main types:
+For more information, refer to [Keyrings](/snapin-development/references/manifest#keyrings) in the snap-in manifest. They can be categorized into two main types:
 
 1. **Default keyrings**:
- - **Organization scoped keyrings**: These are secrets used by the entire organization, for example a Slack token for a workspace.
- - **User scoped keyrings**: These are secrets for a single user, for example the token to interact with a single person's Google Calendar.
+ - **Organization scoped keyrings**: These are secrets used by the entire organization, for example, a Slack token for a workspace.
+ - **User scoped keyrings**: These are secrets for a single user, for example, the token to interact with a single person's Google Calendar.
 
 <Callout intent="note">
 During installation, the user will be prompted to provide credentials for each keyring.
@@ -39,7 +39,7 @@ Breakdown:
 
 - **display_name**: The name that's shown to the user when they're asked to provide a keyring.
 
-All user scoped keyrings are optional in the snap-in, and developers must handle the case where a user scoped keyring isn't found.
+All user-scoped keyrings are optional in the snap-in, and developers must handle the case where a user-scoped keyring isn't found.
 
 <Callout intent="note">
 If you are using version 1 of the manifest, you can omit the organization key in the keyring definition and directly provide the keyring definition as a list. All keyring defined in manifest version 1 are organization-scoped.
@@ -119,7 +119,7 @@ While DevRev offers pre-defined keyring types for common services, you can lever
 3. **Custom keyring types for OAuth**:
 
     Developer Keyring:
-        - The `developer_keyrings` type allows creating keyrings that hold sensitive information like client IDs and client secrets required for OAuth authorization with external services. These keyrings are intended for development environments and should not be used in production due to security concerns.
+        - The `developer_keyrings` type allows the creation of keyrings that hold sensitive information like client IDs and client secrets required for OAuth authorization with external services. These keyrings are intended for development environments and should not be used in production due to security concerns.
           Here's an example configuration snippet demonstrating a `developer_keyring` named `custom-oauth-credentials`:
 
           ```yaml
@@ -141,7 +141,8 @@ While DevRev offers pre-defined keyring types for common services, you can lever
       The keyring will be passed while `snap_in_version` is being created.
       </Callout>
 
-    Keyring usage in manifest
+    Keyring usage in manifest:
+
     ```yaml
         keyrings:
             organization:

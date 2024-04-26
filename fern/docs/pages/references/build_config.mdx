@@ -46,8 +46,6 @@ developer_keyrings:
 
 ## Using the variables defined in config
 
-## Private Registries
-
 If the package is present in private registries, the developer can update the `.npmrc` file in the `code` folder from the template to include the URL of the registry and the token.
 
 For example, to use variables defined in manifest defined in the previous section, the `.npmrc` file will look something like this:
@@ -57,4 +55,8 @@ For example, to use variables defined in manifest defined in the previous sectio
 //${REGISTRY_NAME}/:_authToken=${AUTH_TOKEN}
 ```
 
-The environment variables will be replaced by the values present in the manifest or from the developer keyrings.
+To ensure that the `.npmrc` file is valid and can be used to install the libraries, export the variables defined in the manifest locally with the correct values and install the library
+
+```
+  npm install @githubReg/<YOUR_LIBRARY>
+```

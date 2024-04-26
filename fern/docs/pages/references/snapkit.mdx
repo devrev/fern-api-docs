@@ -568,6 +568,115 @@ Inherited from [Snap](#snap):
 }
 ```
 
+### Table
+
+A rich text element is used to define formatted text.
+
+#### Properties
+
+- `rows` (required): The values which will be shown in the table. The data should be provided as an JSON, where each cell is an plaintext snapkit component 
+- `columns` (required): Columns is defined as an array of objects, where each object has 2 parametres. An optional header, where and an required field key, which defines which field from rows is shown in the defined column. If a key is not used it means that the associated data from rows will not be shown in the table. The order of keys also defines the order in which values from rows are shown in the table.
+
+##### Inherited properties
+
+Inherited from [Snap](#snap):
+
+- `type` (required): The type of the element, should be set to `"table"`.
+- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+#### Example
+
+![table](https://github.com/starlightknown/blender-portfolio/assets/74637789/65274552-6317-4af9-b04b-c03a651eb412)
+
+```json
+{
+	"elements": [
+		{
+			"columns": [
+				{
+					"header": {
+						"text": "Date",
+						"type": "plain_text"
+					},
+					"key": "date"
+				},
+				{
+					"header": {
+						"text": "Status",
+						"type": "plain_text"
+					},
+					"key": "status"
+				},
+				{
+					"header": {
+						"text": "Project Title",
+						"type": "plain_text"
+					},
+					"key": "title"
+				}
+			],
+			"rows": [
+				{
+					"date": {
+						"text": "2024-03-04",
+						"type": "plain_text"
+					},
+					"hiddenField": {
+						"text": "Hidden value",
+						"type": "plain_text"
+					},
+					"status": {
+						"text": "Completed",
+						"type": "plain_text"
+					},
+					"title": {
+						"text": "Project A",
+						"type": "plain_text"
+					}
+				},
+				{
+					"date": {
+						"text": "2024-03-05",
+						"type": "plain_text"
+					},
+					"hiddenField": {
+						"text": "hidden",
+						"type": "plain_text"
+					},
+					"status": {
+						"text": "In Progress",
+						"type": "plain_text"
+					},
+					"title": {
+						"text": "Project B",
+						"type": "plain_text"
+					}
+				},
+				{
+					"date": {
+						"text": "2024-03-06",
+						"type": "plain_text"
+					},
+					"hiddenField": {
+						"text": "hidden",
+						"type": "plain_text"
+					},
+					"status": {
+						"text": "Pending",
+						"type": "plain_text"
+					},
+					"title": {
+						"text": "Project C",
+						"type": "plain_text"
+					}
+				}
+			],
+			"type": "table"
+		}
+	]
+}
+```
+
 ## Form elements
 
 ### Plain text option

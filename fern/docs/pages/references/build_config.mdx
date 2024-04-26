@@ -1,0 +1,60 @@
+Build config is a way to provide data to the snap-in build process. Currently, the only way to send data
+is through environment variables that the build process has access to.
+
+This is useful if the developer wants to import libraries from a different registry or wants to use private packages that
+require authentication token.
+
+## Specifying the Config
+
+Build config is defined as:
+
+```yaml
+build_config:
+  environment_variables:
+    - name: <Name of the environment variable>
+      description: <Description of what the environment variable does>
+      type: <Whether the value is a `constant` or in a developer `keyring`>
+      value: <variable value or developer keyring name>
+```
+
+For example, to import a library that use the GitHub NPM registry, we should add
+the following variables to the build config
+
+```yaml
+build_config:
+  environment_variables:
+    - name: REGISTRY_NAME
+      description: Name of the github registry to import the library.
+      type: constant
+      value: npm.pkg.github.com
+    - name: AUTH_TOKEN
+      description: Token to access the registry
+      type: keyring
+      value: access_token
+```
+
+Since AUTH_TOKEN is a sensitive informantion that should not be hardcoded in the manifest,
+the developer can instead mention the name of the developer keyring and during snap-in version creation
+time, provide the developer keyring to take the value from.
+
+```yaml
+developer_keyrings:
+  - name: access_token
+    description: Access token for the GitHub registry
+    display_name: Access Token
+```
+
+## Using the variables defined in config
+
+## Private Registries
+
+If the package is present in private registries, the developer can update the `.npmrc` file in the `code` folder from the template to include the URL of the registry and the token.
+
+For example, to use variables defined in manifest defined in the previous section, the `.npmrc` file will look something like this:
+
+```.npmrc
+@githubReg:registry=https://${REGISTRY_NAME}
+//${REGISTRY_NAME}/:_authToken=${AUTH_TOKEN}
+```
+
+The environment variables will be replaced by the values present in the manifest or from the developer keyrings.

@@ -1,5 +1,7 @@
 <Callout intent="note">
-The following section is for version 2 of the manifest specification. For the previous version, see [Manifest V1](/snap-in-development/references/snap-in-v-1-manifest).
+  The following section is for version 2 of the manifest specification. For the
+  previous version, see [Manifest
+  V1](/snap-in-development/references/snap-in-v-1-manifest).
 </Callout>
 
 The snap-in manifest is what the developers write to define a snap-in. The manifest has the following sections:
@@ -57,6 +59,7 @@ keyrings:
         - snap_in_secret
       display_name: Your secret token
 ```
+
 Keyrings defined in the manifest can be provided in the snap-in configuration screens and are made available to the function. The keyring type is used to determine the type of the keyring and restricts selection on the configuration screen to valid types.
 
 Organization keyrings are common to the organization, while user keyrings are set per user. User keyrings are optional, so the developer must correctly handle cases where the keyring isn't found.
@@ -679,7 +682,8 @@ inputs:
       ui:
         display_name: <Input field display name.>
 ```
-Inputs of type `timestamp`, `date` and `array` of `booleans` aren't supported. 
+
+Inputs of type `timestamp`, `date` and `array` of `booleans` aren't supported.
 
 ## Tags
 
@@ -706,7 +710,7 @@ commands:
       - surface: discussions
         object_types:
           - conversation
-    usage_hint: "number of tokens to generate"
+    usage_hint: 'number of tokens to generate'
     function: generate_summary
 ```
 
@@ -743,3 +747,24 @@ automations:
 ```
 
 For custom event sources, whatever event key you emit from your policy, the event name will be `custom:<your event key>`.
+
+## Build config
+
+Build configuration is used to pass values during the snap-in build process. The values are present as environment variables. This is useful if the snap-in requires libraries that
+are either private or from different npm registry than the default.
+
+Build config is defined as:
+
+```yaml
+build_config:
+  environment_variables:
+    - name: <Name of the environment variable>
+      description: <Description of what the environment variable does>
+      type: <Whether the value is a constant or in a developer keyring>
+      value: <variable value or developer keyring name>
+```
+
+`type` can either be `constant` or `keyring`.
+
+`value` is either the actual value of the environment variable or name of the developer keyring that
+contains the secret depending on the type being `constant` or `keyring`.

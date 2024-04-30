@@ -150,6 +150,9 @@ navigation:
           - page: Snap-in resources
             slug: snap-in-resources
             path: ../docs/pages/references/snap-in-resources.mdx
+          - page: Build Config
+            slug: build-config
+            path: ../docs/pages/references/build-config.mdx
       - page: Development best practices
         slug: best-practices
         path: ../docs/pages/best_practices.mdx

@@ -1378,6 +1378,70 @@ components:
       - timeline_comment
       - webhook
       type: string
+    boolean-expression:
+      description: Boolean expression.
+      discriminator:
+        mapping:
+          and: '#/components/schemas/boolean-expression-and-expression'
+          not: '#/components/schemas/boolean-expression-not-expression'
+          or: '#/components/schemas/boolean-expression-or-expression'
+          primitive: '#/components/schemas/boolean-expression-primitive-expression'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/boolean-expression-and-expression'
+      - $ref: '#/components/schemas/boolean-expression-not-expression'
+      - $ref: '#/components/schemas/boolean-expression-or-expression'
+      - $ref: '#/components/schemas/boolean-expression-primitive-expression'
+      properties:
+        type:
+          $ref: '#/components/schemas/boolean-expression-type'
+      required:
+      - type
+      title: boolean-expression
+      type: object
+    boolean-expression-and-expression:
+      description: All the expressions would be 'and'ed together.
+      properties:
+        expressions:
+          items:
+            $ref: '#/components/schemas/boolean-expression'
+          type: array
+      required:
+      - expressions
+      title: boolean-expression-and-expression
+      type: object
+    boolean-expression-not-expression:
+      description: The expression would be negated.
+      properties:
+        expression:
+          $ref: '#/components/schemas/boolean-expression'
+      required:
+      - expression
+      title: boolean-expression-not-expression
+      type: object
+    boolean-expression-or-expression:
+      description: All the expressions would be 'or'ed together.
+      properties:
+        expressions:
+          items:
+            $ref: '#/components/schemas/boolean-expression'
+          type: array
+      required:
+      - expressions
+      title: boolean-expression-or-expression
+      type: object
+    boolean-expression-primitive-expression:
+      additionalProperties: false
+      description: The primitive expression type.
+      title: boolean-expression-primitive-expression
+      type: object
+    boolean-expression-type:
+      enum:
+      - and
+      - not
+      - or
+      - primitive
+      type: string
     capability:
       allOf:
       - $ref: '#/components/schemas/part-base'
@@ -4267,6 +4331,8 @@ components:
         description:
           description: The updated group's description.
           type: string
+        dynamic_group_info:
+          $ref: '#/components/schemas/groups-update-request-dynamic-group-info'
         id:
           description: The ID of the group to update.
           type: string
@@ -4279,6 +4345,14 @@ components:
       required:
       - id
       title: groups-update-request
+      type: object
+    groups-update-request-dynamic-group-info:
+      properties:
+        membership_expression:
+          $ref: '#/components/schemas/boolean-expression'
+      required:
+      - membership_expression
+      title: groups-update-request-dynamic-group-info
       type: object
     groups-update-response:
       description: The response to group update.
@@ -4424,22 +4498,33 @@ components:
       - ticket
       type: string
     link-rev-user-to-rev-org-request:
-      description: A request to link a rev user to a rev org.
+      description: Request to link a Rev user to an existing Rev organization.
       properties:
+        id:
+          description: The ID of the Rev user.
+          type: string
+        rev_org:
+          description: The ID of the Rev organization to link the Rev user to.
+          example: REV-AbCdEfGh
+          type: string
         rev_org_don:
-          description: The don of the rev org to link the rev user to.
+          deprecated: true
+          description: |
+            The don of the rev org to link the rev user to. This is deprecated,
+            use rev_org instead.
           example: REV-AbCdEfGh
           type: string
         user_don:
-          description: The don of the rev user to link.
+          deprecated: true
+          description: |
+            The don of the rev user to link. This is deprecated, use id
+            instead.
           type: string
-      required:
-      - rev_org_don
-      - user_don
       title: link-rev-user-to-rev-org-request
       type: object
     link-rev-user-to-rev-org-response:
-      description: The response to link a rev user to a rev org.
+      description: |
+        Response for linking a Rev user to an existing Rev organization.
       properties:
         rev_user:
           $ref: '#/components/schemas/rev-user'
@@ -7167,6 +7252,8 @@ components:
         name:
           description: Name of the field.
           type: string
+        oasis:
+          $ref: '#/components/schemas/schema-field-oasis-metadata'
         origin:
           description: Type this field is from.
           type: string
@@ -7221,6 +7308,11 @@ components:
       additionalProperties: false
       description: The schema of MFZ specific fields.
       title: schema-field-mfz-metadata
+      type: object
+    schema-field-oasis-metadata:
+      additionalProperties: false
+      description: The schema of oasis specific fields.
+      title: schema-field-oasis-metadata
       type: object
     schema-field-summary-view-ui-metadata:
       description: Summary view UI hint overrides.
@@ -9797,22 +9889,34 @@ components:
       - number
       type: string
     unlink-rev-user-from-rev-org-request:
-      description: A request to unlink a rev user from a rev org.
+      description: Request to unlink/remove a Rev user from a Rev organization.
       properties:
+        id:
+          description: The ID of the Rev user.
+          type: string
+        rev_org:
+          description: |
+            The ID of the Rev organization to unlink the Rev user from.
+          example: REV-AbCdEfGh
+          type: string
         rev_org_don:
-          description: The don of the rev org to unlink the rev user from.
+          deprecated: true
+          description: |
+            The don of the rev org to unlink the rev user from. This is
+            deprecated, use rev_org instead.
           example: REV-AbCdEfGh
           type: string
         user_don:
-          description: The don of the rev user to unlink.
+          deprecated: true
+          description: |
+            The don of the rev user to unlink. This is deprecated, use id
+            instead.
           type: string
-      required:
-      - rev_org_don
-      - user_don
       title: unlink-rev-user-from-rev-org-request
       type: object
     unlink-rev-user-from-rev-org-response:
-      description: The response to unlink a rev user from a rev org.
+      description: |
+        Response for unlinking/removing a Rev user from a Rev organization.
       properties:
         rev_user:
           $ref: '#/components/schemas/rev-user'

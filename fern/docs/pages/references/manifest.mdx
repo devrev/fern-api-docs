@@ -16,7 +16,7 @@ version: 2
 
 ## Keyrings
 
-Keyrings are secret tokens used to make calls to external systems. They can be categorized either as organization scoped or user scoped. Keyrings are specified in the manifest with the following syntax:
+Keyrings are secret tokens used to make calls to external systems. They can be categorized either as organization-scoped or user-scoped. Keyrings are specified in the manifest with the following syntax:
 
 ```yaml
 keyrings:
@@ -657,7 +657,7 @@ event_sources:
 
 ## Inputs
 
-Inputs are implemented using per-object schemas, which is a customization technique to store custom schemas inline with the object. Each input's schema maps to a FieldDescriptor. Inputs, like keyrings and event sources, are organization and user scoped. Organization-scoped inputs are set by the admins of the organization and are common across all users. User inputs are set individually.
+Inputs are implemented using per-object schemas, which is a customization technique to store custom schemas in line with the object. Each input's schema maps to a FieldDescriptor. Inputs, like keyrings and event sources, are organization and user-scoped. Organization-scoped inputs are set by the admins of the organization and are common across all users. User inputs are set individually.
 
 Inputs are defined as:
 
@@ -683,7 +683,7 @@ inputs:
         display_name: <Input field display name.>
 ```
 
-Inputs of type `timestamp`, `date` and `array` of `booleans` aren't supported.
+Inputs of type `timestamp`, `date`, and `array` of `booleans` aren't supported.
 
 ## Tags
 
@@ -694,7 +694,7 @@ For example:
 ```yaml
 tags:
   - name: github.branch.name
-    description: Tag storing github branch name.
+    description: Tag storing GitHub branch name.
 ```
 
 ## Commands
@@ -750,8 +750,8 @@ For custom event sources, whatever event key you emit from your policy, the even
 
 ## Build config
 
-The build configuration is used to configure the build process of the snap-In. For example, it can be used to set the environment variables used during the build process. This is useful if the snap-in requires libraries that
-are either private or from different npm registry than the default.
+The build configuration is used to configure the build process of the snap-in. For example, it can be used to set the environment variables used during the build process. This is useful if the snap-in requires libraries that
+are either private or from a different npm registry than the default.
 
 Build config is defined as:
 

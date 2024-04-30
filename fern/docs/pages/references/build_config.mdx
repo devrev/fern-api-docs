@@ -1,4 +1,4 @@
-Build config is a way to provide data to the snap-in build process. Currently, the only way to send data
+Build config is a way to provide data to the snap-in build process through environment variables.
 is through environment variables that the build process has access to.
 
 This is useful if the developer wants to import libraries from a different registry or wants to use private packages that
@@ -17,7 +17,7 @@ build_config:
       value: <variable value or developer keyring name>
 ```
 
-For example, to import a library that use the GitHub NPM registry, we should add
+For example, to import a library that uses the GitHub NPM registry, add
 the following variables to the build config
 
 ```yaml
@@ -33,7 +33,7 @@ build_config:
       value: access_token
 ```
 
-Since AUTH_TOKEN is a sensitive informantion that should not be hardcoded in the manifest,
+Since "AUTH_TOKEN" is sensitive information that should not be hardcoded in the manifest,
 the developer can instead mention the name of the developer keyring and during snap-in version creation
 time, provide the developer keyring to take the value from.
 

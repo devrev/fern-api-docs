@@ -1,7 +1,7 @@
-Build configuration is used to configure the build process of the Snap-in. For e.g. It can be used to set the environment variables used during the build process.
+The build configuration is used to configure the build process of the snap-in. For example, it can be used to set the environment variables used during the build process.
 
 This is useful if the developer wants to import libraries from a different registry or wants to use private packages that
-require authentication token.
+requires an authentication token.
 
 ## Specifying the Config
 
@@ -23,7 +23,7 @@ the following variables to the build config
 build_config:
   environment_variables:
     - name: REGISTRY_NAME
-      description: Name of the github registry to import the library.
+      description: Name of the GitHub registry to import the library.
       type: constant
       value: npm.pkg.github.com
     - name: AUTH_TOKEN
@@ -47,7 +47,7 @@ developer_keyrings:
 
 If the package is present in private registries, the developer can update the `.npmrc` file in the `code` folder from the template to include the URL of the registry and the token.
 
-For example, to use variables defined in manifest defined in the previous section, the `.npmrc` file will look something like this:
+For example, to use variables defined in the manifest defined in the previous section, the `.npmrc` file will look something like this:
 
 ```.npmrc
 @githubReg:registry=https://${REGISTRY_NAME}

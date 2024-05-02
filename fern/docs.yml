@@ -24,6 +24,19 @@ js:
     strategy: beforeInteractive
 
 
+typography:
+  bodyFont:
+    name: SF Pro
+    path: ./fonts/SF-Pro-Text-Regular.woff2
+    weight: "400"
+  headingsFont:
+    name: SF Pro Display
+    path: ./fonts/SF-Pro-Display-Regular.woff2
+    weight: "600"
+  codeFont: 
+    name: SF mono
+    path:  ./fonts/sf-mono-regular.woff2
+
 favicon: ./docs/assets/favicon.ico
 
 versions: 

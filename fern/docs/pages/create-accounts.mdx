@@ -3,6 +3,13 @@ The `accounts-create` API is used to create [accounts](https://docs.devrev.ai/pr
 
 The `rev-users.create` API is used to create [contacts](https://docs.devrev.ai/product/grow#-contact) which represents an individual user associated with the account of the organization. To create a contact, we also need to use the `rev-orgs.list` API with the `accounts` filter to get the default [workspace](https://docs.devrev.ai/product/grow#-workspace)(rev org) created with the account. We will be creating a contact under the workspace (`rev_org`) of the account as contacts (`rev_user`) cannot exist individually without being associated with a workspace.
 
+
+<Callout intent="tip">
+Just want to get a token and get started? This [tutorial](/about/authentication#generate-a-personal-access-token-pat) teaches you the fastest way to get a token.
+</Callout>
+
+![mermaid-diagram](../img/mermaid.png)
+
 ## Create an account
 
 The payload to make a request is given below:
@@ -31,7 +38,7 @@ The payload to make a request is given below:
 
    You receive the following response.
 
-   ```JSON
+   ```JSON focus={49} maxLines=10
    {
        "account": {
            "created_by": {
@@ -101,7 +108,7 @@ The response contains `"external_ref": "don:identity:dvrv-us-1:devo/<devo-id>:ac
 
 1. Check **Customers > Accounts** in the DevRev app to confirm that that account was created.
 
-   ![account](https://github.com/devrev/fern-api-docs/assets/74637789/fc14cbdc-bd1d-4411-a5cb-1933fe99cc56)
+   ![account](../img/account.png)
 
 ## Create a contact
 
@@ -123,7 +130,7 @@ Get the default rev org created along with the newly created account using the `
     
        It returns the following response:
     
-       ```json
+       ```json focus={19}
        {
          "rev_orgs": [
            {
@@ -230,4 +237,4 @@ Get the default rev org created along with the newly created account using the `
 
 You have now successfully created a contact for the account. You can check the contacts created on the DevRev app by going to **Customers** > **Contacts** or by clicking the account you created in **Accounts** and selecting the **Contacts** tab to view all the contacts created for the selected account.
 
-![contact](https://github.com/devrev/fern-api-docs/assets/74637789/4ba6eff1-ece6-4fee-b022-1fc99ec1ee1d)
+![contact](../img/contact.png)

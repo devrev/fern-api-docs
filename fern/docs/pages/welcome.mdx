@@ -1,14 +1,16 @@
 The DevRev API is organized around REST. Our API has predictable resource-oriented URLs, accepts form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes and authentication.
-If you're new to DevRev APIs, you've come to the right place. Our APIs serve as the foundation for integrating your apps, building automations, and creating custom snap-ins. Start your journey by going through the [entities](/welcome/entities) page, where you can get familiar with the basic concepts and terminologies used in the API documentation. 
+If you're new to DevRev APIs, you've come to the right place. Our APIs serve as the foundation for integrating your apps, building automations, and creating custom snap-ins.
 You can also refer to our [Postman collection](https://postman.devrev.ai/).
 
-  <CodeBlock title = "Base URL">
+[![Run In Postman](https://run.pstmn.io/button.svg)](https://postman.devrev.ai/)
+
+<CodeBlock>
   ```
   https://api.devrev.ai
   ```
-  </CodeBlock>
+</CodeBlock>
 
-Let's get started with DevRev APIs.
+In this tutorial, you will be able to retrive your account information by using the `dev-users` API. Let's get started with DevRev APIs.
 
 ## Prerequisites
 
@@ -23,7 +25,7 @@ The value `SELF` can be passed in as `id` to reference the logged-in user.
 
 The `display-id` shown in the UI for [work item](https://docs.devrev.ai/product/core#work) objects such as issues and tickets can be used interchangeably with the `id` to enhance usability. In the image below, `ISS-69` serves as an example of a `display-id` for issues.
 
-![Display ID in DevRev UI](https://user-images.githubusercontent.com/86735914/230507371-27eadf22-c866-4e06-aa93-6aeda2ed82f7.png "Display ID in DevRev UI")
+![Display ID in DevRev UI](../img/display_id.png)
 
 Next, you'll want to set up your development environment to connect and interact with the DevRev API.
 
@@ -118,4 +120,4 @@ Facing an error while authenticating the APIs? Refer to our [errors guide](/abou
 
 ## Next steps
 
-You’re all set to explore our platform. Go through the [entities](/about/entities) page, where you can get familiar with the basic concepts and terminologies used in the API documentation. Visit [methods page](/api-reference/artifacts/locate) to browse through our APIs and build your first integration with DevRev.
+You’re all set to explore our platform. You are ready to browse through our APIs and build your first integration with DevRev.

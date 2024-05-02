@@ -767,11 +767,11 @@ In `function_2`, you can use the payload of the scheduled event as follows:
   console.log(`Received payload with object_id: ${object_id}, name: ${name}, delay: ${delay}`);
 ```
 
-<Callout intent="info">
-The `/event-sources.schedule` API is currently in early access. For API details, see [event-sources-schedule-event](/beta/dev-rev-rest-api/api-reference/event-source/event-sources-schedule-event).
+<Callout intent="note">
+The `/event-sources.schedule` API is currently in early access. For API details, see [event-sources-schedule-event](/beta/api-reference/event-source/event-sources-schedule-event).
 </Callout>
 
-To cancel scheduled events, you can utilize the `/event-sources.unschedule` API. For API details, see [event-sources-delete-scheduled-event](/beta/dev-rev-rest-api/api-reference/event-source/event-sources-delete-scheduled-event).
+To cancel scheduled events, you can utilize the `/event-sources.unschedule` API. For API details, see [event-sources-delete-scheduled-event](/beta/api-reference/event-source/event-sources-schedule-event).
 
 ## Generic event sources
 
@@ -830,36 +830,36 @@ The policy must return an object `output` in the following format:
  Example of a generic event source. This event source authenticates the incoming request by checking the header `X-Signature-256`.
 
  ```yaml
-     event_sources:
-     organization:
-      - name: custom-webhook
-        description: Events sent on a custom webhook connected to an external system
-        display_name: Custom external webhook
-        type: flow-custom-webhook
-        setup_instructions: |
-          ## Custom webhook
-          - You webhook URL is `{{source.trigger_url}}`.
-          - Your secret is `{{source.config.parameters.secret}}`.
-          - The webhook is triggered when you send a POST request to the URL.
-          - The request must have a header `X-Signature-256` with value as `HMAC-SHA256` of the request body using the secret as the key.
-        config:
-          policy: |
-              package rego
-              payload_as_string := base64.decode(input.request.body_raw) ## body_raw is a base64 encoded string
-              expected_signature := crypto.hmac.sha256(payload_as_string, input.parameters.secret)
-              output = {"event": event, "event_key": event_key} {
-                input.request.method == "POST"
-                expected_signature == input.request.headers["X-Signature-256"]
-                event := input.request.body
-                event_key := "my-event"
-              } else = {"response": response} {
-                response := {
-                  "status_code": 401,
-                  "body": "Unauthenticated"
-                }
-              }
-          parameters:
-            secret: "EnterYourRandomSecretHere"
+event_sources:
+  organization:
+  - name: custom-webhook
+    description: Events sent on a custom webhook connected to an external system
+    display_name: Custom external webhook
+    type: flow-custom-webhook
+    setup_instructions: |
+      ## Custom webhook
+      - You webhook URL is `{{source.trigger_url}}`.
+      - Your secret is `{{source.config.parameters.secret}}`.
+      - The webhook is triggered when you send a POST request to the URL.
+      - The request must have a header `X-Signature-256` with value as `HMAC-SHA256` of the request body using the secret as the key.
+    config:
+      policy: |
+          package rego
+          payload_as_string := base64.decode(input.request.body_raw) ## body_raw is a base64 encoded string
+          expected_signature := crypto.hmac.sha256(payload_as_string, input.parameters.secret)
+          output = {"event": event, "event_key": event_key} {
+            input.request.method == "POST"
+            expected_signature == input.request.headers["X-Signature-256"]
+            event := input.request.body
+            event_key := "my-event"
+          } else = {"response": response} {
+            response := {
+              "status_code": 401,
+              "body": "Unauthenticated"
+            }
+          }
+      parameters:
+        secret: "EnterYourRandomSecretHere"
  ```
 
  The `event_key` output of the policy can be used to define an automation on the event `custom:event_key`. For example:
@@ -886,6 +886,8 @@ The policy must return an object `output` in the following format:
 Timer-based event sources can be created to send events based on intervals and cron schedules. In the following example, you have two event sources, one emits events daily at 12:00am, the other every hour (3600 seconds). In the event payload, you see the JSON field metadata you specified in the event source configuration.
 
 ```yaml
+event_sources:
+  organization:
     - name: daily-timer-source
       description: Timer event source based on Cron expression
       display_name: Timer source
@@ -938,13 +940,13 @@ When a snap-in using such an event source is deployed, the instructions show a u
 email inbox or Google Group to this email address. In the example above, if the forwarding address is `v1.abc.xyz@hooks.devrev.ai`, you should set up email
 forwarding from `test@company.com` to `v1.abc.xyz@hooks.devrev.ai`.
 
-<Callout intent="info">
+<Callout intent="note">
 Only emails forwarded from the allowlist of emails/domains are emitted as events. Hence, this event source should be used for email forwarding only, not as a direct mailbox to which anyone can send their emails. Emails received (either directly or by forwarding) from senders who aren't in the allowlist are dropped. There are a few exceptions to this like Google's forwarding confirmation emails.
 </Callout>
 
 The allowlist can either contain an email address or an entire domain. Strict matching is done for domains, meaning that subdomains are not included.
 
-<Callout intent="warn">
+<Callout intent="warning">
 
 The email protocol regarding forwarding is not very well defined. We've tested forwarding from common sources like Gmail, Google Groups, and Outlook Inbox. However, if you're having issues with email forwarding on other providers, feel free to contact us.
 </Callout>

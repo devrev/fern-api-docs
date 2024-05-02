@@ -40,57 +40,56 @@ The `body` field contains an array of `snaps`. Each snap can have a `type`, and 
 ## Snaps
 
 The following snap types are supported:
+<AccordionGroup>
+  <Accordion title="Base types">
+  - [Snap](#snap)
+  - [Action](#action)
+  - [Focusable](#focusable)
+  - [Placeholder](#placeholder)
+  - [Disabled](#disabled)
+  - [Hideable](#hideable)
+  - [Layout](#layout)
+  </Accordion>
 
-### Base types
-
-- [Snap](#snap)
-- [Action](#action)
-- [Focusable](#focusable)
-- [Placeholder](#placeholder)
-- [Disabled](#disabled)
-- [Hideable](#hideable)
-- [Layout](#layout)
-
-### User interface elements
-
-- [Button](#button)
-- [Divider](#divider)
-- [Image](#image)
-- [Plain Text](#plain-text)
-- [Rich Text](#rich-text)
-
-### Form elements
-
-- [Checkboxes](#checkboxes)
-- [Input](#input)
-  - [Plain Text Input](#plain-text-input)
-  - [Number Input](#number-input)
-  - [Email Input](#email-input)
-  - [Rich Text Input](#rich-text-input)
-- [List Input](#list-input)
-  - [String List Input](#string-list-input)
-  - [Number List Input](#number-list-input)
-  - [Email List Input](#email-list-input)
-- [Static Select](#static-select)
-- [Multi Static Select](#multi-static-select)
-- [Radio Buttons](#radio-buttons)
-- [Toggle Button](#toggle-button)
-- [Upload Input](#upload-input)
-
-### Layout elements
-
-- [Actions](#actions)
-- [Card](#card)
-- [Content](#content)
-- [Form](#form)
-- [Layout](#layout)
-- [Input Layout](#input-layout)
-
-### Data pickers
-
-- [Part Picker](#part-picker)
-- [Tag Picker](#tag-picker)
-- [User Picker](#user-picker)
+  <Accordion title="User interface elements">
+  - [Button](#button)
+  - [Divider](#divider)
+  - [Image](#image)
+  - [Plain Text](#plain-text)
+  - [Rich Text](#rich-text)
+  </Accordion>
+  
+  <Accordion title="Form elements">
+  - [Checkboxes](#checkboxes)
+  - [Input](#input)
+    - [Plain Text Input](#plain-text-input)
+    - [Number Input](#number-input)
+    - [Email Input](#email-input)
+    - [Rich Text Input](#rich-text-input)
+  - [List Input](#list-input)
+    - [String List Input](#string-list-input)
+    - [Number List Input](#number-list-input)
+    - [Email List Input](#email-list-input)
+  - [Static Select](#static-select)
+  - [Multi Static Select](#multi-static-select)
+  - [Radio Buttons](#radio-buttons)
+  - [Toggle Button](#toggle-button)
+  - [Upload Input](#upload-input)
+  </Accordion>
+  <Accordion title="Layout elements">
+  - [Actions](#actions)
+  - [Card](#card)
+  - [Content](#content)
+  - [Form](#form)
+  - [Layout](#layout)
+  - [Input Layout](#input-layout)
+  </Accordion>
+  <Accordion title="Data pickers">
+  - [Part Picker](#part-picker)
+  - [Tag Picker](#tag-picker)
+  - [User Picker](#user-picker)
+  </Accordion>
+</AccordionGroup>
 
 ## Action payloads
 
@@ -127,1742 +126,1741 @@ All actionable snaps share the same base payload structure. The base payload has
 
 Many elements share the same base properties. The base types these elements inherit from are described below.
 
-### Snap
+<AccordionGroup>
+  <Accordion title="Snap">
+  A snap is the base type that all other snaps inherit from.
 
-A snap is the base type that all other snaps inherit from.
+  #### Properties
 
-#### Properties
+  - `type` (required): Type of snap
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+  </Accordion>
 
-- `type` (required): Type of snap
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+  <Accordion title="Action">
+  Base interface for action components.
 
-### Action
+  #### Action types
 
-Base interface for action components.
+  There are two types of action:
 
-#### Action types
+  - **Remote action**: It triggers a backend API and is handled by the backend.
+  - **Client action**: It triggers a client-side action and is handled by the client.
 
-There are two types of action:
+  #### Properties
 
-- **Remote action**: It triggers a backend API and is handled by the backend.
-- **Client action**: It triggers a client-side action and is handled by the client.
+  - `action_id` (required): An identifier for the action. It should be unique in the snap.
+  - `action_type` (optional): Indicates whether the backend or client handles the action. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
 
-#### Properties
+  ##### Inherited properties
 
-- `action_id` (required): An identifier for the action. It should be unique in the snap.
-- `action_type` (optional): Indicates whether the backend or client handles the action. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+  Inherited from [Snap](#snap):
 
-##### Inherited properties
+  - `type` (required): Type of snap.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+  </Accordion>
+  
+  <Accordion title="Focusable">
+  Base interface for focusable components.
 
-Inherited from [Snap](#snap):
+  #### Properties
 
-- `type` (required): Type of snap.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+  </Accordion>
+  <Accordion title="Placeholder">
+  Base interface for components that can have a placeholder.
 
-### Focusable
+  #### Properties
 
-Base interface for focusable components.
+  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+  </Accordion>
+  <Accordion title="Disabled">
+  Base interface for components that can be disabled.
 
-#### Properties
+  #### Properties
 
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+  - `disabled` (optional): Indicates whether the element is disabled.
+  </Accordion>
+  <Accordion title="Hideable">
+  Base interface for components that can be hidden.
 
-### Placeholder
+  #### Properties
 
-Base interface for components that can have a placeholder.
+  - `hidden` (optional): Indicates whether the element is hidden.
+  </Accordion>
+  <Accordion title="Layout">
+  Controls how the layout is displayed. Similar to `flexbox`.
 
-#### Properties
+  #### Properties
 
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
-
-### Disabled
-
-Base interface for components that can be disabled.
-
-#### Properties
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-### Hideable
-
-Base interface for components that can be hidden.
-
-#### Properties
-
-- `hidden` (optional): Indicates whether the element is hidden.
-
-### Layout
-
-Controls how the layout is displayed. Similar to `flexbox`.
-
-#### Properties
-
-- `direction` (optional): The direction of the layout. Similar to `flex-direction`. Possible values: `"row"`, `"column"`.
-- `alignment` (optional): The alignment of the layout. Similar to `align-items`. Possible values: `"start"`, `"center"`, `"end"`, `"baseline"`, `"stretch"`.
-- `justify` (optional): The justification of the layout. Similar to `justify-content`. Possible values: `"start"`, `"center"`, `"end"`, `"between"`, `"around"`, `"evenly"`.
+  - `direction` (optional): The direction of the layout. Similar to `flex-direction`. Possible values: `"row"`, `"column"`.
+  - `alignment` (optional): The alignment of the layout. Similar to `align-items`. Possible values: `"start"`, `"center"`, `"end"`, `"baseline"`, `"stretch"`.
+  - `justify` (optional): The justification of the layout. Similar to `justify-content`. Possible values: `"start"`, `"center"`, `"end"`, `"between"`, `"around"`, `"evenly"`.
+  </Accordion>
+</AccordionGroup>
 
 ## User interface elements
+<AccordionGroup>
+  <Accordion title="Button">
+  A button that can be clicked to trigger an action. Works with [Actions](#actions) and [Form](#form) blocks.
 
-### Button
+  #### Properties
 
-A button that can be clicked to trigger an action. Works with [Actions](#actions) and [Form](#form) blocks.
+  - `text` (required): The text to be displayed on the button.
+  - `style` (optional): The style of the button. Defaults to `"default"`. Possible values: `"default"`, `"primary"`, `"destructive"`.
+  - `value` (required): The value associated with the button. It's sent along with the interaction payload.
+  - `href` (optional): If the button is a link, this is the URL it links to.
+  - `disabled` (optional): Disables the input and prevents changes to the value.
+  - `disabled_text` (optional): The text that's shown on hover if the component is disabled.
 
-#### Properties
+  ##### Inherited properties
 
-- `text` (required): The text to be displayed on the button.
-- `style` (optional): The style of the button. Defaults to `"default"`. Possible values: `"default"`, `"primary"`, `"destructive"`.
-- `value` (required): The value associated with the button. It's sent along with the interaction payload.
-- `href` (optional): If the button is a link, this is the URL it links to.
-- `disabled` (optional): Disables the input and prevents changes to the value.
-- `disabled_text` (optional): The text that's shown on hover if the component is disabled.
+  Inherited from [Snap](#snap):
 
-##### Inherited properties
+  - `type` (required): The type of the button component, should be set to `"button"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
 
-Inherited from [Snap](#snap):
+  Inherited from [Action](#action):
 
-- `type` (required): The type of the button component, should be set to `"button"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+  - `action_id` (required): An identifier for the action and is unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
 
-Inherited from [Action](#action):
+  #### Example
 
-- `action_id` (required): An identifier for the action and is unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+  Button variants are displayed in a row using the [Card](#card) snap.
 
-#### Example
+  ![button](../../img/button.png)
 
-Button variants are displayed in a row using the [Card](#card) snap.
-
-![button](../../img/button.png)
-
-```json
-{
-  "elements": [
-    {
-      "direction": "row",
-      "elements": [
-        {
-          "action_id": "PRIMARY",
-          "action_type": "remote",
-          "style": "primary",
-          "text": {
-            "text": "PRIMARY",
-            "type": "plain_text"
-          },
-          "type": "button",
-          "value": "PRIMARY"
-        },
-        {
-          "action_id": "SECONDARY",
-          "action_type": "remote",
-          "style": "secondary",
-          "text": {
-            "text": "SECONDARY",
-            "type": "plain_text"
-          },
-          "type": "button",
-          "value": "SECONDARY"
-        },
-        {
-          "action_id": "DESTRUCTIVE",
-          "action_type": "remote",
-          "style": "destructive",
-          "text": {
-            "text": "DESTRUCTIVE",
-            "type": "plain_text"
-          },
-          "type": "button",
-          "value": "DESTRUCTIVE"
-        },
-        {
-          "action_id": "TERTIARY",
-          "action_type": "remote",
-          "style": "tertiary",
-          "text": {
-            "text": "TERTIARY",
-            "type": "plain_text"
-          },
-          "type": "button",
-          "value": "TERTIARY"
-        },
-        {
-          "action_id": "PRIMARY",
-          "action_type": "remote",
-          "disabled": true,
-          "style": "primary",
-          "text": {
-            "text": "DISABLED",
-            "type": "plain_text"
-          },
-          "type": "button",
-          "value": "PRIMARY"
-        }
-      ],
-      "type": "actions"
-    }
-  ],
-  "type": "card"
-}
-```
-
-#### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"button"`.
-
-```json
-{
-  "type": "button",
-  "action_id": "<the action identifier of the button>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<the value associated with the button>"
-}
-```
-
-##### Example payload
-
-```json
-{
-  "action_id": "PRIMARY",
-  "action_type": "remote",
-  "type": "button",
-  "value": "PRIMARY",
-  "timestamp": "2023-07-12T08:12:10.006Z"
-}
-```
-
-### Divider
-
-A divider component is used to separate blocks.
-
-#### Properties
-
-The divider component does not have any properties of its own.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the divider component, should be set to `"divider"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-#### Example
-
-Divider is used in a form to separate a name input and a multi-select input.
-
-![divider_in_form](../../img/divider_in_form.png)
-
-```json
-{
-  "elements": [
-    {
-      "action_id": "example_form",
-      "elements": [
-        {
-          "element": {
-            "action_id": "example_name",
-            "placeholder": {
-              "text": "Enter your name",
-              "type": "plain_text"
-            },
-            "type": "plain_text_input"
-          },
-          "label": {
-            "text": "Name",
-            "type": "plain_text"
-          },
-          "type": "input_layout"
-        },
-        {
-          "type": "divider"
-        },
-        {
-          "element": {
-            "action_id": "example_preferences",
-            "options": [
-              {
-                "text": {
-                  "text": "Email",
-                  "type": "plain_text"
-                },
-                "value": "email"
-              },
-              {
-                "text": {
-                  "text": "Slack",
-                  "type": "plain_text"
-                },
-                "value": "slack"
-              },
-              {
-                "text": {
-                  "text": "Other",
-                  "type": "plain_text"
-                },
-                "value": "other"
-              }
-            ],
-            "type": "multi_static_select"
-          },
-          "label": {
-            "text": "Select your preferred ways of communication",
-            "type": "plain_text"
-          },
-          "type": "input_layout"
-        },
-        {
-          "element": {
-            "action_id": "example_other",
-            "type": "plain_text_input"
-          },
-          "label": {
-            "text": "Additional Notes",
-            "type": "plain_text"
-          },
-          "optional": true,
-          "type": "input_layout"
-        }
-      ],
-      "submit_action": {
-        "action_id": "example_button",
-        "style": "primary",
-        "text": {
-          "text": "Submit",
-          "type": "plain_text"
-        },
-        "type": "button",
-        "value": "SUBMIT"
-      },
-      "type": "form"
-    }
-  ],
-  "type": "card"
-}
-```
-
-### Image
-
-An image block that displays an image. Works with [Content](#content) blocks.
-
-#### Properties
-
-- `image_url` (required): The URL of the image.
-- `alt_text` (required): The alt text to be displayed when the image can't be displayed. This shouldn't contain any markup.
-- `fill_container` (optional): Whether the image should stretch to fill the container while maintaining its aspect ratio.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the image component, should be set to `"image"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-#### Example
-
-Image used in a card, with default display mode (`fill_container` not set).
-
-![image_default](../../img/image_default.png)
-
-```json
-{
-  "elements": [
-    {
-      "alignment": "center",
-      "elements": [
-        {
-          "text": "Default image display mode: Creating a group in DevRev",
-          "type": "plain_text"
-        },
-        {
-          "alt_text": "Group creation",
-          "image_url": "https://docs.devrev.ai/_next/image?url=%2Fimg%2Fgroups.gif&w=750&q=75",
-          "type": "image"
-        }
-      ],
-      "type": "content"
-    }
-  ],
-  "type": "card"
-}
-```
-
-Image used in a card, with `fill_container` set.
-
-![image_fill](../../img/image-fill.png)
-
-```json
-{
-  "elements": [
-    {
-      "alignment": "center",
-      "elements": [
-        {
-          "text": "Fill container image display mode: Creating a group in DevRev",
-          "type": "plain_text"
-        },
-        {
-          "alt_text": "Group creation",
-          "image_url": "https://docs.devrev.ai/_next/image?url=%2Fimg%2Fgroups.gif&w=750&q=75",
-          "type": "image"
-        }
-      ],
-      "type": "content"
-    }
-  ],
-  "type": "card"
-}
-```
-
-### Plain text
-
-A plain text element is used to define unformatted text.
-
-#### Properties
-
-- `text` (required): The plain text content.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the element, should be set to `"plain_text"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-#### Example
-
-![plain_text](../../img/plain_text.png)
-
-```json
-{
-  "elements": [
-    {
-      "text": "Hello this is an example of a plain text element",
-      "type": "plain_text"
-    }
-  ]
-}
-```
-
-### Rich text
-
-A rich text element is used to define formatted text.
-
-#### Properties
-
-- `text` (required): The rich text content.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the element, should be set to `"rich_text"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-#### Example
-
-![rich_text](../../img/rich_text.png)
-
-```json
-{
-  "text": "# Welcome to DevRev! \n[DevRev](https://devrev.ai)",
-  "type": "rich_text"
-}
-```
-
-## Form elements
-
-### Plain text option
-
-Plain text options are a commonly shared component of different form elements. It's used to define an option in a form element.
-
-- `text` (required): A [Plain Text](#plain-text) element representing the option.
-- `value` (required): A value assigned to the option.
-- `description` (optional): An optional [Plain Text](#plain-text) element describing the option.
-
-### Checkboxes
-
-A component that provides a group of checkboxes that allow a user to choose multiple items from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
-
-#### Properties
-
-- `options` (required): A list of options that appears in a stack of checkboxes, of type [Plain Text Option](#plain-text-option).
-- `initial_options` (optional): The initially selected options.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the checkbox group component, should be set to `"checkboxes"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Focusable](#focusable):
-
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### Example
-
-![checkboxes](../../img/check-boxes.png)
-
-```json
-{
-  "elements": [
-    {
-      "action_id": "checkboxes",
-      "action_type": "remote",
-      "options": [
-        {
-          "description": {
-            "text": "Description for option 1",
-            "type": "plain_text"
-          },
-          "text": {
-            "text": "Option 1",
-            "type": "plain_text"
-          },
-          "value": "option_1"
-        },
-        {
-          "description": {
-            "text": "Description for option 1",
-            "type": "plain_text"
-          },
-          "text": {
-            "text": "Option 2",
-            "type": "plain_text"
-          },
-          "value": "option_2"
-        }
-      ],
-      "type": "checkboxes"
-    },
-    {
-      "action_id": "checkboxes",
-      "action_type": "remote",
-      "disabled": true,
-      "options": [
-        {
-          "description": {
-            "text": "Description for option 1",
-            "type": "plain_text"
-          },
-          "text": {
-            "text": "Disabled Option 1",
-            "type": "plain_text"
-          },
-          "value": "option_1"
-        },
-        {
-          "description": {
-            "text": "Description for option 1",
-            "type": "plain_text"
-          },
-          "text": {
-            "text": "Disabled Option 2",
-            "type": "plain_text"
-          },
-          "value": "option_2"
-        }
-      ],
-      "type": "checkboxes"
-    }
-  ],
-  "type": "actions"
-}
-```
-
-#### Action payload
-
-Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"checkboxes"`.
-
-```json
-{
-  "type": "checkboxes",
-  "action_id": "<the action identifier of the checkboxes>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": ["<array of selected Plain Text Option objects>"]
-}
-```
-
-##### Example payload
-
-```json
-{
-  "action_id": "checkboxes",
-  "action_type": "remote",
-  "type": "checkboxes",
-  "value": [
-    {
-      "description": {
-        "text": "Description for option 1",
-        "type": "plain_text"
-      },
-      "text": { "text": "Option 2", "type": "plain_text" },
-      "value": "option_2"
-    }
-  ],
-  "timestamp": "2023-07-12T08:14:52.370Z"
-}
-```
-
-### Input
-
-There are 4 supported input types:
-
-- Plain Text Input
-- Number Input
-- Email Input
-- Rich Text Input
-
-#### Properties
-
-The input component does not have any properties of its own. See specific variants below for their properties.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): Type of the input component. **Should be set according to the input type, see below.**
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Focusable](#focusable):
-
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
-
-Inherited from [Placeholder](#placeholder):
-
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### Plain text input
-
-A plain-text input, similar to the HTML `<input>` tag, creates a field where a user can enter freeform data. It can appear as a single-line field. Works with [Input Layout](#input-layout) blocks.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the input component, should be set to `"plain_text_input"`.
-
-##### Additional properties
-
-- `initial_value` (optional): The initial value in the input when it's loaded.
-- `multiline` (optional): Indicates whether the input should allow multiple lines of text. Defaults to `false`.
-- `min_length` (optional): The minimum text length, can't be greater than `max_length`.
-- `max_length` (optional): The maximum text length, can't be less than `min_length`.
-- `resize` (optional): Indicates whether the input should be resizable. Defaults to `false`.
-
-##### Example
-
-![plain_text_input](../../img/plain-text-input.png)
-
-
-```json
-{
-  "element": {
-    "action_id": "name",
-    "min_length": 10,
-    "placeholder": {
-      "text": "Enter your name",
-      "type": "plain_text"
-    },
-    "type": "plain_text_input"
-  },
-  "hint": {
-    "text": "Please enter your name",
-    "type": "plain_text"
-  },
-  "label": {
-    "text": "User Name",
-    "type": "plain_text"
-  },
-  "optional": true,
-  "type": "input_layout"
-}
-```
-
-##### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"plain_text_input"`.
-
-```json
-{
-  "type": "plain_text_input",
-  "action_id": "<the action identifier of the plain text input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<the value of the input>"
-}
-```
-
-###### Example payload
-
-```json
-{
-  "type": "plain_text_input",
-  "action_id": "name",
-  "action_type": "remote",
-  "timestamp": "2023-07-12T08:17:43.887Z",
-  "value": "Chuck Norris"
-}
-```
-
-#### Number input
-
-A number input, similar to the HTML `<input>` tag, creates a field where a user can enter numbers. Works with [Input Layout](#input-layout) blocks.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the input component, should be set to `"number_input"`.
-
-##### Additional properties
-
-- `initial_value` (optional): The initial value in the input when it's loaded.
-- `min_value` (optional): The minimum value, can't be greater than `max_value`.
-- `max_value` (optional): The maximum value, can't be less than `min_value`.
-
-##### Example
-
-![number_input](../../img/number_input.png)
-
-```json
-{
-  "element": {
-    "action_id": "age",
-    "max_value": 120,
-    "min_value": 10,
-    "type": "number_input"
-  },
-  "label": {
-    "text": "Age",
-    "type": "plain_text"
-  },
-  "type": "input_layout"
-}
-```
-
-##### Action payload
-
-Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"number_input"`.
-
-```json
-{
-  "type": "number_input",
-  "action_id": "<the action identifier of the number input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<the value of the input>"
-}
-```
-
-###### Example payload
-
-```json
-{
-  "type": "number_input",
-  "action_id": "age",
-  "action_type": "remote",
-  "timestamp": "2023-07-12T08:17:43.887Z",
-  "value": "83"
-}
-```
-
-#### Email input
-
-An email input, similar to the HTML `<input>` tag, creates a field where a user can enter email. Works with [Input Layout](#input-layout) blocks.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the input component, should be set to `"email_text_input"`.
-
-##### Additional properties
-
-- `initial_value` (optional): The initial value in the input when it's loaded.
-
-##### Example
-
-![email_input](../../img/email-input.png)
-
-```json
-{
-  "element": {
-    "action_id": "email",
-    "placeholder": {
-      "text": "example@devrev.ai",
-      "type": "plain_text"
-    },
-    "type": "email_text_input"
-  },
-  "hint": {
-    "text": "Please enter your email",
-    "type": "plain_text"
-  },
-  "label": {
-    "text": "Email",
-    "type": "plain_text"
-  },
-  "type": "input_layout"
-}
-```
-
-##### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"email_text_input"`.
-
-```json
-{
-  "type": "email_text_input",
-  "action_id": "<the action identifier of the email text input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<the value of the input>"
-}
-```
-
-###### Example payload
-
-```json
-{
-  "type": "email_text_input",
-  "action_id": "email",
-  "action_type": "remote",
-  "timestamp": "2023-07-12T08:17:43.887Z",
-  "value": "chuck@norris.com"
-}
-```
-
-#### Rich text input
-
-A rich text input shows a rich text editor where the user can enter formatted text (Markdown). Works with [Input Layout](#input-layout) blocks.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the input component, should be set to `"rich_text_input"`.
-
-##### Additional properties
-
-- `initial_value` (optional): The initial value in the input when it's loaded.
-
-##### Example
-
-![rich_text_input](../../img/rich-text-input.png)
-
-The following video shows the rich text input in action.
-
-<video controls width="100%">
-  <source src="https://github.com/devrev/fern-api-docs/assets/74637789/226f6818-fc62-41b9-84dd-d800e12a3458" type="video/mp4" />
-</video>
-
-```json
-{
-  "element": {
-    "action_id": "notes",
-    "placeholder": {
-      "text": "Your notes go here",
-      "type": "plain_text"
-    },
-    "type": "rich_text_input"
-  },
-  "hint": {
-    "text": "Please enter your notes",
-    "type": "plain_text"
-  },
-  "label": {
-    "text": "Notes",
-    "type": "plain_text"
-  },
-  "optional": true,
-  "type": "input_layout"
-}
-```
-
-##### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"rich_text_input"`.
-
-```json
-{
-  "type": "rich_text_input",
-  "action_id": "<the action identifier of the rich text input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<the value (raw Markdown) of the input>"
-}
-```
-
-###### Example payload
-
-```json
-{
-  "type": "rich_text_input",
-  "action_id": "notes",
-  "action_type": "remote",
-  "timestamp": "2023-07-19T10:54:20.331Z",
-  "value": "**Title**
-
-*Italic*
-
-~~Strikethrough~~
-
-`A piece of code`
-
-> A quote
-
-- Unordered 1
-- Unordered 2
-
-1. Ordered 1
-2. Ordered 2"
-}
-```
-
-### List input
-
-There are 3 supported list input types:
-
-- String List Input
-- Number List Input
-- Email List Input
-
-#### Properties
-
-The list input component does not have any properties of its own. See specific variants below for their properties.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): Type of the list input component. **Should be set according to the list input type, see below.**
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Placeholder](#placeholder):
-
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### String list input
-
-A string list input allows users to enter a list of text items. Works with [Input Layout](#input-layout) blocks.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the input component, should be set to `"string_list"`.
-
-##### Additional Properties
-
-- `min_items` (optional): The minimum number of items that can be added. Defaults to 1.
-- `max_items` (optional): The maximum number of items that can be added.
-- `multiline` (optional): Indicates whether the input should allow multiple lines of text. Defaults to `false`.
-- `min_item_length` (optional): The minimum text length of the inputs, can't be greater than `max_item_length`.
-- `max_item_length` (optional): The maximum text length of the inputs, can't be less than `min_item_length`.
-- `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
-
-##### Example
-
-Standard string list input with a minimum of 1 item, maximum of 3 items, minimum item length set to 3 and maximum item length set to 15.
-
-![list_input_string](../../img/list-input-string.png)
-
-```json
-{
-  "element": {
-    "action_id": "keywords",
-    "max_items": 3,
-    "min_items": 1,
-    "max_item_length": 15,
-    "min_item_length": 3,
-    "placeholder": {
-      "text": "Add keyword here",
-      "type": "plain_text"
-    },
-    "type": "string_list"
-  },
-  "hint": {
-    "text": "When a customer includes these keywords in a Slack message, they are prompted to send the message to your DevRev inbox.",
-    "type": "plain_text"
-  },
-  "label": {
-    "text": "List of strings",
-    "type": "plain_text"
-  },
-  "type": "input_layout"
-}
-```
-
-Multiline string list input with a minimum of 1 item and a maximum of 2 items.
-
-![list_input_string_multiline](../../img/list-input-string-multiline.png)
-
-```json
-{
-  "element": {
-    "action_id": "multiline",
-    "max_items": 2,
-    "min_items": 1,
-    "multiline": true,
-    "placeholder": {
-      "text": "Add a keyword here",
-      "type": "plain_text"
-    },
-    "type": "string_list"
-  },
-  "hint": {
-    "text": "When a customer includes these multiline keywords in a Slack message, they are prompted to send the message to your DevRev inbox.",
-    "type": "plain_text"
-  },
-  "label": {
-    "text": "List of strings",
-    "type": "plain_text"
-  },
-  "type": "input_layout"
-}
-```
-
-##### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"string_list"`.
-
-```json
-{
-  "type": "string_list",
-  "action_id": "<the action identifier of the string list input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": ["<an array of strings as inputted by the user>"]
-}
-```
-
-###### Example payload
-
-Standard string list input.
-
-```json
-{
-  "type": "string_list",
-  "action_id": "keywords",
-  "action_type": "remote",
-  "timestamp": "2023-07-21T05:33:52.182Z",
-  "value": ["hello", "this is", "a test"]
-}
-```
-
-Multiline string list input.
-
-```json
-{
-  "type": "string_list",
-  "action_id": "multiline",
-  "action_type": "remote",
-  "timestamp": "2023-07-21T05:33:52.182Z",
-  "value": ["Hello this
-is a multiline string", "And here
-is another
-one"]
-}
-```
-
-#### Number List Input
-
-A list of numbers input allows users to enter a list of numeric items. Works with [Input Layout](#input-layout) blocks.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the input component, should be set to `"number_list"`.
-
-##### Additional Properties
-
-- `min_items` (optional): The minimum number of items that can be added.
-- `max_items` (optional): The maximum number of items that can be added.
-- `min_item_value` (optional): The minimum value of the inputs, can't be greater than `max_item_value`.
-- `max_item_value` (optional): The maximum value of the inputs, can't be less than `min_item_value`.
-- `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
-
-##### Example
-
-![list_input_number](../../img/list-input-number.png)
-
-```json
-{
-  "element": {
-    "action_id": "numbers",
-    "max_item_value": 90,
-    "min_item_value": 0,
-    "placeholder": {
-      "text": "Add warning value here (min 0, max 90)",
-      "type": "plain_text"
-    },
-    "type": "number_list"
-  },
-  "hint": {
-    "text": "Add warning values for code coverage reports",
-    "type": "plain_text"
-  },
-  "label": {
-    "text": "List of numbers",
-    "type": "plain_text"
-  },
-  "type": "input_layout"
-}
-```
-
-##### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"number_list"`.
-
-```json
-{
-  "type": "number_list",
-  "action_id": "<the action identifier of the number list input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": ["<an array of numbers as strings as inputted by the user>"]
-}
-```
-
-###### Example Payload
-
-```json
-{
-  "type": "number_list",
-  "action_id": "numbers",
-  "action_type": "remote",
-  "timestamp": "2023-07-21T05:33:52.182Z",
-  "value": ["25", "42", "60"]
-}
-```
-
-#### Email List Input
-
-A list of email input allows users to enter a list of emails. Works with [Input Layout](#input-layout) blocks.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the input component, should be set to `"email_list"`.
-
-##### Additional Properties
-
-- `min_items` (optional): The minimum number of items that can be added.
-- `max_items` (optional): The maximum number of items that can be added.
-- `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
-
-##### Example
-
-![list_input_email](../../img/list-input-email.png)
-
-```json
-{
-  "element": {
-    "action_id": "emails",
-    "placeholder": {
-      "text": "Enter email here",
-      "type": "plain_text"
-    },
-    "type": "email_list"
-  },
-  "hint": {
-    "text": "When these emails are included in a Slack message, they automatically receive an email notification.",
-    "type": "plain_text"
-  },
-  "label": {
-    "text": "List of emails",
-    "type": "plain_text"
-  },
-  "type": "input_layout"
-}
-```
-
-##### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"email_list"`.
-
-```json
-{
-  "type": "email_list",
-  "action_id": "<the action identifier of the email list input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": ["<an array of emails as strings as inputted by the user>"]
-}
-```
-
-###### Example Payload
-
-```json
-{
-  "type": "email_list",
-  "action_id": "emails",
-  "action_type": "remote",
-  "timestamp": "2023-07-21T05:33:52.182Z",
-  "value": ["hello@hello.com", "example@example.com", "bonjour@hello.com"]
-}
-```
-
-### Static Select
-
-A select menu that allows a user to choose one item from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
-
-#### Properties
-
-- `options` (required): A list of options that appear in the menu, of type [Plain Text Option](#plain-text-option).
-- `initial_selected_option` (optional): The initial option that's selected when the element is loaded. A single option that exactly matches one of the options within `options`.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): Type of the static select component, should be set to `"static_select"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Focusable](#focusable):
-
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
-
-Inherited from [Placeholder](#placeholder):
-
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### Example
-
-A static select snap with 4 options.
-
-![static_select](../../img/static-select.png)
-
-```json
-{
-  "action_id": "static_select",
-  "action_type": "remote",
-  "initial_selected_option": {
-    "text": {
-      "text": "Forrest Gump",
-      "type": "plain_text"
-    },
-    "value": "forrest-gump"
-  },
-  "options": [
-    {
-      "text": {
-        "text": "Forrest Gump",
-        "type": "plain_text"
-      },
-      "value": "forrest-gump"
-    },
-    {
-      "text": {
-        "text": "The Shawshank Redemption",
-        "type": "plain_text"
-      },
-      "value": "the-shawshank-redemption"
-    },
-    {
-      "text": {
-        "text": "The Godfather",
-        "type": "plain_text"
-      },
-      "value": "the-godfather"
-    },
-    {
-      "text": {
-        "text": "The Dark Knight",
-        "type": "plain_text"
-      },
-      "value": "the-dark-knight"
-    }
-  ],
-  "type": "static_select"
-}
-```
-
-#### Action payload
-
-Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"static_select"`.
-
-```json
-{
-  "type": "static_select",
-  "action_id": "<the action identifier of the static select>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<selected Plain Text Option object>"
-}
-```
-
-##### Example Payload
-
-```json
-{
-  "action_id": "static_select",
-  "action_type": "remote",
-  "type": "static_select",
-  "value": {
-    "text": { "text": "The Godfather", "type": "plain_text" },
-    "value": "the-godfather"
-  },
-  "timestamp": "2023-07-12T08:21:06.027Z"
-}
-```
-
-### Multi Static Select
-
-A select menu that allows a user to choose multiple items from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
-
-#### Properties
-
-- `options` (required): A list of options that appear in the menu, of type [Plain Text Option](#plain-text-option).
-- `initial_selected_options` (optional): The initial options that are selected when the element is loaded. Each of them should exactly match one of the options within `options`.
-- `max_selected_items` (optional): The maximum number of items that can be selected.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the multi-static select component, should be set to `"multi_static_select"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Focusable](#focusable):
-
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
-
-Inherited from [Placeholder](#placeholder):
-
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### Example
-
-A multi-static select snap with 4 options.
-
-![multi_static_select](../../img/multi-static-select.png)
-
-```json
-{
-  "action_id": "multi_static_select",
-  "action_type": "remote",
-  "initial_selected_options": [
-    {
-      "text": {
-        "text": "Forrest Gump",
-        "type": "plain_text"
-      },
-      "value": "forrest-gump"
-    }
-  ],
-  "options": [
-    {
-      "text": {
-        "text": "Forrest Gump",
-        "type": "plain_text"
-      },
-      "value": "forrest-gump"
-    },
-    {
-      "text": {
-        "text": "The Shawshank Redemption",
-        "type": "plain_text"
-      },
-      "value": "the-shawshank-redemption"
-    },
-    {
-      "text": {
-        "text": "The Godfather",
-        "type": "plain_text"
-      },
-      "value": "the-godfather"
-    },
-    {
-      "text": {
-        "text": "The Dark Knight",
-        "type": "plain_text"
-      },
-      "value": "the-dark-knight"
-    }
-  ],
-  "type": "multi_static_select"
-}
-```
-
-#### Action payload
-
-Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"multi_static_select"`.
-
-```json
-{
-  "type": "multi_static_select",
-  "action_id": "<the action identifier of the multi-static select>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": ["<array of selected Plain Text Option objects>"]
-}
-```
-
-##### Example Payload
-
-```json
-{
-  "action_id": "multi_static_select",
-  "action_type": "remote",
-  "type": "multi_static_select",
-  "value": [
-    {
-      "text": { "text": "Forrest Gump", "type": "plain_text" },
-      "value": "forrest-gump"
-    },
-    {
-      "text": { "text": "The Dark Knight", "type": "plain_text" },
-      "value": "the-dark-knight"
-    }
-  ],
-  "timestamp": "2023-07-12T08:21:24.700Z"
-}
-```
-
-### Radio Buttons
-
-List of radio inputs that allow a user to choose one item from a list of options. Works with [input layout](#input-layout) and [actions](#actions) blocks.
-
-#### Properties
-
-- `options` (required): A list of options that appear in a stack of radio inputs, of type [plain text option](#plain-text-option).
-- `initial_selected_option` (optional): The initial option that's selected when the element is loaded. A single option that exactly matches one of the options within `options`.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): Type of the radio button group component, should be set to `"radio_buttons"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Focusable](#focusable):
-
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### Example
-
-A radio button snap with 3 options.
-
-![radio_buttons](../../img/radio-buttons.png)
-
-```json
-{
-  "action_id": "in-app",
-  "action_type": "remote",
-  "options": [
-    {
-      "text": {
-        "text": "Important updates only (Mentions & assignments)",
-        "type": "plain_text"
-      },
-      "value": "imp"
-    },
-    {
-      "text": {
-        "text": "All new updates",
-        "type": "plain_text"
-      },
-      "value": "all"
-    },
-    {
-      "text": {
-        "text": "Never",
-        "type": "plain_text"
-      },
-      "value": "none"
-    }
-  ],
-  "type": "radio_buttons"
-}
-```
-
-#### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"radio_buttons"`.
-
-```json
-{
-  "type": "radio_buttons",
-  "action_id": "<the action identifier of the radio buttons>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<selected Plain Text Option object>"
-}
-```
-
-##### Example Payload
-
-```json
-{
-  "action_id": "in-app",
-  "action_type": "remote",
-  "type": "radio_buttons",
-  "value": {
-    "text": { "text": "All new updates", "type": "plain_text" },
-    "value": "all"
-  },
-  "timestamp": "2023-07-12T08:21:46.621Z"
-}
-```
-
-### Toggle Button
-
-Toggles allow users to quickly switch between two possible states. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
-
-#### Properties
-
-- `initial_value` (optional): The initial value of the toggle (a boolean).
-- `description` (optional): A [Plain Text](#plain-text) element that defines the description shown below the toggle.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): The type of the toggle button component, should be set to `"toggle"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Focusable](#focusable):
-
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### Example
-
-![toggle](../../img/toggles.png)
-
-```json
-{
-  "elements": [
-    {
-      "elements": [
-        {
-          "action_id": "toggle",
-          "description": {
-            "text": "This is a toggle",
-            "type": "plain_text"
-          },
-          "type": "toggle"
-        },
-        {
-          "action_id": "toggle_checked",
-          "description": {
-            "text": "This is a checked toggle",
-            "type": "plain_text"
-          },
-          "initial_value": true,
-          "type": "toggle"
-        },
-        {
-          "action_id": "toggle_disabled",
-          "description": {
-            "text": "This is a disabled toggle",
-            "type": "plain_text"
-          },
-          "disabled": true,
-          "type": "toggle"
-        }
-      ],
-      "type": "actions"
-    }
-  ],
-  "type": "card"
-}
-```
-
-#### Action payload
-
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"toggle"`.
-
-```json
-{
-  "type": "toggle",
-  "action_id": "<the action identifier of the toggle>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": "<boolean indicating the state of the toggle>"
-}
-```
-
-##### Example Payload
-
-```json
-{
-  "action_id": "toggle",
-  "action_type": "remote",
-  "type": "toggle",
-  "value": true,
-  "timestamp": "2023-07-12T08:22:10.723Z"
-}
-```
-
-### Upload Input
-
-A component that allows a user to upload a file. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
-
-#### Properties
-
-- `upload_button` (required): A button that can be clicked to upload files.
-- `min_files` (optional): The minimum number of files that can be uploaded.
-- `max_files` (optional): The maximum number of files that can be uploaded.
-- `initial_artifacts_ids` (optional): The initial artifacts that are selected when the element is loaded. A list of DONv2 IDs.
-
-##### Inherited properties
-
-Inherited from [Snap](#snap):
-
-- `type` (required): Type of the upload input component, should be set to `"upload"`.
-- `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
-
-Inherited from [Action](#action):
-
-- `action_id` (required): An identifier for the action. Should be unique in the snap.
-- `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
-
-Inherited from [Focusable](#focusable):
-
-- `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
-
-Inherited from [Placeholder](#placeholder):
-
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
-
-Inherited from [Disabled](#disabled):
-
-- `disabled` (optional): Indicates whether the element is disabled.
-
-#### Example
-
-![upload](../../img/upload.png)
-
-```json
-{
-  "elements": [
-    {
-      "elements": [
-        {
-          "action_id": "upload",
-          "action_type": "remote",
-          "max_files": 5,
-          "min_files": 1,
-          "type": "upload",
-          "upload_button": {
-            "action_id": "upload_btn",
+  ```json
+  {
+    "elements": [
+      {
+        "direction": "row",
+        "elements": [
+          {
+            "action_id": "PRIMARY",
+            "action_type": "remote",
             "style": "primary",
             "text": {
-              "text": "Upload",
+              "text": "PRIMARY",
               "type": "plain_text"
             },
             "type": "button",
-            "value": "upload"
+            "value": "PRIMARY"
+          },
+          {
+            "action_id": "SECONDARY",
+            "action_type": "remote",
+            "style": "secondary",
+            "text": {
+              "text": "SECONDARY",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "SECONDARY"
+          },
+          {
+            "action_id": "DESTRUCTIVE",
+            "action_type": "remote",
+            "style": "destructive",
+            "text": {
+              "text": "DESTRUCTIVE",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "DESTRUCTIVE"
+          },
+          {
+            "action_id": "TERTIARY",
+            "action_type": "remote",
+            "style": "tertiary",
+            "text": {
+              "text": "TERTIARY",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "TERTIARY"
+          },
+          {
+            "action_id": "PRIMARY",
+            "action_type": "remote",
+            "disabled": true,
+            "style": "primary",
+            "text": {
+              "text": "DISABLED",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "value": "PRIMARY"
           }
-        }
-      ],
-      "type": "actions"
-    }
-  ],
-  "type": "card"
-}
-```
+        ],
+        "type": "actions"
+      }
+    ],
+    "type": "card"
+  }
+  ```
 
-#### Action payload
+  #### Action payload
 
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"upload"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"button"`.
 
-```json
-{
-  "type": "upload",
-  "action_id": "<the action identifier of the upload input>",
-  "action_type": "<the type of the action as defined in the Snap>",
-  "timestamp": "<timestamp as a string in ISO 8601 format>",
-  "value": ["<an array of artifact IDs as strings>"]
-}
-```
+  ```json
+  {
+    "type": "button",
+    "action_id": "<the action identifier of the button>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<the value associated with the button>"
+  }
+  ```
 
-##### Example Payload
+  ##### Example payload
 
-```json
-{
-  "action_id": "upload",
-  "action_type": "remote",
-  "type": "upload",
-  "value": [
-    "don:core:dvrv-us-1:devo/H66a8LUt:artifact/5",
-    "don:core:dvrv-us-1:devo/H66a8LUt:artifact/6"
-  ],
-  "timestamp": "2023-07-12T08:25:47.451Z"
-}
-```
+  ```json
+  {
+    "action_id": "PRIMARY",
+    "action_type": "remote",
+    "type": "button",
+    "value": "PRIMARY",
+    "timestamp": "2023-07-12T08:12:10.006Z"
+  }
+  ```
+  </Accordion>
+
+  <Accordion title="Divider">
+  A divider component is used to separate blocks.
+
+  #### Properties
+
+  The divider component does not have any properties of its own.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the divider component, should be set to `"divider"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  #### Example
+
+  Divider is used in a form to separate a name input and a multi-select input.
+
+  ![divider_in_form](../../img/divider_in_form.png)
+
+  ```json
+  {
+    "elements": [
+      {
+        "action_id": "example_form",
+        "elements": [
+          {
+            "element": {
+              "action_id": "example_name",
+              "placeholder": {
+                "text": "Enter your name",
+                "type": "plain_text"
+              },
+              "type": "plain_text_input"
+            },
+            "label": {
+              "text": "Name",
+              "type": "plain_text"
+            },
+            "type": "input_layout"
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "element": {
+              "action_id": "example_preferences",
+              "options": [
+                {
+                  "text": {
+                    "text": "Email",
+                    "type": "plain_text"
+                  },
+                  "value": "email"
+                },
+                {
+                  "text": {
+                    "text": "Slack",
+                    "type": "plain_text"
+                  },
+                  "value": "slack"
+                },
+                {
+                  "text": {
+                    "text": "Other",
+                    "type": "plain_text"
+                  },
+                  "value": "other"
+                }
+              ],
+              "type": "multi_static_select"
+            },
+            "label": {
+              "text": "Select your preferred ways of communication",
+              "type": "plain_text"
+            },
+            "type": "input_layout"
+          },
+          {
+            "element": {
+              "action_id": "example_other",
+              "type": "plain_text_input"
+            },
+            "label": {
+              "text": "Additional Notes",
+              "type": "plain_text"
+            },
+            "optional": true,
+            "type": "input_layout"
+          }
+        ],
+        "submit_action": {
+          "action_id": "example_button",
+          "style": "primary",
+          "text": {
+            "text": "Submit",
+            "type": "plain_text"
+          },
+          "type": "button",
+          "value": "SUBMIT"
+        },
+        "type": "form"
+      }
+    ],
+    "type": "card"
+  }
+  ```
+
+  </Accordion>
+  
+  <Accordion title="Image">
+  An image block that displays an image. Works with [Content](#content) blocks.
+
+  #### Properties
+
+  - `image_url` (required): The URL of the image.
+  - `alt_text` (required): The alt text to be displayed when the image can't be displayed. This shouldn't contain any markup.
+  - `fill_container` (optional): Whether the image should stretch to fill the container while maintaining its aspect ratio.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the image component, should be set to `"image"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  #### Example
+
+  Image used in a card, with default display mode (`fill_container` not set).
+
+  ![image_default](../../img/image_default.png)
+
+  ```json
+  {
+    "elements": [
+      {
+        "alignment": "center",
+        "elements": [
+          {
+            "text": "Default image display mode: Creating a group in DevRev",
+            "type": "plain_text"
+          },
+          {
+            "alt_text": "Group creation",
+            "image_url": "https://docs.devrev.ai/_next/image?url=%2Fimg%2Fgroups.gif&w=750&q=75",
+            "type": "image"
+          }
+        ],
+        "type": "content"
+      }
+    ],
+    "type": "card"
+  }
+  ```
+
+  Image used in a card, with `fill_container` set.
+
+  ![image_fill](../../img/image-fill.png)
+
+  ```json
+  {
+    "elements": [
+      {
+        "alignment": "center",
+        "elements": [
+          {
+            "text": "Fill container image display mode: Creating a group in DevRev",
+            "type": "plain_text"
+          },
+          {
+            "alt_text": "Group creation",
+            "image_url": "https://docs.devrev.ai/_next/image?url=%2Fimg%2Fgroups.gif&w=750&q=75",
+            "type": "image"
+          }
+        ],
+        "type": "content"
+      }
+    ],
+    "type": "card"
+  }
+  ```
+  </Accordion>
+  <Accordion title="Plain text">
+  A plain text element is used to define unformatted text.
+
+  #### Properties
+
+  - `text` (required): The plain text content.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the element, should be set to `"plain_text"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  #### Example
+
+  ![plain_text](../../img/plain_text.png)
+
+  ```json
+  {
+    "elements": [
+      {
+        "text": "Hello this is an example of a plain text element",
+        "type": "plain_text"
+      }
+    ]
+  }
+  ```
+  </Accordion>
+  <Accordion title="Rich text">
+  A rich text element is used to define formatted text.
+
+  #### Properties
+
+  - `text` (required): The rich text content.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the element, should be set to `"rich_text"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  #### Example
+
+  ![rich_text](../../img/rich_text.png)
+
+  ```json
+  {
+    "text": "# Welcome to DevRev! \n[DevRev](https://devrev.ai)",
+    "type": "rich_text"
+  }
+  ```
+  </Accordion>
+</AccordionGroup>
+
+## Form elements
+
+<AccordionGroup>
+  <Accordion title="Plain text option">
+  Plain text options are a commonly shared component of different form elements. It's used to define an option in a form element.
+
+  - `text` (required): A [Plain Text](#plain-text) element representing the option.
+  - `value` (required): A value assigned to the option.
+  - `description` (optional): An optional [Plain Text](#plain-text) element describing the option.
+  </Accordion>
+
+  <Accordion title="Checkboxes">
+  A component that provides a group of checkboxes that allow a user to choose multiple items from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+
+  #### Properties
+
+  - `options` (required): A list of options that appears in a stack of checkboxes, of type [Plain Text Option](#plain-text-option).
+  - `initial_options` (optional): The initially selected options.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the checkbox group component, should be set to `"checkboxes"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Focusable](#focusable):
+
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### Example
+
+  ![checkboxes](../../img/check-boxes.png)
+
+  ```json
+  {
+    "elements": [
+      {
+        "action_id": "checkboxes",
+        "action_type": "remote",
+        "options": [
+          {
+            "description": {
+              "text": "Description for option 1",
+              "type": "plain_text"
+            },
+            "text": {
+              "text": "Option 1",
+              "type": "plain_text"
+            },
+            "value": "option_1"
+          },
+          {
+            "description": {
+              "text": "Description for option 1",
+              "type": "plain_text"
+            },
+            "text": {
+              "text": "Option 2",
+              "type": "plain_text"
+            },
+            "value": "option_2"
+          }
+        ],
+        "type": "checkboxes"
+      },
+      {
+        "action_id": "checkboxes",
+        "action_type": "remote",
+        "disabled": true,
+        "options": [
+          {
+            "description": {
+              "text": "Description for option 1",
+              "type": "plain_text"
+            },
+            "text": {
+              "text": "Disabled Option 1",
+              "type": "plain_text"
+            },
+            "value": "option_1"
+          },
+          {
+            "description": {
+              "text": "Description for option 1",
+              "type": "plain_text"
+            },
+            "text": {
+              "text": "Disabled Option 2",
+              "type": "plain_text"
+            },
+            "value": "option_2"
+          }
+        ],
+        "type": "checkboxes"
+      }
+    ],
+    "type": "actions"
+  }
+  ```
+
+  #### Action payload
+
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"checkboxes"`.
+
+  ```json
+  {
+    "type": "checkboxes",
+    "action_id": "<the action identifier of the checkboxes>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": ["<array of selected Plain Text Option objects>"]
+  }
+  ```
+
+  ##### Example payload
+
+  ```json
+  {
+    "action_id": "checkboxes",
+    "action_type": "remote",
+    "type": "checkboxes",
+    "value": [
+      {
+        "description": {
+          "text": "Description for option 1",
+          "type": "plain_text"
+        },
+        "text": { "text": "Option 2", "type": "plain_text" },
+        "value": "option_2"
+      }
+    ],
+    "timestamp": "2023-07-12T08:14:52.370Z"
+  }
+  ```
+
+  </Accordion>
+  
+  <Accordion title="Input">
+  There are 4 supported input types:
+
+  - Plain Text Input
+  - Number Input
+  - Email Input
+  - Rich Text Input
+
+  #### Properties
+
+  The input component does not have any properties of its own. See specific variants below for their properties.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): Type of the input component. **Should be set according to the input type, see below.**
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Focusable](#focusable):
+
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+
+  Inherited from [Placeholder](#placeholder):
+
+  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### Plain text input
+
+  A plain-text input, similar to the HTML `<input>` tag, creates a field where a user can enter freeform data. It can appear as a single-line field. Works with [Input Layout](#input-layout) blocks.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the input component, should be set to `"plain_text_input"`.
+
+  ##### Additional properties
+
+  - `initial_value` (optional): The initial value in the input when it's loaded.
+  - `multiline` (optional): Indicates whether the input should allow multiple lines of text. Defaults to `false`.
+  - `min_length` (optional): The minimum text length, can't be greater than `max_length`.
+  - `max_length` (optional): The maximum text length, can't be less than `min_length`.
+  - `resize` (optional): Indicates whether the input should be resizable. Defaults to `false`.
+
+  ##### Example
+
+  ![plain_text_input](../../img/plain-text-input.png)
+
+
+  ```json
+  {
+    "element": {
+      "action_id": "name",
+      "min_length": 10,
+      "placeholder": {
+        "text": "Enter your name",
+        "type": "plain_text"
+      },
+      "type": "plain_text_input"
+    },
+    "hint": {
+      "text": "Please enter your name",
+      "type": "plain_text"
+    },
+    "label": {
+      "text": "User Name",
+      "type": "plain_text"
+    },
+    "optional": true,
+    "type": "input_layout"
+  }
+  ```
+
+  ##### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"plain_text_input"`.
+
+  ```json
+  {
+    "type": "plain_text_input",
+    "action_id": "<the action identifier of the plain text input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<the value of the input>"
+  }
+  ```
+
+  ###### Example payload
+
+  ```json
+  {
+    "type": "plain_text_input",
+    "action_id": "name",
+    "action_type": "remote",
+    "timestamp": "2023-07-12T08:17:43.887Z",
+    "value": "Chuck Norris"
+  }
+  ```
+
+  #### Number input
+
+  A number input, similar to the HTML `<input>` tag, creates a field where a user can enter numbers. Works with [Input Layout](#input-layout) blocks.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the input component, should be set to `"number_input"`.
+
+  ##### Additional properties
+
+  - `initial_value` (optional): The initial value in the input when it's loaded.
+  - `min_value` (optional): The minimum value, can't be greater than `max_value`.
+  - `max_value` (optional): The maximum value, can't be less than `min_value`.
+
+  ##### Example
+
+  ![number_input](../../img/number_input.png)
+
+  ```json
+  {
+    "element": {
+      "action_id": "age",
+      "max_value": 120,
+      "min_value": 10,
+      "type": "number_input"
+    },
+    "label": {
+      "text": "Age",
+      "type": "plain_text"
+    },
+    "type": "input_layout"
+  }
+  ```
+
+  ##### Action payload
+
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"number_input"`.
+
+  ```json
+  {
+    "type": "number_input",
+    "action_id": "<the action identifier of the number input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<the value of the input>"
+  }
+  ```
+
+  ###### Example payload
+
+  ```json
+  {
+    "type": "number_input",
+    "action_id": "age",
+    "action_type": "remote",
+    "timestamp": "2023-07-12T08:17:43.887Z",
+    "value": "83"
+  }
+  ```
+
+  #### Email input
+
+  An email input, similar to the HTML `<input>` tag, creates a field where a user can enter email. Works with [Input Layout](#input-layout) blocks.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the input component, should be set to `"email_text_input"`.
+
+  ##### Additional properties
+
+  - `initial_value` (optional): The initial value in the input when it's loaded.
+
+  ##### Example
+
+  ![email_input](../../img/email-input.png)
+
+  ```json
+  {
+    "element": {
+      "action_id": "email",
+      "placeholder": {
+        "text": "example@devrev.ai",
+        "type": "plain_text"
+      },
+      "type": "email_text_input"
+    },
+    "hint": {
+      "text": "Please enter your email",
+      "type": "plain_text"
+    },
+    "label": {
+      "text": "Email",
+      "type": "plain_text"
+    },
+    "type": "input_layout"
+  }
+  ```
+
+  ##### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"email_text_input"`.
+
+  ```json
+  {
+    "type": "email_text_input",
+    "action_id": "<the action identifier of the email text input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<the value of the input>"
+  }
+  ```
+
+  ###### Example payload
+
+  ```json
+  {
+    "type": "email_text_input",
+    "action_id": "email",
+    "action_type": "remote",
+    "timestamp": "2023-07-12T08:17:43.887Z",
+    "value": "chuck@norris.com"
+  }
+  ```
+
+  #### Rich text input
+
+  A rich text input shows a rich text editor where the user can enter formatted text (Markdown). Works with [Input Layout](#input-layout) blocks.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the input component, should be set to `"rich_text_input"`.
+
+  ##### Additional properties
+
+  - `initial_value` (optional): The initial value in the input when it's loaded.
+
+  ##### Example
+
+  ![rich_text_input](../../img/rich-text-input.png)
+
+  The following video shows the rich text input in action.
+
+  <video controls width="100%">
+    <source src="https://github.com/devrev/fern-api-docs/assets/74637789/226f6818-fc62-41b9-84dd-d800e12a3458" type="video/mp4" />
+  </video>
+
+  ```json
+  {
+    "element": {
+      "action_id": "notes",
+      "placeholder": {
+        "text": "Your notes go here",
+        "type": "plain_text"
+      },
+      "type": "rich_text_input"
+    },
+    "hint": {
+      "text": "Please enter your notes",
+      "type": "plain_text"
+    },
+    "label": {
+      "text": "Notes",
+      "type": "plain_text"
+    },
+    "optional": true,
+    "type": "input_layout"
+  }
+  ```
+
+  ##### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"rich_text_input"`.
+
+  ```json
+  {
+    "type": "rich_text_input",
+    "action_id": "<the action identifier of the rich text input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<the value (raw Markdown) of the input>"
+  }
+  ```
+
+  ###### Example payload
+
+  ```json
+  {
+    "type": "rich_text_input",
+    "action_id": "notes",
+    "action_type": "remote",
+    "timestamp": "2023-07-19T10:54:20.331Z",
+    "value": "**Title**
+
+  *Italic*
+
+  ~~Strikethrough~~
+
+  `A piece of code`
+
+  > A quote
+
+  - Unordered 1
+  - Unordered 2
+
+  1. Ordered 1
+  2. Ordered 2"
+  }
+  ```
+
+  </Accordion>
+  <Accordion title="List input">
+  There are 3 supported list input types:
+
+  - String List Input
+  - Number List Input
+  - Email List Input
+
+  #### Properties
+
+  The list input component does not have any properties of its own. See specific variants below for their properties.
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): Type of the list input component. **Should be set according to the list input type, see below.**
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Placeholder](#placeholder):
+
+  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### String list input
+
+  A string list input allows users to enter a list of text items. Works with [Input Layout](#input-layout) blocks.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the input component, should be set to `"string_list"`.
+
+  ##### Additional Properties
+
+  - `min_items` (optional): The minimum number of items that can be added. Defaults to 1.
+  - `max_items` (optional): The maximum number of items that can be added.
+  - `multiline` (optional): Indicates whether the input should allow multiple lines of text. Defaults to `false`.
+  - `min_item_length` (optional): The minimum text length of the inputs, can't be greater than `max_item_length`.
+  - `max_item_length` (optional): The maximum text length of the inputs, can't be less than `min_item_length`.
+  - `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
+
+  ##### Example
+
+  Standard string list input with a minimum of 1 item, maximum of 3 items, minimum item length set to 3 and maximum item length set to 15.
+
+  ![list_input_string](../../img/list-input-string.png)
+
+  ```json
+  {
+    "element": {
+      "action_id": "keywords",
+      "max_items": 3,
+      "min_items": 1,
+      "max_item_length": 15,
+      "min_item_length": 3,
+      "placeholder": {
+        "text": "Add keyword here",
+        "type": "plain_text"
+      },
+      "type": "string_list"
+    },
+    "hint": {
+      "text": "When a customer includes these keywords in a Slack message, they are prompted to send the message to your DevRev inbox.",
+      "type": "plain_text"
+    },
+    "label": {
+      "text": "List of strings",
+      "type": "plain_text"
+    },
+    "type": "input_layout"
+  }
+  ```
+
+  Multiline string list input with a minimum of 1 item and a maximum of 2 items.
+
+  ![list_input_string_multiline](../../img/list-input-string-multiline.png)
+
+  ```json
+  {
+    "element": {
+      "action_id": "multiline",
+      "max_items": 2,
+      "min_items": 1,
+      "multiline": true,
+      "placeholder": {
+        "text": "Add a keyword here",
+        "type": "plain_text"
+      },
+      "type": "string_list"
+    },
+    "hint": {
+      "text": "When a customer includes these multiline keywords in a Slack message, they are prompted to send the message to your DevRev inbox.",
+      "type": "plain_text"
+    },
+    "label": {
+      "text": "List of strings",
+      "type": "plain_text"
+    },
+    "type": "input_layout"
+  }
+  ```
+
+  ##### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"string_list"`.
+
+  ```json
+  {
+    "type": "string_list",
+    "action_id": "<the action identifier of the string list input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": ["<an array of strings as inputted by the user>"]
+  }
+  ```
+
+  ###### Example payload
+
+  Standard string list input.
+
+  ```json
+  {
+    "type": "string_list",
+    "action_id": "keywords",
+    "action_type": "remote",
+    "timestamp": "2023-07-21T05:33:52.182Z",
+    "value": ["hello", "this is", "a test"]
+  }
+  ```
+
+  Multiline string list input.
+
+  ```json
+  {
+    "type": "string_list",
+    "action_id": "multiline",
+    "action_type": "remote",
+    "timestamp": "2023-07-21T05:33:52.182Z",
+    "value": ["Hello this
+  is a multiline string", "And here
+  is another
+  one"]
+  }
+  ```
+
+  #### Number List Input
+
+  A list of numbers input allows users to enter a list of numeric items. Works with [Input Layout](#input-layout) blocks.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the input component, should be set to `"number_list"`.
+
+  ##### Additional Properties
+
+  - `min_items` (optional): The minimum number of items that can be added.
+  - `max_items` (optional): The maximum number of items that can be added.
+  - `min_item_value` (optional): The minimum value of the inputs, can't be greater than `max_item_value`.
+  - `max_item_value` (optional): The maximum value of the inputs, can't be less than `min_item_value`.
+  - `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
+
+  ##### Example
+
+  ![list_input_number](../../img/list-input-number.png)
+
+  ```json
+  {
+    "element": {
+      "action_id": "numbers",
+      "max_item_value": 90,
+      "min_item_value": 0,
+      "placeholder": {
+        "text": "Add warning value here (min 0, max 90)",
+        "type": "plain_text"
+      },
+      "type": "number_list"
+    },
+    "hint": {
+      "text": "Add warning values for code coverage reports",
+      "type": "plain_text"
+    },
+    "label": {
+      "text": "List of numbers",
+      "type": "plain_text"
+    },
+    "type": "input_layout"
+  }
+  ```
+
+  ##### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"number_list"`.
+
+  ```json
+  {
+    "type": "number_list",
+    "action_id": "<the action identifier of the number list input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": ["<an array of numbers as strings as inputted by the user>"]
+  }
+  ```
+
+  ###### Example Payload
+
+  ```json
+  {
+    "type": "number_list",
+    "action_id": "numbers",
+    "action_type": "remote",
+    "timestamp": "2023-07-21T05:33:52.182Z",
+    "value": ["25", "42", "60"]
+  }
+  ```
+
+  #### Email List Input
+
+  A list of email input allows users to enter a list of emails. Works with [Input Layout](#input-layout) blocks.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the input component, should be set to `"email_list"`.
+
+  ##### Additional Properties
+
+  - `min_items` (optional): The minimum number of items that can be added.
+  - `max_items` (optional): The maximum number of items that can be added.
+  - `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
+
+  ##### Example
+
+  ![list_input_email](../../img/list-input-email.png)
+
+  ```json
+  {
+    "element": {
+      "action_id": "emails",
+      "placeholder": {
+        "text": "Enter email here",
+        "type": "plain_text"
+      },
+      "type": "email_list"
+    },
+    "hint": {
+      "text": "When these emails are included in a Slack message, they automatically receive an email notification.",
+      "type": "plain_text"
+    },
+    "label": {
+      "text": "List of emails",
+      "type": "plain_text"
+    },
+    "type": "input_layout"
+  }
+  ```
+
+  ##### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"email_list"`.
+
+  ```json
+  {
+    "type": "email_list",
+    "action_id": "<the action identifier of the email list input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": ["<an array of emails as strings as inputted by the user>"]
+  }
+  ```
+
+  ###### Example Payload
+
+  ```json
+  {
+    "type": "email_list",
+    "action_id": "emails",
+    "action_type": "remote",
+    "timestamp": "2023-07-21T05:33:52.182Z",
+    "value": ["hello@hello.com", "example@example.com", "bonjour@hello.com"]
+  }
+  ```
+  </Accordion>
+  <Accordion title="Static select">
+  A select menu that allows a user to choose one item from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+
+  #### Properties
+
+  - `options` (required): A list of options that appear in the menu, of type [Plain Text Option](#plain-text-option).
+  - `initial_selected_option` (optional): The initial option that's selected when the element is loaded. A single option that exactly matches one of the options within `options`.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): Type of the static select component, should be set to `"static_select"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Focusable](#focusable):
+
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+
+  Inherited from [Placeholder](#placeholder):
+
+  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### Example
+
+  A static select snap with 4 options.
+
+  ![static_select](../../img/static-select.png)
+
+  ```json
+  {
+    "action_id": "static_select",
+    "action_type": "remote",
+    "initial_selected_option": {
+      "text": {
+        "text": "Forrest Gump",
+        "type": "plain_text"
+      },
+      "value": "forrest-gump"
+    },
+    "options": [
+      {
+        "text": {
+          "text": "Forrest Gump",
+          "type": "plain_text"
+        },
+        "value": "forrest-gump"
+      },
+      {
+        "text": {
+          "text": "The Shawshank Redemption",
+          "type": "plain_text"
+        },
+        "value": "the-shawshank-redemption"
+      },
+      {
+        "text": {
+          "text": "The Godfather",
+          "type": "plain_text"
+        },
+        "value": "the-godfather"
+      },
+      {
+        "text": {
+          "text": "The Dark Knight",
+          "type": "plain_text"
+        },
+        "value": "the-dark-knight"
+      }
+    ],
+    "type": "static_select"
+  }
+  ```
+
+  #### Action payload
+
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"static_select"`.
+
+  ```json
+  {
+    "type": "static_select",
+    "action_id": "<the action identifier of the static select>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<selected Plain Text Option object>"
+  }
+  ```
+
+  ##### Example Payload
+
+  ```json
+  {
+    "action_id": "static_select",
+    "action_type": "remote",
+    "type": "static_select",
+    "value": {
+      "text": { "text": "The Godfather", "type": "plain_text" },
+      "value": "the-godfather"
+    },
+    "timestamp": "2023-07-12T08:21:06.027Z"
+  }
+  ```
+
+  </Accordion>
+  <Accordion title="Multi static select">
+  A select menu that allows a user to choose multiple items from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+
+  #### Properties
+
+  - `options` (required): A list of options that appear in the menu, of type [Plain Text Option](#plain-text-option).
+  - `initial_selected_options` (optional): The initial options that are selected when the element is loaded. Each of them should exactly match one of the options within `options`.
+  - `max_selected_items` (optional): The maximum number of items that can be selected.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the multi-static select component, should be set to `"multi_static_select"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Focusable](#focusable):
+
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+
+  Inherited from [Placeholder](#placeholder):
+
+  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### Example
+
+  A multi-static select snap with 4 options.
+
+  ![multi_static_select](../../img/multi-static-select.png)
+
+  ```json
+  {
+    "action_id": "multi_static_select",
+    "action_type": "remote",
+    "initial_selected_options": [
+      {
+        "text": {
+          "text": "Forrest Gump",
+          "type": "plain_text"
+        },
+        "value": "forrest-gump"
+      }
+    ],
+    "options": [
+      {
+        "text": {
+          "text": "Forrest Gump",
+          "type": "plain_text"
+        },
+        "value": "forrest-gump"
+      },
+      {
+        "text": {
+          "text": "The Shawshank Redemption",
+          "type": "plain_text"
+        },
+        "value": "the-shawshank-redemption"
+      },
+      {
+        "text": {
+          "text": "The Godfather",
+          "type": "plain_text"
+        },
+        "value": "the-godfather"
+      },
+      {
+        "text": {
+          "text": "The Dark Knight",
+          "type": "plain_text"
+        },
+        "value": "the-dark-knight"
+      }
+    ],
+    "type": "multi_static_select"
+  }
+  ```
+
+  #### Action payload
+
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"multi_static_select"`.
+
+  ```json
+  {
+    "type": "multi_static_select",
+    "action_id": "<the action identifier of the multi-static select>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": ["<array of selected Plain Text Option objects>"]
+  }
+  ```
+
+  ##### Example Payload
+
+  ```json
+  {
+    "action_id": "multi_static_select",
+    "action_type": "remote",
+    "type": "multi_static_select",
+    "value": [
+      {
+        "text": { "text": "Forrest Gump", "type": "plain_text" },
+        "value": "forrest-gump"
+      },
+      {
+        "text": { "text": "The Dark Knight", "type": "plain_text" },
+        "value": "the-dark-knight"
+      }
+    ],
+    "timestamp": "2023-07-12T08:21:24.700Z"
+  }
+  ```
+
+  </Accordion>
+  <Accordion title="Radio button">
+  List of radio inputs that allow a user to choose one item from a list of options. Works with [input layout](#input-layout) and [actions](#actions) blocks.
+
+  #### Properties
+
+  - `options` (required): A list of options that appear in a stack of radio inputs, of type [plain text option](#plain-text-option).
+  - `initial_selected_option` (optional): The initial option that's selected when the element is loaded. A single option that exactly matches one of the options within `options`.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): Type of the radio button group component, should be set to `"radio_buttons"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Focusable](#focusable):
+
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### Example
+
+  A radio button snap with 3 options.
+
+  ![radio_buttons](../../img/radio-buttons.png)
+
+  ```json
+  {
+    "action_id": "in-app",
+    "action_type": "remote",
+    "options": [
+      {
+        "text": {
+          "text": "Important updates only (Mentions & assignments)",
+          "type": "plain_text"
+        },
+        "value": "imp"
+      },
+      {
+        "text": {
+          "text": "All new updates",
+          "type": "plain_text"
+        },
+        "value": "all"
+      },
+      {
+        "text": {
+          "text": "Never",
+          "type": "plain_text"
+        },
+        "value": "none"
+      }
+    ],
+    "type": "radio_buttons"
+  }
+  ```
+
+  #### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"radio_buttons"`.
+
+  ```json
+  {
+    "type": "radio_buttons",
+    "action_id": "<the action identifier of the radio buttons>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<selected Plain Text Option object>"
+  }
+  ```
+
+  ##### Example Payload
+
+  ```json
+  {
+    "action_id": "in-app",
+    "action_type": "remote",
+    "type": "radio_buttons",
+    "value": {
+      "text": { "text": "All new updates", "type": "plain_text" },
+      "value": "all"
+    },
+    "timestamp": "2023-07-12T08:21:46.621Z"
+  }
+  ```
+
+  </Accordion>
+  <Accordion title="Toggle button">
+  Toggles allow users to quickly switch between two possible states. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+
+  #### Properties
+
+  - `initial_value` (optional): The initial value of the toggle (a boolean).
+  - `description` (optional): A [Plain Text](#plain-text) element that defines the description shown below the toggle.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): The type of the toggle button component, should be set to `"toggle"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Focusable](#focusable):
+
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### Example
+
+  ![toggle](../../img/toggles.png)
+
+  ```json
+  {
+    "elements": [
+      {
+        "elements": [
+          {
+            "action_id": "toggle",
+            "description": {
+              "text": "This is a toggle",
+              "type": "plain_text"
+            },
+            "type": "toggle"
+          },
+          {
+            "action_id": "toggle_checked",
+            "description": {
+              "text": "This is a checked toggle",
+              "type": "plain_text"
+            },
+            "initial_value": true,
+            "type": "toggle"
+          },
+          {
+            "action_id": "toggle_disabled",
+            "description": {
+              "text": "This is a disabled toggle",
+              "type": "plain_text"
+            },
+            "disabled": true,
+            "type": "toggle"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "type": "card"
+  }
+  ```
+
+  #### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"toggle"`.
+
+  ```json
+  {
+    "type": "toggle",
+    "action_id": "<the action identifier of the toggle>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": "<boolean indicating the state of the toggle>"
+  }
+  ```
+
+  ##### Example Payload
+
+  ```json
+  {
+    "action_id": "toggle",
+    "action_type": "remote",
+    "type": "toggle",
+    "value": true,
+    "timestamp": "2023-07-12T08:22:10.723Z"
+  }
+  ```
+
+  </Accordion>
+  <Accordion title="Upload input">
+  A component that allows a user to upload a file. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+
+  #### Properties
+
+  - `upload_button` (required): A button that can be clicked to upload files.
+  - `min_files` (optional): The minimum number of files that can be uploaded.
+  - `max_files` (optional): The maximum number of files that can be uploaded.
+  - `initial_artifacts_ids` (optional): The initial artifacts that are selected when the element is loaded. A list of DONv2 IDs.
+
+  ##### Inherited properties
+
+  Inherited from [Snap](#snap):
+
+  - `type` (required): Type of the upload input component, should be set to `"upload"`.
+  - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
+
+  Inherited from [Action](#action):
+
+  - `action_id` (required): An identifier for the action. Should be unique in the snap.
+  - `action_type` (optional): Indicates whether the action is handled by the backend or client. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
+
+  Inherited from [Focusable](#focusable):
+
+  - `focus_on_load` (optional): Indicates whether the component should be focused on load or not. Only 1 item can have the property set to true in the snap. Defaults to `false`.
+
+  Inherited from [Placeholder](#placeholder):
+
+  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+
+  Inherited from [Disabled](#disabled):
+
+  - `disabled` (optional): Indicates whether the element is disabled.
+
+  #### Example
+
+  ![upload](../../img/upload.png)
+
+  ```json
+  {
+    "elements": [
+      {
+        "elements": [
+          {
+            "action_id": "upload",
+            "action_type": "remote",
+            "max_files": 5,
+            "min_files": 1,
+            "type": "upload",
+            "upload_button": {
+              "action_id": "upload_btn",
+              "style": "primary",
+              "text": {
+                "text": "Upload",
+                "type": "plain_text"
+              },
+              "type": "button",
+              "value": "upload"
+            }
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "type": "card"
+  }
+  ```
+
+  #### Action payload
+
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"upload"`.
+
+  ```json
+  {
+    "type": "upload",
+    "action_id": "<the action identifier of the upload input>",
+    "action_type": "<the type of the action as defined in the Snap>",
+    "timestamp": "<timestamp as a string in ISO 8601 format>",
+    "value": ["<an array of artifact IDs as strings>"]
+  }
+  ```
+
+  ##### Example Payload
+
+  ```json
+  {
+    "action_id": "upload",
+    "action_type": "remote",
+    "type": "upload",
+    "value": [
+      "don:core:dvrv-us-1:devo/H66a8LUt:artifact/5",
+      "don:core:dvrv-us-1:devo/H66a8LUt:artifact/6"
+    ],
+    "timestamp": "2023-07-12T08:25:47.451Z"
+  }
+  ```
+
+  </Accordion>
+</AccordionGroup>
 
 ## Layout Elements
-
-### Actions
-
+<AccordionGroup>
+  <Accordion title="Actions">
 Used when you want the user to interact without filling out a form. Similar to the [Form](#form) block but without a submit button. It contains an array of `elements`.
 
 #### Properties
@@ -2006,10 +2004,10 @@ The following video shows the behavior of the Actions block with `disable_on_act
   "type": "card"
 }
 ```
+  </Accordion>
 
-### Card
-
-A card is a container for various types of content. It contains an array of `elements`.
+  <Accordion title="Card">
+   A card is a container for various types of content. It contains an array of `elements`.
 
 #### Properties
 
@@ -2085,9 +2083,10 @@ Default and collapsible card example.
 ]
 ```
 
-### Content
-
-A `content` block is used to hold various types of content. It contains an array of `elements`.
+  </Accordion>
+  
+  <Accordion title="Content">
+    A `content` block is used to hold various types of content. It contains an array of `elements`.
 
 #### Properties
 
@@ -2136,10 +2135,9 @@ The `elements` array can contain the following Snaps:
   "type": "content"
 }
 ```
-
-### Form
-
-A form block that collects information from users.
+  </Accordion>
+  <Accordion title="Form">
+    A form block that collects information from users.
 
 #### Properties
 
@@ -2447,9 +2445,9 @@ Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](
 }
 ```
 
-### Input layout
-
-A layout that holds the elements that the user can interact with in a form. Works with [Form](#form) blocks.
+  </Accordion>
+  <Accordion title="Input layout">
+    A layout that holds the elements that the user can interact with in a form. Works with [Form](#form) blocks.
 
 #### Properties
 
@@ -2548,12 +2546,14 @@ Inherited from [Hideable](#hideable):
   "type": "form"
 }
 ```
+  </Accordion>
+</AccordionGroup>
 
 ## Data pickers
 
-### Part picker
-
-A component that provides a list of parts that allows a user to choose multiple parts from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+<AccordionGroup>
+  <Accordion title="Part picker">
+    A component that provides a list of parts that allows a user to choose multiple parts from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
 
 #### Properties
 
@@ -2628,9 +2628,10 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload]
 }
 ```
 
-### Tag picker
+  </Accordion>
 
-A component that provides a list of tags that allow a user to choose multiple tags from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+  <Accordion title="Tag picker">
+    A component that provides a list of tags that allow a user to choose multiple tags from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
 
 #### Properties
 
@@ -2709,8 +2710,10 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload]
 }
 ```
 
-### User picker
-
+  </Accordion>
+  
+  <Accordion title="User picker">
+    
 A component that provides a list of users that allow a user to choose multiple users from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
 
 #### Properties
@@ -2903,3 +2906,6 @@ In this updated JSON, the `divider` component is added to create a visual separa
   }
 }
 ```
+
+  </Accordion>
+</AccordionGroup>

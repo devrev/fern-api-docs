@@ -15,6 +15,7 @@ navigation:
         path: ../docs/pages/responses.mdx
   - api: API Reference
     api-name: public
+    summary: ../docs/pages/api-summary.mdx
     layout:
       - page: Getting started
         path: ../docs/pages/welcome.mdx

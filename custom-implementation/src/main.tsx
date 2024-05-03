@@ -40,7 +40,12 @@ const render = async () => {
   )
 
   // console.log('sidenav', sidenav)
-  ReactDOM.render(React.createElement(ThemeSwitch), sidenav)
+  ReactDOM.render(
+    React.createElement(ThemeSwitch, {
+      sibling: document.querySelector('button.fern-search-bar'),
+    }),
+    sidenav,
+  )
 }
 
 let observations = 0

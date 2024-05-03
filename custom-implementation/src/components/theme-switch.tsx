@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 export const ThemeSwitch = () => {

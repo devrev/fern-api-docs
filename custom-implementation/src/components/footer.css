@@ -25,3 +25,28 @@ time, mark, audio, video, button {
 	vertical-align: baseline;
 	line-height: 19px;
 }
+
+
+/* HTML5 display-role reset for older browsers */
+.footer article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+.footer ol, ul {
+	list-style: none;
+}
+
+.footer blockquote, q {
+	quotes: none;
+}
+
+.footer blockquote:before, blockquote:after, q:before, q:after {
+	content: '';
+	content: none;
+}
+
+.footer table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}

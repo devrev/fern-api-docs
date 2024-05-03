@@ -14,8 +14,17 @@ export const ThemeSwitch = () => {
     <div className="mt-2">
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
-          <button className="fern-button outlined normal primary">
-            <span className="fern-button-content">
+          <button
+            className="fern-button outlined normal primary"
+            style={{
+              width: '100%',
+            }}>
+            <span
+              className="fern-button-content"
+              style={{
+                width: '100%',
+                justifyContent: 'space-between',
+              }}>
               <span className="fern-button-text">
                 {selected === 'beta' ? 'Beta' : 'Public'}
               </span>
@@ -38,12 +47,22 @@ export const ThemeSwitch = () => {
         </DropdownMenu.Trigger>
 
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="fern-dropdown">
+          <DropdownMenu.Content
+            className="fern-dropdown"
+            style={{
+              marginTop: '4px',
+              border: '#f4fefbb0 1px solid',
+            }}>
             <DropdownMenu.RadioGroup
               value={selected}
               onValueChange={setSelected}>
               <DropdownMenu.RadioItem value="public">
-                <a className="fern-dropdown-item" href="/about/for-developers">
+                <a
+                  className="fern-dropdown-item"
+                  style={{
+                    justifyContent: 'space-between',
+                  }}
+                  href="/about/for-developers">
                   <DropdownMenu.ItemIndicator className="fern-dropdown-item-indicator">
                     <svg
                       width="15"
@@ -66,6 +85,9 @@ export const ThemeSwitch = () => {
               <DropdownMenu.RadioItem value="beta">
                 <a
                   className="fern-dropdown-item"
+                  style={{
+                    justifyContent: 'space-between',
+                  }}
                   href="/beta/about/for-developers">
                   <DropdownMenu.ItemIndicator className="fern-dropdown-item-indicator">
                     <svg

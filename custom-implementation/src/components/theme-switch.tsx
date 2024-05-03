@@ -34,7 +34,6 @@ export const ThemeSwitch = () => {
                 />
               </svg>
             </span>
-            {selected}
           </button>
         </DropdownMenu.Trigger>
 

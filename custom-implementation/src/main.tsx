@@ -17,7 +17,6 @@ const render = async () => {
    */
 
   const data = await getPageData()
-  // const search = document.querySelector('button.fern-search-bar')
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
   const wrapper = document.createElement('div')
@@ -42,7 +41,6 @@ const render = async () => {
     },
   )
 
-  // console.log('sibling', search, search?.parentNode)
   ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
 }
 

@@ -7,6 +7,7 @@ import React from 'react'
 
 import Header from './components/header'
 import Footer from './components/footer'
+import { ThemeSwitch } from './components/theme-switch'
 
 import { getPageData } from './modules/sanity/utils'
 
@@ -16,6 +17,8 @@ const render = async () => {
    */
 
   const data = await getPageData()
+  const sidenav = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    document.querySelector('button.fern-search-bar')?.parentElement as any
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
@@ -35,6 +38,9 @@ const render = async () => {
       if (footer) footer.style.display = 'block'
     },
   )
+
+  // console.log('sidenav', sidenav)
+  ReactDOM.render(React.createElement(ThemeSwitch), sidenav)
 }
 
 let observations = 0

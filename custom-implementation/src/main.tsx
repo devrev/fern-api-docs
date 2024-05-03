@@ -19,8 +19,14 @@ const render = async () => {
   const data = await getPageData()
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
-  const wrapper = document.createElement('div')
-  sidenav.appendChild(wrapper)
+
+  if (!document.getElementById('theme-switch')) {
+    const wrapper = document.createElement('div')
+    wrapper.setAttribute('id', 'theme-switch')
+    sidenav.appendChild(wrapper)
+
+    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+  }
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
@@ -40,8 +46,6 @@ const render = async () => {
       if (footer) footer.style.display = 'block'
     },
   )
-
-  ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
 }
 
 let observations = 0

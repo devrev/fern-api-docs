@@ -41,7 +41,7 @@ const render = async () => {
   )
 
   // console.log('sibling', search, search?.parentNode)
-  ReactDOM.createPortal(React.createElement(ThemeSwitch), sidenav)
+  ReactDOM.render(React.createElement(ThemeSwitch), sidenav)
 }
 
 let observations = 0

@@ -17,8 +17,10 @@ const render = async () => {
    */
 
   const data = await getPageData()
-  const sidenav = // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    document.querySelector('button.fern-search-bar')?.parentElement as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const search = document.querySelector('button.fern-search-bar')
+  const sidenav = document.querySelector('button.fern-search-bar')
+    ?.parentElement as HTMLElement
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
@@ -39,11 +41,10 @@ const render = async () => {
     },
   )
 
-  console.log('sibling', document.querySelector('button.fern-search-bar'))
-  console.log('sidenav', sidenav)
+  console.log('sibling', search, search?.parentNode)
   ReactDOM.render(
     React.createElement(ThemeSwitch, {
-      sibling: document.querySelector('button.fern-search-bar'),
+      sibling: search,
     }),
     sidenav,
   )

@@ -51,18 +51,13 @@ export const ThemeSwitch = () => {
             className="fern-dropdown"
             style={{
               marginTop: '4px',
-              border: '#f4fefbb0 1px solid',
+              border: 'rgba(93, 101, 238, 0.4) 1px solid',
             }}>
             <DropdownMenu.RadioGroup
               value={selected}
               onValueChange={setSelected}>
               <DropdownMenu.RadioItem value="public">
-                <a
-                  className="fern-dropdown-item"
-                  style={{
-                    justifyContent: 'space-between',
-                  }}
-                  href="/about/for-developers">
+                <a className="fern-dropdown-item" href="/about/for-developers">
                   <DropdownMenu.ItemIndicator className="fern-dropdown-item-indicator">
                     <svg
                       width="15"
@@ -77,7 +72,10 @@ export const ThemeSwitch = () => {
                         clip-rule="evenodd"></path>
                     </svg>
                   </DropdownMenu.ItemIndicator>
-                  <span>
+                  <span
+                    style={{
+                      marginLeft: 'auto',
+                    }}>
                     <span>Public</span>
                   </span>
                 </a>
@@ -103,7 +101,10 @@ export const ThemeSwitch = () => {
                         clip-rule="evenodd"></path>
                     </svg>
                   </DropdownMenu.ItemIndicator>
-                  <span>
+                  <span
+                    style={{
+                      marginLeft: 'auto',
+                    }}>
                     <span>Beta</span>
                   </span>
                 </a>

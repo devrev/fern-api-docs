@@ -20,6 +20,8 @@ const render = async () => {
   // const search = document.querySelector('button.fern-search-bar')
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
+  const wrapper = document.createElement('div')
+  sidenav.appendChild(wrapper)
 
   ReactDOM.render(
     React.createElement(Header, { ...data.header }),
@@ -41,7 +43,7 @@ const render = async () => {
   )
 
   // console.log('sibling', search, search?.parentNode)
-  ReactDOM.render(React.createElement(ThemeSwitch), sidenav)
+  ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
 }
 
 let observations = 0

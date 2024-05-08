@@ -3,7 +3,7 @@ The build configuration is used to configure the build process of the snap-in. F
 This is useful if the developer wants to import libraries from a different registry or wants to use private packages that
 require an authentication token.
 
-## Specifying the Config
+## Specifying the config
 
 Build config is defined as:
 
@@ -17,7 +17,7 @@ build_config:
 ```
 
 For example, to import a library that uses the GitHub NPM registry, add
-the following variables to the build config
+the following variables to the build config:
 
 ```yaml
 build_config:
@@ -33,7 +33,7 @@ build_config:
 ```
 
 Since "AUTH_TOKEN" is sensitive information that should not be hardcoded in the manifest,
-the developer can instead mention the name of the developer keyring and during snap-in version creation
+the developer can instead mention the name of the developer keyring and, during snap-in version creation
 time, provide the developer keyring to take the value from.
 
 ```yaml

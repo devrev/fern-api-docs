@@ -27,7 +27,7 @@ any) => {
           actions={actions}
           version={version}
           collapseOnScroll={collapseOnScroll}
-          wrapperClassName="header"
+          wrapperClassName="custom-header"
         />
       </ComponentConfigContext.Provider>
     </div>

@@ -58,6 +58,12 @@ export const ThemeSwitch = () => {
               onValueChange={setSelected}>
               <DropdownMenu.RadioItem value="public">
                 <a className="fern-dropdown-item" href="/about/for-developers">
+                  <span
+                    style={{
+                      marginRight: 'auto',
+                    }}>
+                    <span>Public</span>
+                  </span>
                   <DropdownMenu.ItemIndicator className="fern-dropdown-item-indicator">
                     <svg
                       width="15"
@@ -72,12 +78,6 @@ export const ThemeSwitch = () => {
                         clip-rule="evenodd"></path>
                     </svg>
                   </DropdownMenu.ItemIndicator>
-                  <span
-                    style={{
-                      marginLeft: 'auto',
-                    }}>
-                    <span>Public</span>
-                  </span>
                 </a>
               </DropdownMenu.RadioItem>
               <DropdownMenu.RadioItem value="beta">
@@ -87,6 +87,12 @@ export const ThemeSwitch = () => {
                     justifyContent: 'space-between',
                   }}
                   href="/beta/about/for-developers">
+                  <span
+                    style={{
+                      marginRight: 'auto',
+                    }}>
+                    <span>Beta</span>
+                  </span>
                   <DropdownMenu.ItemIndicator className="fern-dropdown-item-indicator">
                     <svg
                       width="15"
@@ -101,12 +107,6 @@ export const ThemeSwitch = () => {
                         clip-rule="evenodd"></path>
                     </svg>
                   </DropdownMenu.ItemIndicator>
-                  <span
-                    style={{
-                      marginLeft: 'auto',
-                    }}>
-                    <span>Beta</span>
-                  </span>
                 </a>
               </DropdownMenu.RadioItem>
             </DropdownMenu.RadioGroup>

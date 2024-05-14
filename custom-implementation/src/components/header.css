@@ -1,8 +1,8 @@
-.header {
+#fern-header {
     background-color: white; 
 }
 
-.header nav a {
+#fern-header nav a {
 	text-decoration: none;
 	color: black;
 	cursor: pointer;

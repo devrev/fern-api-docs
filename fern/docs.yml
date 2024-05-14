@@ -4,13 +4,7 @@ instances:
 
 title: DevRev | Docs
 
-navbar-links: 
-  - type: secondary
-    text: Get a demo
-    url: https://calendly.com/mdr-team/devrev-demo
-  - type: primary
-    text: Sign In
-    url: https://app.devrev.ai/login
+navbar-links: []
 
 colors:
   accentPrimary: 
@@ -20,11 +14,15 @@ colors:
     dark: "#131414"
     light: '#ffffff'
 
-logo:
-  dark: ./docs/assets/logo_white.png
-  light: ./docs/assets/logo_black.png
-  href: https://devrev.ai
-  height: 24
+logo: {}
+
+css:
+  - ./dist/output.css
+
+js:
+  - path: ./dist/output.js
+    strategy: beforeInteractive
+
 
 typography:
   bodyFont:

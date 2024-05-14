@@ -1,0 +1,9 @@
+.header {
+    background-color: white; 
+}
+
+.header nav a {
+	text-decoration: none;
+	color: black;
+	cursor: pointer;
+}

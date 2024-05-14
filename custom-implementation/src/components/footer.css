@@ -25,16 +25,16 @@ time, mark, audio, video, button {
 
 
 /* HTML5 display-role reset for older browsers */
-.fern-footer article, aside, details, figcaption, figure, 
+.custom-footer article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 
-.fern-footer ol, ul {
+.custom-footer ol, ul {
 	list-style: none;
 }
 
-.fern-footer blockquote, q {
+.custom-footer blockquote, q {
 	quotes: none;
 }
 

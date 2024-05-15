@@ -19,7 +19,7 @@ any) => {
     <div>
       <ComponentConfigContext.Provider
         value={{
-          origin: 'https://api.docs.devrev.ai',
+          origin: 'https://developer.devrev.ai',
         }}>
         <SharedHeader
           logo={logo}
@@ -27,7 +27,7 @@ any) => {
           actions={actions}
           version={version}
           collapseOnScroll={collapseOnScroll}
-          wrapperClassName="header"
+          wrapperClassName="custom-header"
         />
       </ComponentConfigContext.Provider>
     </div>

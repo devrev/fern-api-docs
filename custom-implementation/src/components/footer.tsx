@@ -13,10 +13,10 @@ const Footer = ({ list = [], logo, status, compliance, ...rest }: any) => {
   return (
     <ComponentConfigContext.Provider
       value={{
-        origin: 'https://api.docs.devrev.ai',
+        origin: 'https://developer.devrev.ai',
       }}>
       <SharedFooter
-        className="footer"
+        className="custom-footer"
         list={list}
         logo={logo}
         status={status}

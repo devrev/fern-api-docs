@@ -66,6 +66,12 @@ navigation:
   - section: SDKs
     slug: sdks
     contents:
+      - section: TypeScript SDK
+        slug: typescript
+        contents:
+        - page: TypeScript reference
+          slug: reference
+          path: ../docs/pages/typescript-sdk.html
       - section: PLuG SDK
         slug: plug
         contents:

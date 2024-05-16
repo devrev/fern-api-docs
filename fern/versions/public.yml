@@ -71,7 +71,7 @@ navigation:
         contents:
         - page: TypeScript reference
           slug: reference
-          path: ../docs/pages/typescript-sdk.html
+          path: ../docs/pages/typescript-sdk.mdx
       - section: PLuG SDK
         slug: plug
         contents:

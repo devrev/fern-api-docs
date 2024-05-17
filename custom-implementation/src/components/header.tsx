@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import {
   ComponentConfigContext,
   HeaderV30 as SharedHeader,
-} from '../../../../marketing-shared-components/dist/esm/index'
+} from '@devrev/marketing-shared-components/dist/cjs'
 
 import './header.css'
 

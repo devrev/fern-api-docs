@@ -1,3 +1,6 @@
+.custom-header {
+	z-index: 60;
+}
 
 .custom-header nav a {
 	text-decoration: none;

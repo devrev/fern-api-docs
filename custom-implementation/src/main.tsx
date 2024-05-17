@@ -32,7 +32,7 @@ const render = async () => {
   ReactDOM.render(
     React.createElement(Header, {
       ...data.header,
-      version: theme,
+      version: theme == 'dark' ? 'light' : 'dark',
     }),
     document.getElementById('fern-header'),
     () => {

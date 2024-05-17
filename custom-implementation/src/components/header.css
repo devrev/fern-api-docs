@@ -1,5 +1,5 @@
 .custom-header {
-    background-color: white; 
+	z-index: 60;
 }
 
 .custom-header nav a {

@@ -24,9 +24,7 @@ const render = async () => {
   if (!document.getElementById('theme-switch')) {
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
-    if (sidenav) {
-      sidenav.appendChild(wrapper)
-    }
+    sidenav.appendChild(wrapper)
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
 

@@ -1,0 +1,4 @@
+#fern-header,
+#fern-footer {
+  display: none; /* Hide the elements by default */
+}

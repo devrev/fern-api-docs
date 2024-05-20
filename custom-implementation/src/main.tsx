@@ -17,9 +17,9 @@ const render = async () => {
    */
 
   const data = await getPageData()
-  const theme = document.getElementsByTagName('html')[0].getAttribute('class')
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
+  const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
   if (!document.getElementById('theme-switch')) {
     const wrapper = document.createElement('div')

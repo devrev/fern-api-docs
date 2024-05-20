@@ -20,14 +20,13 @@ const render = async () => {
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
   if (!document.getElementById('theme-switch')) {
-    if (document.querySelector('button.fern-search-bar')) {
-      const sidenav = document.querySelector('button.fern-search-bar')
-        ?.parentElement as HTMLElement
-      const wrapper = document.createElement('div')
-      wrapper.setAttribute('id', 'theme-switch')
-      sidenav.appendChild(wrapper)
-      ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
-    }
+    const sidenav = document.querySelector('button.fern-search-bar')
+      ?.parentElement as HTMLElement
+
+    const wrapper = document.createElement('div')
+    wrapper.setAttribute('id', 'theme-switch')
+    sidenav.appendChild(wrapper)
+    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
 
   ReactDOM.render(

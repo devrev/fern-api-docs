@@ -21,12 +21,12 @@ const render = async () => {
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
 
-  const theme = document.getElementsByTagName('html')[0].getAttribute('class')
-
   if (!document.getElementById('theme-switch')) {
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
-    sidenav.appendChild(wrapper)
+    if (sidenav) {
+      sidenav.appendChild(wrapper)
+    }
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
 

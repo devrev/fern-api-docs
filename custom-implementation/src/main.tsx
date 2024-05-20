@@ -18,11 +18,10 @@ const render = async () => {
 
   const data = await getPageData()
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
+  const sidenav = document.querySelector('button.fern-search-bar')
+    ?.parentElement as HTMLElement
 
   if (!document.getElementById('theme-switch')) {
-    const sidenav = document.querySelector('button.fern-search-bar')
-      ?.parentElement as HTMLElement
-
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
     sidenav.appendChild(wrapper)

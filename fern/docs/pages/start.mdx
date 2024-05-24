@@ -8,7 +8,7 @@ Snap-ins are collections of objects that extend DevRev's core platform value. Th
 
 ### Installation guide
 
-- Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
+- Install [DevRev CLI](/snapin-development/references/cli-install)
 - Install [jq](https://stedolan.github.io/jq)
 
 ### Log in to DevRev for authentication
@@ -57,24 +57,24 @@ devrev-snaps-typescript-template/
 
 The command creates a folder `devrev-snaps-typescript-template`. This contains a `manifest.yaml` file and a `code` folder.
 
-- `manifest` file defines the resources to be created on the DevRev platform. For detailed information on the various components of a manifest file, see [Snap-in Manifest](/snap-in-development/references/snap-in-manifest).
+- `manifest` file defines the resources to be created on the DevRev platform. For detailed information on the various components of a manifest file, see [Snap-in Manifest](/snapin-development/references/manifest).
 - `code` folder consists of sample starter code for snap-ins. For detailed information on how to get started, see [starter example repo](https://github.com/devrev/snap-in-examples/tree/main/1-starter/code#readme).
 
 ### Creating a snap-in package
 
-To create a [snap-in package](/snap-in-development/concepts), run the following command:
+To create a [snap-in package](/snapin-development/concepts), run the following command:
 
 ```bash
 devrev snap_in_package create-one --slug my-first-snap-in | jq .
 ```
 <Callout intent="note">
 1. The slug is globally unique. If the slug provided is already taken, a conflict error occurs. This can be resolved by provided a different slug.
-2. On successful creation, the CLI automatically stores the package ID in its context corresponding to the slug. For more information, refer to the [Snap-in Context](/snap-in-development/references/install-dev-rev-cli).
+2. On successful creation, the CLI automatically stores the package ID in its context corresponding to the slug. For more information, refer to the [Snap-in Context](/snapin-development/references/cli#snap-in-context).
 </Callout>
 
 ### Creating a snap-in version
 
-To create a [snap-in version](/snap-in-development/concepts), run the following command:
+To create a [snap-in version](/snapin-development/references/cli#snap-in-version), run the following command:
 
 ```bash
 devrev snap_in_version create-one --path ./devrev-snaps-typescript-template | jq .
@@ -90,7 +90,7 @@ Output:
 }
 ```
 <Callout intent="info">
- The CLI automatically stores the version ID in its context. Refer to the [Snap-in Context](/snap-in-development/references/install-dev-rev-cli) section for more information.
+ The CLI automatically stores the version ID in its context. Refer to the [Snap-in Context](/snapin-development/references/cli#snap-in-context) section for more information.
 </Callout>
 
 In a package that's not published to the marketplace, you can have only one snap-in version. If you have an existing snap-in version in the package, the following error message is shown:
@@ -130,7 +130,7 @@ To install the snap-in, you must be a member of the **Admins** group in the de
 <br />
 
 <Callout intent="info">
-The CLI automatically stores the snap-in ID in its context. Refer to the [Snap-in Context](/snap-in-development/references/install-dev-rev-cli) section for more information.
+The CLI automatically stores the snap-in ID in its context. Refer to the [Snap-in Context](/snapin-development/references/cli#snap-in-context) section for more information.
 </Callout>
 
 ### Configuring the snap-in
@@ -172,6 +172,6 @@ devrev snap_in_version upgrade --path ./
 
 The above expects the manifest file to be present in the current directory by the name `manifest.yaml` and the code to be present in the `code` directory.
 
-Refer to [upgrade command](/snap-in-development/upgrade-snap-ins) for more information.
+Refer to [upgrade command](/snapin-development/upgrade-snap-ins) for more information.
 
 </Steps>

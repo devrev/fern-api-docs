@@ -2,18 +2,15 @@ import './main.css'
 import '@devrev/marketing-shared-components/dist/cjs/index.css'
 
 import ReactDOM from 'react-dom'
-
 import React from 'react'
-
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
-
 import { getPageData } from './modules/sanity/utils'
 
 const render = async () => {
   /*
-   * This is a where we try to make async data call.
+   * This is where we try to make async data call.
    */
 
   const data = await getPageData()
@@ -32,7 +29,7 @@ const render = async () => {
   ReactDOM.render(
     React.createElement(Header, {
       ...data.header,
-      version: theme == 'dark' ? 'light' : 'dark',
+      version: theme === 'dark' ? 'dark' : 'light', // Ensure version is correctly set based on theme
     }),
     document.getElementById('fern-header'),
     () => {

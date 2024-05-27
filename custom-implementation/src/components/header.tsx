@@ -46,7 +46,7 @@ any) => {
           logo={logo}
           items={links}
           actions={actions}
-          version={theme === 'dark' ? 'dark' : 'light'} // Ensure the theme is correctly reflected
+          version={theme === 'dark' ? 'dark' : 'light'} // Reflect the theme correctly
           collapseOnScroll={collapseOnScroll}
           wrapperClassName="custom-header"
         />

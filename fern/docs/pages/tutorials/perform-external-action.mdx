@@ -14,22 +14,22 @@ the **Discussions** tab of an issue in DevRev, which creates an issue in GitHub.
 2. **Secrets and keyrings in DevRev snap-ins:**
 
    - Explore the usage of secrets and refer to
-     [keyrings](/snap-in-development/references/keyrings) in DevRev snap-ins.
+     [keyrings](/snapin-development/references/keyrings) in DevRev snap-ins.
 
 3. **Command creation and utilization in DevRev:**
    - Gain proficiency in creating and using
-     [commands](/snap-in-development/references/commands) in DevRev.
+     [commands](/snapin-development/references/commands) in DevRev.
 
 <Steps>
 
 ### Installation guide
 
-- Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
+- Install [DevRev CLI](/snapin-development/references/install-dev-rev-cli)
 - Install [jq](https://stedolan.github.io/jq)
 - Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
 
 <Callout intent="info">
-If you did not follow the [getting started](/snap-in-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
+If you did not follow the [getting started](/snapin-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
 
 ```bash
 devrev profiles authenticate -o <dev-org-slug> -u <youremail@yourdomain.com>
@@ -75,7 +75,7 @@ service_account:
 
 To facilitate authentication for our API calls, the initial step involves
 creating a Personal Access Token (PAT) in GitHub. This PAT can be stored as a
-[connection](/snap-in-development/references/keyrings) within DevRev. Subsequently, this
+[connection](/snapin-development/references/keyrings) within DevRev. Subsequently, this
 connection is employed within our snap-in in the form of keyrings.
 
 ```yml

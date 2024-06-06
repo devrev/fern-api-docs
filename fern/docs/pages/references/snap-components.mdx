@@ -8,7 +8,7 @@ Each snap-component has the following properties:
 
 - `surface` : the surfaces where the snap component can be displayed. Currently, only `issue` is supported. // TODO: Confirm this.
 - `snap_kit_action_name` : the name of the snap kit action that will be triggered when the action defined in the snap-kit of the snap component is interacted with.
-- `snap_kit_body` : the initial body of the snap kit action that will be rendered when the snap component is loaded.
+<!-- - `snap_kit_body` : the initial body of the snap kit action that will be rendered when the snap component is loaded. -->
 
 <!-- - `initializer` : references a function that can be called to initialize the snap component. This is useful when the snap component needs to be initialized with data from the server based on the context where it is being initialized. -->
 
@@ -32,7 +32,6 @@ snap_components:
       {
         "snaps":[]
       }
-
 ```
 
 ## Format of context passed to snap-kit action
@@ -119,44 +118,3 @@ interface Event {
 | snap_in__configuration  | Snap-in configuration surface is used to display snap components in the snap-in configuration view. |
 | plug                    | Plug surface is used to display snap components in the plug widget.                           |
 
-## Referencing global inputs in snap components' snap-kit
-
-The snap component can reference organization inputs defined in the snap-in manifest file.
-An example of such a snap component is below:
-
-```yaml
-inputs:
-  organization:
-    - name: sample_value
-      description: Sample input value.
-      field_type: text
-      default_value: "primary"
-      ui:
-        display_name: Sample Value
-
-snap_components:
-  - name: show_test_cases
-    display_name: Test Case Details
-    description: Test Case Details
-    surface: issue
-    snap_kit_action_name: snap_component_submit_action
-    initializer: snap_component_initializer
-    snap_kit_body: >
-      { "snaps": [
-          {
-            "elements":[
-            {
-              "elements":[
-                {
-                  "text":"$variable.sample_value",
-                  "type":"plain_text"
-                }
-              ],
-              "type":"content"
-            }
-            ],
-            "type":"card"
-          }
-        ]
-      }
-```

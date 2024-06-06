@@ -1,18 +1,28 @@
 Our PLuG widget SDK is a powerful tool designed to further enhance our widget on your website or application. With our SDK, you can seamlessly integrate our feature-rich widget by empowering you to create a dynamic and personalized user experience. Let's get started.
 
-| Method                   | Description                                                                       |
-| ------------------------ | --------------------------------------------------------------------------------- |
-| `plugSDK.init()`         | Initialize the PLuG widget.                                                       |
-| `plugSDK.shutdown()`      | End the user session which is currently initialized in PLuG widget. |
-| `plugSDK.toggleWidget()` | Open/close the widget.                                                         |
-| `plugSDK.onEvent()`      | Perform specific actions based on the payload type received from the PLuG widget. |
-| `plugSDK.toggleTheme('light/dark')` | Toggle PLuG widget theme.                                                          |
-| `plugSDK.toggleWidget(true, 'create_conversation', {startConversationContent: 'Hi',});` | Start a conversation.                                                      |
+## Methods
 
+- `plugSDK.init()` Initialize the PLuG chat widget.
 
-## Initialize the widget
+- `plugSDK.initSearchAgent()` Initialize PLuG search agent.
 
-Calling the `init()` method initializes the PLuG widget on your website. Initializing the PLuG widget is necessary for you to perform any other actions on the PLuG widget SDK.
+- `plugSDK.shutdown()` End the user session which is currently initialized in PLuG widget. 
+
+- `plugSDK.toggleWidget()` Open/close the chat widget.
+
+- `plugSDK.toggleSearchAgent()` Open/close the search agent.
+
+- `plugSDK.onEvent()` Perform specific actions based on the payload type received from the PLuG widget. 
+
+- `plugSDK.toggleTheme('light/dark')` Toggle PLuG widget theme.
+
+- `plugSDK.toggleWidget(true, 'create_conversation', {startConversationContent: 'Hi',});` Start a conversation.
+
+- `plugSDK.prefillSearchQuery(query:"string")` Prefill the search input of the search agent.
+
+## Initialize chat
+
+Calling the `init()` method initializes the PLuG chat widget on your website. Initializing the PLuG widget is necessary for you to perform any other actions on the PLuG widget SDK.
 
 ```jsx 
 useEffect(() => {
@@ -25,6 +35,25 @@ useEffect(() => {
 <Callout intent="info">
 When React is using `Strict` mode, you might get a warning message from `window.plugSDK.init()` being called multiple times. These errors won't impact the installation and functioning of the widget.
 </Callout>
+
+## Initialize search
+
+Calling the `initSearchAgent()` method initializes the PLuG Search Agent on your website. Initializing search is necessary for you to perform any other actions on the PLuG widget SDK.
+
+```jsx
+useEffect(() => {
+  window.plugSDK.init({
+    app_id: '<your_unique_app_id>',
+    disable_plug_chat_window: true,
+});
+
+  window.plugSDK.onEvent((payload) => {
+    if (payload.type === 'ON_PLUG_WIDGET_READY') {
+      window.plugSDK.initSearchAgent();
+    }
+  });
+}, []);
+```
 
 ## Shutdown the widget
 
@@ -49,10 +78,11 @@ Once the `shutdown()` method is called, all the other functionality in the widge
 
 ## Open or close the widget
 
-To control whether the PLuG widget launcher screen is open, you can use the `togglewidget()` method with a boolean value. Your code needs to listen to the event `ON_PLUG_WIDGET_READY` to call this method. If the widget isn't ready then this method won’t make any action.
+To control whether the PLuG widget launcher screen is open, you should use either the `togglewidget()` method with a boolean value or the `toggleSearchAgent()` method, depending on which PLuG instance you are using.
 
 ```jsx
 window.plugSDK.toggleWidget(true);
+window.plugSDK.toggleSearchAgent(true);
 ```
 
 <iframe src="https://codesandbox.io/embed/toggle-plug-with-button-nnkmk3?fontsize=14&hidenavigation=1&module=%2Fsrc%2FTogglePlug.js&theme=dark&view=preview&hidedevtools=1"
@@ -66,12 +96,13 @@ window.plugSDK.toggleWidget(true);
 
 This method can be used to listen to events coming from the PLuG widget. The following are the different `PAYLOAD_TYPES`.
 
-| Event                                | Meaning                                                                                                                            |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `ON_PLUG_WIDGET_CLOSED`              | The PLuG widget is closed.                                                                                                         |
-| `ON_PLUG_WIDGET_OPENED`              | The PLuG widget is opened.                                                                                                         |
-| `ON_PLUG_WIDGET_READY`               | The PLuG widget is ready.                                                                                                          |
-| `ON_PLUG_WIDGET_UNREAD_COUNT_CHANGE` | The user receives a new message to their PLuG. You can also listen to the number of unread messages and display that to your user. |
+- `ON_PLUG_WIDGET_CLOSED` The PLuG widget is closed.
+
+- `ON_PLUG_WIDGET_OPENED` The PLuG widget is opened.
+
+- `ON_PLUG_WIDGET_READY` The PLuG widget is ready.
+- 
+- `ON_PLUG_WIDGET_UNREAD_COUNT_CHANGE` The user receives a new message to their PLuG. You can also listen to the number of unread messages and display that to your user. 
 
 ```jsx
 useEffect(() => {

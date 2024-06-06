@@ -7,7 +7,7 @@ comments from GitHub into the DevRev platform.
 ## Background context
 
 1. **Understanding webhooks in GitHub**: Explore the fundamentals of
-   [webhooks](/guides/getting-started-with-webhooks) and learn how
+   [webhooks](/guides/webhooks) and learn how
    to incorporate them into the GitHub repository. Gain insights into the
    mechanisms of triggering events and handling notifications.
 
@@ -25,12 +25,12 @@ comments from GitHub into the DevRev platform.
 
 ### Installation guide
 
-- Install [DevRev CLI](/snap-in-development/references/install-dev-rev-cli)
+- Install [DevRev CLI](/snapin-development/references/cli-install)
 - Install [jq](https://stedolan.github.io/jq)
 - Install [DevRev SDK](https://www.npmjs.com/package/@devrev/typescript-sdk?activeTab=readme)
 
 <Callout intent="info">
-If you did not follow the [getting started](/snap-in-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
+If you did not follow the [getting started](/snapin-development/tutorials/getting-started) tutorial then follow these steps to authenticate and initialize the snap-in TypeScript template:
 
 ```bash
 devrev profiles authenticate -o <dev-org-slug> -u <youremail@yourdomain.com>
@@ -44,7 +44,7 @@ devrev snap_in_version init
 #### Trigger
 
 The main trigger for this snap-in is an
-[external webhook](/snap-in-development/references/event-sources), which necessitates
+[external webhook](/snapin-development/references/event-sources), which necessitates
 registration within GitHub. This ensures that the relevant payloads are
 dispatched to our designated endpoint.
 

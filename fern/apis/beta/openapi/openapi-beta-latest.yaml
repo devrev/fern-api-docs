@@ -760,6 +760,14 @@ components:
           items:
             type: string
           type: array
+        modified_by:
+          description: |
+            Filters for articles modified by any of the provided users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
         owned_by:
           description: Filters for articles owned by any of the provided users.
           example:
@@ -961,6 +969,14 @@ components:
           type: integer
         mode:
           $ref: '#/components/schemas/list-mode'
+        modified_by:
+          description: |
+            Filters for articles modified by any of the provided users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
         owned_by:
           description: Filters for articles owned by any of the provided users.
           example:
@@ -2315,6 +2331,20 @@ components:
       - $ref: '#/components/schemas/vista-base-summary'
       description: Static collection of Devrev objects.
       title: curated-vista-summary
+    custom-object-search-summary:
+      allOf:
+      - $ref: '#/components/schemas/search-summary-base'
+      - properties:
+          custom_object:
+            $ref: '#/components/schemas/custom-object-summary'
+        required:
+        - custom_object
+        type: object
+      title: custom-object-search-summary
+    custom-object-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: custom-object-summary
     custom-schema-fragment:
       discriminator:
         mapping:
@@ -2639,6 +2669,263 @@ components:
           type: boolean
       title: custom-schema-spec
       type: object
+    custom-stage:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      title: custom-stage
+    custom-stages-create-request:
+      properties:
+        marketplace_ref:
+          description: |
+            A reference to the marketplace item from which this stage was
+            imported.
+          type: string
+        name:
+          description: The name of the custom stage.
+          type: string
+        ordinal:
+          description: The ordinal of the custom stage used for ordering.
+          format: int32
+          type: integer
+        state:
+          description: The state ID.
+          type: string
+      required:
+      - name
+      - ordinal
+      - state
+      title: custom-stages-create-request
+      type: object
+    custom-stages-create-response:
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+      - custom_stage
+      title: custom-stages-create-response
+      type: object
+      x-go-name: CustomStagesCreateResponseBody
+    custom-stages-get-request:
+      properties:
+        id:
+          description: The ID of the custom stage to get.
+          type: string
+      required:
+      - id
+      title: custom-stages-get-request
+      type: object
+    custom-stages-get-response:
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+      - custom_stage
+      title: custom-stages-get-response
+      type: object
+      x-go-name: CustomStagesGetResponseBody
+    custom-stages-list-request:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        limit:
+          description: The maximum number of items.
+          format: int32
+          type: integer
+        name:
+          description: The list of stage names.
+          items:
+            type: string
+          type: array
+        ordinal:
+          description: The list of stage ordinals.
+          items:
+            format: int32
+            type: integer
+          type: array
+        sort_by:
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+          type: array
+      title: custom-stages-list-request
+      type: object
+    custom-stages-list-response:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        result:
+          description: The custom stages.
+          items:
+            $ref: '#/components/schemas/custom-stage'
+          type: array
+      required:
+      - result
+      title: custom-stages-list-response
+      type: object
+      x-go-name: CustomStagesListResponseBody
+    custom-stages-update-request:
+      properties:
+        id:
+          description: The ID of the custom stage to update.
+          type: string
+        name:
+          description: The updated name of the custom stage.
+          type: string
+        ordinal:
+          description: The ordinal of the custom stage.
+          format: int32
+          type: integer
+        state_id:
+          description: The state ID.
+          type: string
+      required:
+      - id
+      title: custom-stages-update-request
+      type: object
+    custom-stages-update-response:
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+      - custom_stage
+      title: custom-stages-update-response
+      type: object
+      x-go-name: CustomStagesUpdateResponseBody
+    custom-state:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      title: custom-state
+    custom-states-create-request:
+      properties:
+        is_final:
+          description: Whether this is a final state.
+          type: boolean
+        name:
+          description: The name of the custom state.
+          type: string
+        ordinal:
+          description: |
+            Ordinal of the custom state used to identify system states.
+          format: int32
+          type: integer
+      required:
+      - name
+      - ordinal
+      title: custom-states-create-request
+      type: object
+    custom-states-create-response:
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+      - custom_state
+      title: custom-states-create-response
+      type: object
+      x-go-name: CustomStatesCreateResponseBody
+    custom-states-get-request:
+      properties:
+        id:
+          description: The ID of the custom state to get.
+          type: string
+      required:
+      - id
+      title: custom-states-get-request
+      type: object
+    custom-states-get-response:
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+      - custom_state
+      title: custom-states-get-response
+      type: object
+      x-go-name: CustomStatesGetResponseBody
+    custom-states-list-request:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        is_final:
+          description: Whether only final states should be filtered.
+          type: boolean
+        limit:
+          description: The maximum number of items.
+          format: int32
+          type: integer
+        name:
+          description: The list of state names.
+          items:
+            type: string
+          type: array
+        ordinal:
+          description: The list of state ordinals.
+          items:
+            format: int32
+            type: integer
+          type: array
+        sort_by:
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+          type: array
+      title: custom-states-list-request
+      type: object
+    custom-states-list-response:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        result:
+          description: The custom states.
+          items:
+            $ref: '#/components/schemas/custom-state'
+          type: array
+      required:
+      - result
+      title: custom-states-list-response
+      type: object
+      x-go-name: CustomStatesListResponseBody
+    custom-states-update-request:
+      properties:
+        id:
+          description: The ID of the custom state to update.
+          type: string
+        is_final:
+          description: Whether this is a final state.
+          type: boolean
+        name:
+          description: The name of the custom state.
+          type: string
+        ordinal:
+          description: |
+            Ordinal of the custom state used to identify system states.
+          format: int32
+          type: integer
+      required:
+      - id
+      title: custom-states-update-request
+      type: object
+    custom-states-update-response:
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+      - custom_state
+      title: custom-states-update-response
+      type: object
+      x-go-name: CustomStatesUpdateResponseBody
     custom-type-fragment:
       allOf:
       - $ref: '#/components/schemas/custom-schema-fragment-base'
@@ -2773,17 +3060,143 @@ components:
       allOf:
       - $ref: '#/components/schemas/user-base'
       - properties:
+          experience_start_date:
+            description: Start date of the user's employment.
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+            type: string
           external_identities:
             description: IDs of the Dev User outside the DevRev SOR.
             items:
               $ref: '#/components/schemas/external-identity'
             type: array
+          job_history:
+            description: Job history of the user.
+            items:
+              $ref: '#/components/schemas/job-history-item'
+            type: array
+          skills:
+            description: Array of skills of the user.
+            items:
+              $ref: '#/components/schemas/user-skill'
+            type: array
         type: object
       title: dev-user
+    dev-user-job-title:
+      description: Job title of the Dev User.
+      enum:
+      - customer_success_manager
+      - cxo
+      - designer
+      - developer
+      - head_of_support
+      - operations
+      - others
+      - product_manager
+      - qa
+      - revenue_leader
+      - support
+      - tech_lead
+      type: string
     dev-user-summary:
       allOf:
       - $ref: '#/components/schemas/user-base-summary'
       title: dev-user-summary
+    dev-users-identities-link-request:
+      description: Request to link external identity to a Dev user.
+      properties:
+        display_name:
+          description: Display name of the Dev user in the external source.
+          type: string
+        id:
+          description: Unique ID of the Dev user in the external source.
+          type: string
+        issuer:
+          description: Issuer of the external identity of the Dev user.
+          type: string
+      required:
+      - id
+      - issuer
+      title: dev-users-identities-link-request
+      type: object
+    dev-users-identities-link-response:
+      description: |
+        Response for the request to link an external identity to a Dev user.
+      properties:
+        dev_user:
+          $ref: '#/components/schemas/dev-user'
+      required:
+      - dev_user
+      title: dev-users-identities-link-response
+      type: object
+      x-go-name: DevUsersIdentitiesLinkResponseBody
+    dev-users-identities-unlink-request:
+      description: Request to unlink an external identity from a Dev user.
+      properties:
+        issuer:
+          description: Issuer that needs to be unlinked from a Dev user.
+          type: string
+      required:
+      - issuer
+      title: dev-users-identities-unlink-request
+      type: object
+    dev-users-identities-unlink-response:
+      description: |
+        Response for the request to unlink an external identity from a Dev
+        user.
+      properties:
+        dev_user:
+          $ref: '#/components/schemas/dev-user'
+      required:
+      - dev_user
+      title: dev-users-identities-unlink-response
+      type: object
+      x-go-name: DevUsersIdentitiesUnlinkResponseBody
+    dev-users-self-update-request:
+      description: |
+        A request to update the user's information for the authenticated Dev
+        user.
+      properties:
+        display_name:
+          description: The updated display name of the Dev user.
+          type: string
+        full_name:
+          description: The updated full name of the Dev user.
+          type: string
+        job_title:
+          $ref: '#/components/schemas/dev-user-job-title'
+      title: dev-users-self-update-request
+      type: object
+    dev-users-update-request:
+      description: |
+        A request to update the user's information corresponding to the
+        provided Dev user.
+      properties:
+        display_name:
+          description: The updated display name of the Dev user.
+          type: string
+        full_name:
+          description: The updated full name of the Dev user.
+          type: string
+        id:
+          description: The ID for the Dev user to be updated.
+          type: string
+        job_title:
+          $ref: '#/components/schemas/dev-user-job-title'
+      required:
+      - id
+      title: dev-users-update-request
+      type: object
+    dev-users-update-response:
+      description: The response to update a Dev user.
+      properties:
+        dev_user:
+          $ref: '#/components/schemas/dev-user'
+      required:
+      - dev_user
+      title: dev-users-update-response
+      type: object
+      x-go-name: DevUsersUpdateResponseBody
     directory-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -3219,6 +3632,26 @@ components:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
       title: enhancement-summary
+    enum-value:
+      description: Enum Value defines the structure for an enum.
+      properties:
+        id:
+          description: Unique ID of the enum value. This is immutable.
+          format: int64
+          type: integer
+        label:
+          description: Display label of the enum value. This is mutable.
+          type: string
+        ordinal:
+          description: Order number of the enum value. This is mutable.
+          format: int64
+          type: integer
+      required:
+      - id
+      - label
+      - ordinal
+      title: enum-value
+      type: object
     error:
       properties:
         message:
@@ -3241,6 +3674,7 @@ components:
       - $ref: '#/components/schemas/error-base'
       - discriminator:
           mapping:
+            artifact_already_attached_to_a_parent: '#/components/schemas/error-bad-request-artifact-already-attached-to-a-parent'
             bad_request: '#/components/schemas/error-bad-request-bad-request'
             invalid_api_version: '#/components/schemas/error-bad-request-invalid-api-version'
             invalid_enum_value: '#/components/schemas/error-bad-request-invalid-enum-value'
@@ -3253,6 +3687,7 @@ components:
             value_not_permitted: '#/components/schemas/error-bad-request-value-not-permitted'
           propertyName: type
         oneOf:
+        - $ref: '#/components/schemas/error-bad-request-artifact-already-attached-to-a-parent'
         - $ref: '#/components/schemas/error-bad-request-bad-request'
         - $ref: '#/components/schemas/error-bad-request-invalid-api-version'
         - $ref: '#/components/schemas/error-bad-request-invalid-enum-value'
@@ -3270,6 +3705,20 @@ components:
         - type
         type: object
       title: error-bad-request
+    error-bad-request-artifact-already-attached-to-a-parent:
+      properties:
+        existing_parent:
+          description: The existing parent attached to the artifact.
+          type: string
+        is_same:
+          description: |
+            Whether the existing parent is the same as the new parent.
+          type: boolean
+      required:
+      - existing_parent
+      - is_same
+      title: error-bad-request-artifact-already-attached-to-a-parent
+      type: object
     error-bad-request-bad-request:
       additionalProperties: false
       title: error-bad-request-bad-request
@@ -3370,6 +3819,7 @@ components:
       type: object
     error-bad-request-type:
       enum:
+      - artifact_already_attached_to_a_parent
       - bad_request
       - invalid_api_version
       - invalid_enum_value
@@ -4190,6 +4640,8 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       - properties:
+          member_type:
+            $ref: '#/components/schemas/group-member-type'
           name:
             description: Name of the group.
             type: string
@@ -4375,6 +4827,8 @@ components:
             type: array
           priority:
             $ref: '#/components/schemas/issue-priority'
+          sprint:
+            $ref: '#/components/schemas/vista-group-item-summary'
           target_start_date:
             description: Target start date for the object.
             example: "2023-01-01T12:00:00.000Z"
@@ -4398,6 +4852,32 @@ components:
             $ref: '#/components/schemas/issue-priority'
         type: object
       title: issue-summary
+    job-history-item:
+      description: Defines a job history line item.
+      properties:
+        employment_status:
+          $ref: '#/components/schemas/enum-value'
+        end_date:
+          description: The end date of the job, or not specified if current.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        is_current:
+          description: Is this the current active job for the user.
+          type: boolean
+        location:
+          description: The job location for the user.
+          type: string
+        start_date:
+          description: The start date of the job.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        title:
+          description: The job title for the user.
+          type: string
+      title: job-history-item
+      type: object
     legacy-stage:
       description: Describes the current stage of a work item.
       properties:
@@ -4810,6 +5290,7 @@ components:
       description: The list of item types on which the metric might be applied.
       enum:
       - conversation
+      - issue
       - ticket
       type: string
     metric-definition-metric-type:
@@ -4821,6 +5302,15 @@ components:
       enum:
       - time
       - value
+      type: string
+    metric-definition-status:
+      description: |
+        The status of the metric. 'active' metrics can be used to create new
+        SLAs, while 'inactive' metrics can not be used in new SLAs. Metrics can
+        be updated between 'active' and 'inactive' states.
+      enum:
+      - active
+      - inactive
       type: string
     metric-definition-summary:
       allOf:
@@ -4855,6 +5345,11 @@ components:
           type: integer
         mode:
           $ref: '#/components/schemas/list-mode'
+        status:
+          description: The status of the metric definition.
+          items:
+            $ref: '#/components/schemas/metric-definition-status'
+          type: array
         type:
           description: The type of metric definitions sought.
           items:
@@ -5903,6 +6398,7 @@ components:
           description: Updates the target close date of the enhancement.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+          nullable: true
           type: string
         target_start_date:
           description: |
@@ -5910,6 +6406,7 @@ components:
             Format: 2000-11-01T01:01:01Z
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+          nullable: true
           type: string
       title: parts-update-request-enhancement
       type: object
@@ -5992,6 +6489,7 @@ components:
       description: Status of the question answer.
       enum:
       - archived
+      - discarded
       - draft
       - published
       - review_needed
@@ -7776,6 +8274,61 @@ components:
       title: search-core-response
       type: object
       x-go-name: SearchCoreResponseBody
+    search-hybrid-namespace:
+      description: The namespaces for hybrid search.
+      enum:
+      - article
+      - conversation
+      - issue
+      - part
+      - question_answer
+      - ticket
+      - work
+      type: string
+    search-hybrid-request:
+      description: Request for search with exact, prefix and infix matches.
+      properties:
+        limit:
+          description: |
+            The maximum number of items to return in a page. The default is
+            '10'.
+          format: int32
+          maximum: 50
+          minimum: 0
+          type: integer
+        namespace:
+          $ref: '#/components/schemas/search-hybrid-namespace'
+        query:
+          description: The query string.
+          maxLength: 400
+          minLength: 1
+          type: string
+        semantic_weight:
+          description: |
+            The weightage for semantic search. Values between 0 and 1 are
+            accepted.
+          format: float
+          maximum: 1
+          minimum: 0
+          type: number
+      required:
+      - namespace
+      - query
+      title: search-hybrid-request
+      type: object
+    search-hybrid-response:
+      description: Hybrid search response.
+      properties:
+        results:
+          description: The search results.
+          items:
+            $ref: '#/components/schemas/search-result'
+          type: array
+      required:
+      - results
+      title: search-hybrid-response
+      type: object
+      x-go-name: SearchHybridResponseBody
     search-namespace:
       description: The namespaces to search in.
       enum:
@@ -7784,6 +8337,7 @@ components:
       - capability
       - component
       - conversation
+      - custom_object
       - custom_part
       - custom_work
       - dashboard
@@ -7816,6 +8370,7 @@ components:
           article: '#/components/schemas/article-search-summary'
           artifact: '#/components/schemas/artifact-search-summary'
           conversation: '#/components/schemas/conversation-search-summary'
+          custom_object: '#/components/schemas/custom-object-search-summary'
           dashboard: '#/components/schemas/dashboard-search-summary'
           group: '#/components/schemas/group-search-summary'
           link: '#/components/schemas/link-search-summary'
@@ -7833,6 +8388,7 @@ components:
       - $ref: '#/components/schemas/article-search-summary'
       - $ref: '#/components/schemas/artifact-search-summary'
       - $ref: '#/components/schemas/conversation-search-summary'
+      - $ref: '#/components/schemas/custom-object-search-summary'
       - $ref: '#/components/schemas/dashboard-search-summary'
       - $ref: '#/components/schemas/group-search-summary'
       - $ref: '#/components/schemas/link-search-summary'
@@ -7857,6 +8413,7 @@ components:
       - article
       - artifact
       - conversation
+      - custom_object
       - dashboard
       - group
       - link
@@ -7924,6 +8481,50 @@ components:
       title: service-accounts-get-response
       type: object
       x-go-name: ServiceAccountsGetResponseBody
+    set-issue-selector:
+      properties:
+        custom_fields:
+          description: |
+            Custom fields on the issue with their fully qualified names and the
+            associated with their exact allowed values. The SLA policy applies
+            to issues where all named custom fields have exactly the specified
+            values.
+          type: object
+        parts:
+          description: The SLA policy applies to the issues of these parts.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+        rev_orgs:
+          description: The SLA policy applies to the issues of these revorgs.
+          example:
+          - REV-AbCdEfGh
+          items:
+            type: string
+          type: array
+        stage_name:
+          description: The SLA policy applies to issues with these stages.
+          items:
+            type: string
+          type: array
+        subtype:
+          description: The issue subtype for which the SLA policy applies.
+          items:
+            type: string
+          type: array
+        tags:
+          description: |
+            The SLA policy applies to issues with these tags. If empty, the tag
+            filter isn't applied.
+          example:
+          - TAG-12345
+          items:
+            type: string
+          type: array
+      title: set-issue-selector
+      type: object
     set-org-schedule-fragment-summary:
       properties:
         id:
@@ -7967,6 +8568,8 @@ components:
             all named custom fields have exactly the specified values. If the
             value is null, the field must have null value or not be present.
           type: object
+        issue_selector:
+          $ref: '#/components/schemas/set-issue-selector'
         parts:
           description: The SLA policy applies to the tickets of these parts.
           example:
@@ -8100,6 +8703,8 @@ components:
             items:
               $ref: '#/components/schemas/sla-policy'
             type: array
+          sla_type:
+            $ref: '#/components/schemas/sla-type'
           status:
             $ref: '#/components/schemas/sla-status'
         required:
@@ -8107,6 +8712,16 @@ components:
         - status
         type: object
       title: sla
+    sla-applies-to:
+      description: |
+        The object types on which the SLA applies. An external SLA can apply to
+        multiple object types, but an internal SLA can apply to only one object
+        type.
+      enum:
+      - conversation
+      - issue
+      - ticket
+      type: string
     sla-assign-result:
       properties:
         error:
@@ -8149,11 +8764,12 @@ components:
       description: The item type for which the SLA policy applies.
       enum:
       - conversation
+      - issue
       - ticket
       type: string
     sla-selector-priority:
       description: |
-        Th SLA policy applies to conversations with these priorities.
+        The SLA policy applies to conversations with these priorities.
       enum:
       - p0
       - p1
@@ -8251,6 +8867,12 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       title: sla-tracker-summary
+    sla-type:
+      description: Type of the SLA.
+      enum:
+      - external
+      - internal
+      type: string
     slas-assign-request:
       properties:
         id:
@@ -8286,6 +8908,11 @@ components:
       properties:
         account_selector:
           $ref: '#/components/schemas/accounts-filters'
+        applies_to:
+          description: The object types this SLA can apply to.
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+          type: array
         description:
           description: Description of the purpose and capabilities of the SLA.
           type: string
@@ -8301,6 +8928,8 @@ components:
           items:
             $ref: '#/components/schemas/set-sla-policy'
           type: array
+        sla_type:
+          $ref: '#/components/schemas/sla-type'
       required:
       - name
       title: slas-create-request
@@ -8314,6 +8943,11 @@ components:
       title: slas-create-response
       type: object
       x-go-name: SlasCreateResponseBody
+    slas-filter-applies-to-operator-type:
+      enum:
+      - all
+      - any
+      type: string
     slas-get-request:
       properties:
         id:
@@ -8334,6 +8968,13 @@ components:
       x-go-name: SlasGetResponseBody
     slas-list-request:
       properties:
+        applies_to:
+          description: The object types the SLA applies to.
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+          type: array
+        applies_to_op:
+          $ref: '#/components/schemas/slas-filter-applies-to-operator-type'
         cursor:
           description: |
             The cursor to resume iteration from. If not provided, then
@@ -8346,6 +8987,11 @@ components:
           type: integer
         mode:
           $ref: '#/components/schemas/list-mode'
+        sla_type:
+          description: The SLA types the filter matches.
+          items:
+            $ref: '#/components/schemas/sla-type'
+          type: array
         status:
           description: The SLA statuses the filter matches.
           items:
@@ -8452,12 +9098,18 @@ components:
     snap-ins-resources-response:
       properties:
         event_sources:
-          $ref: '#/components/schemas/snap-ins-resources-response-event-sources-entry'
+          additionalProperties:
+            type: string
+          description: The event sources for the snap-in.
+          type: object
         inputs:
           description: The inputs for the snap-in.
           type: object
         keyrings:
-          $ref: '#/components/schemas/snap-ins-resources-response-keyrings-entry'
+          additionalProperties:
+            $ref: '#/components/schemas/snap-ins-resources-response-keyring-data'
+          description: Map of keyring names and its data.
+          type: object
         snap_in_version:
           $ref: '#/components/schemas/snap-in-version-summary'
       required:
@@ -8465,17 +9117,6 @@ components:
       title: snap-ins-resources-response
       type: object
       x-go-name: SnapInsResourcesResponseBody
-    snap-ins-resources-response-event-sources-entry:
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-      required:
-      - key
-      - value
-      title: snap-ins-resources-response-event-sources-entry
-      type: object
     snap-ins-resources-response-keyring-data:
       properties:
         id:
@@ -8489,17 +9130,6 @@ components:
       - id
       - secret
       title: snap-ins-resources-response-keyring-data
-      type: object
-    snap-ins-resources-response-keyrings-entry:
-      properties:
-        key:
-          type: string
-        value:
-          $ref: '#/components/schemas/snap-ins-resources-response-keyring-data'
-      required:
-      - key
-      - value
-      title: snap-ins-resources-response-keyrings-entry
       type: object
     snap-widget:
       discriminator:
@@ -8615,6 +9245,17 @@ components:
           type: string
       title: stage-update
       type: object
+    stage-validation-option-for-create:
+      description: Type of stage validation options when creating an object.
+      enum:
+      - allow_non_start
+      type: string
+    stage-validation-option-for-update:
+      description: |
+        Type of state validation options when updating the stage of an object.
+      enum:
+      - allow_invalid_transition
+      type: string
     staged-info-filter:
       properties:
         is_staged:
@@ -8820,6 +9461,8 @@ components:
           object:
             description: The ID of the object for which survey is taken.
             type: string
+          recipient:
+            $ref: '#/components/schemas/user-summary'
           response:
             description: Response for the survey.
             type: object
@@ -8972,6 +9615,12 @@ components:
           items:
             type: string
           type: array
+        stages:
+          description: Filters for survey response stages.
+          items:
+            format: int64
+            type: integer
+          type: array
         surveys:
           description: |
             Filters for survey responses for the provided survey IDs.
@@ -9043,11 +9692,23 @@ components:
         dispatch_id:
           description: The unique ID associated with the dispatched survey.
           type: string
+        dispatched_channels:
+          description: |
+            The ordinals of the source channels on which the survey is sent.
+          items:
+            format: int64
+            type: integer
+          type: array
         object:
           description: |
             The ID of the object this survey is on (e.g. ticket, conversation,
             etc).
           example: ACC-12345
+          type: string
+        recipient:
+          description: |
+            The unique ID associated with the recipient of the survey.
+          example: DEVU-12345
           type: string
         response:
           description: Survey response submitted for the object.
@@ -9062,12 +9723,15 @@ components:
           description: |
             The source channel from which survey response is submitted.
           type: string
+        stage:
+          description: The stage ordinal of the survey response object.
+          format: int64
+          type: integer
         survey:
           description: The ID of the survey to submit the response to.
           type: string
       required:
       - object
-      - response
       - survey
       title: surveys-submit-request
       type: object
@@ -9347,6 +10011,7 @@ components:
       - email
       - plug
       - slack
+      - twilio
       type: string
     ticket-severity:
       description: Severity of the ticket.
@@ -9478,6 +10143,11 @@ components:
           type: string
         body_type:
           $ref: '#/components/schemas/timeline-comment-body-type'
+        external_ref:
+          description: |
+            The external reference for the comment. This must be unique within
+            the object's timeline.
+          type: string
         link_previews:
           description: |
             The IDs of the previews of the links posted in the comment.
@@ -9714,6 +10384,11 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base'
       - properties:
+          external_ref:
+            description: |
+              An external reference that's associated with the Timeline entry
+              that's guaranteed to be unique among its siblings.
+            type: string
           labels:
             description: Labels that are associated with the Timeline entry.
             items:
@@ -10329,6 +11004,14 @@ components:
         - user
         type: object
       title: user-search-summary
+    user-skill:
+      description: Skill associated with the user.
+      properties:
+        name:
+          description: Name of the skill.
+          type: string
+      title: user-skill
+      type: object
     user-state:
       description: State of the user.
       enum:
@@ -10377,6 +11060,11 @@ components:
         - name
         type: object
       title: vista-base-summary
+    vista-group-item-summary:
+      additionalProperties: false
+      description: Vista group item.
+      title: vista-group-item-summary
+      type: object
     vista-search-summary:
       allOf:
       - $ref: '#/components/schemas/search-summary-base'
@@ -10808,6 +11496,12 @@ components:
           type: array
         stage:
           $ref: '#/components/schemas/stage-init'
+        stage_validation_options:
+          description: |
+            The type of stage validations options when creating a work item.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-create'
+          type: array
         tags:
           description: Tags associated with the work item.
           items:
@@ -11077,6 +11771,11 @@ components:
           items:
             type: string
           type: array
+        sprint:
+          description: Filters for issues with any of the sprint.
+          items:
+            type: string
+          type: array
         subtype:
           description: Filters for issues with any of the provided subtypes.
           items:
@@ -11334,6 +12033,13 @@ components:
           $ref: '#/components/schemas/works-update-request-reported-by'
         stage:
           $ref: '#/components/schemas/stage-update'
+        stage_validation_options:
+          description: |
+            The type of stage validations options when updating the stage of an
+            object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-update'
+          type: array
         staged_info:
           $ref: '#/components/schemas/works-update-request-staged-info-staged-info-update'
         tags:
@@ -12154,6 +12860,17 @@ paths:
           items:
             type: string
           type: array
+      - description: |
+          Filters for articles modified by any of the provided users.
+        explode: false
+        in: query
+        name: modified_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
       - description: Filters for articles owned by any of the provided users.
         explode: false
         in: query
@@ -12409,6 +13126,17 @@ paths:
         name: mode
         schema:
           $ref: '#/components/schemas/list-mode'
+      - description: |
+          Filters for articles modified by any of the provided users.
+        explode: false
+        in: query
+        name: modified_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
       - description: Filters for articles owned by any of the provided users.
         explode: false
         in: query
@@ -13337,6 +14065,130 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - conversations
+  /dev-users.identities.link:
+    post:
+      description: Links an external/secondary identity to the Dev user.
+      operationId: dev-users-identities-link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-identities-link-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-identities-link-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
+  /dev-users.identities.unlink:
+    post:
+      description: Unlinks an external/secondary identity from the Dev user.
+      operationId: dev-users-identities-unlink
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-identities-unlink-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-identities-unlink-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
+  /dev-users.self.update:
+    post:
+      description: Updates the authenticated user.
+      operationId: dev-users-self-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-self-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
+  /dev-users.update:
+    post:
+      description: Updates the user corresponding to the input Id.
+      operationId: dev-users-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
   /engagements.count:
     get:
       description: Counts the engagement records.
@@ -14519,6 +15371,14 @@ paths:
         name: mode
         schema:
           $ref: '#/components/schemas/list-mode'
+      - description: The status of the metric definition.
+        explode: false
+        in: query
+        name: status
+        schema:
+          items:
+            $ref: '#/components/schemas/metric-definition-status'
+          type: array
       - description: The type of metric definitions sought.
         explode: false
         in: query
@@ -17047,6 +17907,101 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - search
+  /search.hybrid:
+    get:
+      description: |
+        Performs search, using a combination of syntactic and semantic search.
+      operationId: search-hybrid
+      parameters:
+      - description: The hybrid namespace to search in.
+        explode: false
+        in: query
+        name: namespace
+        required: true
+        schema:
+          $ref: '#/components/schemas/search-hybrid-namespace'
+      - description: The query string.
+        explode: false
+        in: query
+        name: query
+        required: true
+        schema:
+          maxLength: 400
+          minLength: 1
+          type: string
+      - description: |
+          The maximum number of items to return in a page. The default is '10'.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          maximum: 50
+          minimum: 0
+          type: integer
+      - description: |
+          The weightage for semantic search. Values between 0 and 1 are
+          accepted.
+        explode: false
+        in: query
+        name: semantic_weight
+        schema:
+          format: float
+          maximum: 1
+          minimum: 0
+          type: number
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/search-hybrid-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - search
+      x-request-name: SearchHybridQuery
+    post:
+      description: |
+        Performs search, using a combination of syntactic and semantic search.
+      operationId: search-hybrid-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/search-hybrid-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/search-hybrid-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - search
   /service-accounts.get:
     get:
       description: Gets a service account.
@@ -17248,6 +18203,22 @@ paths:
       description: Lists SLAs matching a filter.
       operationId: slas-list
       parameters:
+      - description: The object types the SLA applies to.
+        explode: false
+        in: query
+        name: applies_to
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+          type: array
+      - description: |
+          The Filter operator to be applied on the applies to object types
+          filter.
+        explode: false
+        in: query
+        name: applies_to_op
+        schema:
+          $ref: '#/components/schemas/slas-filter-applies-to-operator-type'
       - description: |
           The cursor to resume iteration from. If not provided, then iteration
           starts from the beginning.
@@ -17271,6 +18242,14 @@ paths:
         name: mode
         schema:
           $ref: '#/components/schemas/list-mode'
+      - description: The SLA types the filter matches.
+        explode: false
+        in: query
+        name: sla_type
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-type'
+          type: array
       - description: The SLA statuses the filter matches.
         explode: false
         in: query
@@ -17494,6 +18473,464 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - snap-widgets
+  /stages.custom.create:
+    post:
+      description: Creates a custom stage.
+      operationId: custom-stages-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /stages.custom.get:
+    get:
+      description: Gets a custom stage.
+      operationId: custom-stages-get
+      parameters:
+      - description: The ID of the custom stage to get.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStagesGetQuery
+    post:
+      description: Gets a custom stage.
+      operationId: custom-stages-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /stages.custom.list:
+    get:
+      description: Lists custom stages.
+      operationId: custom-stages-list
+      parameters:
+      - description: |
+          The cursor to resume iteration from, otherwise if not provided, then
+          iteration starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: The maximum number of items.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: The list of stage names.
+        explode: false
+        in: query
+        name: name
+        schema:
+          items:
+            type: string
+          type: array
+      - description: The list of stage ordinals.
+        explode: false
+        in: query
+        name: ordinal
+        schema:
+          items:
+            format: int32
+            type: integer
+          type: array
+      - description: |
+          The list of fields to sort the items by and how to sort them.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStagesListQuery
+    post:
+      description: Lists custom stages.
+      operationId: custom-stages-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /stages.custom.update:
+    post:
+      description: Updates a custom stage.
+      operationId: custom-stages-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.create:
+    post:
+      description: Creates a custom state.
+      operationId: custom-states-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.get:
+    get:
+      description: Gets a custom state.
+      operationId: custom-states-get
+      parameters:
+      - description: The ID of the custom state to get.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStatesGetQuery
+    post:
+      description: Gets a custom state.
+      operationId: custom-states-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.list:
+    get:
+      description: Lists custom states.
+      operationId: custom-states-list
+      parameters:
+      - description: |
+          The cursor to resume iteration from, otherwise if not provided, then
+          iteration starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: Whether only final states should be filtered.
+        explode: false
+        in: query
+        name: is_final
+        schema:
+          type: boolean
+      - description: The maximum number of items.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: The list of state names.
+        explode: false
+        in: query
+        name: name
+        schema:
+          items:
+            type: string
+          type: array
+      - description: The list of state ordinals.
+        explode: false
+        in: query
+        name: ordinal
+        schema:
+          items:
+            format: int32
+            type: integer
+          type: array
+      - description: |
+          The list of fields to sort the items by and how to sort them.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStatesListQuery
+    post:
+      description: Lists custom states.
+      operationId: custom-states-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.update:
+    post:
+      description: Updates a custom state.
+      operationId: custom-states-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
   /surveys.create:
     post:
       description: |
@@ -17726,6 +19163,15 @@ paths:
         schema:
           items:
             type: string
+          type: array
+      - description: Filters for survey response stages.
+        explode: false
+        in: query
+        name: stages
+        schema:
+          items:
+            format: int64
+            type: integer
           type: array
       - description: Filters for survey responses for the provided survey IDs.
         explode: false
@@ -18744,6 +20190,14 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for issues with any of the sprint.
+        explode: false
+        in: query
+        name: issue.sprint
+        schema:
+          items:
+            type: string
+          type: array
       - description: Filters for issues with any of the provided subtypes.
         explode: false
         in: query
@@ -19152,6 +20606,14 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for issues with any of the sprint.
+        explode: false
+        in: query
+        name: issue.sprint
+        schema:
+          items:
+            type: string
+          type: array
       - description: Filters for issues with any of the provided subtypes.
         explode: false
         in: query
@@ -19487,6 +20949,8 @@ tags:
   name: conversations
 - description: DevRev customization.
   name: customization
+- description: Dev user interactions.
+  name: dev-users
 - description: DevRev engagements.
   name: engagements
 - description: Event source interactions.

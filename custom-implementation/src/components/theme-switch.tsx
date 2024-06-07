@@ -9,8 +9,11 @@ export const ThemeSwitch = () => {
   useEffect(() => {
     const listenToPopstate = () => {
       const winPath = window.location.pathname
+      console.log('listenToPopstate called', winPath)
       setPath(winPath)
     }
+
+    console.log('listenToPopstate added')
     window.addEventListener('popstate', listenToPopstate)
     return () => {
       window.removeEventListener('popstate', listenToPopstate)
@@ -19,6 +22,7 @@ export const ThemeSwitch = () => {
 
   useEffect(() => {
     const beta = path.split('/').includes('beta')
+    console.log('path changed', path, beta)
     setSelected(beta ? 'beta' : 'public')
   }, [path])
 

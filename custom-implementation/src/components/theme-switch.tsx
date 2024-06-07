@@ -8,7 +8,7 @@ export const ThemeSwitch = () => {
   useEffect(() => {
     const beta = window.location.pathname.split('/').includes('beta')
     setSelected(beta ? 'beta' : 'public')
-  }, [])
+  }, [window.location.pathname])
 
   return (
     <div className="mt-2">

@@ -15,9 +15,6 @@ export const ThemeSwitch = () => {
 
     console.log('listenToPopstate added')
     window.addEventListener('popstate', listenToPopstate)
-    return () => {
-      window.removeEventListener('popstate', listenToPopstate)
-    }
   }, [])
 
   useEffect(() => {

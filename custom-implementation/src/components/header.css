@@ -1,8 +1,8 @@
-.header {
-    background-color: white; 
+.custom-header {
+	z-index: 60;
 }
 
-.header nav a {
+.custom-header nav a {
 	text-decoration: none;
 	color: black;
 	cursor: pointer;

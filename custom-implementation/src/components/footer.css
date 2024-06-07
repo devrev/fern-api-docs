@@ -1,10 +1,10 @@
-.footer a {
+.custom-footer a {
 	text-decoration: none;
 	color: black;
 	cursor: pointer;
 }
 
-.footer html, body, div, applet, object, iframe,
+.custom-footer html, body, div, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
@@ -20,33 +20,30 @@ time, mark, audio, video, button {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 100%;
-	font: inherit;
 	vertical-align: baseline;
-	line-height: 19px;
 }
 
 
 /* HTML5 display-role reset for older browsers */
-.footer article, aside, details, figcaption, figure, 
+.custom-footer article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 
-.footer ol, ul {
+.custom-footer ol, ul {
 	list-style: none;
 }
 
-.footer blockquote, q {
+.custom-footer blockquote, q {
 	quotes: none;
 }
 
-.footer blockquote:before, blockquote:after, q:before, q:after {
+.custom-footer blockquote:before, blockquote:after, q:before, q:after {
 	content: '';
 	content: none;
 }
 
-.footer table {
+.custom-footer table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }

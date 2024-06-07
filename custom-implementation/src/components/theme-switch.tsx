@@ -2,29 +2,25 @@ import React, { useEffect } from 'react'
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
-const useReactPath = () => {
+export const ThemeSwitch = () => {
   const [path, setPath] = React.useState(window.location.pathname)
-  const listenToPopstate = () => {
-    const winPath = window.location.pathname
-    setPath(winPath)
-  }
-  React.useEffect(() => {
+  const [selected, setSelected] = React.useState('public')
+
+  useEffect(() => {
+    const listenToPopstate = () => {
+      const winPath = window.location.pathname
+      setPath(winPath)
+    }
     window.addEventListener('popstate', listenToPopstate)
     return () => {
       window.removeEventListener('popstate', listenToPopstate)
     }
   }, [])
-  return path
-}
-
-export const ThemeSwitch = () => {
-  const [selected, setSelected] = React.useState('public')
-  const pathname = useReactPath()
 
   useEffect(() => {
-    const beta = pathname.split('/').includes('beta')
+    const beta = path.split('/').includes('beta')
     setSelected(beta ? 'beta' : 'public')
-  }, [pathname])
+  }, [path])
 
   return (
     <div className="mt-2">

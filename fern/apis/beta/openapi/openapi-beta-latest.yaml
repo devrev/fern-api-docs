@@ -4487,8 +4487,20 @@ components:
       title: event-work-updated
       type: object
     external-identity:
-      additionalProperties: false
       description: External identity of a user.
+      properties:
+        display_name:
+          description: Display name of the user in the external source.
+          type: string
+        id:
+          description: Unique ID of the user in the external source.
+          type: string
+        is_verified:
+          description: Whether the external identity is verified or not.
+          type: boolean
+        issuer:
+          description: Issuer of the external identity of the user.
+          type: string
       title: external-identity
       type: object
     feature:
@@ -8800,6 +8812,8 @@ components:
           name:
             description: Human-readable name.
             type: string
+          sla_type:
+            $ref: '#/components/schemas/sla-type'
           status:
             $ref: '#/components/schemas/sla-status'
         required:

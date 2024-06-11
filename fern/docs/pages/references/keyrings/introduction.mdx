@@ -1,0 +1,33 @@
+**Keyrings: Securely Connecting Your Snap-in to External Services**
+
+Keyrings provide a secure way to manage credentials for external services used within your DevRev snap-in. This eliminates the need to store sensitive information like passwords or access tokens directly in your code or configuration files, improving overall security.
+
+**Why are Keyrings Important?**
+
+Traditionally, developers might store these credentials directly in their snap-in's code. This poses a significant security risk. If someone gains access to your code, they could also steal these sensitive credentials.
+Keyrings provide a secure alternative. By storing credentials separately from your code, you ensure they remain hidden and inaccessible even if the code is compromised. This strengthens the overall security of your snap-in.
+
+
+
+**How Keyrings Work**
+
+Imagine you're building a DevRev snap-in that helps manage your marketing campaigns across different platforms. This snap-in might need to connect to various external services like Facebook Ads, Mailchimp, and a project management tool like Asana.
+Traditionally, you might embed the API keys or access tokens for these services directly in your snap-in's code. This poses a security risk because anyone with access to the code could potentially steal these credentials.
+
+Here's where DevRev keyrings come in:
+
+You can define keyrings within your snap-in manifest for each external service you need to connect to.
+During installation, users will be prompted to provide their credentials for each keyring (think of it like securely logging in to each service through your snap-in). These credentials are then stored securely in the keyrings.
+When your snap-in needs to interact with a specific service, it retrieves the necessary credentials from the corresponding keyring instead of your code. This keeps your sensitive information safe and isolated.
+
+Think of keyrings as secure vaults within your snap-in, acting as a middleman between your snap-in and the external services it connects to. This ensures both security and a smooth user experience during installation.
+
+**Supported Credential Types:**
+
+* **OAuth:** Streamline connections with popular services like Slack and Jira using pre-defined OAuth keyrings.
+* **Secrets (PATs, JSON):** Store various secret configurations, including Personal Access Tokens (PATs) and JSON Web Tokens (JWTs) for broader service integrations.
+
+**Access Levels:**
+
+* **User Level:** Securely store credentials specific to individual users, allowing them to connect their own accounts to external services through your snap-in.
+* **Organization Level:** Share credentials across your organization for access to a single, shared account for an external service.

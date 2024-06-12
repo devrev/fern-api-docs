@@ -31,3 +31,20 @@ Think of keyrings as secure vaults within your snap-in, acting as a middleman be
 
 * **User Level:** Securely store credentials specific to individual users, allowing them to connect their own accounts to external services through your snap-in.
 * **Organization Level:** Share credentials across your organization for access to a single, shared account for an external service.
+
+**Syntax:**
+```yaml
+keyrings:
+  organization:
+    - name: <name of the keyring>
+      display_name: <display name of the keyring>
+      description: <description of the keyring>
+      types:
+        - <id of the keyring type>
+  user:
+    - name: <name of the keyring>
+      display_name: <display name of the keyring>
+      description: <description of the keyring>
+      types:
+        - <id of the keyring type>
+```

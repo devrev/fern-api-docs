@@ -26,13 +26,14 @@ To test out a snap-in version locally, follow the below steps:
 
 This returns a public HTTP URL.
 
-3. Create a snap-in version with the `testing_url` flag set
+3. Create a snap-in version with the `testing-url` flag set
 
   ```
-  devrev snap_in_version create-one --path <template path> --create-package --testing_url <HTTP_URL>
+  devrev snap_in_version create-one --manifest <manifest path> --create-package --testing-url <HTTP_URL>
   ```
 
-Here, `HTTP_URL` is the publicly available URL from Step 2. The URL should start with `http` or `https`
+Here, `HTTP_URL` is the publicly available URL from Step 2. The URL should start with `http` or `https`. Do note that
+the developer cannot use the `path` and `testing-url` flags together.
 
 4. Once the snap-in version is ready, create a snap-in, update, and activate it.
 

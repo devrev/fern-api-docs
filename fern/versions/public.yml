@@ -128,9 +128,21 @@ navigation:
           - page: Snap-in V1 manifest
             slug: v1-manifest
             path: ../docs/pages/references/v1-manifest.mdx
-          - page: Keyrings
+          - section: Keyrings
             slug: keyrings
-            path: ../docs/pages/references/keyrings.mdx
+            contents:
+              - page: Introduction
+                slug: keyring-intro
+                path: ../docs/pages/references/keyrings/introduction.mdx
+              - page: OAuth Configuration
+                slug: oauth-configuration
+                path: ../docs/pages/references/keyrings/oauth_config.mdx
+              - page: Secret Configuration
+                slug: secret-configuration
+                path: ../docs/pages/references/keyrings/secret_config.mdx
+              - page: Developer Keyring
+                slug: developer-keyring
+                path: ../docs/pages/references/keyrings/developer_keyring.mdx
           - page: Event sources
             slug: event-sources
             path: ../docs/pages/references/event_sources.mdx

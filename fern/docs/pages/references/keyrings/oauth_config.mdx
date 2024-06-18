@@ -1,21 +1,30 @@
-OAuth Configurations - Securely Storing Access Tokens
-
 OAuth (Open Authorization) is a widely adopted standard for authorization that allows users to grant access to their accounts on one service (like Google or GitHub) to another application (like your DevRev snap-in) without needing to share their passwords directly. This approach enhances security and user convenience.
 
-For a comprehensive understanding of the OAuth specification, refer to the official documentation: [OAuth 2.0](https://oauth.net/2/).
+For comprehensive information about the OAuth specification, refer to the official documentation: [OAuth 2.0](https://oauth.net/2/).
 
-Utilizing OAuth Keyrings:
+## Using OAuth keyrings
 
-- **Define the Keyring:** Within your snap-in manifest, define a keyring specifically for OAuth credentials. DevRev offers pre-defined keyring types for popular services like Slack or Jira, simplifying the process.
+1. **Define the keyring:** Within your snap-in manifest, define a keyring specifically for OAuth credentials. DevRev offers pre-defined keyring types for popular services like Slack or Jira, simplifying the process.
 
-- **Provide Credentials:** During development, you'll provide your developer keyring of type `oauth-secret` which contains client ID and client secret for the chosen service within the keyring definition. These credentials are securely stored and not distributed with your published snap-in.
+2. **Provide credentials:** During development, you'll provide your developer keyring of type `oauth-secret` which contains client ID and client secret for the chosen service within the keyring definition. These credentials are securely stored and not distributed with your published snap-in.
 
-- **OAuth Flow:** When your snap-in needs to access user data from the external service, it initiates the OAuth flow. This typically involves redirecting the user to the service's login page and then back to your snap-in after successful authorization.
+3. **OAuth flow:** When your snap-in needs to access user data from the external service, it initiates the OAuth flow. This typically involves redirecting the user to the service's login page and then back to your snap-in after successful authorization.
 
-- **Access Tokens:** Upon successful authorization, the service provides your snap-in with an access token. This token is used to access user data on the service's behalf without requiring the user's password again.
+4. **Access tokens:** Upon successful authorization, the service provides your snap-in with an access token. This token is used to access user data on the service's behalf without requiring the user's password again.
 
-- **Refreshing Tokens:** A key benefit of using keyrings for OAuth is that they can handle refreshing access tokens automatically. Most OAuth implementations issue a refresh token alongside the access token. This refresh token can be used to obtain a new access token before the current one expires.
+5. **Refreshing tokens:** A key benefit of using keyrings for OAuth is that they can handle refreshing access tokens automatically. Most OAuth implementations issue a refresh token alongside the access token. This refresh token can be used to obtain a new access token before the current one expires.
 
+### Keywords
+
+The supported keywords that can be dynamically inserted into URLs, headers, and query parameters within your custom keyring type configuration.
+    - `ACCESS_TOKEN`: The access token obtained during the OAuth flow.
+    - `REFRESH_TOKEN`: The refresh token obtained during the OAuth flow.
+    - `CLIENT_ID`: The client ID obtained from the OAuth client credentials.
+    - `CLIENT_SECRET`: The client secret obtained from the OAuth client credentials.
+    - `SCOPE`: The scope of the OAuth flow.
+    - `API_KEY`: The API key obtained from the basic flow.
+
+### Syntax
 
 ```yaml
 developer_keyrings:
@@ -86,17 +95,5 @@ keyring_types:
       query_parameters:
         <param_name>: <param_value>
 ```
-
-<Callout intent="note"> 
-
-**Supported keywords in keyring_type configuration**:
-The supported keywords that can be dynamically inserted into URLs, headers, and query parameters within your custom keyring type configuration.
-    - **[ACCESS_TOKEN]**: The access token obtained during the OAuth flow.
-    - **[REFRESH_TOKEN]**: The refresh token obtained during the OAuth flow.
-    - **[CLIENT_ID]**: The client ID obtained from the OAuth client credentials.
-    - **[CLIENT_SECRET]**: The client secret obtained from the OAuth client credentials.
-    - **[SCOPE]**: The scope of the OAuth flow.
-    - **[API_KEY]**: The API key obtained from the basic flow.
- </Callout>
 
 For examples of how to use keyrings in your snap-in, refer to the [Keyring API documentation](https://github.com/devrev/snap-in-examples/tree/main/13-keyring-type).

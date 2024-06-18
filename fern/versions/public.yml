@@ -131,16 +131,16 @@ navigation:
           - section: Keyrings
             slug: keyrings
             contents:
-              - page: Introduction
+              - page: "Keyrings: Securely connecting snap-ins to external services"
                 slug: keyring-intro
                 path: ../docs/pages/references/keyrings/introduction.mdx
-              - page: OAuth Configuration
+              - page: "OAuth configuration: Securely storing access tokens"
                 slug: oauth-configuration
                 path: ../docs/pages/references/keyrings/oauth_config.mdx
-              - page: Secret Configuration
+              - page: "Secret configurations: Securely storing credentials"
                 slug: secret-configuration
                 path: ../docs/pages/references/keyrings/secret_config.mdx
-              - page: Developer Keyring
+              - page: Developer keyrings
                 slug: developer-keyring
                 path: ../docs/pages/references/keyrings/developer_keyring.mdx
           - page: Event sources

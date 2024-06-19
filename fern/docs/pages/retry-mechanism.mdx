@@ -1,0 +1,68 @@
+# Event Reliability in DevRev Snap-ins
+
+DevRev Snap-ins platform now offers enhanced event reliability features to ensure smooth and resilient event processing. This document provides an overview of these features and how developers can leverage them to build reliable Snap-ins.
+
+## Retryable Errors
+
+Snap-ins can now define retryable errors using the `FunctionExecutionError` interface provided by the DevRev SDK. This allows the platform to automatically retry events that encounter intermittent or transient errors, improving overall reliability.
+
+## Retry Configuration
+
+Developers can configure the retry behavior of their Snap-in functions using the Snap-in manifest. The following options are available:
+
+```yaml
+functions:
+  - name: function_name
+    config:
+      runtime:
+        max_retries: 5  # number of retries before failing the event
+        min_interval: 10 # interval in minutes between each retry
+```
+
+- `max_retries`: Specifies the maximum number of retries before marking the event as failed.
+- `min_interval`: Specifies the minimum interval in minutes between each retry attempt. This interval may be adjusted based on the timeout of the corresponding function.
+
+## Error Handling
+
+The DevRev Snap-ins platform handles errors based on the ordering guarantees of the Snap-in function:
+
+For Snap-in functions with relaxed ordering, non-retryable errors will be marked as failed, and the error will be propagated to the DevRev platform for tracking. Retryable errors will be automatically retried based on the specified retry configuration. If the maximum number of retries is exhausted, the event will be moved to a dead-letter queue (DLQ) for further handling.
+
+
+## Error Interface
+
+The DevRev SDK introduces the `FunctionExecutionError` type to represent errors returned from the Snap-in function's run function. Developers can use this type to provide additional error details and indicate whether an error is retryable.
+
+```typescript
+class FunctionExecutionError extends Error {
+  /**
+   * Toggle to determine if the event should be retried or not. If not set or set to false,
+   * the event will not be retried.
+   */
+  retry: boolean;
+
+  /**
+   * Whether to retry the event payload with updated metadata
+   * that platform provides. Useful when the event payload is
+   * not in a state to be directly processed, and may need new 
+   * keyrings/service account tokens or new inputs.
+   */
+  refresh?: boolean;
+
+  constructor(message: string, retry: boolean, refresh?: boolean) {
+    super(message);
+    this.retry = retry;
+    this.refresh = refresh;
+  }
+}
+```
+
+## Getting Started
+
+To start using the event reliability features in your Snap-ins, follow these steps:
+
+1. Update your DevRev SDK to the latest version.
+2. Define retryable errors using the `FunctionExecutionError` interface in your Snap-in code.
+3. Configure the retry behavior in your Snap-in manifest.
+4. Handle errors appropriately based on the ordering guarantees of your Snap-in function.
+{/*5. Use the provided APIs to manage and retry failed events as needed.*/}

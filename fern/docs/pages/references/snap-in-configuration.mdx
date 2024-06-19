@@ -10,6 +10,12 @@ This enables a lot of flexibility in the snap-in configuration page making it ea
 In your manifest, add the following section to enable a configuration_handler:
 
 ```yaml
+snap_kit_actions:
+  - name: org_snap_kit_action
+    function: org_snap_in_configuration_handler
+  - name: user_snap_kit_action
+    function: user_snap_in_configuration_handler
+
 functions:
   - name: org_snap_in_configuration_handler
     description: Handler for processing organization configuration options.
@@ -21,15 +27,80 @@ functions:
 configuration_handler:
  organization:
     initializer: config_initializer
-    snap_kit_action_name: org_snap_in_configuration_handler
+    snap_kit_action_name: org_snap_kit_action
 
   user:
     initializer: config_initializer
-    snap_kit_action_name: user_snap_in_configuration_handler
+    snap_kit_action_name: user_snap_kit_action
 ```
 
 The above YAML segment creates three functions and connects them to the configuration_handler to enable custom snap-kits to be rendered as the snap-in configuration page. The `config_initializer` function is used to generate the initial configuration options for both organization and user. The `org_snap_in_configuration_handler` and `user_snap_in_configuration_handler` functions are used to process the organization and user configuration options respectively.
 
-When the snap-in configuration page is loaded, the snap-in will call the `config_initializer` function to get the initial configuration options. Further actions on the returned snap-kit will then call the `org_snap_in_configuration_handler` or `user_snap_in_configuration_handler` function to render the snap-kit for the organization or user respectively.
+When the snap-in configuration page is loaded, the snap-in will call the `config_initializer` function to get the initial configuration options. Further actions on the returned snap-kit will then call the `org_snap_kit_action` or `user_snap_kit_action` snap-kit action to process and update the snap-kit for the organization or user respectively.
 
-The functions should always return a valid snap-kit JSON. 
+The functions should always return a valid snap-kit JSON such as below:
+```json
+{
+  "snap_kit_body": {
+    "body": {
+      "snaps": [
+        {
+          "elements": [
+            {
+              "action_id": "user_snap_kit_action",
+              "action_type": "remote",
+              "elements": [
+                {
+                  "element": {
+                    "action_id": "select",
+                    "action_type": "client",
+                    "initial_selected_option": {
+                      "text": {
+                        "text": "Ticket",
+                        "type": "plain_text"
+                      },
+                      "value": "ticket"
+                    },
+                    "options": [
+                      {
+                        "text": {
+                          "text": "Ticket",
+                          "type": "plain_text"
+                        },
+                        "value": "ticket"
+                      },
+                      {
+                        "text": {
+                          "text": "Conversation",
+                          "type": "plain_text"
+                        },
+                        "value": "conversation"
+                      }
+                    ],
+                    "type": "static_select"
+                  },
+                  "type": "input_layout"
+                }
+              ],
+              "submit_action": {
+                "action_id": "next",
+                "style": "primary",
+                "text": {
+                  "text": "Next",
+                  "type": "plain_text"
+                },
+                "type": "button",
+                "value": "next"
+              },
+              "type": "form"
+            }
+          ],
+          "type": "card"
+        }
+      ]
+    }
+  }
+}
+```
+This will render a snap-kit with a dropdown to select between "Ticket" and "Conversation" and a "Next" button. The snap-kit will then call the `user_snap_in_configuration_handler` function when the "Next" button is clicked.
+

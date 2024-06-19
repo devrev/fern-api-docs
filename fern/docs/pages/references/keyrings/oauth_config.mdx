@@ -1,4 +1,4 @@
-OAuth (Open Authorization) is a widely adopted standard for authorization that allows users to grant access to their accounts on one service (like Google or GitHub) to another application (like your DevRev snap-in) without needing to share their passwords directly. This approach enhances security and user convenience.
+OAuth 2.0 (Open Authorization) is a widely adopted standard for authorization that allows users to grant access to their accounts on one service (like Google or GitHub) to another application (like your DevRev snap-in) without needing to share their passwords directly. This approach enhances security and user convenience.
 
 For comprehensive information about the OAuth specification, refer to the official documentation: [OAuth 2.0](https://oauth.net/2/).
 
@@ -13,6 +13,12 @@ For comprehensive information about the OAuth specification, refer to the offici
 4. **Access tokens:** Upon successful authorization, the service provides your snap-in with an access token. This token is used to access user data on the service's behalf without requiring the user's password again.
 
 5. **Refreshing tokens:** A key benefit of using keyrings for OAuth is that they can handle refreshing access tokens automatically. Most OAuth implementations issue a refresh token alongside the access token. This refresh token can be used to obtain a new access token before the current one expires.
+    - if refresh_token is not provided, the user will need to re-authorize the connection after the access token expires.
+    - if refresh_token is expires, the user will need to re-authorize the connection after the access token expires.
+
+6. **Revoking tokens:** For enhanced security, you can also configure your keyring to revoke access tokens when they are no longer needed. This ensures that even if a token is compromised, it can't be used to access user data.
+
+7. **Organization data:** Optionally, you can configure your keyring to fetch additional information about the user's organization within the service. This can be useful for snap-ins that need to access organization-wide data.
 
 ### Keywords
 
@@ -45,6 +51,7 @@ keyring_types:
     name: <keyring_type_name>
     description: <keyring_type_description>
     kind: "oauth2"
+    is_subdomain: <true/false> # optional: whether the keyring is a subdomain keyring or not. Default is false. It is used to get the subdomain from the user during creation.
     scopes: # Scopes that the connection can request, add more scopes if needed for your use case. Each scope should have a name, description and value.
       - name: <scope_name>
         description: <scope_description>

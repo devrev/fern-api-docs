@@ -8,10 +8,10 @@ A `snap_in_secret` is a simple way to store any plain text secret your snap_in r
 
 To create a snap-in secret in the UI, go to the snap-in page **Connection** tab and find the `snap_in_secret` keyring type.
 
-To create a snap-in secret with the CLI, ruun the following command:
+To create a snap-in secret with the CLI, run the following command:
 
 ```bash
-echo \"[<SECRET>]\" | devrev developer_keyring create snap-in-secret <KEYRING NAME>
+echo \"<SECRET>\" | devrev developer_keyring create snap-in-secret <KEYRING NAME>
 ```
 
 ## OAuth secrets
@@ -24,7 +24,7 @@ An `oauth_secret` is specifically designed to store OAuth client credentials sec
 To create an OAuth secret with the CLI, run the following command:
 
 ```bash
-echo '{"client_id":"[<CLIENT ID>]","client_secret":"[<CLIENT SECRET>]"}' | devrev developer_keyring create oauth-secret <KEYRING NAME>
+echo '{"client_id":"<CLIENT ID>","client_secret":"<CLIENT SECRET>"}' | devrev developer_keyring create oauth-secret <KEYRING NAME>
 ```
 
 ## Developer keyrings in the snap-in manifest

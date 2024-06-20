@@ -12,9 +12,7 @@ For comprehensive information about the OAuth specification, refer to the offici
 
 4. **Access tokens:** Upon successful authorization, the service provides your snap-in with an access token. This token is used to access user data on the service's behalf without requiring the user's password again.
 
-5. **Refreshing tokens:** A key benefit of using keyrings for OAuth is that they can handle refreshing access tokens automatically. Most OAuth implementations issue a refresh token alongside the access token. This refresh token can be used to obtain a new access token before the current one expires.
-    - if refresh_token is not provided, the user will need to re-authorize the connection after the access token expires.
-    - if refresh_token is expires, the user will need to re-authorize the connection after the access token expires.
+5. **Refreshing tokens:** A key benefit of using keyrings for OAuth is that they can handle refreshing access tokens automatically. Most OAuth implementations issue a refresh token alongside the access token. This refresh token can be used to obtain a new access token before the current one expires. If the token is not provided or is expired, the user will need to re-authorize the connection.
 
 6. **Revoking tokens:** For enhanced security, you can also configure your keyring to revoke access tokens when they are no longer needed. This ensures that even if a token is compromised, it can't be used to access user data.
 

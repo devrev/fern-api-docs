@@ -4,7 +4,7 @@ Unlike other keyrings that store user credentials, developer keyrings are design
 
 ## Snap-in secrets
 
-A `snap_in_secret` is a simple way to store any plain text secret your snap_in requires. It's ideal for sensitive information that doesn't require complex formatting.
+A snap-in secret is a simple way to store any plain text secret your snap_in requires. It's ideal for sensitive information that doesn't require complex formatting.
 
 To create a snap-in secret in the UI, go to the snap-in page **Connection** tab and find the `snap_in_secret` keyring type.
 
@@ -16,7 +16,7 @@ echo \"<SECRET>\" | devrev developer_keyring create snap-in-secret <KEYRING NAME
 
 ## OAuth secrets
 
-An `oauth_secret` is specifically designed to store OAuth client credentials securely. It allows you to define two separate fields:
+The OAuth secret is specifically designed to store OAuth client credentials securely. It requires two fields:
 
   * `client_id`: The client ID provided by the OAuth provider.
   * `client_secret`: The client secret provided by the OAuth provider.

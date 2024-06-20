@@ -113,6 +113,111 @@ The configuration functions should return a valid snap-kit JSON that defines the
 ```
 
 In this example, the snap-kit renders a dropdown select for choosing between "Ticket" and "Conversation," along with a "Next" button. When the "Next" button is clicked, the `user_snap_in_configuration_handler` function is invoked to process the user's selection.
+In the snap-kit action handler, the `event.payload.action.id` can be used to determine the form being submitted and call the snap-ins.update API to update the configuration.
+
+Certainly! Here's the updated documentation in Markdown format:
+
+## Update Snap-in Inputs (BETA)
+
+Updates the inputs of a snap-in based on the inputs defined in the snap-in configuration.
+
+**Note: This endpoint is currently in BETA and may be subject to change in the future.**
+
+### Endpoint
+
+```
+POST /internal/snap-ins.update
+```
+
+### Request Payload
+
+The request payload should be a JSON object with the following properties:
+
+- `id` (string, required): The ID of the snap-in to update.
+- `inputs_values` (object, required): An object containing the input values to update. The properties of this object should match the input names defined in the snap-in configuration.
+
+Example payload:
+```json
+{
+  "id": "snap_in_id",
+  "inputs_values": {
+    "part_picker": "don:core:dvrv-us-1:devo/XXXX/product:XXXX",
+    "enum_list_picker": ["value-1", "value-2"]
+  }
+}
+```
+
+In the example above, the `part_picker` and `enum_list_picker` are the input names defined in the snap-in configuration, and their corresponding values are provided in the `inputs_values` object.
+
+### Response
+
+#### Success Response
+
+- Status Code: 200 OK
+- Content-Type: application/json
+
+Response Body:
+```json
+{
+  "data": {},
+  "message": "Snap-in updated successfully",
+  "success": true
+}
+```
+
+#### Error Response
+
+If an error occurs while updating the snap-in, the response will have the following format:
+
+- Status Code: 4xx or 5xx
+- Content-Type: application/json
+
+Response Body:
+```json
+{
+  "data": {},
+  "message": "Failed to update the snap-in. Err: {error details}, Status: {status code}",
+  "success": false
+}
+```
+
+### Example Usage
+
+Here's an example of how to use the `/internal/snap-ins.update` endpoint using the provided code segment:
+
+```typescript
+async updateSnapInInputs(snapin_id: string, inputs_values: Record<string, any>): Promise<HTTPResponse> {
+  const payload: Record<string, any> = {
+    id: snapin_id,
+    inputs_values,
+  };
+  return this.updateSnapInGlobalVariable(payload);
+}
+
+async updateSnapInGlobalVariable(payload: Record<string, any>): Promise<HTTPResponse> {
+  try {
+    await axios.post(`${this.endpoint}/internal/snap-ins.update`, payload, this.configs);
+    return { data: {}, message: 'Snap-in updated successfully', success: true };
+  } catch (error: any) {
+    if (error.response) {
+      const err = `Failed to update the snap-in. Err: ${JSON.stringify(error.response.data)}, Status: ${error.response.status}`;
+      return { ...defaultResponse, message: err };
+    } else {
+      return { ...defaultResponse, message: error.message };
+    }
+  }
+}
+```
+
+In this example, the `updateSnapInInputs` function takes the `snapin_id` and `inputs_values` as parameters. The `inputs_values` object should contain the input names and their corresponding values as defined in the snap-in configuration.
+
+The function constructs the payload object with the `snapin_id` and `inputs_values`, and then calls the `updateSnapInGlobalVariable` function to make the POST request to the `/internal/snap-ins.update` endpoint.
+
+If the request is successful, it returns a success response with a status code of 200 and a message indicating that the snap-in was updated successfully.
+
+If an error occurs, it catches the error and returns an error response with an appropriate status code and an error message containing the error details.
+
+Please keep in mind that this endpoint is currently in BETA, and its functionality or parameters may change in future updates.
 
 ## Conclusion
 

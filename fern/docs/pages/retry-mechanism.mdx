@@ -16,11 +16,11 @@ functions:
     config:
       runtime:
         max_retries: 5  # number of retries before failing the event
-        min_interval: 10 # interval in minutes between each retry
+        min_interval: 10 # interval in seconds between each retry
 ```
 
 - `max_retries`: Specifies the maximum number of retries before marking the event as failed.
-- `min_interval`: Specifies the minimum interval in minutes between each retry attempt. This interval may be adjusted based on the timeout of the corresponding function.
+- `min_interval`: Specifies the minimum interval in seconds between each retry attempt. This interval may be adjusted based on the timeout of the corresponding function.
 
 ## Error Handling
 
@@ -64,5 +64,5 @@ To start using the event reliability features in your Snap-ins, follow these ste
 1. Update your DevRev SDK to the latest version.
 2. Define retryable errors using the `FunctionExecutionError` interface in your Snap-in code.
 3. Configure the retry behavior in your Snap-in manifest.
-4. Handle errors appropriately based on the ordering guarantees of your Snap-in function.
+4. Handle errors appropriately in your Snap-in function.
 {/*5. Use the provided APIs to manage and retry failed events as needed.*/}

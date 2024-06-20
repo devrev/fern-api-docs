@@ -28,7 +28,6 @@ The DevRev Snap-ins platform handles errors based on the ordering guarantees of 
 
 For Snap-in functions with relaxed ordering, non-retryable errors will be marked as failed, and the error will be propagated to the DevRev platform for tracking. Retryable errors will be automatically retried based on the specified retry configuration. If the maximum number of retries is exhausted, the event will be moved to a dead-letter queue (DLQ) for further handling.
 
-
 ## Error Interface
 
 The DevRev SDK introduces the `FunctionExecutionError` type to represent errors returned from the Snap-in function's run function. Developers can use this type to provide additional error details and indicate whether an error is retryable.
@@ -57,6 +56,47 @@ class FunctionExecutionError extends Error {
 }
 ```
 
+## Example Usage
+
+Here's an example of how to use the `FunctionExecutionError` in your Snap-in code:
+
+```typescript
+import { FunctionExecutionError } from '@devrev/typescript-sdk/dist/snap-ins/types';
+
+export const run = async (events: any[]) => {
+  /*
+  Put your code here to handle the event.
+  */
+  console.log('Events: ', JSON.stringify(events));
+
+  try {
+    // Your event processing logic here
+    // ...
+
+    // Retryable error
+    console.log('Retrying....');
+    const runtimeError = new FunctionExecutionError('Runtime Retryable Error', true, false);
+    throw runtimeError;
+
+    // Non-retryable error
+    // const runtimeError = new FunctionExecutionError("Runtime Non-Retryable Error", false, false);
+    // throw runtimeError;
+
+  } catch (error) {
+    if (error instanceof FunctionExecutionError) {
+      throw error;
+    } else {
+      // Handle other types of errors
+      // ...
+    }
+  }
+};
+
+export default run;
+```
+
+In this example, the Snap-in function's `run` method processes the events and can throw a `FunctionExecutionError` to indicate whether the error is retryable or not. The Snap-in platform will handle the error based on the `retry` and `refresh` properties set in the error object.
+
 ## Getting Started
 
 To start using the event reliability features in your Snap-ins, follow these steps:
@@ -65,4 +105,5 @@ To start using the event reliability features in your Snap-ins, follow these ste
 2. Define retryable errors using the `FunctionExecutionError` interface in your Snap-in code.
 3. Configure the retry behavior in your Snap-in manifest.
 4. Handle errors appropriately in your Snap-in function.
-{/*5. Use the provided APIs to manage and retry failed events as needed.*/}
+
+With these updates, your Snap-ins can leverage the enhanced event reliability features provided by the DevRev Snap-ins platform.

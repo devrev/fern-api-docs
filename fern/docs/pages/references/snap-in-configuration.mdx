@@ -2,8 +2,6 @@
 
 The DevRev snap-ins platform allows developers to define custom configuration pages for their snap-ins. 
 
-## Why Customize Configuration Pages?
-
 While the default configuration page automatically renders input fields for keyrings and inputs, there may be cases where a custom configuration page is more suitable:
 
 - Improved user experience: Developers can design the configuration page to provide a more intuitive and streamlined experience for users setting up the snap-in.
@@ -44,7 +42,7 @@ The `configuration_handler` section in the manifest connects the functions respo
 - `org_snap_in_configuration_handler`: This function processes the organization configuration options. It is triggered when actions are performed on the organization configuration snap-kit.
 - `user_snap_in_configuration_handler`: This function processes the user configuration options. It is triggered when actions are performed on the user configuration snap-kit.
 
-## Configuration Functions
+## Configuration functions
 
 The configuration functions should return a valid snap-kit JSON that defines the layout and elements of the custom configuration page. Here's an example of a snap-kit JSON:
 
@@ -115,9 +113,7 @@ The configuration functions should return a valid snap-kit JSON that defines the
 In this example, the snap-kit renders a dropdown select for choosing between "Ticket" and "Conversation," along with a "Next" button. When the "Next" button is clicked, the `user_snap_in_configuration_handler` function is invoked to process the user's selection.
 In the snap-kit action handler, the `event.payload.action.id` can be used to determine the form being submitted and call the `snap-ins.update` API to update the configuration.
 
-Certainly! Here's the updated documentation in Markdown format:
-
-## Update Snap-in Inputs (BETA)
+## Update snap-in inputs (BETA)
 
 Updates the inputs of a snap-in based on the inputs defined in the snap-in configuration.
 
@@ -151,12 +147,12 @@ In the example above, the `part_picker` and `enum_list_picker` are the input nam
 
 ### Response
 
-#### Success Response
+#### Success response
 
 - Status Code: 200 OK
 - Content-Type: application/json
 
-Response Body:
+Response body:
 ```json
 {
   "data": {},
@@ -165,14 +161,14 @@ Response Body:
 }
 ```
 
-#### Error Response
+#### Error response
 
-If an error occurs while updating the snap-in, the response will have the following format:
+If an error occurs while updating the snap-in, the response has the following format:
 
 - Status Code: 4xx or 5xx
 - Content-Type: application/json
 
-Response Body:
+Response body:
 ```json
 {
   "data": {},

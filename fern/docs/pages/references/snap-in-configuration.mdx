@@ -1,12 +1,12 @@
-# Customizing Snap-in Configuration Pages
+# Customizing snap-in configuration pages
 
-DevRev Snap-ins platform allows developers to define custom configuration pages for their Snap-ins. This feature provides flexibility in designing user-friendly and intuitive configuration experiences tailored to the specific needs of the Snap-in.
+The DevRev snap-ins platform allows developers to define custom configuration pages for their snap-ins. 
 
 ## Why Customize Configuration Pages?
 
 While the default configuration page automatically renders input fields for keyrings and inputs, there may be cases where a custom configuration page is more suitable:
 
-- Improved User Experience: Developers can design the configuration page to provide a more intuitive and streamlined experience for users setting up the Snap-in.
+- Improved user experience: Developers can design the configuration page to provide a more intuitive and streamlined experience for users setting up the snap-in.
 - Advanced Input Handling: Custom configuration pages enable developers to handle complex input scenarios, such as fetching data from external systems to populate dropdown options or validating user input.
 - Branding and Styling: Developers can align the configuration page with their Snap-in's branding and style guidelines, ensuring a consistent look and feel.
 
@@ -40,7 +40,7 @@ configuration_handler:
 
 The `configuration_handler` section in the manifest connects the functions responsible for generating and processing the custom configuration page.
 
-- `config_initializer`: This function generates the initial configuration options for both organization and user. It is called when the configuration page is first loaded.
+- `config_initializer`: Generates the initial configuration options for both organization and user. It is called when the configuration page is first loaded.
 - `org_snap_in_configuration_handler`: This function processes the organization configuration options. It is triggered when actions are performed on the organization configuration snap-kit.
 - `user_snap_in_configuration_handler`: This function processes the user configuration options. It is triggered when actions are performed on the user configuration snap-kit.
 
@@ -113,7 +113,7 @@ The configuration functions should return a valid snap-kit JSON that defines the
 ```
 
 In this example, the snap-kit renders a dropdown select for choosing between "Ticket" and "Conversation," along with a "Next" button. When the "Next" button is clicked, the `user_snap_in_configuration_handler` function is invoked to process the user's selection.
-In the snap-kit action handler, the `event.payload.action.id` can be used to determine the form being submitted and call the snap-ins.update API to update the configuration.
+In the snap-kit action handler, the `event.payload.action.id` can be used to determine the form being submitted and call the `snap-ins.update` API to update the configuration.
 
 Certainly! Here's the updated documentation in Markdown format:
 
@@ -181,7 +181,7 @@ Response Body:
 }
 ```
 
-### Example Usage
+## Example usage
 
 Here's an example of how to use the `/internal/snap-ins.update` endpoint using the provided code segment:
 

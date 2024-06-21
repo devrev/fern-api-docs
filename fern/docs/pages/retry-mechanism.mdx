@@ -1,6 +1,6 @@
 # Event Reliability in DevRev Snap-ins
 
-DevRev Snap-ins platform now offers enhanced event reliability features to ensure smooth and resilient event processing. This document provides an overview of these features and how developers can leverage them to build reliable Snap-ins.
+The DevRev snap-ins platform offers event reliability features to ensure smooth and resilient event processing. This document provides an overview of these features and how developers can leverage them to build reliable snap-ins.
 
 ## Retryable Errors
 
@@ -19,18 +19,18 @@ functions:
         min_interval: 10 # interval in seconds between each retry
 ```
 
-- `max_retries`: Specifies the maximum number of retries before marking the event as failed.
+- `max_retries`: The maximum number of retries before marking the event as failed.
 - `min_interval`: Specifies the minimum interval in seconds between each retry attempt. This interval may be adjusted based on the timeout of the corresponding function.
 
 ## Error Handling
 
-The DevRev Snap-ins platform handles errors based on the ordering guarantees of the Snap-in function:
+The DevRev snap-ins platform handles errors based on the ordering guarantees of the snap-in function.
 
 For Snap-in functions with relaxed ordering, non-retryable errors will be marked as failed, and the error will be propagated to the DevRev platform for tracking. Retryable errors will be automatically retried based on the specified retry configuration. If the maximum number of retries is exhausted, the event will be moved to a dead-letter queue (DLQ) for further handling.
 
 ## Error Interface
 
-The DevRev SDK introduces the `FunctionExecutionError` type to represent errors returned from the Snap-in function's run function. Developers can use this type to provide additional error details and indicate whether an error is retryable.
+The DevRev SDK defines the `FunctionExecutionError` type to represent errors returned from the snap-in's run function. Developers can use this type to provide additional error details and indicate whether an error is retryable.
 
 ```typescript
 class FunctionExecutionError extends Error {

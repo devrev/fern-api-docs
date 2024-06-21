@@ -2,13 +2,13 @@ OAuth 2.0 (Open Authorization) is a widely adopted standard for authorization th
 
 For comprehensive information about the OAuth specification, refer to the official documentation: [OAuth 2.0](https://oauth.net/2/).
 
-## Using OAuth keyrings
+## Using OAuth 2.0 keyrings
 
 1. **Define the keyring:** Within your snap-in manifest, define a keyring specifically for OAuth credentials. DevRev offers pre-defined keyring types for popular services like Slack or Jira, simplifying the process.
 
 2. **Provide credentials:** During development, you'll provide your developer keyring of type `oauth-secret` which contains client ID and client secret for the chosen service within the keyring definition. These credentials are securely stored and not distributed with your published snap-in.
 
-3. **OAuth flow:** When your snap-in needs to access user data from the external service, it initiates the OAuth flow. This typically involves redirecting the user to the service's login page and then back to your snap-in after successful authorization.
+3. **OAuth 2.0 flow:** When your snap-in needs to access user data from the external service, it initiates the OAuth flow. This typically involves redirecting the user to the service's login page and then back to your snap-in after successful authorization.
 
 4. **Access tokens:** Upon successful authorization, the service provides your snap-in with an access token. This token is used to access user data on the service's behalf without requiring the user's password again.
 

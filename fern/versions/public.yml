@@ -134,7 +134,7 @@ navigation:
               - page: "Keyrings: Securely connecting snap-ins to external services"
                 slug: keyring-intro
                 path: ../docs/pages/references/keyrings/introduction.mdx
-              - page: "OAuth configuration: Securely storing access tokens"
+              - page: "OAuth 2.0 configuration: Securely storing access tokens"
                 slug: oauth-configuration
                 path: ../docs/pages/references/keyrings/oauth_config.mdx
               - page: "Secret configurations: Securely storing credentials"

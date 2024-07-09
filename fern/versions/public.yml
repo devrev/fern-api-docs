@@ -143,6 +143,42 @@ navigation:
               - page: Developer keyrings
                 slug: developer-keyring
                 path: ../docs/pages/references/keyrings/developer_keyring.mdx
+          - section: ADaaS
+            slug: adaas
+            contents:
+              - page: "Terminology"
+                slug: terminology
+                path: ../docs/pages/references/adaas/terminology.mdx
+              - page: "Airdrop-as-a-Service (ADaaS)"
+                slug: overview
+                path: ../docs/pages/references/adaas/adaas_overview.mdx
+              - page: "Getting Started"
+                slug: getting-started
+                path: ../docs/pages/references/adaas/getting_started.mdx
+              - page: "Extraction Phases"
+                slug: extraction-phases
+                path: ../docs/pages/references/adaas/extraction_phases.mdx
+              - page: "Extraction Phases"
+                slug: extraction-phases
+                path: ../docs/pages/references/adaas/extraction_phases.mdx
+              - page: "Creating a Keyring"
+                slug: keyring
+                path: ../docs/pages/references/adaas/creating_a_keyring.mdx
+              - page: "Extracting External Sync Units"
+                slug: extract-external-sync-units
+                path: ../docs/pages/references/adaas/extracting_external_sync_units.mdx
+              - page: "Extracting Metadata"
+                slug: extract-metadata
+                path: ../docs/pages/references/adaas/extracting_metadata.mdx
+              - page: "Extracting Data"
+                slug: extract-data
+                path: ../docs/pages/references/adaas/extracting_data.mdx
+              - page: "Extracting Attachments"
+                slug: extract-attachments
+                path: ../docs/pages/references/adaas/extracting_attachments.mdx
+              - page: "Obsevability"
+                slug: extract-attachments
+                path: ../docs/pages/references/adaas/observability.mdx
           - page: Event sources
             slug: event-sources
             path: ../docs/pages/references/event_sources.mdx

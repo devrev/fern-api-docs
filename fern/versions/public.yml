@@ -151,7 +151,7 @@ navigation:
                 path: ../docs/pages/references/adaas/terminology.mdx
               - page: "Airdrop-as-a-Service (ADaaS)"
                 slug: overview
-                path: ../docs/pages/references/adaas/adaas_overview.mdx
+                path: ../docs/pages/adaas/overview.mdx
               - page: "Getting Started"
                 slug: getting-started
                 path: ../docs/pages/references/adaas/getting_started.mdx

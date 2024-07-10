@@ -128,9 +128,6 @@ navigation:
           - page: "Extraction Phases"
             slug: extraction-phases
             path: ../docs/pages/adaas/extraction-phases.mdx
-          - page: "Creating a Keyring"
-            slug: keyring
-            path: ../docs/pages/references/adaas/creating-a-keyring.mdx
           - page: "Extracting External Sync Units"
             slug: extract-external-sync-units
             path: ../docs/pages/adaas/extracting-external-sync-units.mdx
@@ -143,9 +140,6 @@ navigation:
           - page: "Extracting Attachments"
             slug: extract-attachments
             path: ../docs/pages/adaas/extracting-attachments.mdx
-          - page: "Obsevability"
-            slug: extract-attachments
-            path: ../docs/pages/adaas/observability.mdx
       - section: References
         slug: references
         contents:

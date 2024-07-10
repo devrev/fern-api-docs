@@ -1,4 +1,4 @@
-# Extraction Phases
+# Extraction phases
 
 Airdrop extractions are done in phases.
 Phases follow sequentially, and each can consist of one or more invocations of the Worker.
@@ -79,7 +79,7 @@ A Deletion Sync consists of the following phases:
 - Delete data,
 - Delete attachments.
 
-## External Sync Unit Extraction
+## External sync unit extraction
 
 External Sync Unit Extraction is an extraction phase, executed only during the Initial Import.
 It extracts External Sync Units available in the External System,
@@ -91,7 +91,7 @@ Airdrop initiates the External Sync Unit Extraction phase by starting the Worker
 The Worker must respond to Airdrop with a message with eventType `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE`
 with a list of External Sync Units as a payload, or `EXTRACTION_EXTERNAL_SYNC_UNITS_ERROR` in case of an error.
 
-## Metadata Extraction
+## Metadata extraction
 
 Airdrop initiates the Metadata Extraction by starting the Worker with a message with eventType: `EXTRACTION_METADATA_START`.
 
@@ -102,7 +102,7 @@ to prepare and upload the Initial Domain Mapping to DevRev.
 The Worker must respond to Airdrop with a message with eventType `EXTRACTION_METADATA_DONE` when done,
 or `EXTRACTION_METADATA_ERROR` in case of an error.
 
-## Data Extraction
+## Data extraction
 
 Airdrop initiates Data Extraction by starting the Worker with a message with eventType `EXTRACTION_DATA_START`
 when transitioning to the Data Extraction phase.
@@ -124,7 +124,7 @@ Once the Data Extraction is done, the Worker must respond to Airdrop with a mess
 
 If Data Extraction failed in any moment of extraction, the Worker must respond to Airdrop with a message with eventType `EXTRACTION_DATA_ERROR`.
 
-## Attachments Extraction
+## Attachments extraction
 
 Airdrop initiates the Attachment Extraction by starting the Worker with a message with eventType `EXTRACTION_ATTACHMENTS_START`
 when transitioning to the Data Extraction phase.
@@ -146,7 +146,7 @@ Once the Attachment Extraction phase is done, the Worker must respond to Airdrop
 
 If Attachment Extraction failed, the Worker must respond to Airdrop with a message with eventType `EXTRACTION_ATTACHMENTS_ERROR`.
 
-## Delete Data
+## Delete data
 
 Airdrop initiates the Data Delete phase when the Sync is deleted from DevRev.
 It is started by sending the Worker a message with eventType: `EXTRACTION_DATA_DELETE`.
@@ -156,7 +156,7 @@ In the most common extraction use cases, there is nothing to do and Workers may 
 
 The Worker must respond to Airdrop with a message with eventType `EXTRACTION_DATA_DELETE_DONE` when done or `EXTRACTION_DATA_DELETE_ERROR` in case of an error.
 
-## Delete Attachments
+## Delete attachments
 
 Airdrop initiates the Attachments Delete phase when the Sync is deleted from DevRev.
 It is started by sending the Worker a message with eventType: `EXTRACTION_ATTACHMENTS_DELETE`.

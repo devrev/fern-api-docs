@@ -1,4 +1,4 @@
-# Getting Stated
+# Getting started
 
 1. Create a new repo from the ADaaS Template repo:
 On [https://github.com/devrev/adaas-template](https://github.com/devrev/adaas-template) use the dropdown button `Use this template` and
@@ -17,3 +17,25 @@ See [Creating a Keyring](https://www.notion.so/Creating-a-Keyring-aa497671dc1b42
 7. Install the Snap-In in your DevRev DevOrg on the web by navigating to `Settings` -> `Snap-ins` -> `Install Snap-in`.
 8. Define the `Connection`.
 9. Create an `Import.`
+
+
+## Creating keyrings
+
+Keyrings are a DevRev-specific mechanism for managing authentication for External Systems.
+They are called Connections in the DevRev app.
+
+They provide a secure way to store and manage credentials within your DevRev Snap-In.
+This eliminates the need to expose sensitive information like passwords
+or access tokens directly within your code or configuration files, enhancing overall security.
+
+Read more about Keyrings in the [developer documentation](https://developer.devrev.ai/snapin-development/references/keyrings).
+
+
+## Observability
+
+Workers are snap-ins, and they inherit observability methodology from snap-ins.
+
+To observe logs from your Worker in your development environment use `devrev snap_in_package logs | jq`.
+To open logs in your favorite editor use `devrev snap_in_package logs | code -`
+
+See also: https://developer.devrev.ai/snapin-development/debugging

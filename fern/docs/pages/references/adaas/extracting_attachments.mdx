@@ -1,7 +1,7 @@
 # Attachment Extraction phase
 
 For the Attachment Extraction phase of the import process,
-the Extractor has to upload each Attachment to DevRev’s S3 using the using S3Interact. 
+the Extractor has to upload each attachment to DevRev’s S3 using the `S3Interact` API. 
 
 After uploading an attachment or a batch of attachments, the Extractor also has to prepare and upload an SSOR attachment file.
 It should contain the DevRev IDs of the extracted attachments, along with the parent and actor IDs from the External System.

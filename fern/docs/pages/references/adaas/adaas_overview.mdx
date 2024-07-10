@@ -7,7 +7,7 @@ These Workers (Extractors and Loaders) can be built by anyone, not just DevRevel
 This section explains how ADaaS works at a high level.
 Message protocols and other specifics can be found in the Extractor and Loader sections.
 
-It’s also useful to know that Airdrop uses its own AWS S3 structure
+Airdrop uses its own AWS S3 structure
 (and its own buckets) and that only Airdrop components have access to it.
 This means that Workers can’t access these buckets directly,
 which is why all their data has to be uploaded to DevRev through S3Interact.

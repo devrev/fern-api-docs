@@ -157,7 +157,7 @@ navigation:
                 path: ../docs/pages/references/adaas/getting_started.mdx
               - page: "Extraction Phases"
                 slug: extraction-phases
-                path: ../docs/pages/references/adaas/extraction_phases.mdx
+                path: ../docs/pages/adaas/extraction-phases.mdx
               - page: "Extraction Phases"
                 slug: extraction-phases
                 path: ../docs/pages/references/adaas/extraction_phases.mdx

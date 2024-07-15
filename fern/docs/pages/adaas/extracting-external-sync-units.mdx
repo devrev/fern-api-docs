@@ -4,6 +4,17 @@ In the External Sync Unit extraction phase, the Extractor is expected to get the
 (whatever the equivalent of those is called in the External System)
 that it can extract with the provided credentials and send it to Airdrop in its response.
 
+An External Sync Unit refers to a single unit in the [External System](#external-system) that we are airdropping to DevRev.
+In some systems, this is a project, in some it is a repository, in support systems this External Sync Unit could be called a brand or an organization.
+What a unit of data is called, and what it represents depends on the [External System](#external-system)'s domain model.
+It usually combines contacts, users, work-like items, and comments into a unit of domain objects.
+
+Some [External Systems](#external-system) may offer a single unit in their free plans,
+while their enterprise plans may offer their clients to operate many separate units.
+
+The External Sync Unit ID is the identifier of the project, repository, etc. in the [External System](#external-system).
+For GitHub, this would be the repository, for example `cli` in `github.com/devrev/cli`.
+
 The most important structure in the message is the list of External Sync Units (event_data.external_sync_units in JSON),
 which contains the following fields:
 - ID: This is the unique identifier in the External System
@@ -11,7 +22,7 @@ which contains the following fields:
 - Description: A short description if the External System provides it
 - Item count (item_count): The number of items (issues, tickets, comments, etc.) in the External System,
 if it can be obtained in a very lightweight manner, such as by calling a special API endpoint.
-If there is no such way to get it, i.e., the items would need to be extracted to count them,
+If there is no such way to get it, for example, the items would need to be extracted to count them,
 then the item count should be `-1`, to avoid blocking the import with long-running queries.
 
 Example:

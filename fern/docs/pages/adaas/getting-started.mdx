@@ -21,14 +21,17 @@ See [Creating a Keyring](https://www.notion.so/Creating-a-Keyring-aa497671dc1b42
 
 ## Creating keyrings
 
-Keyrings are a DevRev-specific mechanism for managing authentication for External Systems.
-They are called Connections in the DevRev app.
+Keyrings are a DevRev-specific mechanism for managing authentication to external systems.
+They are called **Connections** in the DevRev app.
 
-They provide a secure way to store and manage credentials within your DevRev Snap-In.
+Keyrings provide a secure way to store and manage credentials within your DevRev Snap-In.
 This eliminates the need to expose sensitive information like passwords
 or access tokens directly within your code or configuration files, enhancing overall security.
 
-Read more about Keyrings in the [developer documentation](https://developer.devrev.ai/snapin-development/references/keyrings).
+A keyring is used by a worker to authenticate to the external system in API calls. They includes the key (for example,
+a PAT token or API key), its type, the organization ID for which a key is valid, and in some cases the organization name.
+
+Read more about keyrings in the [developer documentation](/snapin-development/references/keyrings).
 
 
 ## Observability
@@ -38,4 +41,4 @@ Workers are snap-ins, and they inherit observability methodology from snap-ins.
 To observe logs from your Worker in your development environment use `devrev snap_in_package logs | jq`.
 To open logs in your favorite editor use `devrev snap_in_package logs | code -`
 
-See also: https://developer.devrev.ai/snapin-development/debugging
+See also [debugging snap-in](/snapin-development/debugging).

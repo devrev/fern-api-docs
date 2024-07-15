@@ -3,10 +3,14 @@
 For the Attachment Extraction phase of the import process,
 the Extractor has to upload each attachment to DevRev’s S3 using the `S3Interact` API. 
 
-After uploading an attachment or a batch of attachments, the Extractor also has to prepare and upload an SSOR attachment file.
-It should contain the DevRev IDs of the extracted attachments, along with the parent and actor IDs from the External System.
-This needs to be done because only the Extractor knows to what the attachment was attached in the External system.
-The SSOR attachment file should then be sent just like any normal Artifact, but with the `ssor_attachment` item type.
+After uploading an attachment or a batch of attachments, the extractor also has to prepare and upload a file specifying
+the extracted and uploaded attachments.
+
+It should contain the DevRev IDs of the extracted and uploaded attachments, along with the parent domain object ID
+from the external system and the actor ID from the external system.
+
+The uploaded artifact is structured like a normal artifact containing extracted data in JSON Lines format with specifying the
+`ssor_attachment` as an item type.
 
 ## Examples
 

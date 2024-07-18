@@ -1,20 +1,18 @@
 
 During the extract metadata phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run. This file provides a structured way of describing external system's domain system, describe its domain entities, types, and what are their relationships, and other metadata.
 
-The `external_domain_metadata.json` is submitted in each sync run and is one of the input for the transformation phase.
-
 The extraction function of the snap-in must provide a valid metadata file. DevRev provides a JSON schema and a CLI tool `chef-cli` to validate the proposed schema.
 
 
 ## Triggering event
 
-Airdrop initiates the Metadata Extraction by starting the snap-in with a message with eventType: `EXTRACTION_METADATA_START`.
+Airdrop initiates the Metadata Extraction by starting the snap-in with a message with with event of type `EVENT_TYPE`: `EXTRACTION_METADATA_START`.
 
 During the Metadata Extraction phase,
 the snap-in extracts relevant metadata from an External System
 to prepare and upload the Initial Domain Mapping to DevRev.
 
-The snap-in must respond to Airdrop with a message with eventType `EXTRACTION_METADATA_DONE` when done,
+The snap-in must respond to Airdrop with a message with with event of type `EVENT_TYPE` `EXTRACTION_METADATA_DONE` when done,
 or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Snap-in response

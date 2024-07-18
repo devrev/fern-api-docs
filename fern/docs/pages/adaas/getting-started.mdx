@@ -10,7 +10,7 @@ then `Create a new repository`.
    - [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
 4. Copy `Makefile.variable.example` to `Makefile.variable` and fill in the required variables.
 5. Configure a keyring for the external system in the `manifest.yaml`.
-See [Creating a Keyring](https://www.notion.so/Creating-a-Keyring-aa497671dc1b423fae70f7a0c14fba3a?pvs=21).
+See [Keyrings](../references/keyrings/introduction.mdx).
 6. Deploy a draft version of your Snap-In to you DevOrg using `make deploy`.
 7. Install the snap-in in your DevRev DevOrg on the web by navigating to **Settings** -> **Snap-ins** -> **Install snap-in**.
 8. Define the `Connection`.
@@ -24,7 +24,8 @@ They are called **Connections** in the DevRev app.
 
 Keyrings provide a secure way to store and manage credentials within your DevRev Snap-In.
 This eliminates the need to expose sensitive information like passwords
-or access tokens directly within your code or configuration files, enhancing overall security.
+or access tokens directly within your code or configuration files, enhancing overall security. They also provide a valid
+token by abstracting Oauth token renewal from the end user.
 
 A keyring is used by a worker to authenticate to the external system in API calls. They includes the key (for example,
 a PAT token or API key), its type, the organization ID for which a key is valid, and in some cases the organization name.
@@ -33,8 +34,6 @@ Read more about keyrings in the [developer documentation](/snapin-development/re
 
 
 ## Observability
-
-snap-ins are snap-ins, and they inherit observability methodology from snap-ins.
 
 To observe logs from your snap-in in your development environment use `devrev snap_in_package logs | jq`.
 To open logs in your favorite editor use `devrev snap_in_package logs | code -`

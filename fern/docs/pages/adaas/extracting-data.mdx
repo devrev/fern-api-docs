@@ -8,25 +8,25 @@ so that it can extract only items created and/or updated since this date in the 
 
 ## Triggering event
 
-Airdrop initiates data extraction by starting the snap-in with a message with eventType `EXTRACTION_DATA_START`
+Airdrop initiates data extraction by starting the snap-in with a message with with event of type `EVENT_TYPE` `EXTRACTION_DATA_START`
 when transitioning to the data extraction phase.
 
 During the data extraction phase, the snap-in extracts data from an external system,
 prepares batches of data and uploads them in the form of Artifacts to DevRev.
 
-The snap-in must respond to Airdrop with a message with eventType `EXTRACTION_DATA_PROGRESS`,
+The snap-in must respond to Airdrop with a message with with event of type `EVENT_TYPE` `EXTRACTION_DATA_PROGRESS`,
 together with an optional progress estimate and relevant artifacts
 when it extracts some data and the maximum ADaaS snap-in runtime (12 minutes) has been reached.
 
 If the extraction has been rate-limited by the external system and back-off is required, the snap-in must respond to
-Airdrop with a message with eventType `EXTRACTION_DATA_DELAY` and specifying back-off time with `delay` attribute.
+Airdrop with a message with with event of type `EVENT_TYPE` `EXTRACTION_DATA_DELAY` and specifying back-off time with `delay` attribute.
 
-In both cases, Airdrop starts the snap-in with a message with eventType `EXTRACTION_DATA_CONTINUE`.
+In both cases, Airdrop starts the snap-in with a message with with event of type `EVENT_TYPE` `EXTRACTION_DATA_CONTINUE`.
 The restarting is immediate (in case of `EXTRACTION_DATA_PROGRESS`) or delayed (in case of `EXTRACTION_DATA_DELAY`).
 
-Once the data extraction is done, the snap-in must respond to Airdrop with a message with eventType `EXTRACTION_DATA_DONE`.
+Once the data extraction is done, the snap-in must respond to Airdrop with a message with with event of type `EVENT_TYPE` `EXTRACTION_DATA_DONE`.
 
-If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a message with eventType `EXTRACTION_DATA_ERROR`.
+If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a message with with event of type `EVENT_TYPE` `EXTRACTION_DATA_ERROR`.
 
 ## Snap-in response
 

@@ -116,9 +116,6 @@ navigation:
       - section: ADaaS
         slug: adaas
         contents:
-          - page: "Terminology"
-            slug: terminology
-            path: ../docs/pages/adaas/terminology.mdx
           - page: "Airdrop-as-a-Service (ADaaS)"
             slug: overview
             path: ../docs/pages/adaas/overview.mdx
@@ -140,6 +137,9 @@ navigation:
           - page: "Extracting Attachments"
             slug: extract-attachments
             path: ../docs/pages/adaas/extracting-attachments.mdx
+          - page: "Deleting data and attachments"
+            slug: delete-data-attachments
+            path: ../docs/pages/adaas/delete-phases.mdx
       - section: References
         slug: references
         contents:

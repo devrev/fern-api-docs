@@ -8,13 +8,13 @@ The extraction function of the snap-in must provide a valid metadata file. DevRe
 
 ## Triggering event
 
-Airdrop initiates the Metadata Extraction by starting the Worker with a message with eventType: `EXTRACTION_METADATA_START`.
+Airdrop initiates the Metadata Extraction by starting the snap-in with a message with eventType: `EXTRACTION_METADATA_START`.
 
 During the Metadata Extraction phase,
-the Worker extracts relevant metadata from an External System
+the snap-in extracts relevant metadata from an External System
 to prepare and upload the Initial Domain Mapping to DevRev.
 
-The Worker must respond to Airdrop with a message with eventType `EXTRACTION_METADATA_DONE` when done,
+The snap-in must respond to Airdrop with a message with eventType `EXTRACTION_METADATA_DONE` when done,
 or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Snap-in response

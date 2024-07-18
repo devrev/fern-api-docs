@@ -1,26 +1,37 @@
-# Extract external sync units phase
-
-In the External Sync Unit extraction phase, the Extractor is expected to get the list of projects, repositories, etc.
+In the external sync unit extraction phase, the extractor is expected to get the list of projects, repositories, etc.
 (whatever the equivalent of those is called in the External System)
 that it can extract with the provided credentials and send it to Airdrop in its response.
 
-An External Sync Unit refers to a single unit in the [External System](#external-system) that we are airdropping to DevRev.
+An external sync unit refers to a single unit in the external that we are airdropping to DevRev.
 In some systems, this is a project, in some it is a repository, in support systems this External Sync Unit could be called a brand or an organization.
-What a unit of data is called, and what it represents depends on the [External System](#external-system)'s domain model.
+What a unit of data is called, and what it represents depends on the external system's domain model.
 It usually combines contacts, users, work-like items, and comments into a unit of domain objects.
 
-Some [External Systems](#external-system) may offer a single unit in their free plans,
+Some some external systems may offer a single unit in their free plans,
 while their enterprise plans may offer their clients to operate many separate units.
 
-The External Sync Unit ID is the identifier of the project, repository, etc. in the [External System](#external-system).
+The External Sync Unit ID is the identifier of the project, repository, etc. in the external system.
 For GitHub, this would be the repository, for example `cli` in `github.com/devrev/cli`.
 
-The most important structure in the message is the list of External Sync Units (event_data.external_sync_units in JSON),
-which contains the following fields:
-- ID: This is the unique identifier in the External System
-- Name: This is the human-readable name in the External System
-- Description: A short description if the External System provides it
-- Item count (item_count): The number of items (issues, tickets, comments, etc.) in the External System,
+## Triggering event
+
+External sync unit extraction is executed only during the initial import.
+It extracts external sync units available in the external system,
+so that the end user can choose which external sync unit should be airdropped.
+
+Airdrop initiates the external sync unit extraction phase by starting the worker with a message with eventType:
+`EXTRACTION_EXTERNAL_SYNC_UNITS_START` to start the external sync unit extraction.
+
+The snap-in must respond to Airdrop with a message with `eventType` `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE`
+with a list of external sync units as a payload, or `EXTRACTION_EXTERNAL_SYNC_UNITS_ERROR` in case of an error.
+
+## Snap-in response
+
+Snap-in provides the list of external sync units in the provided event message `event_data.external_sync_units` containing the following fields:
+- id: This is the unique identifier in the external system
+- name: This is the human-readable name in the external system
+- description: A short description if the external system provides it
+- item count (item_count): The number of items (issues, tickets, comments, etc.) in the external system,
 if it can be obtained in a very lightweight manner, such as by calling a special API endpoint.
 If there is no such way to get it, for example, the items would need to be extracted to count them,
 then the item count should be `-1`, to avoid blocking the import with long-running queries.

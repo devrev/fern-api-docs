@@ -1,673 +1,269 @@
-# Extract metadata phase
 
-During the `EXTRACT_METADATA` phase, the Worker must provide a JSON file named `initial_domain_mapping.json`,
-and upload it as an Artifact with item type `initial_domain_mapping`.
+During the extract metadata phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run. This file provides a structured way of describing external system's domain system, describe its domain entities, types, and what are their relationships, and other metadata.
 
-The file provides mappings between External System domain entities and DevRev domain entities.
+The `external_domain_metadata.json` is submitted in each sync run and is one of the input for the transformation phase.
 
-For each extracted domain entity from the External System, the Extractor must provide at least one mapping to a DevRev domain entity.
+The extraction function of the snap-in must provide a valid metadata file. DevRev provides a JSON schema and a CLI tool `chef-cli` to validate the proposed schema.
 
-If two or more possible mappings are provided within `possible_targets`, end-users will be able to select
-to what DevRev domain entity they would like to have it transformed during the mapping phase of the extraction.
 
-In the `initial_field mappings` all required fields for a specific DevRev domain entity must be specified
-(for example, DevRev Issues must have a priority, users must have a name).
-Developers can provide additional mappings.
-Attributes from the extracted objects that do not have mappings specified will be imported as custom fields.
+## Triggering event
 
-Example:
+Airdrop initiates the Metadata Extraction by starting the Worker with a message with eventType: `EXTRACTION_METADATA_START`.
+
+During the Metadata Extraction phase,
+the Worker extracts relevant metadata from an External System
+to prepare and upload the Initial Domain Mapping to DevRev.
+
+The Worker must respond to Airdrop with a message with eventType `EXTRACTION_METADATA_DONE` when done,
+or `EXTRACTION_METADATA_ERROR` in case of an error.
+
+## Snap-in response
+
+During the extract metadata phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run.
+
+The transformation can be crafted and finalized further using the `chef-cli` to ensure extracted data is mapped consistently to the DevRev domain model.
+
+This
+
+## How to get started
+
+### Declare the extracted record types
+
+Record types are the types of records that has a well-defined schema you extract from or load to the external system, a domain object in the external system.
+
+If the snap-in is extracting issues and comments, a good starting point to declare record types in  `external_domain_metadata.json`  would be:
+
 ```json
 {
-  "initial_object_mappings": [
-    {
-      "external_type": "{{A: external entity representing company (customer of the devorg)}}",
-      "possible_targets": {
-        "account": {
-          "initial_field_mappings": [
-            {
-              "destination_field": {
-                "id": "created_by_id"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F: a field in A representing reference to the user who created this company}}"
-              ],
-              "resolutions": {
-                "{{F}}": {
-                  "source_field_description": {
-                    "id": "{{F}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "description"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F1: a field in A representing the rich (or plain) text description of the company}}"
-              ],
-              "resolutions": {
-                "{{F1}}": {
-                  "source_field_description": {
-                    "id": "{{F1}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "display_name",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F2: a field in A representing the name of the company}}"
-              ],
-              "resolutions": {
-                "{{F2}}": {
-                  "source_field_description": {
-                    "id": "{{F2}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "id",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F3: The primary key of A}}"
-              ],
-              "resolutions": {
-                "{{F3}}": {
-                  "source_field_description": {
-                    "id": "{{F3}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "owned_by",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F4: a field in A representing an employee responsible for the given customer}}"
-              ],
-              "resolutions": {
-                "{{F4}}": {
-                  "source_field_description": {
-                    "id": "{{F4}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "state",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "obj_make_from_value"
-              ],
-              "resolutions": {
-                "obj_make_from_value": {
-                  "source_field_description": {
-                    "id": "obj_make_from_value"
-                  },
-                  "dependent_decisions": [
-                    {
-                      "source_value": {
-                        "id": "\"any\"",
-                        "name": "\"any\""
-                      },
-                      "selected_resolution": "\"ACTIVE\"",
-                      "resolutions": {
-                        "\"ACTIVE\"": {
-                          "id": "\"ACTIVE\"",
-                          "name": "\"ACTIVE\""
-                        }
-                      },
-                      "is_finished": true
-                    }
-                  ]
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "websites"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F5: A field in A representing domains or domain of the company}}"
-              ],
-              "resolutions": {
-                "{{F5}}": {
-                  "source_field_description": {
-                    "id": "{{F5}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            }
-          ]
-        }
-      },
-      "default_target": "account",
-      "allow_item_type_decisions": true,
-      "is_customizable": true
-    },
-    {
-      "external_type": "{{B: an external entity type representing contacts: employees of customers (or private consumers)}}",
-      "possible_targets": {
-        "rev_user": {
-          "initial_field_mappings": [
-            {
-              "destination_field": {
-                "id": "display_name",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F: a field in B with the display name of the contact in the External System}}"
-              ],
-              "resolutions": {
-                "{{F}}": {
-                  "source_field_description": {
-                    "id": "{{F}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "email"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F1: a field in B representing the email of the contact}}"
-              ],
-              "resolutions": {
-                "{{F1}}": {
-                  "source_field_description": {
-                    "id": "{{F1}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "external_uid"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F2: a field in B containing an unique id of the contact. Can be the same as email}}"
-              ],
-              "resolutions": {
-                "{{F2}}": {
-                  "source_field_description": {
-                    "id": "{{F2}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "full_name"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F3: a field in B with the name of the contact}}"
-              ],
-              "resolutions": {
-                "{{F3}}": {
-                  "source_field_description": {
-                    "id": "{{F3}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "id",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F4: The field holding the primary key of be}}"
-              ],
-              "resolutions": {
-                "{{F4}}": {
-                  "source_field_description": {
-                    "id": "{{F4}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "phone_numbers"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F5}}"
-              ],
-              "resolutions": {
-                "{{F5}}": {
-                  "source_field_description": {
-                    "id": "{{F5}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "rev_org"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F6: a field in B referencing the customer the given contact belongs to}}"
-              ],
-              "resolutions": {
-                "{{F6}}": {
-                  "source_field_description": {
-                    "id": "{{F6}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            }
-          ]
-        }
-      },
-      "default_target": "rev_user",
-      "allow_item_type_decisions": true,
-      "is_customizable": true
-    },
-    {
-      "external_type": "{{C: an external entity type representing a dev user (an employee of the devorg)}}",
-      "possible_targets": {
-        "dev_user": {
-          "initial_field_mappings": [
-            {
-              "destination_field": {
-                "id": "display_name",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F1}}"
-              ],
-              "resolutions": {
-                "{{F1}}": {
-                  "source_field_description": {
-                    "id": "{{F1}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "email"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F2}}"
-              ],
-              "resolutions": {
-                "{{F2}}": {
-                  "source_field_description": {
-                    "id": "{{F2}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "external_identities,display_name"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F1}}"
-              ],
-              "resolutions": {
-                "{{F1}}": {
-                  "source_field_description": {
-                    "id": "{{F1}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "external_identities,id"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F2: a field in C with an unique id of the user}}"
-              ],
-              "resolutions": {
-                "{{F2}}": {
-                  "source_field_description": {
-                    "id": "{{F2}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "full_name"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F3}}"
-              ],
-              "resolutions": {
-                "{{F3}}": {
-                  "source_field_description": {
-                    "id": "{{F3}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "id",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F2}}"
-              ],
-              "resolutions": {
-                "{{F2}}": {
-                  "source_field_description": {
-                    "id": "{{F2}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            }
-          ]
-        }
-      },
-      "default_target": "dev_user",
-      "allow_item_type_decisions": true
-    },
-    {
-      "external_type": "{{D: an external type representing a ticket-like piece of work}}",
-      "possible_targets": {
-        "work.ticket": {
-          "initial_field_mappings": [
-            {
-              "destination_field": {
-                "id": "created_by_id"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F1}}"
-              ],
-              "resolutions": {
-                "{{F1}}": {
-                  "source_field_description": {
-                    "id": "{{F1}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "created_date"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F2: a field in D with the creation timestamp}}"
-              ],
-              "resolutions": {
-                "{{F2}}": {
-                  "source_field_description": {
-                    "id": "{{F2}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "id",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F3}}"
-              ],
-              "resolutions": {
-                "{{F3}}": {
-                  "source_field_description": {
-                    "id": "{{F3}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "modified_date"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F4}}"
-              ],
-              "resolutions": {
-                "{{F4}}": {
-                  "source_field_description": {
-                    "id": "{{F4}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "owned_by_ids",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F5: A field in D referencing an user assigned to the ticket}}"
-              ],
-              "resolutions": {
-                "{{F5}}": {
-                  "source_field_description": {
-                    "id": "{{F5}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "reported_by_ids"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F6}}"
-              ],
-              "resolutions": {
-                "{{F6}}": {
-                  "source_field_description": {
-                    "id": "{{F6}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "rev_oid"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F6: A field in D referencing the customer who this ticket belongs to}}"
-              ],
-              "resolutions": {
-                "{{F6}}": {
-                  "source_field_description": {
-                    "id": "{{F6}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "severity",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F7: an enum field in D with values representing the severity of the ticket}}"
-              ],
-              "resolutions": {
-                "{{F7}}": {
-                  "source_field_description": {
-                    "id": "{{F7}}",
-                    "is_required": true
-                  },
-                  "dependent_decisions": [
-                    {
-                      "source_value": {
-                        "id": "{{V1}}: A quoted value of the severity in the External System, eg \"Low\""
-                      },
-                      "selected_resolution": "{{DV1}}: A quoted value of the devrev ticket severity this value is mapped to, on of \"low\", \"medium\" \"high\" or \"blocker\"",
-                      "resolutions": {
-                        "{{DV1}}": {
-                          "id": "{{DV1}}"
-                        }
-                      },
-                      "is_finished": true
-                    },
-                    {
-                      "{{all other possible severity values in the External System}}": "{{mapped similarly}}"
-                    }
-                  ]
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "stage,name",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F8}}"
-              ],
-              "resolutions": {
-                "{{F8}}": {
-                  "source_field_description": {
-                    "id": "{{F8}}",
-                    "is_required": true
-                  },
-                  "dependent_decisions": [
-                    "Value mappings in the same format as for severity, the allowed devrev values are:",
-                    "resolved",
-                    "queued",
-                    "work_in_progress",
-                    "awaiting_product_assist",
-                    "awaiting_development",
-                    "in_development",
-                    "awaiting_customer_response",
-                    "canceled"
-                  ]
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "target_close_date"
-              },
-              "is_immutable": true,
-              "selected_resolutions": [
-                "{{F9}}"
-              ],
-              "resolutions": {
-                "{{F9}}": {
-                  "source_field_description": {
-                    "id": "{{F9}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            },
-            {
-              "destination_field": {
-                "id": "title",
-                "is_required": true
-              },
-              "selected_resolutions": [
-                "{{F10}}"
-              ],
-              "resolutions": {
-                "{{F10}}": {
-                  "source_field_description": {
-                    "id": "{{F10}}",
-                    "is_required": true
-                  }
-                }
-              },
-              "is_finished": true
-            }
-          ]
-        }
-      },
-      "default_target": "work.ticket",
-      "allow_item_type_decisions": true,
-      "is_customizable": true
-    }
-  ],
-  "external_system_short_name": "{{N: A short name of the External System}}"
+  "record_types": {
+    "issues": {},
+    "comments": {}
+  }
 }
 ```
+The declaration of record types is arbitrary, but must match `item_type` field in the artifacts you will upload.
+
+### Declare the custom record types
+
+If the external system supports custom types, or custom variants of some base record type, and you want to airdrop those
+too, you have to declare them in the metadata at runtime. That is, the  extractor will use APIs of the external system to
+dynamically discover what custom record types exist.
+
+The output of this process might look like this:
+
+```json
+{
+"record_types": {
+    "issues_stock_epic": {},
+    "issues_custom2321": {},
+    "issues_custom2322": {},
+    "comments": {}
+  }
+}
+```
+
+### Provide human readable names to  external record types
+
+Define human readable names to the record types defined in you metadata file. 
+```json
+  {
+  "record_types":{
+    "issues_stock_epic":{
+      "name":"Epic"
+    },
+    "issues_custom2321":{
+      "name":"Incident report"
+    },
+    "issues_custom2322":{
+      "name":"Problem"
+    },
+    "comments":{
+      "name":"Comment"
+    }
+  }
+}
+```
+
+### Categorize external record types. 
+
+The metadata allows each external record type to be annotated with one category. The category key can be an arbitrary 
+string, but it must match the categories declared under `record_type_categories`. 
+
+Categories of external record types simplify mappings so that mapping can be applied to a whole category of record types. 
+Categories also provide a way how custom record types can be mapped.
+
+If the external system allows records to change the record type within the category while still perserving identity, this can be defined by the `are_transitions_possible` 
+field in the `record_type_categories` section. For example, if an issue that can be moved to become a problem in the external system.
+
+```json
+{
+  "record_types":{
+    "issues_stock_epic":{
+      "name":"Epic",
+      "category":"issue"
+    },
+    "issues_custom2321":{
+      "name":"Incident report",
+      "category":"issue"
+    },
+    "issues_custom2322":{
+      "name":"Problem",
+      "category":"issue"
+    },
+    "comments":{
+      "name":"Comment"
+    }
+  },
+  "record_type_categories":{
+    "issue":{
+      "are_transitions_possible":true
+    }
+  }
+}
+  ```
+
+### Declare fields for each record type:
+
+The fields key's must match what is actually found in the extracted data in the artifacts.
+
+The supported types are:
+- `bool`,
+- `int`,
+- `float`,
+- `text`,
+- `rich_text` - formatted text with mentions and images.
+- `reference` - a field containing IDs referring to another record. References have to declare what they can refer to,
+which can be either another record type (`#record:`), or a category (`#category:`, or even multiple ones.
+- `enum` - a string from a predefined set of values with the optional human readable names of each value.
+- `date`,
+- `timestamp`,
+- `struct`.
+
+If the external system supports custom fields, the set of custom fields in each record type you wish to extract must be
+declared too.
+
+Enum field's set of possible values can often be customizable. A good practise is to retrieve the set of possible values
+of all enum fields from the external system's APIs in each sync run.
+
+`ID` (primary key) of the record, `created_date` and `modified_date` must not be declared.
+
+Example:
+
+```json
+{
+  "record_types": {
+    "issues_stock_epic": {
+      "name": "Epic",
+      "category": "issue",
+      "fields": {
+        "actual_close_date": {
+          "name": "Closed at",
+          "type": "timestamp"
+        },
+        "owner": {
+          "is_required": true,
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:user": {}
+            }
+          }
+        },
+        "creator": {
+          "is_required": true,
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:user": {}
+            }
+          }
+        },
+        "priority": {
+          "name": "Priority",
+          "is_required": true,
+          "type": "enum",
+          "enum": {
+            "values": [
+              {
+                "key": "P-0",
+                "name": "Super important"
+              },
+              {
+                "key": "P-1"
+              },
+              {
+                "key": "P-2",
+                "is_deprecated": true
+              }
+            ]
+          }
+        },
+        "target_close_date": {
+          "type": "date"
+        },
+        "headline": {
+          "name": "Headline",
+          "is_required": true,
+          "type": "text"
+        }
+      }
+    }
+  }
+}
+```
+
+
+### Declare arrays
+
+If the field is array in the extracted data, it is still typed with the one of the supported types. Lists must be marked as a `collection`.
+
+``` json
+{
+  "name": "Assignees",
+  "is_required": true,
+  "type": "reference",
+  "reference": {
+    "refers_to": {
+      "#category:agents": {}
+    }
+  },
+  "collection": {
+    "max_length": 5
+  }
+}
+```
+
+
+7) Consider special references:
+
+  - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `role` helps airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
+
+  - Sometimes the external system uses other references than the primary key of records, for example referring to a a case by a serial number, or to a user by its email. To correctly resolve, such references must be marked by 'by_field', which must be a field existing in that record type marked 'is_identifier'. For example:
+  ```json
+  {
+  "record_types": {
+    "users": {
+      "fields": {
+        "email": {
+          "type": "text",
+          "is_identifier":true
+        }
+      }
+    },
+    "comments": {
+      "fields": {
+        "user_email": {
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:users": {
+                "by_field": "email"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+  ```

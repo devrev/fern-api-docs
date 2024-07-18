@@ -1,5 +1,3 @@
-# Airdrop-as-a-Service (ADaaS)
-
 Airdrop is DevRev’s solution to migrate data. It allows our customers to bring in their existing data from
 external systems and, data back to external systems, and keep data in sync between DevRev and the external systems.
 You can read more about Airdrop in the [general documentation](https://docs.devrev.ai/import#airdrop-features).
@@ -26,24 +24,5 @@ it extracts and processes, so that they can be transformed, deduplicated and sea
 
 A reverse sync run is a sync from DevRev to an external system. It uses a loader function, to create and/or update data
 in the external system.
-
-## Sync modes
-
-### Initial import
-
-An initial import is the first import of data from the external system to DevRev.
-It is triggered manually by the end user in DevRev's Imports UI.
-
-## 1-way sync
-
-A 1-way sync refers to any extraction after the initial import has been successfully completed.
-An extractor extracts data that was created and/or updated in the external system
-after the start of the latest successful forward sync, including any changes that occurred during the
-forward sync, but were not picked up by it.
-
-A snap-in must consult its state to get information on when the last successful forward sync started. ADaaS snap-ins
-must maintain its own state that persists between phases in a sync run, as well as between sync runs.
-
-
 
 

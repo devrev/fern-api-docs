@@ -1,15 +1,71 @@
-# Data extraction phase
 
-In the data extraction phase, the Extractor is expected to call the External System’s APIs
+In the data extraction phase, the extractor is expected to call the external system’s APIs
 to retrieve all the items that were updated since the start of the last extraction.
-If there was no previous extraction (the current run is an Initial Import), then all the items should be extracted.
-The Extractor should remember at what time it started each extraction,
-so that it can extract only items created and/or updated since this date in the next extraction run.
-The reason for remembering it at the start of the extraction, and not at the end, is to allow some overlap
-in case the items are updated during extraction (which happens very often in bigger organizations).
+If there was no previous extraction (the current run is an initial import), then all the items should be extracted.
 
-Each batch of extracted items (the recommended batch size is 2000-5000 items) must be formatted in JSONL
+The extractor must store at what time it started each extraction in its state,
+so that it can extract only items created and/or updated since this date in the next sync run.
+
+## Triggering event
+
+Airdrop initiates data extraction by starting the Worker with a message with eventType `EXTRACTION_DATA_START`
+when transitioning to the data extraction phase.
+
+During the data extraction phase, the snap-in extracts data from an external system,
+prepares batches of data and uploads them in the form of Artifacts to DevRev.
+
+The Worker must respond to Airdrop with a message with eventType `EXTRACTION_DATA_PROGRESS`,
+together with an optional progress estimate and relevant artifacts
+when it extracts some data and the maximum ADaaS snap-in runtime (12 minutes) has been reached.
+
+If the extraction has been rate-limited by the external system and back-off is required, the snap-in must respond to
+Airdrop with a message with eventType `EXTRACTION_DATA_DELAY` and specifying back-off time with `delay` attribute.
+
+In both cases, Airdrop starts the snap-in with a message with eventType `EXTRACTION_DATA_CONTINUE`.
+The restarting is immediate (in case of `EXTRACTION_DATA_PROGRESS`) or delayed (in case of `EXTRACTION_DATA_DELAY`).
+
+Once the data extraction is done, the snap-in must respond to Airdrop with a message with eventType `EXTRACTION_DATA_DONE`.
+
+If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a message with eventType `EXTRACTION_DATA_ERROR`.
+
+## Snap-in response
+
+During the data extraction phase, the snap-in uploads batches of extracted items (the recommended batch size is 2000 items) formatted in JSONL
 (JSON Lines format), gzipped, and submitted as an Artifact to S3Interact (with tooling from `@devrev/adaas-sdk`).
 
-Each Artifact is submitted with an `item_type`, defining a separate domain object from the External System.
-Item types defined when uploading extracted data must match those in the Initial Domain Mapping Artifact.
+Each artifact is submitted with an `item_type`, defining a separate domain object from the external system and matching with the `record_type` in the provided metadata.
+Item types defined when uploading extracted data must validate the declarations in the those in the metadata file.
+
+Extracted data must be normalized.
+
+- null values: All fields without a value should either be omitted or set to null. For example, if an external system provides values such as "", -1 for missing values, those must be set to null.
+- timestamps: Full-precision timestamps should be formatted as RFC3999 (`1972-03-29T22:04:47+01:00`), and dates should be just "2020-12-31"
+- references: references must be string (not numbers or objects).
+- number fields must be valid JSON numbers (not strings)
+- multiselect fields must be provided as an array (not CSV)
+
+Each line of the file contains `id`, and the optional `created_date` and `modified_date` fields in the beginning of the record.
+All other fields are contained within the `data` attribute.
+
+```json
+{
+    "id": "2102e01F",
+    "created_date": "1972-03-29T22:04:47+01:00",
+    "modified_date": "1970-01-01T01:00:04+01:00",
+    "data": {
+        "actual_close_date": "1970-01-01T02:33:18+01:00",
+        "creator": "b8",
+        "owner": "A3A",
+        "rca": null,
+        "severity": "fatal",
+        "summary": "Lorem ipsum"
+    }
+}
+```
+
+
+Extracted artifacts can be validated with the `chef-cli` using
+
+```bash
+$ chef-cli validate-metadata -m external_domain_metadata.json -r issue < extractor_issues_2.json
+```

@@ -11,14 +11,14 @@ An _initial import_ is the first import of data from the external system to DevR
 It is triggered manually by the end user in DevRev's Imports UI.
 
 An _initial import_ consists of the following phases:
-- external sync units extraction,
-- metadata extraction,
-- data extraction,
-- attachments extraction.
+1. External sync units extraction
+2. Metadata extraction
+3. Data extraction
+4. Attachments extraction
 
 ## 1-way sync
 
-An _1-way sync_ refers to any extraction after the initial import has been successfully completed.
+A _1-way sync_ refers to any extraction after the initial import has been successfully completed.
 An extractor extracts data that was created and/or updated in the external system
 after the start of the latest successful forward sync, including any changes that occurred during the
 forward sync, but were not picked up by it.
@@ -26,17 +26,17 @@ forward sync, but were not picked up by it.
 A snap-in must consult its state to get information on when the last successful forward sync started. ADaaS snap-ins
 must maintain its own state that persists between phases in a sync run, as well as between sync runs.
 
-An 1-way sync consists of the following phases:
-- metadata extraction,
-- data extraction,
-- attachments extraction.
+A 1-way sync consists of the following phases:
+1. Metadata extraction
+2. Data extraction
+3. Attachments extraction
 
-An 1-way sync extracts only the domain objects updated and/or created since the previous successful sync run.
+A 1-way sync extracts only the domain objects updated and/or created since the previous successful sync run.
 
 
 ## Deletion mode
 
 A _deletion_ consists of the following phases:
-- data deletion,
-- attachments deletion.
+1. Data deletion
+2. Attachments deletion
 

@@ -1,18 +1,19 @@
 
-During the extract metadata phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run. This file provides a structured way of describing external system's domain system, describe its domain entities, types, and what are their relationships, and other metadata.
+During the extract metadata phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run.
+This file provides a structured way of describing external system's domain system, including its domain entities, types,
+relationships, and other metadata.
 
 The extraction function of the snap-in must provide a valid metadata file. DevRev provides a JSON schema and a CLI tool `chef-cli` to validate the proposed schema.
 
 
 ## Triggering event
 
-Airdrop initiates the Metadata Extraction by starting the snap-in with a message with event of type `EXTRACTION_METADATA_START`.
+Airdrop initiates the metadata extraction by starting the snap-in with a message with event of type `EXTRACTION_METADATA_START`.
 
-During the Metadata Extraction phase,
-the snap-in extracts relevant metadata from an External System
+During the metadata extraction phase, the snap-in extracts relevant metadata from an external system
 to prepare and upload the Initial Domain Mapping to DevRev.
 
-The snap-in must respond to Airdrop with a message with with event of type `EXTRACTION_METADATA_DONE` when done,
+The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_METADATA_DONE` when done,
 or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Snap-in response
@@ -21,13 +22,20 @@ During the extract metadata phase, the ADaaS snap-in must provide an `external_d
 
 The transformation can be crafted and finalized further using the `chef-cli` to ensure extracted data is mapped consistently to the DevRev domain model.
 
-This
+## Step-by-step approach to crafting the metadata declaration
 
-## How to get started
+Since crafting metadata declaration in the form of `external_domain_metadata.json` file can be a tedious process, a step-by-step
+approach is useful for both understanding the metadata declarations and the both domain system as well as a checklist to
+approach the specification.
 
-### Declare the extracted record types
+Metadata declarations include both _static declarations_ formulated by deduction and comparison of external domain system
+and DevRev domain system and _dynamic declarations_ that are obtained during snap-in runtime from external system APIs
+(since they are configurable in external system and can be changed by the end user at any time, such as
+mandatory fields or custom fields).
 
-Record types are the types of records that has a well-defined schema you extract from or load to the external system, a domain object in the external system.
+1. Declare the extracted record types
+
+_Record types_ are the types of records that has a well-defined schema you extract from or load to the external system, a domain object in the external system.
 
 If the snap-in is extracting issues and comments, a good starting point to declare record types in  `external_domain_metadata.json`  would be:
 
@@ -39,9 +47,9 @@ If the snap-in is extracting issues and comments, a good starting point to decla
   }
 }
 ```
-The declaration of record types is arbitrary, but must match `item_type` field in the artifacts you will upload.
+Although the declaration of record types is arbitrary, they must match the `item_type` field in the artifacts you will upload.
 
-### Declare the custom record types
+2. Declare the custom record types
 
 If the external system supports custom types, or custom variants of some base record type, and you want to airdrop those
 too, you have to declare them in the metadata at runtime. That is, the  extractor will use APIs of the external system to
@@ -60,9 +68,9 @@ The output of this process might look like this:
 }
 ```
 
-### Provide human readable names to  external record types
+3. Provide human-readable names to external record types
 
-Define human readable names to the record types defined in you metadata file. 
+Define human-readable names to the record types defined in you metadata file.
 ```json
   {
   "record_types":{
@@ -82,7 +90,7 @@ Define human readable names to the record types defined in you metadata file.
 }
 ```
 
-### Categorize external record types. 
+4. Categorize external record types.
 
 The metadata allows each external record type to be annotated with one category. The category key can be an arbitrary 
 string, but it must match the categories declared under `record_type_categories`. 
@@ -120,19 +128,19 @@ field in the `record_type_categories` section. For example, if an issue that can
 }
   ```
 
-### Declare fields for each record type:
+5. Declare fields for each record type:
 
 The fields key's must match what is actually found in the extracted data in the artifacts.
 
 The supported types are:
-- `bool`,
-- `int`,
-- `float`,
-- `text`,
-- `rich_text` - formatted text with mentions and images.
-- `reference` - a field containing IDs referring to another record. References have to declare what they can refer to,
-which can be either another record type (`#record:`), or a category (`#category:`, or even multiple ones.
-- `enum` - a string from a predefined set of values with the optional human readable names of each value.
+- `bool`
+- `int`
+- `float`
+- `text`
+- `rich_text`: Formatted text with mentions and images.
+- `reference`: IDs referring to another record. References have to declare what they can refer to,
+which can be one or more record types (`#record:`) or categories (`#category:`).
+- `enum`: A string from a predefined set of values with the optional human-readable names of each value.
 - `date`,
 - `timestamp`,
 - `struct`.
@@ -143,7 +151,7 @@ declared too.
 Enum field's set of possible values can often be customizable. A good practise is to retrieve the set of possible values
 of all enum fields from the external system's APIs in each sync run.
 
-`ID` (primary key) of the record, `created_date` and `modified_date` must not be declared.
+`ID` (primary key) of the record, `created_date`, and `modified_date` must not be declared.
 
 Example:
 
@@ -211,7 +219,7 @@ Example:
 ```
 
 
-### Declare arrays
+6. Declare arrays
 
 If the field is array in the extracted data, it is still typed with the one of the supported types. Lists must be marked as a `collection`.
 
@@ -232,9 +240,9 @@ If the field is array in the extracted data, it is still typed with the one of t
 ```
 
 
-7) Consider special references:
+7. Consider special references:
 
-  - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `role` helps airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
+  - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `role` helps Airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
 
   - Sometimes the external system uses other references than the primary key of records, for example referring to a a case by a serial number, or to a user by its email. To correctly resolve, such references must be marked by 'by_field', which must be a field existing in that record type marked 'is_identifier'. For example:
   ```json

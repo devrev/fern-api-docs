@@ -6,11 +6,11 @@ In the most common extraction use cases, there is nothing to do and snap-ins may
 ### Triggering event
 
 Airdrop initiates the data delete phase when the sync is deleted from DevRev.
-It is started by sending the worker a message with with event of type `EXTRACTION_DATA_DELETE`.
+It is started by sending the worker a message with event of type `EXTRACTION_DATA_DELETE`.
 
 ### Snap-in response
 
-The worker must respond to Airdrop with a message with with event of type `EXTRACTION_DATA_DELETE_DONE` when done or
+The worker must respond to Airdrop with a message with event of type `EXTRACTION_DATA_DELETE_DONE` when done or
 `EXTRACTION_DATA_DELETE_ERROR` in case of an error.
 
 ## Attachments deletion
@@ -19,10 +19,10 @@ The worker must respond to Airdrop with a message with with event of type `EXTRA
 ### Triggering event
 
 Airdrop initiates the attachments delete phase when the sync data is deleted from DevRev.
-It is started by sending the span-in a message with with event of type `EXTRACTION_ATTACHMENTS_DELETE`.
+It is started by sending the span-in a message with event of type `EXTRACTION_ATTACHMENTS_DELETE`.
 
 ### Snap-in response
 
-The snap-in must respond to Airdrop with a message with with event of type `EXTRACTION_ATTACHMENTS_DELETE_DONE` when done,
+The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_ATTACHMENTS_DELETE_DONE` when done,
 or `EXTRACTION_ATTACHMENTS_DELETE_ERROR` in case of an error.
 

@@ -244,7 +244,7 @@ If the field is array in the extracted data, it is still typed with the one of t
 
   - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `role` helps Airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
 
-  - Sometimes the external system uses other references than the primary key of records, for example referring to a a case by a serial number, or to a user by its email. To correctly resolve, such references must be marked by 'by_field', which must be a field existing in that record type marked 'is_identifier'. For example:
+  - Sometimes the external system uses other references than the primary key of records, for example referring to a case by a serial number, or to a user by its email. To correctly resolve, such references must be marked by 'by_field', which must be a field existing in that record type marked 'is_identifier'. For example:
   ```json
   {
   "record_types": {

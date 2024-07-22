@@ -5,6 +5,8 @@ navigation:
         path: ../docs/pages/developer-intro.mdx
   - api: API Reference
     api-name: beta
+    snippets: 
+      typescript: "@fern-api/devrev-beta"
   - section: Guides
     contents:
       - page: Object Customization

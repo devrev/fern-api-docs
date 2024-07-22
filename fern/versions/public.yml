@@ -119,7 +119,7 @@ navigation:
           - page: "Airdrop-as-a-Service (ADaaS)"
             slug: overview
             path: ../docs/pages/adaas/overview.mdx
-          - page: "Getting Started"
+          - page: "Getting started"
             slug: getting-started
             path: ../docs/pages/adaas/getting-started.mdx
           - page: "Extraction Phases"

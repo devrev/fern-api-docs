@@ -19,10 +19,10 @@ External sync unit extraction is executed only during the initial import.
 It extracts external sync units available in the external system,
 so that the end user can choose which external sync unit should be airdropped during the creation of an **Import** on DevRev App.
 
-Airdrop initiates the external sync unit extraction phase by starting the worker with a message with event of type `EVENT_TYPE`:
+Airdrop initiates the external sync unit extraction phase by starting the worker with a message with event of type
 `EXTRACTION_EXTERNAL_SYNC_UNITS_START` to start the external sync unit extraction.
 
-The snap-in must respond to Airdrop with a message with `with event of type `EVENT_TYPE`` `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE`
+The snap-in must respond to Airdrop with a message with with event of type `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE`
 with a list of external sync units as a payload, or `EXTRACTION_EXTERNAL_SYNC_UNITS_ERROR` in case of an error.
 
 ## Snap-in response

@@ -1,5 +1,9 @@
-Airdrop extractions are done in sync runs, and each sync run is comprised out of phases.
-Phases follow sequentially, and each can consist of one or more invocations of the worker.
+Airdrop extractions are done in _sync runs_. A sync run is one execution of an import or sync. If you do an inital import from
+the external system to DevRev, that import will be one sync run. If you then decide to do a reverse sync from DevRev to
+external system, that would be another sync run.
+
+Each sync run is comprised out of phases. Phases follow sequentially, and each can consist of one or more invocations
+of the snap-in.
 
 ![ADaaS extraction phases](../../img/adaas/adaas-extraction-phases.svg)
 

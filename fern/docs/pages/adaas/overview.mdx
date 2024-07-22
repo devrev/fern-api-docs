@@ -7,7 +7,7 @@ It enables developers to create external workers (extractors and loaders) to bri
 
 ![ADaaS architecture](../../img/adaas/adaas-architecture.svg)
 
-An _extractor_ is a function in an ADaaS-capable snap-in responsible for extracting data from an external system, such as Jira, Zendesk,
+An _extractor_ is a function in an ADaaS-capable snap-in responsible for extracting data from an _external system_, such as Jira, Zendesk,
 or HubSpot. It uses a standardized communication protocol for talking to Airdrop and a standardized
 data structure for all the files it extracts and processes, so that they can be seamlessly imported into DevRev.
 
@@ -19,7 +19,7 @@ of ADaaS snap-in to bring the data to DevRev or load the data to the external sy
 A _forward sync_ is a sync run from an external system to DevRev. An extractor function in the snap-in is responsible for extracting data from the
 external system.
 
-A _reverse sync_ is a sync run from DevRev to an external system. It uses a loader function, to create and/or update data
+A _reverse sync_ is a sync run from DevRev to an external system. It uses a loader function, to create or update data
 in the external system.
 
 

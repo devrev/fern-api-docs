@@ -12,9 +12,9 @@ then `Create a new repository`
 5. Configure a keyring for the external system in the `manifest.yaml`.
 See [Keyrings](../references/keyrings/introduction.mdx).
 6. Deploy a draft version of your Snap-In to you DevOrg using `make deploy`.
-7. Install the snap-in in your DevRev DevOrg on the web by navigating to **Settings** > **Snap-ins** > **Install snap-in**.
-8. Define the `Connection`.
-9. Create an `Import.`
+7. Install the snap-in in your DevRev DevOrg on the web by navigating to **Settings** > **Snap-ins** **Settings** > **Imports** `Import.` **Install snap-in**.
+8. Define the connection by navigating to **Settings** > **Imports** > `Connections`.
+9. Create an import by navigating to **Settings** > **Imports** > `Import.`
 
 
 ## Creating keyrings
@@ -27,7 +27,7 @@ This eliminates the need to expose sensitive information like passwords
 or access tokens directly within your code or configuration files, enhancing overall security. They also provide a valid
 token by abstracting Oauth token renewal from the end user.
 
-A keyring is used by a worker to authenticate to the external system in API calls. They includes the key (for example,
+A keyring is used by a worker to authenticate to the external system in API calls. They include the key (for example,
 a PAT or API key), its type, the organization ID for which a key is valid, and in some cases the organization name.
 
 Read more about keyrings in the [developer documentation](/snapin-development/references/keyrings).

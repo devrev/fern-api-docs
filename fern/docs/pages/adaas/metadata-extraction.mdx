@@ -1,32 +1,27 @@
 
-During the extract metadata phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run.
+During the metadata extraction phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run.
 This file provides a structured way of describing external system's domain system, including its domain entities, types,
 relationships, and other metadata.
 
 The extraction function of the snap-in must provide a valid metadata file. DevRev provides a JSON schema and a CLI tool `chef-cli` to validate the proposed schema.
 
-
 ## Triggering event
 
 Airdrop initiates the metadata extraction by starting the snap-in with a message with event of type `EXTRACTION_METADATA_START`.
-
-During the metadata extraction phase, the snap-in extracts relevant metadata from an external system
-to prepare and upload the Initial Domain Mapping to DevRev.
 
 The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_METADATA_DONE` when done,
 or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Snap-in response
 
-During the extract metadata phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run.
+During the metadata extraction phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run.
 
 The transformation can be crafted and finalized further using the `chef-cli` to ensure extracted data is mapped consistently to the DevRev domain model.
 
 ## Step-by-step approach to crafting the metadata declaration
 
 Since crafting metadata declaration in the form of `external_domain_metadata.json` file can be a tedious process, a step-by-step
-approach is useful for both understanding the metadata declarations and the both domain system as well as a checklist to
-approach the specification.
+approach is useful for understanding the metadata declarations and as a checklist to declare the metadata for an extraction from a specific external system.
 
 Metadata declarations include both _static declarations_ formulated by deduction and comparison of external domain system
 and DevRev domain system and _dynamic declarations_ that are obtained during snap-in runtime from external system APIs
@@ -98,8 +93,9 @@ string, but it must match the categories declared under `record_type_categories`
 Categories of external record types simplify mappings so that mapping can be applied to a whole category of record types. 
 Categories also provide a way how custom record types can be mapped.
 
-If the external system allows records to change the record type within the category while still perserving identity, this can be defined by the `are_transitions_possible` 
-field in the `record_type_categories` section. For example, if an issue that can be moved to become a problem in the external system.
+If the external system allows records to change the record type within the category while still perserving identity,
+this can be defined by the `are_transitions_possible` field in the `record_type_categories` section. For example, if
+an issue that can be moved to become a problem in the external system.
 
 ```json
 {

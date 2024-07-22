@@ -12,7 +12,7 @@ Airdrop initiates data extraction by starting the snap-in with a message with ev
 when transitioning to the data extraction phase.
 
 During the data extraction phase, the snap-in extracts data from an external system,
-prepares batches of data and uploads them in the form of Artifacts to DevRev.
+prepares batches of data and uploads them in the form of artifacts to DevRev.
 
 The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_DATA_PROGRESS`,
 together with an optional progress estimate and relevant artifacts
@@ -31,7 +31,7 @@ If data extraction failed in any moment of extraction, the snap-in must respond 
 ## Snap-in response
 
 During the data extraction phase, the snap-in uploads batches of extracted items (the recommended batch size is 2000 items) formatted in JSONL
-(JSON Lines format), gzipped, and submitted as an Artifact to S3Interact (with tooling from `@devrev/adaas-sdk`).
+(JSON Lines format), gzipped, and submitted as an artifact to S3Interact (with tooling from `@devrev/adaas-sdk`).
 
 Each artifact is submitted with an `item_type`, defining a separate domain object from the external system and matching with the `record_type` in the provided metadata.
 Item types defined when uploading extracted data must validate the declarations in the those in the metadata file.

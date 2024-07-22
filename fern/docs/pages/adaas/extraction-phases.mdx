@@ -7,10 +7,10 @@ Phases follow sequentially, and each can consist of one or more invocations of t
 
 ### Initial import
 
-An initial import is the first import of data from the external system to DevRev.
+An _initial import_ is the first import of data from the external system to DevRev.
 It is triggered manually by the end user in DevRev's Imports UI.
 
-An initial import consists of the following phases:
+An _initial import_ consists of the following phases:
 - external sync units extraction,
 - metadata extraction,
 - data extraction,
@@ -18,7 +18,7 @@ An initial import consists of the following phases:
 
 ## 1-way sync
 
-An 1-way sync refers to any extraction after the initial import has been successfully completed.
+An _1-way sync_ refers to any extraction after the initial import has been successfully completed.
 An extractor extracts data that was created and/or updated in the external system
 after the start of the latest successful forward sync, including any changes that occurred during the
 forward sync, but were not picked up by it.
@@ -36,7 +36,7 @@ An 1-way sync extracts only the domain objects updated and/or created since the 
 
 ## Deletion mode
 
-A deletion sync consists of the following phases:
+A _deletion_ consists of the following phases:
 - data deletion,
 - attachments deletion.
 

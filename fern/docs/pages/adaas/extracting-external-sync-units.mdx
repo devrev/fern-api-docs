@@ -1,4 +1,4 @@
-In the external sync unit extraction phase, the extractor is expected to get the list of projects, repositories, etc.
+In the external sync unit extraction phase, the extractor is expected to get the list of projects, repositories, and so forth.
 (whatever the equivalent of those is called in the External System)
 that it can extract with the provided credentials and send it to Airdrop in its response.
 
@@ -10,7 +10,7 @@ It usually combines contacts, users, work-like items, and comments into a unit o
 Some some external systems may offer a single unit in their free plans,
 while their enterprise plans may offer their clients to operate many separate units.
 
-The External Sync Unit ID is the identifier of the project, repository, etc. in the external system.
+The External Sync Unit ID is the identifier of the project, repository, ajd. in the external system.
 For GitHub, this would be the repository, for example `cli` in `github.com/devrev/cli`.
 
 ## Triggering event
@@ -19,7 +19,7 @@ External sync unit extraction is executed only during the initial import.
 It extracts external sync units available in the external system,
 so that the end user can choose which external sync unit should be airdropped during the creation of an **Import** on DevRev App.
 
-Airdrop initiates the external sync unit extraction phase by starting the worker with a message with with event of type `EVENT_TYPE`:
+Airdrop initiates the external sync unit extraction phase by starting the worker with a message with event of type `EVENT_TYPE`:
 `EXTRACTION_EXTERNAL_SYNC_UNITS_START` to start the external sync unit extraction.
 
 The snap-in must respond to Airdrop with a message with `with event of type `EVENT_TYPE`` `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE`
@@ -31,7 +31,7 @@ Snap-in provides the list of external sync units in the provided event message `
 - id: This is the unique identifier in the external system
 - name: This is the human-readable name in the external system
 - description: A short description if the external system provides it
-- item count (item_count): The number of items (issues, tickets, comments, etc.) in the external system,
+- item count (item_count): The number of items (issues, tickets, comments and others) in the external system,
 if it can be obtained in a very lightweight manner, such as by calling a special API endpoint.
 If there is no such way to get it, for example, the items would need to be extracted to count them,
 then the item count should be `-1`, to avoid blocking the import with long-running queries.

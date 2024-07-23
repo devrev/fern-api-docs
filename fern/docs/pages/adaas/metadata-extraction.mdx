@@ -1,15 +1,15 @@
 
 During the metadata extraction phase, the ADaaS snap-in must provide an `external_domain_metadata.json` file on each sync run.
-This file provides a structured way of describing external system's domain system, including its domain entities, types,
+This file provides a structured way of describing the external system's domain system, including its domain entities, types,
 relationships, and other metadata.
 
 The extraction function of the snap-in must provide a valid metadata file. DevRev provides a JSON schema and a CLI tool `chef-cli` to validate the proposed schema.
 
 ## Triggering event
 
-Airdrop initiates the metadata extraction by starting the snap-in with a message with event of type `EXTRACTION_METADATA_START`.
+Airdrop initiates the metadata extraction by starting the snap-in with a message with an event of type `EXTRACTION_METADATA_START`.
 
-The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_METADATA_DONE` when done,
+The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_METADATA_DONE` when done,
 or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Snap-in response
@@ -20,12 +20,12 @@ The transformation can be crafted and finalized further using the `chef-cli` to 
 
 ## Step-by-step approach to crafting the metadata declaration
 
-Since crafting metadata declaration in the form of `external_domain_metadata.json` file can be a tedious process, a step-by-step
+Since crafting metadata declaration in the form of an `external_domain_metadata.json` file can be a tedious process, a step-by-step
 approach is useful for understanding the metadata declarations and as a checklist to declare the metadata for an extraction from a specific external system.
 
-Metadata declarations include both _static declarations_ formulated by deduction and comparison of external domain system
-and DevRev domain system and _dynamic declarations_ that are obtained during snap-in runtime from external system APIs
-(since they are configurable in external system and can be changed by the end user at any time, such as
+Metadata declarations include both _static declarations_, formulated by deduction and comparison of external domain system,
+and DevRev domain system and _dynamic declarations_ that are obtained during a snap-in run from external system APIs
+(since they are configurable in the external system and can be changed by the end user at any time, such as
 mandatory fields or custom fields).
 
 1. Declare the extracted record types
@@ -65,7 +65,7 @@ The output of this process might look like this:
 
 3. Provide human-readable names to external record types
 
-Define human-readable names to the record types defined in you metadata file.
+Define human-readable names for the record types defined in your metadata file.
 ```json
   {
   "record_types":{
@@ -90,10 +90,10 @@ Define human-readable names to the record types defined in you metadata file.
 The metadata allows each external record type to be annotated with one category. The category key can be an arbitrary 
 string, but it must match the categories declared under `record_type_categories`. 
 
-Categories of external record types simplify mappings so that mapping can be applied to a whole category of record types. 
+Categories of external record types simplify mappings so that a mapping can be applied to a whole category of record types. 
 Categories also provide a way how custom record types can be mapped.
 
-If the external system allows records to change the record type within the category while still perserving identity,
+If the external system allows records to change the record type within the category, while still preserving identity,
 this can be defined by the `are_transitions_possible` field in the `record_type_categories` section. For example, if
 an issue that can be moved to become a problem in the external system.
 
@@ -126,7 +126,7 @@ an issue that can be moved to become a problem in the external system.
 
 5. Declare fields for each record type:
 
-The fields key's must match what is actually found in the extracted data in the artifacts.
+Fields' keys must match what is actually found in the extracted data in the artifacts.
 
 The supported types are:
 - `bool`
@@ -136,7 +136,7 @@ The supported types are:
 - `rich_text`: Formatted text with mentions and images.
 - `reference`: IDs referring to another record. References have to declare what they can refer to,
 which can be one or more record types (`#record:`) or categories (`#category:`).
-- `enum`: A string from a predefined set of values with the optional human-readable names of each value.
+- `enum`: A string from a predefined set of values with the optional human-readable names for each value.
 - `date`,
 - `timestamp`,
 - `struct`.
@@ -144,8 +144,8 @@ which can be one or more record types (`#record:`) or categories (`#category:`).
 If the external system supports custom fields, the set of custom fields in each record type you wish to extract must be
 declared too.
 
-Enum field's set of possible values can often be customizable. A good practise is to retrieve the set of possible values
-of all enum fields from the external system's APIs in each sync run.
+Enum fields' set of possible values can often be customizable. A good practice is to retrieve the set of possible values
+for all enum fields from the external system's APIs in each sync run.
 
 `ID` (primary key) of the record, `created_date`, and `modified_date` must not be declared.
 
@@ -240,7 +240,7 @@ If the field is array in the extracted data, it is still typed with the one of t
 
   - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `role` helps Airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
 
-  - Sometimes the external system uses other references than the primary key of records, for example referring to a case by a serial number, or to a user by its email. To correctly resolve, such references must be marked by 'by_field', which must be a field existing in that record type marked 'is_identifier'. For example:
+  - Sometimes the external system uses references besides the primary key of records, for example when referring to a case by serial number, or to a user by their email. To correctly resolve such references, they must be marked with 'by_field', which must be a field existing in that record type, marked 'is_identifier'. For example:
   ```json
   {
   "record_types": {

@@ -3,25 +3,25 @@ using the `S3Interact` API.
 
 ## Triggering event
 
-Airdrop initiates the attachment extraction by starting the snap-in with a message with event of type  `EXTRACTION_ATTACHMENTS_START`
-after the data is extracted, transformed and loaded to DevRev.
+Airdrop initiates the attachment extraction by starting the snap-in with a message with an event of type `EXTRACTION_ATTACHMENTS_START`.
+This is done after the data extraction, transformation and loading into DevRev are completed.
 
 During the attachment extraction phase,
 the snap-in extracts attachments from the external system and uploads them as artifacts to DevRev.
 
-The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_ATTACHMENTS_PROGRESS` together with an optional progress estimate and relevant artifacts
-when it extracts some data and the maximum snap-in runtime (12 minutes) has been reached.
+The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_ATTACHMENTS_PROGRESS` together with an optional progress estimate and relevant artifacts
+when it extracts some data and the maximum snap-in run time (12 minutes) has been reached.
 
-The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_ATTACHMENTS_DELAY` and specify a back-off time
+The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_ATTACHMENTS_DELAY` and specify a back-off time
 when the extraction has been rate-limited by the external system and back-off is required.
 
-In both cases, Airdrop starts the snap-in with a message with event of type `EXTRACTION_ATTACHMENTS_CONTINUE`.
-The restart is immediate (in case of `EXTRACTION_ATTACHMENTS_PROGRESS`) or delayed
-(in case of `EXTRACTION_ATTACHMENTS_DELAY`).
+In both cases, Airdrop starts the snap-in with a message with an event of type `EXTRACTION_ATTACHMENTS_CONTINUE`.
+The restart is immediate in case of `EXTRACTION_ATTACHMENTS_PROGRESS`, or delayed
+in case of `EXTRACTION_ATTACHMENTS_DELAY`.
 
-Once the attachment extraction phase is done, the snap-in must respond to Airdrop with a message with event of type `EXTRACTION_ATTACHMENTS_DONE`.
+Once the attachment extraction phase is done, the snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_ATTACHMENTS_DONE`.
 
-If attachment extraction fails, the snap-in must respond to Airdrop with a message with event of type `EXTRACTION_ATTACHMENTS_ERROR`.
+If attachment extraction fails the snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_ATTACHMENTS_ERROR`.
 
 ## Snap-in response
 
@@ -31,8 +31,7 @@ the extracted and uploaded attachments.
 It should contain the DevRev IDs of the extracted and uploaded attachments, along with the parent domain object ID
 from the external system and the actor ID from the external system.
 
-The uploaded artifact is structured like a normal artifact containing extracted data in JSON Lines format with specifying the
-`ssor_attachment` as an item type.
+The uploaded artifact is structured like a normal artifact containing extracted data in JSON Lines (JSONL) format and requires specifying `ssor_attachment` as the item type.
 
 ## Examples
 

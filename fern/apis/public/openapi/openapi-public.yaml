@@ -819,7 +819,6 @@ components:
         - urn:devrev:params:oauth:token-type:session
         - urn:devrev:params:oauth:token-type:sysu
         - urn:devrev:params:oauth:token-type:userinfo
-        - urn:devrev:params:oauth:token-type:userinfo:profile
         - urn:ietf:params:oauth:token-type:jwt
       x-fern-enum:
         urn:devrev:params:oauth:token-type:jwt:auth0:
@@ -838,8 +837,6 @@ components:
           name: urn-devrev-params-oauth-token-type-sysu
         urn:devrev:params:oauth:token-type:userinfo:
           name: urn-devrev-params-oauth-token-type-userinfo
-        urn:devrev:params:oauth:token-type:userinfo:profile:
-          name: urn-devrev-params-oauth-token-type-userinfo-profile
         urn:ietf:params:oauth:token-type:jwt:
           name: urn-ietf-params-oauth-token-type-jwt
     auth-token-token-type:
@@ -1640,6 +1637,7 @@ components:
               invalid_enum_value: '#/components/schemas/error-bad-request-invalid-enum-value'
               invalid_field: '#/components/schemas/error-bad-request-invalid-field'
               invalid_id: '#/components/schemas/error-bad-request-invalid-id'
+              merge_works_error: '#/components/schemas/error-bad-request-merge-works-error'
               missing_dependency: '#/components/schemas/error-bad-request-missing-dependency'
               missing_required_field: '#/components/schemas/error-bad-request-missing-required-field'
               parse_error: '#/components/schemas/error-bad-request-parse-error'
@@ -1655,6 +1653,7 @@ components:
             - $ref: '#/components/schemas/error-bad-request-invalid-enum-value'
             - $ref: '#/components/schemas/error-bad-request-invalid-field'
             - $ref: '#/components/schemas/error-bad-request-invalid-id'
+            - $ref: '#/components/schemas/error-bad-request-merge-works-error'
             - $ref: '#/components/schemas/error-bad-request-missing-dependency'
             - $ref: '#/components/schemas/error-bad-request-missing-required-field'
             - $ref: '#/components/schemas/error-bad-request-parse-error'
@@ -1732,6 +1731,83 @@ components:
       required:
         - field_name
       title: error-bad-request-invalid-id
+    error-bad-request-merge-works-error:
+      type: object
+      properties:
+        errors:
+          type: array
+          description: |
+            The errors encountered during the validation of the merge.
+          items:
+            $ref: '#/components/schemas/error-bad-request-merge-works-error-error'
+      title: error-bad-request-merge-works-error
+    error-bad-request-merge-works-error-error:
+      type: object
+      properties:
+        already_merged:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-already-merged'
+        closed:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-closed'
+        details:
+          type: string
+          description: The details of the error.
+        different_workspace:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-different-workspace'
+        invalid_stage_transition:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-invalid-stage-transition'
+        subtype:
+          type: string
+          enum:
+            - already_merged
+            - closed
+            - different_workspace
+            - invalid_stage_transition
+        work:
+          type: string
+          description: The ID of the work which failed the validation.
+      required:
+        - details
+        - work
+      title: error-bad-request-merge-works-error-error
+    error-bad-request-merge-works-error-error-already-merged:
+      type: object
+      properties:
+        merged_into:
+          type: string
+          description: ID of the work into which the work was merged.
+      required:
+        - merged_into
+      title: error-bad-request-merge-works-error-error-already-merged
+    error-bad-request-merge-works-error-error-closed:
+      type: object
+      additionalProperties: false
+      title: error-bad-request-merge-works-error-error-closed
+    error-bad-request-merge-works-error-error-different-workspace:
+      type: object
+      properties:
+        primary_workspace:
+          type: string
+          description: The workspace of the primary work.
+        secondary_workspace:
+          type: string
+          description: The workspace of the secondary work.
+      required:
+        - primary_workspace
+        - secondary_workspace
+      title: error-bad-request-merge-works-error-error-different-workspace
+    error-bad-request-merge-works-error-error-invalid-stage-transition:
+      type: object
+      properties:
+        current_stage:
+          type: string
+          description: The current stage of the work.
+        requested_stage:
+          type: string
+          description: The stage to which the transition isn't allowed.
+      required:
+        - current_stage
+        - requested_stage
+      title: error-bad-request-merge-works-error-error-invalid-stage-transition
     error-bad-request-missing-dependency:
       type: object
       properties:
@@ -1798,6 +1874,7 @@ components:
         - invalid_enum_value
         - invalid_field
         - invalid_id
+        - merge_works_error
         - missing_dependency
         - missing_required_field
         - parse_error

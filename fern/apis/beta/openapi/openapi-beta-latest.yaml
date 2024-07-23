@@ -681,6 +681,11 @@ components:
                 $ref: '#/components/schemas/part-summary'
             article_type:
               $ref: '#/components/schemas/article-type'
+            authored_by:
+              type: array
+              description: Users that authored the article.
+              items:
+                $ref: '#/components/schemas/user-summary'
             description:
               type: string
               description: Description of the article.
@@ -697,6 +702,11 @@ components:
               type: integer
               description: Number of upvotes on the article.
               format: int32
+            owned_by:
+              type: array
+              description: The users that own the article.
+              items:
+                $ref: '#/components/schemas/user-summary'
             parent:
               $ref: '#/components/schemas/directory-summary'
             rank:
@@ -704,11 +714,14 @@ components:
               description: Rank of the article.
             resource:
               $ref: '#/components/schemas/resource'
+            scope:
+              $ref: '#/components/schemas/enum-value'
             title:
               type: string
               description: Title of the article.
           required:
             - applies_to_parts
+            - owned_by
       title: article
     article-search-summary:
       allOf:
@@ -797,6 +810,14 @@ components:
             - DEVU-12345
           items:
             type: string
+        scope:
+          type: array
+          description: |
+            Filter for the scope of the articles. If this is not provided, then
+            only external articles are returned.
+          items:
+            type: integer
+            format: int64
         shared_with:
           type: array
           description: Filter for articles based on intended audience.
@@ -867,6 +888,10 @@ components:
           format: date-time
         resource:
           $ref: '#/components/schemas/articles-create-request-resource'
+        scope:
+          type: integer
+          description: The scope of the article.
+          format: int64
         shared_with:
           type: array
           description: |
@@ -1015,6 +1040,14 @@ components:
             - DEVU-12345
           items:
             type: string
+        scope:
+          type: array
+          description: |
+            Filter for the scope of the articles. If this is not provided, then
+            only external articles are returned.
+          items:
+            type: integer
+            format: int64
         shared_with:
           type: array
           description: Filter for articles based on intended audience.
@@ -1610,6 +1643,17 @@ components:
             branch:
               type: string
               description: Name of the code branch in the repo.
+            closed_date:
+              type: string
+              description: |
+                Time at which the code change corresponding to this object reached
+                a closed or merged stage. For example, the time at which a Pull
+                Request was either closed without merging or successfully merged.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            commit_id:
+              type: string
+              description: Commit ID of the merged commit in the target branch.
             description:
               type: string
               description: Detailed description of the contents of this change.
@@ -1624,6 +1668,9 @@ components:
               description: URL pointing to the repo this change was on.
             source:
               $ref: '#/components/schemas/code-change-source'
+            target_branch:
+              type: string
+              description: Name of the target branch in the repo.
             title:
               type: string
               description: Title describing in brief the contents of this change.
@@ -3753,6 +3800,7 @@ components:
               invalid_enum_value: '#/components/schemas/error-bad-request-invalid-enum-value'
               invalid_field: '#/components/schemas/error-bad-request-invalid-field'
               invalid_id: '#/components/schemas/error-bad-request-invalid-id'
+              merge_works_error: '#/components/schemas/error-bad-request-merge-works-error'
               missing_dependency: '#/components/schemas/error-bad-request-missing-dependency'
               missing_required_field: '#/components/schemas/error-bad-request-missing-required-field'
               parse_error: '#/components/schemas/error-bad-request-parse-error'
@@ -3768,6 +3816,7 @@ components:
             - $ref: '#/components/schemas/error-bad-request-invalid-enum-value'
             - $ref: '#/components/schemas/error-bad-request-invalid-field'
             - $ref: '#/components/schemas/error-bad-request-invalid-id'
+            - $ref: '#/components/schemas/error-bad-request-merge-works-error'
             - $ref: '#/components/schemas/error-bad-request-missing-dependency'
             - $ref: '#/components/schemas/error-bad-request-missing-required-field'
             - $ref: '#/components/schemas/error-bad-request-parse-error'
@@ -3845,6 +3894,83 @@ components:
       required:
         - field_name
       title: error-bad-request-invalid-id
+    error-bad-request-merge-works-error:
+      type: object
+      properties:
+        errors:
+          type: array
+          description: |
+            The errors encountered during the validation of the merge.
+          items:
+            $ref: '#/components/schemas/error-bad-request-merge-works-error-error'
+      title: error-bad-request-merge-works-error
+    error-bad-request-merge-works-error-error:
+      type: object
+      properties:
+        already_merged:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-already-merged'
+        closed:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-closed'
+        details:
+          type: string
+          description: The details of the error.
+        different_workspace:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-different-workspace'
+        invalid_stage_transition:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-invalid-stage-transition'
+        subtype:
+          type: string
+          enum:
+            - already_merged
+            - closed
+            - different_workspace
+            - invalid_stage_transition
+        work:
+          type: string
+          description: The ID of the work which failed the validation.
+      required:
+        - details
+        - work
+      title: error-bad-request-merge-works-error-error
+    error-bad-request-merge-works-error-error-already-merged:
+      type: object
+      properties:
+        merged_into:
+          type: string
+          description: ID of the work into which the work was merged.
+      required:
+        - merged_into
+      title: error-bad-request-merge-works-error-error-already-merged
+    error-bad-request-merge-works-error-error-closed:
+      type: object
+      additionalProperties: false
+      title: error-bad-request-merge-works-error-error-closed
+    error-bad-request-merge-works-error-error-different-workspace:
+      type: object
+      properties:
+        primary_workspace:
+          type: string
+          description: The workspace of the primary work.
+        secondary_workspace:
+          type: string
+          description: The workspace of the secondary work.
+      required:
+        - primary_workspace
+        - secondary_workspace
+      title: error-bad-request-merge-works-error-error-different-workspace
+    error-bad-request-merge-works-error-error-invalid-stage-transition:
+      type: object
+      properties:
+        current_stage:
+          type: string
+          description: The current stage of the work.
+        requested_stage:
+          type: string
+          description: The stage to which the transition isn't allowed.
+      required:
+        - current_stage
+        - requested_stage
+      title: error-bad-request-merge-works-error-error-invalid-stage-transition
     error-bad-request-missing-dependency:
       type: object
       properties:
@@ -3911,6 +4037,7 @@ components:
         - invalid_enum_value
         - invalid_field
         - invalid_id
+        - merge_works_error
         - missing_dependency
         - missing_required_field
         - parse_error
@@ -5207,6 +5334,7 @@ components:
       type: string
       description: Type of link used to define the relationship.
       enum:
+        - custom_link
         - developed_with
         - imports
         - is_dependent_on
@@ -5317,6 +5445,13 @@ components:
         object:
           type: string
           description: The ID of the object to list the links for.
+        object_types:
+          type: array
+          description: |
+            The object types to filter for, otherwise if not present, all
+            object types are included.
+          items:
+            $ref: '#/components/schemas/link-endpoint-type'
         types:
           type: array
           deprecated: true
@@ -7417,6 +7552,11 @@ components:
       description: |
         Request object to create a new Rev user for a Rev organization.
       properties:
+        account:
+          type: string
+          description: |
+            The ID of the account to which the created Rev user is associated.
+          example: ACC-12345
         artifacts:
           type: array
           description: The IDs of the artifacts to associate with the Rev user.
@@ -9876,6 +10016,14 @@ components:
           description: Filters for survey responses created for the objects.
           example:
             - ACC-12345
+          items:
+            type: string
+        recipient:
+          type: array
+          description: |
+            Filters for survey responses dispatched to any of these users.
+          example:
+            - DEVU-12345
           items:
             type: string
         sort_by:
@@ -13225,6 +13373,17 @@ paths:
               - DEVU-12345
             items:
               type: string
+        - description: |
+            Filter for the scope of the articles. If this is not provided, then
+            only external articles are returned.
+          explode: false
+          in: query
+          name: scope
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         "200":
           content:
@@ -13501,6 +13660,17 @@ paths:
               - DEVU-12345
             items:
               type: string
+        - description: |
+            Filter for the scope of the articles. If this is not provided, then
+            only external articles are returned.
+          explode: false
+          in: query
+          name: scope
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         "200":
           content:
@@ -15624,6 +15794,16 @@ paths:
           name: mode
           schema:
             $ref: '#/components/schemas/list-mode'
+        - description: |
+            The object types to filter for, otherwise if not present, all object
+            types are included.
+          explode: false
+          in: query
+          name: object_types
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/link-endpoint-type'
         - description: |
             The link types to filter for, otherwise if not present, all link
             types are included.
@@ -19512,6 +19692,17 @@ paths:
             type: array
             example:
               - ACC-12345
+            items:
+              type: string
+        - description: |
+            Filters for survey responses dispatched to any of these users.
+          explode: false
+          in: query
+          name: recipient
+          schema:
+            type: array
+            example:
+              - DEVU-12345
             items:
               type: string
         - description: |

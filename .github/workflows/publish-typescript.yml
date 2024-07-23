@@ -1,6 +1,11 @@
 name: Release TypeScript SDK
 
 on:
+  push: 
+    paths:
+      - "fern/apis/beta"
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version:
@@ -39,7 +44,11 @@ jobs:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          fern generate --group ts-sdk --version ${{ inputs.version }} --log-level debug
+          if ${{ github.event.inputs.version }}; then
+            fern generate --api beta --group ts-sdk --version ${{ inputs.version }} --log-level debug
+          else
+            fern generate --api beta --group ts-sdk --log-level debug
+          fi
       
       - name: Update Code Snippets
         env:

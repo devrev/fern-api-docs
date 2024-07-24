@@ -38,6 +38,15 @@ The framework for executing code provided by users is [functions](/snapin-develo
 
 Connection values can be passed to a function at runtime, enabling it to execute API calls to DevRev and to external systems such as GitHub, Slack, Bitbucket, and Discord.
 
+## Keyring
+
+A [keyring](/snapin-development/references/keyrings/introduction) is a collection of authentication information for external systems. This includes the key (e.g., a PAT token or API key), its type, the organization ID for which a key is valid,
+and in some cases the organization name. A keyring is used by a snap-ins to authenticate to the external system in API calls.
+
+## Imports
+
+Snap-ins that provide an extractor function for an [ADaaS](/snapin-development/adaas/overview) snap-in responsible for extracting data from an external system need to have an import section defined in their manifest to register their snap-in in the **Imports** section of the DevRev app.
+
 ## Globals
 
 Snap-ins can be configured to enable and disable features, based on custom inputs defined by the developer and provided by the installer.

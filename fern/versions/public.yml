@@ -113,6 +113,33 @@ navigation:
           - page: Snap-in triggered by an external source
             slug: triggered-external-source
             path: ../docs/pages/tutorials/triggered-external-source.mdx
+      - section: ADaaS
+        slug: adaas
+        contents:
+          - page: "Airdrop-as-a-Service (ADaaS)"
+            slug: overview
+            path: ../docs/pages/adaas/overview.mdx
+          - page: "Getting started"
+            slug: getting-started
+            path: ../docs/pages/adaas/getting-started.mdx
+          - page: "Extraction phases"
+            slug: extraction-phases
+            path: ../docs/pages/adaas/extraction-phases.mdx
+          - page: "External sync units extraction"
+            slug: external-sync-units-extraction
+            path: ../docs/pages/adaas/external-sync-units-extraction.mdx
+          - page: "Metadata extraction"
+            slug: metadata-extraction
+            path: ../docs/pages/adaas/metadata-extraction.mdx
+          - page: "Data extraction"
+            slug: data-extraction
+            path: ../docs/pages/adaas/data-extraction.mdx
+          - page: "Attachments extraction"
+            slug: extract-attachments
+            path: ../docs/pages/adaas/attachments-extraction.mdx
+          - page: "Data and attachments deletion"
+            slug: data-attachments-deletion
+            path: ../docs/pages/adaas/data-attachments-deletion.mdx
       - section: References
         slug: references
         contents:

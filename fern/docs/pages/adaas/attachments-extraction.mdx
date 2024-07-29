@@ -36,29 +36,29 @@ The uploaded artifact is structured like a normal artifact containing extracted 
 ## Examples
 
 Here is an example of an SSOR attachment file:
-```json
-[
-	{
-		"id": {
-			"external": "don:core:dvrv-us-1:devo/1:artifact/1" // The DON of the uploaded artifact
-		},
-		"parent_id": {
-			"external": "12345" // ID of the parent in the source system
-		},
-		"actor_id": {
-			"external": "123456" // ID of the uploader in the source system
-		}
-	},
-	{
-		"id": {
-			"external": "don:core:dvrv-us-1:devo/1:artifact/2" // The DON of the uploaded artifact
-		},
-		"parent_id": {
-			"external": "12344" // ID of the parent in the source system
-		},
-		"actor_id": {
-			"external": "123457" // ID of the uploader in the source system
-		}
-	}
-]
+```json lines
+{
+  "id": {
+    "devrev": "don:core:dvrv-us-1:devo/1:artifact/1", // DON of the artifact, that S3interact returned
+    "external": "111" // ID of the artifact in the external service
+  },
+  "parent_id": {
+    "external": "1111" // ID of the parent object in the external service
+  },
+  "actor_id": {
+    "external": "11111" // ID of the actor that uploaded/modified the artifact in the external service
+  }
+}
+{
+  "id": {
+    "devrev": "don:core:dvrv-us-1:devo/1:artifact/2",
+    "external": "222"
+  },
+  "parent_id": {
+    "external": "2222"
+  },
+  "actor_id": {
+    "external": "22222"
+  }
+}
 ```

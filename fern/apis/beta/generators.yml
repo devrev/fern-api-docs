@@ -8,9 +8,8 @@ groups:
         version: 0.35.0
         output:
           location: npm
-          package-name: "@fern-api/devrev"
-          # uncomment to publish to npm
-          # token: ${NPM_TOKEN}
+          package-name: "@devrev/api"
+          token: ${NPM_TOKEN}
         github: 
           repository: "devrev/sdk-typescript"
           mode: pull-request

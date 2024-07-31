@@ -44,7 +44,7 @@ jobs:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          if ${{ github.event.inputs.version }}; then
+          if ${{ inputs.version }}; then
             fern generate --api beta --group ts-sdk --version ${{ inputs.version }} --log-level debug
           else
             fern generate --api beta --group ts-sdk --log-level debug

@@ -12,7 +12,6 @@ groups:
           token: ${NPM_TOKEN}
         github: 
           repository: "devrev/sdk-typescript"
-          mode: pull-request
         smart-casing: true
         config: 
           namespaceExport: DevRev

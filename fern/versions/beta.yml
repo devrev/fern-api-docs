@@ -6,7 +6,7 @@ navigation:
   - api: API Reference
     api-name: beta
     snippets: 
-      typescript: "@fern-api/devrev-beta"
+      typescript: "@devrev/api"
   - section: Guides
     contents:
       - page: Object Customization

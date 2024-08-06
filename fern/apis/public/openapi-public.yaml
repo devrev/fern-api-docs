@@ -852,6 +852,13 @@ components:
         display_name:
           type: string
           description: The display name of the account.
+        domains:
+          type: array
+          description: |
+            List of company's domain names on accounts. Example -
+            ['devrev.ai'].
+          items:
+            type: string
       title: auth-tokens-account-traits
     auth-tokens-create-request:
       type: object
@@ -1046,6 +1053,7 @@ components:
           $ref: '#/components/schemas/auth-tokens-account-traits'
         org_ref:
           type: string
+          deprecated: true
           description: An identifier which uniquely identifies a Rev org.
         org_traits:
           $ref: '#/components/schemas/auth-tokens-org-traits'
@@ -1607,18 +1615,19 @@ components:
       title: enhancement-summary
     enum-value:
       type: object
-      description: Enum Value defines the structure for an enum.
+      description: The properties of an enum value.
       properties:
         id:
           type: integer
-          description: Unique ID of the enum value. This is immutable.
+          description: The uiique ID of the enum value.
           format: int64
         label:
           type: string
-          description: Display label of the enum value. This is mutable.
+          description: The display label of the enum value.
         ordinal:
           type: integer
-          description: Order number of the enum value. This is mutable.
+          description: |
+            Used for determining the relative order of the enum value.
           format: int64
       required:
         - id
@@ -2218,13 +2227,39 @@ components:
         id:
           type: string
           description: The ID of the group that was deleted.
+        old_group:
+          $ref: '#/components/schemas/group'
       required:
         - id
       title: event-group-deleted
+    event-group-member-added:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/group-summary'
+        member:
+          $ref: '#/components/schemas/user-summary'
+      required:
+        - group
+        - member
+      title: event-group-member-added
+    event-group-member-removed:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/group-summary'
+        member:
+          $ref: '#/components/schemas/user-summary'
+      required:
+        - group
+        - member
+      title: event-group-member-removed
     event-group-updated:
       type: object
       properties:
         group:
+          $ref: '#/components/schemas/group'
+        old_group:
           $ref: '#/components/schemas/group'
       required:
         - group
@@ -2565,6 +2600,19 @@ components:
           type: string
           description: The job title for the user.
       title: job-history-item
+    keyrings-create-callback-request:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code to exchange for an access token.
+        state:
+          type: string
+          description: State value given to the authorization request.
+      required:
+        - code
+        - state
+      title: keyrings-create-callback-request
     legacy-stage:
       type: object
       description: Describes the current stage of a work item.
@@ -2755,8 +2803,14 @@ components:
             name:
               type: string
               description: Name of the part.
+            owned_by:
+              type: array
+              description: The users that own the part.
+              items:
+                $ref: '#/components/schemas/user-summary'
           required:
             - name
+            - owned_by
       title: part-base-summary
     part-summary:
       type: object
@@ -3878,6 +3932,7 @@ components:
         - plug
         - slack
         - twilio
+        - twilio_sms
     ticket-severity:
       type: string
       description: Severity of the ticket.
@@ -4427,6 +4482,10 @@ components:
           $ref: '#/components/schemas/event-group-created'
         group_deleted:
           $ref: '#/components/schemas/event-group-deleted'
+        group_member_added:
+          $ref: '#/components/schemas/event-group-member-added'
+        group_member_removed:
+          $ref: '#/components/schemas/event-group-member-removed'
         group_updated:
           $ref: '#/components/schemas/event-group-updated'
         id:
@@ -4531,6 +4590,8 @@ components:
         - dev_user_updated
         - group_created
         - group_deleted
+        - group_member_added
+        - group_member_removed
         - group_updated
         - part_created
         - part_deleted
@@ -5448,12 +5509,14 @@ components:
       x-go-name: WorksUpdateResponseBody
   securitySchemes:
     auth-token:
-      type: apiKey
+      type: http
       description: |-
         All the DevRev APIs require a token to authenticate the user. Provide `Authorization: <token>` as a header to every API request.
          [How do I find my token?](https://devrev.ai/docs/apis/auth)
-      in: header
-      name: Authorization
+      scheme: bearer
+      x-fern-bearer:
+        env: DEVREV_TOKEN
+        name: token
 info:
   description: DevRev's REST API.
   title: DevRev REST API
@@ -5494,6 +5557,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
   /accounts.delete:
     post:
       description: Deletes an account.
@@ -5526,6 +5592,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
   /accounts.export:
     get:
       description: Exports a collection of accounts.
@@ -5640,6 +5709,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
       x-request-name: AccountsExportQuery
     post:
       description: Exports a collection of accounts.
@@ -5670,6 +5741,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
   /accounts.get:
     get:
       description: Retrieves an account's information.
@@ -5706,6 +5780,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
       x-request-name: AccountsGetQuery
     post:
       description: Retrieves an account's information.
@@ -5738,6 +5814,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
   /accounts.list:
     get:
       description: Gets a list of accounts.
@@ -5870,6 +5949,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
       x-request-name: AccountsListQuery
     post:
       description: Gets a list of accounts.
@@ -5902,6 +5983,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
   /accounts.update:
     post:
       description: Updates an account's information.
@@ -5936,6 +6020,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
   /artifacts.get:
     get:
       description: Gets the requested artifact's information.
@@ -5978,6 +6065,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
       x-request-name: ArtifactsGetQuery
     post:
       description: Gets the requested artifact's information.
@@ -6010,6 +6099,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
   /artifacts.list:
     get:
       description: List the artifacts attached to an object.
@@ -6044,6 +6136,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
       x-request-name: ArtifactsListQuery
     post:
       description: List the artifacts attached to an object.
@@ -6076,6 +6170,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
   /artifacts.locate:
     get:
       description: Gets the download URL for the artifact.
@@ -6118,6 +6215,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
       x-request-name: ArtifactsLocateQuery
     post:
       description: Gets the download URL for the artifact.
@@ -6150,6 +6249,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
   /artifacts.prepare:
     post:
       description: |
@@ -6181,6 +6283,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
   /auth-tokens.create:
     post:
       description: |
@@ -6215,6 +6320,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
   /auth-tokens.delete:
     post:
       description: |
@@ -6245,6 +6353,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
   /auth-tokens.get:
     get:
       description: |
@@ -6283,6 +6394,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
       x-request-name: AuthTokensGetQuery
     post:
       description: |
@@ -6317,6 +6430,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
   /auth-tokens.list:
     get:
       description: |
@@ -6372,6 +6488,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
       x-request-name: AuthTokensListQuery
     post:
       description: |
@@ -6406,6 +6524,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
   /auth-tokens.self.delete:
     post:
       description: |
@@ -6436,6 +6557,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
   /auth-tokens.update:
     post:
       description: |
@@ -6470,6 +6594,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-orgs.auth-connections.create:
     post:
       description: |
@@ -6507,6 +6634,9 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-orgs.auth-connections.delete:
     post:
       description: |
@@ -6539,6 +6669,9 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-orgs.auth-connections.get:
     get:
       description: Retrieves the details for an authentication connection.
@@ -6575,6 +6708,8 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
       x-request-name: DevOrgAuthConnectionsGetQuery
     post:
       description: Retrieves the details for an authentication connection.
@@ -6608,6 +6743,9 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-orgs.auth-connections.list:
     get:
       description: |
@@ -6638,6 +6776,8 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
       x-request-name: DevOrgAuthConnectionsListQuery
     post:
       description: |
@@ -6673,6 +6813,9 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-orgs.auth-connections.toggle:
     post:
       description: |
@@ -6707,6 +6850,9 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-orgs.auth-connections.update:
     post:
       description: Updates an authentication connection.
@@ -6740,6 +6886,9 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-users.get:
     get:
       description: Gets the requested user's information.
@@ -6775,6 +6924,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - dev-users
+      x-fern-audiences:
+        - docs
       x-request-name: DevUsersGetQuery
     post:
       description: Gets the requested user's information.
@@ -6807,6 +6958,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - dev-users
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-users.list:
     get:
       description: Lists users within your organization.
@@ -6894,6 +7048,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - dev-users
+      x-fern-audiences:
+        - docs
       x-request-name: DevUsersListQuery
     post:
       description: Lists users within your organization.
@@ -6924,6 +7080,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - dev-users
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-users.self:
     get:
       description: Gets the authenticated user's information.
@@ -6949,6 +7108,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - dev-users
+      x-fern-audiences:
+        - docs
       x-request-name: DevUsersSelfQuery
     post:
       description: Gets the authenticated user's information.
@@ -6979,6 +7140,77 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - dev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /keyrings.authorize:
+    get:
+      description: OAuth2 authorization callback.
+      operationId: keyrings-create-callback
+      parameters:
+        - description: Code to exchange for an access token.
+          explode: false
+          in: query
+          name: code
+          required: true
+          schema:
+            type: string
+        - description: State value given to the authorization request.
+          explode: false
+          in: query
+          name: state
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      security: []
+      tags:
+        - keyring
+      x-fern-audiences:
+        - docs
+      x-request-name: KeyringsCreateCallbackQuery
+    post:
+      description: OAuth2 authorization callback.
+      operationId: keyrings-create-callback-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/keyrings-create-callback-request'
+      responses:
+        "200":
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - keyring
+      x-fern-audiences:
+        - docs
+        - sdks
   /parts.create:
     post:
       description: Creates new [part](https://devrev.ai/docs/product/parts).
@@ -7009,6 +7241,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - parts
+      x-fern-audiences:
+        - docs
+        - sdks
   /parts.delete:
     post:
       description: Deletes a [part](https://devrev.ai/docs/product/parts).
@@ -7041,6 +7276,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - parts
+      x-fern-audiences:
+        - docs
+        - sdks
   /parts.get:
     get:
       description: |
@@ -7078,6 +7316,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - parts
+      x-fern-audiences:
+        - docs
       x-request-name: PartsGetQuery
     post:
       description: |
@@ -7111,6 +7351,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - parts
+      x-fern-audiences:
+        - docs
+        - sdks
   /parts.list:
     get:
       description: |
@@ -7219,6 +7462,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - parts
+      x-fern-audiences:
+        - docs
       x-request-name: PartsListQuery
     post:
       description: |
@@ -7250,6 +7495,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - parts
+      x-fern-audiences:
+        - docs
+        - sdks
   /parts.update:
     post:
       description: |
@@ -7283,6 +7531,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - parts
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-orgs.create:
     post:
       description: |
@@ -7317,6 +7568,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-orgs.delete:
     post:
       description: Deletes the Rev organization.
@@ -7349,6 +7603,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-orgs.get:
     get:
       description: Retrieves the Rev organization's information.
@@ -7393,6 +7650,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-orgs
+      x-fern-audiences:
+        - docs
       x-request-name: RevOrgsGetQuery
     post:
       description: Retrieves the Rev organization's information.
@@ -7425,6 +7684,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-orgs.list:
     get:
       description: |
@@ -7552,6 +7814,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-orgs
+      x-fern-audiences:
+        - docs
       x-request-name: RevOrgsListQuery
     post:
       description: |
@@ -7587,6 +7851,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-orgs.update:
     post:
       description: Updates the Rev organization's information.
@@ -7621,6 +7888,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
   /sla-trackers.get:
     get:
       description: Gets an SLA tracker.
@@ -7656,6 +7926,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - slas
+      x-fern-audiences:
+        - docs
       x-request-name: SlaTrackersGetQuery
     post:
       description: Gets an SLA tracker.
@@ -7688,6 +7960,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - slas
+      x-fern-audiences:
+        - docs
+        - sdks
   /tags.create:
     post:
       description: |
@@ -7720,6 +7995,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - tags
+      x-fern-audiences:
+        - docs
+        - sdks
   /tags.delete:
     post:
       description: Deletes a tag.
@@ -7752,6 +8030,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - tags
+      x-fern-audiences:
+        - docs
+        - sdks
   /tags.get:
     get:
       description: Gets a tag's information.
@@ -7788,6 +8069,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - tags
+      x-fern-audiences:
+        - docs
       x-request-name: TagsGetQuery
     post:
       description: Gets a tag's information.
@@ -7820,6 +8103,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - tags
+      x-fern-audiences:
+        - docs
+        - sdks
   /tags.list:
     get:
       description: Lists the available tags.
@@ -7885,6 +8171,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - tags
+      x-fern-audiences:
+        - docs
       x-request-name: TagsListQuery
     post:
       description: Lists the available tags.
@@ -7915,6 +8203,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - tags
+      x-fern-audiences:
+        - docs
+        - sdks
   /tags.update:
     post:
       description: Updates a tag's information.
@@ -7947,6 +8238,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - tags
+      x-fern-audiences:
+        - docs
+        - sdks
   /timeline-entries.create:
     post:
       description: Creates a new entry on an object's timeline.
@@ -7977,6 +8271,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
+        - sdks
   /timeline-entries.delete:
     post:
       description: Deletes an entry from an object's timeline.
@@ -8007,6 +8304,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
+        - sdks
   /timeline-entries.get:
     get:
       description: Gets an entry on an object's timeline.
@@ -8043,6 +8343,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
       x-request-name: TimelineEntriesGetQuery
     post:
       description: Gets an entry on an object's timeline.
@@ -8075,6 +8377,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
+        - sdks
   /timeline-entries.list:
     get:
       description: Lists the timeline entries for an object.
@@ -8147,6 +8452,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
       x-request-name: TimelineEntriesListQuery
     post:
       description: Lists the timeline entries for an object.
@@ -8179,6 +8486,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
+        - sdks
   /timeline-entries.update:
     post:
       description: Updates an entry on an object's timeline.
@@ -8209,6 +8519,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
+        - sdks
   /webhooks.create:
     post:
       description: Creates a new webhook target.
@@ -8239,6 +8552,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
   /webhooks.delete:
     post:
       description: Deletes the requested webhook.
@@ -8271,6 +8587,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
   /webhooks.get:
     get:
       description: Gets the requested webhook's information.
@@ -8307,6 +8626,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - webhooks
+      x-fern-audiences:
+        - docs
       x-request-name: WebhooksGetQuery
     post:
       description: Gets the requested webhook's information.
@@ -8339,6 +8660,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
   /webhooks.list:
     get:
       description: Lists the webhooks.
@@ -8364,6 +8688,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - webhooks
+      x-fern-audiences:
+        - docs
       x-request-name: WebhooksListQuery
     post:
       description: Lists the webhooks.
@@ -8394,6 +8720,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
   /webhooks.update:
     post:
       description: Updates the requested webhook.
@@ -8426,6 +8755,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
   /works.create:
     post:
       description: |
@@ -8460,6 +8792,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
+        - sdks
   /works.delete:
     post:
       description: Deletes a work item.
@@ -8492,6 +8827,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
+        - sdks
   /works.export:
     get:
       description: Exports a collection of work items.
@@ -8760,6 +9098,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
       x-request-name: WorksExportQuery
     post:
       description: Exports a collection of work items.
@@ -8790,6 +9130,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
+        - sdks
   /works.get:
     get:
       description: Gets a work item's information.
@@ -8826,6 +9169,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
       x-request-name: WorksGetQuery
     post:
       description: Gets a work item's information.
@@ -8858,6 +9203,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
+        - sdks
   /works.list:
     get:
       description: Lists a collection of work items.
@@ -9141,6 +9489,8 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
       x-request-name: WorksListQuery
     post:
       description: Lists a collection of work items.
@@ -9171,6 +9521,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
+        - sdks
   /works.update:
     post:
       description: Updates a work item's information.
@@ -9203,6 +9556,9 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - works
+      x-fern-audiences:
+        - docs
+        - sdks
 security:
   - auth-token: []
 servers:
@@ -9228,6 +9584,8 @@ tags:
     name: dev-orgs
   - description: Dev user interactions.
     name: dev-users
+  - description: DevRev secrets interactions.
+    name: keyring
   - description: DevRev part interactions.
     name: parts
   - description: Rev organization interactions.
@@ -9242,3 +9600,9 @@ tags:
     name: webhooks
   - description: DevRev work interactions.
     name: works
+x-fern-version:
+  version:
+    default: "2024-01-24"
+    header: X-DevRev-Version
+    values:
+      - "2024-01-24"

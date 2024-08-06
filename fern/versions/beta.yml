@@ -5,7 +5,9 @@ navigation:
         path: ../docs/pages/developer-intro.mdx
   - api: API Reference
     api-name: beta
-    snippets: 
+    audiences:
+      - docs
+    snippets:
       typescript: "@devrev/api"
   - section: Guides
     contents:

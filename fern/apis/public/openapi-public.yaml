@@ -9601,8 +9601,7 @@ tags:
   - description: DevRev work interactions.
     name: works
 x-fern-version:
-  version:
-    default: "2024-01-24"
-    header: X-DevRev-Version
-    values:
-      - "2024-01-24"
+  default: "2024-01-24"
+  header: X-DevRev-Version
+  values:
+    - "2024-01-24"

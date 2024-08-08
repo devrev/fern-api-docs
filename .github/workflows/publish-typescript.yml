@@ -3,7 +3,7 @@ name: Release TypeScript SDK
 on:
   push: 
     paths:
-      - "fern/apis/beta"
+      - "fern/apis/beta/**"
     branches:
       - main
   workflow_dispatch:

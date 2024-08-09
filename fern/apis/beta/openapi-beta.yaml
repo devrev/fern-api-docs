@@ -26015,6 +26015,40 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /webhooks.invoke:
+    post:
+      description: A webhook invocation call.
+      operationId: webhook-event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook-event-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook-event-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
+    x-fern-webhook: true
   /works.create:
     post:
       description: |
@@ -27017,6 +27051,6 @@ tags:
     name: works
 x-fern-version:
   default: "2024-01-24"
-  header: X-DevRev-Version
+  header: x-devrev-version
   values:
     - "2024-01-24"

@@ -971,7 +971,7 @@ Below is a sample payload of the events produced by the email event source:
         ]
     },
     "messageId": "ABCdEfghijklmnopqrstuvwZHL+AB_XYZg@mail.gmail.com",
-    "rawBodyArtifactId": "don:core:dvrv-us-1:devo/802:artifact/296",
+    "rawBodyartifactId": "don:core:dvrv-us-1:devo/802:artifact/296",
     "referenceIds": {
         "stringValues": [
             "abcdabc123123123@mail.gmail.com"
@@ -997,8 +997,8 @@ Below is a brief description of the fields:
 - `to`, `cc`, `bcc`: List of recipient email addresses.
 - `inReplyToId`: Message ID of the email (if received mail is a reply to some other previous mail).
 - `messageId`: Message ID of the received email.
-- `rawBodyArtifactId`: Artifact ID for the raw email (in MIME format) received on the event source. You can use the artifact APIs to download this email if you need to.
-- `artifactIds`: Artifact IDs for attachments in the email.
+- `rawBodyartifactId`: artifact ID for the raw email (in MIME format) received on the event source. You can use the artifact APIs to download this email if you need to.
+- `artifactIds`: artifact IDs for attachments in the email.
 - `replyTo`: Reply-To header of the email.
 - `sentOn`: Timestamp when email was sent (in UTC).
 - `subject`: Subject of the email.

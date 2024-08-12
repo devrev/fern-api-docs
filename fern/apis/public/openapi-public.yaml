@@ -356,7 +356,8 @@ components:
           type: boolean
           description: |
             If true, the schedule attached to this metric is out of schedule at
-            the time of the query.
+            the time of the query. It is not set for metrics in *completed*
+            stage.
         metric_definition:
           $ref: '#/components/schemas/metric-definition-summary'
         org_schedule:
@@ -1760,17 +1761,23 @@ components:
         details:
           type: string
           description: The details of the error.
+        different_reporters:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-different-reporters'
         different_workspace:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-different-workspace'
         invalid_stage_transition:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-invalid-stage-transition'
+        locked:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-locked'
         subtype:
           type: string
           enum:
             - already_merged
             - closed
+            - different_reporters
             - different_workspace
             - invalid_stage_transition
+            - locked
         work:
           type: string
           description: The ID of the work which failed the validation.
@@ -1791,6 +1798,20 @@ components:
       type: object
       additionalProperties: false
       title: error-bad-request-merge-works-error-error-closed
+    error-bad-request-merge-works-error-error-different-reporters:
+      type: object
+      properties:
+        primary_reporters:
+          type: array
+          description: The reporters of the primary work.
+          items:
+            type: string
+        secondary_reporters:
+          type: array
+          description: The reporters of the secondary work.
+          items:
+            type: string
+      title: error-bad-request-merge-works-error-error-different-reporters
     error-bad-request-merge-works-error-error-different-workspace:
       type: object
       properties:
@@ -1800,9 +1821,6 @@ components:
         secondary_workspace:
           type: string
           description: The workspace of the secondary work.
-      required:
-        - primary_workspace
-        - secondary_workspace
       title: error-bad-request-merge-works-error-error-different-workspace
     error-bad-request-merge-works-error-error-invalid-stage-transition:
       type: object
@@ -1817,6 +1835,10 @@ components:
         - current_stage
         - requested_stage
       title: error-bad-request-merge-works-error-error-invalid-stage-transition
+    error-bad-request-merge-works-error-error-locked:
+      type: object
+      additionalProperties: false
+      title: error-bad-request-merge-works-error-error-locked
     error-bad-request-missing-dependency:
       type: object
       properties:
@@ -3155,6 +3177,11 @@ components:
       allOf:
         - $ref: '#/components/schemas/part-base-summary'
       title: product-summary
+    removed-sla-metric-history:
+      type: object
+      additionalProperties: false
+      description: User, timestamp and metric id of removed metrics.
+      title: removed-sla-metric-history
     rev-org:
       allOf:
         - $ref: '#/components/schemas/org-base'
@@ -3484,6 +3511,11 @@ components:
                 Summary of the metrics target being tracked in the SLA tracker.
               items:
                 $ref: '#/components/schemas/archetype-metric-target'
+            removed_sla_metric_history:
+              type: array
+              description: User, timestamp and metric Id of removed metrics.
+              items:
+                $ref: '#/components/schemas/removed-sla-metric-history'
             sla:
               $ref: '#/components/schemas/sla-summary'
             sla_policy_id:

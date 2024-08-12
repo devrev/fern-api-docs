@@ -644,7 +644,8 @@ components:
           type: boolean
           description: |
             If true, the schedule attached to this metric is out of schedule at
-            the time of the query.
+            the time of the query. It is not set for metrics in *completed*
+            stage.
         metric_definition:
           $ref: '#/components/schemas/metric-definition-summary'
         org_schedule:
@@ -3478,6 +3479,17 @@ components:
     custom-stage:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the state.
+            ordinal:
+              type: integer
+              description: Ordinal used to sort/group stages.
+              format: int32
+            state:
+              $ref: '#/components/schemas/custom-state-summary'
       title: custom-stage
     custom-stage-summary:
       allOf:
@@ -3611,7 +3623,23 @@ components:
     custom-state:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            is_final:
+              type: boolean
+              description: True if this is a final state.
+            name:
+              type: string
+              description: The human readable name of the state.
+            ordinal:
+              type: integer
+              description: Ordinal used to identify system states.
+              format: int32
       title: custom-state
+    custom-state-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: custom-state-summary
     custom-states-create-request:
       type: object
       properties:
@@ -4908,17 +4936,23 @@ components:
         details:
           type: string
           description: The details of the error.
+        different_reporters:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-different-reporters'
         different_workspace:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-different-workspace'
         invalid_stage_transition:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-invalid-stage-transition'
+        locked:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-locked'
         subtype:
           type: string
           enum:
             - already_merged
             - closed
+            - different_reporters
             - different_workspace
             - invalid_stage_transition
+            - locked
         work:
           type: string
           description: The ID of the work which failed the validation.
@@ -4939,6 +4973,20 @@ components:
       type: object
       additionalProperties: false
       title: error-bad-request-merge-works-error-error-closed
+    error-bad-request-merge-works-error-error-different-reporters:
+      type: object
+      properties:
+        primary_reporters:
+          type: array
+          description: The reporters of the primary work.
+          items:
+            type: string
+        secondary_reporters:
+          type: array
+          description: The reporters of the secondary work.
+          items:
+            type: string
+      title: error-bad-request-merge-works-error-error-different-reporters
     error-bad-request-merge-works-error-error-different-workspace:
       type: object
       properties:
@@ -4948,9 +4996,6 @@ components:
         secondary_workspace:
           type: string
           description: The workspace of the secondary work.
-      required:
-        - primary_workspace
-        - secondary_workspace
       title: error-bad-request-merge-works-error-error-different-workspace
     error-bad-request-merge-works-error-error-invalid-stage-transition:
       type: object
@@ -4965,6 +5010,10 @@ components:
         - current_stage
         - requested_stage
       title: error-bad-request-merge-works-error-error-invalid-stage-transition
+    error-bad-request-merge-works-error-error-locked:
+      type: object
+      additionalProperties: false
+      title: error-bad-request-merge-works-error-error-locked
     error-bad-request-missing-dependency:
       type: object
       properties:
@@ -8955,6 +9004,11 @@ components:
         - question_answer
       title: question-answers-update-response
       x-go-name: QuestionAnswersUpdateResponseBody
+    removed-sla-metric-history:
+      type: object
+      additionalProperties: false
+      description: User, timestamp and metric id of removed metrics.
+      title: removed-sla-metric-history
     resource:
       type: object
       description: Resource details.
@@ -10761,6 +10815,11 @@ components:
             associated with their exact allowed values. The SLA policy applies
             to issues where all named custom fields have exactly the specified
             values.
+        owners:
+          type: array
+          description: The SLA policy applies to the issues of these owners.
+          items:
+            type: string
         parts:
           type: array
           description: The SLA policy applies to the issues of these parts.
@@ -10839,8 +10898,22 @@ components:
             their exact allowed values. The SLA policy applies to records where
             all named custom fields have exactly the specified values. If the
             value is null, the field must have null value or not be present.
+        groups:
+          type: array
+          description: |
+            The SLA policy applies to the tickets or conversations of these
+            groups.
+          items:
+            type: string
         issue_selector:
           $ref: '#/components/schemas/set-issue-selector'
+        owners:
+          type: array
+          description: |
+            The SLA policy applies to the tickets or conversations of these
+            owners.
+          items:
+            type: string
         parts:
           type: array
           description: The SLA policy applies to the tickets of these parts.
@@ -10875,6 +10948,12 @@ components:
           description: The SLA policy applies to items with these tags.
           example:
             - TAG-12345
+          items:
+            type: string
+        ticket_source_channel:
+          type: array
+          description: |
+            The SLA policy applies to tickets with these source channels.
           items:
             type: string
       required:
@@ -11116,6 +11195,11 @@ components:
                 Summary of the metrics target being tracked in the SLA tracker.
               items:
                 $ref: '#/components/schemas/archetype-metric-target'
+            removed_sla_metric_history:
+              type: array
+              description: User, timestamp and metric Id of removed metrics.
+              items:
+                $ref: '#/components/schemas/removed-sla-metric-history'
             sla:
               $ref: '#/components/schemas/sla-summary'
             sla_policy_id:
@@ -11368,6 +11452,15 @@ components:
         - sla
       title: slas-update-response
       x-go-name: SlasUpdateResponseBody
+    snap-in:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            inputs_values:
+              type: object
+              description: Values of the inputs.
+      title: snap-in
     snap-in-version-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -11421,6 +11514,27 @@ components:
         - id
         - secret
       title: snap-ins-resources-response-keyring-data
+    snap-ins-update-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the snap-in to update.
+        inputs_values:
+          type: object
+          description: The updated values of the inputs.
+      required:
+        - id
+      title: snap-ins-update-request
+    snap-ins-update-response:
+      type: object
+      properties:
+        snap_in:
+          $ref: '#/components/schemas/snap-in'
+      required:
+        - snap_in
+      title: snap-ins-update-response
+      x-go-name: SnapInsUpdateResponseBody
     snap-widget:
       type: object
       discriminator:
@@ -23660,6 +23774,41 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - snap-ins
+      x-fern-audiences:
+        - docs
+        - sdks
+  /snap-ins.update:
+    post:
+      description: Updates a snap-in.
+      operationId: snap-ins-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/snap-ins-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/snap-ins-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":

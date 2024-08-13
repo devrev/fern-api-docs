@@ -215,7 +215,7 @@ export const run = async (events: any[]) => {
     const ticketName = `Ticket created at ${date.toLocaleString()}`;
     const ticketBody = `This ticket was created by a snap-in at ${date.toLocaleString()}`;
 
-    const reponse = await devrevSDK.worksCreate({
+    const response = await devrevSDK.worksCreate({
       title: ticketName,
       body: ticketBody,
       // The ticket is created in the PROD-1 part. Rename this to match your part.
@@ -225,7 +225,7 @@ export const run = async (events: any[]) => {
       type: publicSDK.WorkType.Ticket,
     });
 
-    console.log(reponse);
+    console.log(response);
   }
 };
 

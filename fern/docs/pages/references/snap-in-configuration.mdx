@@ -15,15 +15,13 @@ To create a custom configuration page for a Snap-in, developers need to define t
 ```yaml
 snap_kit_actions:
   - name: org_snap_kit_action
-    function: org_snap_in_configuration_handler
+    function: snap_in_configuration_handler
   - name: user_snap_kit_action
-    function: user_snap_in_configuration_handler
+    function: snap_in_configuration_handler
 
 functions:
-  - name: org_snap_in_configuration_handler
-    description: Handler for processing organization configuration options.
-  - name: user_snap_in_configuration_handler
-    description: Handler for processing user configuration options.
+  - name: snap_in_configuration_handler
+    description: Handler for processing organization and user configuration options.
   - name: config_initializer
     description: Generates the initial configuration options for both organization and user.
 
@@ -39,8 +37,7 @@ configuration_handler:
 The `configuration_handler` section in the manifest connects the functions responsible for generating and processing the custom configuration page.
 
 - `config_initializer`: Generates the initial configuration options for both organization and user. It is called when the configuration page is first loaded.
-- `org_snap_in_configuration_handler`: This function processes the organization configuration options. It is triggered when actions are performed on the organization configuration snap-kit.
-- `user_snap_in_configuration_handler`: This function processes the user configuration options. It is triggered when actions are performed on the user configuration snap-kit.
+- `snap_in_configuration_handler`: This function processes the user and organization configuration options. It is triggered when actions are performed on the organization or user configuration snap-kit.
 
 ## Configuration functions
 
@@ -117,13 +114,7 @@ In the snap-kit action handler, the `event.payload.action.id` can be used to det
 
 Updates the inputs of a snap-in based on the inputs defined in the snap-in configuration.
 
-**Note: This endpoint is currently in BETA and may be subject to change in the future.**
-
-### Endpoint
-
-```
-POST /internal/snap-ins.update
-```
+**Note: This endpoint is currently in BETA and may be subject to change in the future. Reach out to us via PLuG to subscribe to changes to BETA endpoints.**
 
 ### Request Payload
 
@@ -172,27 +163,27 @@ Response body:
 ```json
 {
   "data": {},
-  "message": "Failed to update the snap-in. Err: {error details}, Status: {status code}",
   "success": false
 }
 ```
 
 ## Example usage
 
-Here's an example of how to use the `/internal/snap-ins.update` endpoint using the provided code segment:
+Here's an example of how to update the input values:
 
 ```typescript
-async updateSnapInInputs(snapin_id: string, inputs_values: Record<string, any>): Promise<HTTPResponse> {
-  const payload: Record<string, any> = {
-    id: snapin_id,
-    inputs_values,
+async updateSnapInInputs(snapInId: string, inputsValues: Record<string, any>): Promise<HTTPResponse> {
+  const payload: SnapInsUpdateRequest = {
+    id: snapInId,
+    inputsValues,
   };
-  return this.updateSnapInGlobalVariable(payload);
+  return this.updateSnapInInputs(payload);
 }
 
-async updateSnapInGlobalVariable(payload: Record<string, any>): Promise<HTTPResponse> {
+async updateSnapInInputs(payload: SnapInsUpdateRequest): Promise<HTTPResponse> {
   try {
-    await axios.post(`${this.endpoint}/internal/snap-ins.update`, payload, this.configs);
+    
+    await devrevSDK.snapInsUpdate(payload);
     return { data: {}, message: 'Snap-in updated successfully', success: true };
   } catch (error: any) {
     if (error.response) {
@@ -205,9 +196,9 @@ async updateSnapInGlobalVariable(payload: Record<string, any>): Promise<HTTPResp
 }
 ```
 
-In this example, the `updateSnapInInputs` function takes the `snapin_id` and `inputs_values` as parameters. The `inputs_values` object should contain the input names and their corresponding values as defined in the snap-in configuration.
+In this example, the `updateSnapInInputs` function takes the `snapInId` and `inputsValues` as parameters. The `inputsValues` object should contain the input names and their corresponding values as defined in the snap-in configuration.
 
-The function constructs the payload object with the `snapin_id` and `inputs_values`, and then calls the `updateSnapInGlobalVariable` function to make the POST request to the `/internal/snap-ins.update` endpoint.
+The function constructs the payload object with the `snapInId` and `inputsValues`, and then calls the `updateSnapInInputs` function to make the POST request to the `snap-ins.update` endpoint.
 
 If the request is successful, it returns a success response with a status code of 200 and a message indicating that the snap-in was updated successfully.
 

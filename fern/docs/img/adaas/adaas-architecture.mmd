@@ -1,0 +1,21 @@
+---
+title: ADaaS architecture high-level overview
+---
+graph TB
+externalSystem[External system]
+worker([Worker])
+s3interact[s3interact]
+airdrop[Airdrop]
+s3[(AWS S3)]
+
+	externalSystem <-- Get/create users, issues, ... --> worker
+	
+	worker <-- Exchange artifact upload/download URLs --> s3interact
+	worker <-- Upload/download artifacts --> s3
+	worker <-- ADaaS messages and REST API --> airdrop
+
+	
+	subgraph DevRev
+	s3interact <-- Prepare upload/download URL --> s3
+	airdrop <-- Download/upload artifacts --> s3
+	end

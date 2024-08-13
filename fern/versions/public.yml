@@ -197,9 +197,6 @@ navigation:
           - page: Customizing snap-in configuration
             slug: customizing-snap-in-configuration
             path: ../docs/pages/references/snap-in-configuration.mdx
-          - page: Handling errors and retrying
-            slug: handling-errors-and-retrying
-            path: ../docs/pages/references/retry-mechanism.mdx
       - page: Development best practices
         slug: best-practices
         path: ../docs/pages/best_practices.mdx

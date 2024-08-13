@@ -191,9 +191,6 @@ navigation:
           - page: Snap-in resources
             slug: snap-in-resources
             path: ../docs/pages/references/snap-in-resources.mdx
-          - page: Snap components
-            slug: snap-components
-            path: ../docs/pages/references/snap-components.mdx
           - page: Customizing snap-in configuration
             slug: customizing-snap-in-configuration
             path: ../docs/pages/references/snap-in-configuration.mdx

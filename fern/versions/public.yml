@@ -191,6 +191,9 @@ navigation:
           - page: Snap-in resources
             slug: snap-in-resources
             path: ../docs/pages/references/snap-in-resources.mdx
+          - page: Customizing snap-in configuration
+            slug: customizing-snap-in-configuration
+            path: ../docs/pages/references/snap-in-configuration.mdx
       - page: Development best practices
         slug: best-practices
         path: ../docs/pages/best_practices.mdx

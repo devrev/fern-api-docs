@@ -8783,44 +8783,6 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
-  /webhooks.event:
-    post:
-      description: |
-        Describes a webhook invocation for an event from DevRev to a webhook's
-        target URL, where the receiving handler must implement the specified
-        protocol. Note the documented endpoint is for exposition and not
-        provided by DevRev.
-      operationId: webhooks-event
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/webhook-event-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhook-event-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-        - webhooks
-      x-fern-audiences:
-        - docs
-        - sdks
-    x-fern-webhook: true
   /webhooks.get:
     get:
       description: Gets the requested webhook's information.

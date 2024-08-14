@@ -7034,8 +7034,17 @@ components:
         name:
           type: string
           description: Current stage name of the work item.
+        notes:
+          type: string
+          description: Notes relevant to the stage.
+        ordinal:
+          type: integer
+          description: Current stage number of the work item (sortable).
+          format: int32
         stage:
           $ref: '#/components/schemas/custom-stage-summary'
+        state:
+          $ref: '#/components/schemas/custom-state-summary'
       required:
         - name
       title: legacy-stage
@@ -14485,6 +14494,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            actual_close_date:
+              type: string
+              description: Timestamp when the work was actually completed.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
             applies_to_part:
               $ref: '#/components/schemas/part-summary'
             artifacts:
@@ -26045,44 +26059,6 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
-  /webhooks.event:
-    post:
-      description: |
-        Describes a webhook invocation for an event from DevRev to a webhook's
-        target URL, where the receiving handler must implement the specified
-        protocol. Note the documented endpoint is for exposition and not
-        provided by DevRev.
-      operationId: webhooks-event
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/webhook-event-request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/webhook-event-response'
-          description: Success.
-        "400":
-          $ref: '#/components/responses/bad-request'
-        "401":
-          $ref: '#/components/responses/unauthorized'
-        "403":
-          $ref: '#/components/responses/forbidden'
-        "429":
-          $ref: '#/components/responses/too-many-requests'
-        "500":
-          $ref: '#/components/responses/internal-server-error'
-        "503":
-          $ref: '#/components/responses/service-unavailable'
-      tags:
-        - webhooks
-      x-fern-audiences:
-        - docs
-        - sdks
-    x-fern-webhook: true
   /webhooks.get:
     get:
       description: Gets the requested webhook's information.

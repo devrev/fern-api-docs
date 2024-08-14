@@ -6,11 +6,11 @@ While the default configuration page automatically renders input fields for keyr
 
 - Improved user experience: Developers can design the configuration page to provide a more intuitive and streamlined experience for users setting up the snap-in.
 - Advanced input handling: Custom configuration pages enable developers to handle complex input scenarios, such as fetching data from external systems to populate dropdown options or validating user input.
-- Branding and styling: Developers can align the configuration page with their Snap-in's branding and style guidelines, ensuring a consistent look and feel.
+- Branding and styling: Developers can align the configuration page with their snap-in's branding and style guidelines, ensuring a consistent look and feel.
 
-## Defining Custom Configuration Pages
+## Defining custom configuration pages
 
-To create a custom configuration page for a Snap-in, developers need to define the following in the Snap-in manifest:
+To create a custom configuration page for a snap-in, developers need to define the following in the snap-in manifest:
 
 ```yaml
 snap_kit_actions:
@@ -107,16 +107,16 @@ The configuration functions should return a valid snap-kit JSON that defines the
 }
 ```
 
-In this example, the snap-kit renders a dropdown select for choosing between "Ticket" and "Conversation," along with a "Next" button. When the "Next" button is clicked, the `user_snap_in_configuration_handler` function is invoked to process the user's selection.
+In this example, the snap-kit renders a dropdown select for choosing between `Ticket` and `Conversation`, along with a `Next` button. When the **Next** button is clicked, the `user_snap_in_configuration_handler` function is invoked to process the user's selection.
 In the snap-kit action handler, the `event.payload.action.id` can be used to determine the form being submitted and call the `snap-ins.update` API to update the configuration.
 
-## Update snap-in inputs (BETA)
+## Update snap-in inputs (beta)
 
 Updates the inputs of a snap-in based on the inputs defined in the snap-in configuration.
 
-**Note: This endpoint is currently in BETA and may be subject to change in the future. Reach out to us via PLuG to subscribe to changes to BETA endpoints.**
+**Note: This endpoint is currently in beta and may be subject to change in the future. Reach out to us via PLuG to subscribe to changes to beta endpoints.**
 
-### Request Payload
+### Request payload
 
 The request payload should be a JSON object with the following properties:
 
@@ -204,6 +204,8 @@ If the request is successful, it returns a success response with a status code o
 
 If an error occurs, it catches the error and returns an error response with an appropriate status code and an error message containing the error details.
 
-Please keep in mind that this endpoint is currently in BETA, and its functionality or parameters may change in future updates.
+<Note>
+Note: This endpoint is currently in beta, and its functionality or parameters may change in future updates.
+</Note>
 
 For more details on the snap-kit JSON format and available elements, refer to the [DevRev Snap-kit documentation](/snapin-development/references/snapkit).

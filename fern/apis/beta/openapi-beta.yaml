@@ -4778,7 +4778,7 @@ components:
       properties:
         id:
           type: integer
-          description: The uiique ID of the enum value.
+          description: The unique ID of the enum value.
           format: int64
         label:
           type: string
@@ -5461,6 +5461,33 @@ components:
       required:
         - group
       title: event-group-updated
+    event-link-created:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+      required:
+        - link
+      title: event-link-created
+    event-link-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the link that was deleted.
+      required:
+        - id
+      title: event-link-deleted
+    event-link-updated:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+        old_link:
+          $ref: '#/components/schemas/link'
+      required:
+        - link
+      title: event-link-updated
     event-part-created:
       type: object
       properties:
@@ -6958,6 +6985,8 @@ components:
           properties:
             priority:
               $ref: '#/components/schemas/issue-priority'
+            sprint:
+              $ref: '#/components/schemas/vista-group-item-summary'
       title: issue-summary
     job-history-item:
       type: object
@@ -7017,6 +7046,8 @@ components:
         name:
           type: string
           description: Current stage name of the work item.
+        stage:
+          $ref: '#/components/schemas/custom-stage-summary'
       required:
         - name
       title: legacy-stage-summary
@@ -14052,6 +14083,12 @@ components:
         id:
           type: string
           description: The event's ID.
+        link_created:
+          $ref: '#/components/schemas/event-link-created'
+        link_deleted:
+          $ref: '#/components/schemas/event-link-deleted'
+        link_updated:
+          $ref: '#/components/schemas/event-link-updated'
         part_created:
           $ref: '#/components/schemas/event-part-created'
         part_deleted:
@@ -14154,6 +14191,9 @@ components:
         - group_member_added
         - group_member_removed
         - group_updated
+        - link_created
+        - link_deleted
+        - link_updated
         - part_created
         - part_deleted
         - part_updated
@@ -14228,6 +14268,7 @@ components:
             $ref: '#/components/schemas/webhook-event-type'
         headers:
           type: array
+          description: The headers to include in every webhook invocation.
           items:
             $ref: '#/components/schemas/webhook-header'
           maxItems: 8
@@ -14382,16 +14423,24 @@ components:
       properties:
         add:
           type: array
+          description: |
+            The headers to be added to every webhook invocation. If a provided
+            header is already specified for the webhook, its value is replaced.
           items:
             $ref: '#/components/schemas/webhook-header'
           maxItems: 8
         remove:
           type: array
+          description: |
+            The headers to be removed from every webhook invocation. If a
+            provided header is not specified for the webhook, then it's
+            ignored.
           items:
             type: string
           maxItems: 8
         set:
           type: array
+          description: Sets the headers to include in every webhook invocation.
           items:
             $ref: '#/components/schemas/webhook-header'
           maxItems: 8
@@ -25996,6 +26045,44 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /webhooks.event:
+    post:
+      description: |
+        Describes a webhook invocation for an event from DevRev to a webhook's
+        target URL, where the receiving handler must implement the specified
+        protocol. Note the documented endpoint is for exposition and not
+        provided by DevRev.
+      operationId: webhooks-event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook-event-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook-event-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
+    x-fern-webhook: true
   /webhooks.get:
     get:
       description: Gets the requested webhook's information.
@@ -27166,6 +27253,6 @@ tags:
     name: works
 x-fern-version:
   default: "2024-01-24"
-  header: X-DevRev-Version
+  header: x-devrev-version
   values:
     - "2024-01-24"

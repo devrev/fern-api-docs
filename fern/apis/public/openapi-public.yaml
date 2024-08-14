@@ -1192,6 +1192,15 @@ components:
             URL from which the conversation was created if the conversation was
             created via PLuG.
       title: conversation-metadata
+    conversation-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            title:
+              type: string
+              description: Title of the conversation object.
+      title: conversation-summary
     date-filter:
       type: object
       description: Provides ways to specify date ranges on objects.
@@ -1620,7 +1629,7 @@ components:
       properties:
         id:
           type: integer
-          description: The uiique ID of the enum value.
+          description: The unique ID of the enum value.
           format: int64
         label:
           type: string
@@ -2286,6 +2295,33 @@ components:
       required:
         - group
       title: event-group-updated
+    event-link-created:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+      required:
+        - link
+      title: event-link-created
+    event-link-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the link that was deleted.
+      required:
+        - id
+      title: event-link-deleted
+    event-link-updated:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+        old_link:
+          $ref: '#/components/schemas/link'
+      required:
+        - link
+      title: event-link-updated
     event-part-created:
       type: object
       properties:
@@ -2596,6 +2632,16 @@ components:
         - p1
         - p2
         - p3
+    issue-summary:
+      allOf:
+        - $ref: '#/components/schemas/work-base-summary'
+        - type: object
+          properties:
+            priority:
+              $ref: '#/components/schemas/issue-priority'
+            sprint:
+              $ref: '#/components/schemas/vista-group-item-summary'
+      title: issue-summary
     job-history-item:
       type: object
       description: Defines a job history line item.
@@ -2645,6 +2691,83 @@ components:
       required:
         - name
       title: legacy-stage
+    legacy-stage-summary:
+      type: object
+      description: Describes the current stage of a work item.
+      properties:
+        name:
+          type: string
+          description: Current stage name of the work item.
+      required:
+        - name
+      title: legacy-stage-summary
+    link:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            link_type:
+              $ref: '#/components/schemas/link-type'
+            source:
+              $ref: '#/components/schemas/link-endpoint-summary'
+            target:
+              $ref: '#/components/schemas/link-endpoint-summary'
+          required:
+            - link_type
+            - source
+            - target
+      title: link
+    link-endpoint-summary:
+      type: object
+      discriminator:
+        mapping:
+          capability: '#/components/schemas/capability-summary'
+          conversation: '#/components/schemas/conversation-summary'
+          enhancement: '#/components/schemas/enhancement-summary'
+          feature: '#/components/schemas/feature-summary'
+          issue: '#/components/schemas/issue-summary'
+          product: '#/components/schemas/product-summary'
+          ticket: '#/components/schemas/ticket-summary'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/capability-summary'
+        - $ref: '#/components/schemas/conversation-summary'
+        - $ref: '#/components/schemas/enhancement-summary'
+        - $ref: '#/components/schemas/feature-summary'
+        - $ref: '#/components/schemas/issue-summary'
+        - $ref: '#/components/schemas/product-summary'
+        - $ref: '#/components/schemas/ticket-summary'
+      properties:
+        type:
+          $ref: '#/components/schemas/link-endpoint-type'
+      required:
+        - type
+      title: link-endpoint-summary
+    link-endpoint-type:
+      type: string
+      enum:
+        - capability
+        - conversation
+        - enhancement
+        - feature
+        - issue
+        - product
+        - ticket
+    link-type:
+      type: string
+      description: Type of link used to define the relationship.
+      enum:
+        - custom_link
+        - developed_with
+        - imports
+        - is_analyzed_by
+        - is_dependent_on
+        - is_duplicate_of
+        - is_merged_into
+        - is_parent_of
+        - is_part_of
+        - is_related_to
+        - serves
     list-mode:
       type: string
       description: |
@@ -3973,6 +4096,16 @@ components:
         - high
         - low
         - medium
+    ticket-summary:
+      allOf:
+        - $ref: '#/components/schemas/work-base-summary'
+        - type: object
+          properties:
+            rev_org:
+              $ref: '#/components/schemas/org-summary'
+            severity:
+              $ref: '#/components/schemas/ticket-severity'
+      title: ticket-summary
     timeline-comment:
       allOf:
         - $ref: '#/components/schemas/timeline-entry-base'
@@ -4523,6 +4656,12 @@ components:
         id:
           type: string
           description: The event's ID.
+        link_created:
+          $ref: '#/components/schemas/event-link-created'
+        link_deleted:
+          $ref: '#/components/schemas/event-link-deleted'
+        link_updated:
+          $ref: '#/components/schemas/event-link-updated'
         part_created:
           $ref: '#/components/schemas/event-part-created'
         part_deleted:
@@ -4625,6 +4764,9 @@ components:
         - group_member_added
         - group_member_removed
         - group_updated
+        - link_created
+        - link_deleted
+        - link_updated
         - part_created
         - part_deleted
         - part_updated
@@ -4890,6 +5032,25 @@ components:
             - owned_by
             - title
       title: work-base
+    work-base-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            owned_by:
+              type: array
+              description: The users that own the work.
+              items:
+                $ref: '#/components/schemas/user-summary'
+            stage:
+              $ref: '#/components/schemas/legacy-stage-summary'
+            title:
+              type: string
+              description: Title of the work object.
+          required:
+            - owned_by
+            - title
+      title: work-base-summary
     work-type:
       type: string
       enum:
@@ -8622,6 +8783,44 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /webhooks.event:
+    post:
+      description: |
+        Describes a webhook invocation for an event from DevRev to a webhook's
+        target URL, where the receiving handler must implement the specified
+        protocol. Note the documented endpoint is for exposition and not
+        provided by DevRev.
+      operationId: webhooks-event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook-event-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook-event-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
+    x-fern-webhook: true
   /webhooks.get:
     get:
       description: Gets the requested webhook's information.
@@ -9634,6 +9833,6 @@ tags:
     name: works
 x-fern-version:
   default: "2024-01-24"
-  header: X-DevRev-Version
+  header: x-devrev-version
   values:
     - "2024-01-24"

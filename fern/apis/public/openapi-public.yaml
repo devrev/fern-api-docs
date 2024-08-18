@@ -1031,6 +1031,7 @@ components:
           description: The display name of the Rev org.
         domain:
           type: string
+          deprecated: true
           description: The domain of the Rev org.
         phone_numbers:
           type: array
@@ -3342,6 +3343,7 @@ components:
           description: Name of the Rev organization.
         domain:
           type: string
+          deprecated: true
           description: Company's domain name. Example - 'devrev.ai'.
         environment:
           $ref: '#/components/schemas/org-environment'
@@ -3492,6 +3494,7 @@ components:
           description: Customer chosen name for the Rev organization.
         domain:
           type: string
+          deprecated: true
           description: Company's domain name. Example - 'devrev.ai'.
         environment:
           $ref: '#/components/schemas/org-environment'

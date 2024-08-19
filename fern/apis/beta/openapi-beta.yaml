@@ -859,6 +859,11 @@ components:
             - DEVU-12345
           items:
             type: string
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Description for the article.
@@ -1095,6 +1100,11 @@ components:
           $ref: '#/components/schemas/articles-update-request-artifacts'
         authored_by:
           $ref: '#/components/schemas/articles-update-request-authored-by'
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: |
@@ -3505,6 +3515,11 @@ components:
     custom-stage-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the state.
       title: custom-stage-summary
     custom-stages-create-request:
       type: object
@@ -3650,6 +3665,11 @@ components:
     custom-state-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the state.
       title: custom-state-summary
     custom-states-create-request:
       type: object

@@ -859,6 +859,11 @@ components:
             - DEVU-12345
           items:
             type: string
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Description for the article.
@@ -1095,6 +1100,11 @@ components:
           $ref: '#/components/schemas/articles-update-request-artifacts'
         authored_by:
           $ref: '#/components/schemas/articles-update-request-authored-by'
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: |
@@ -2020,6 +2030,7 @@ components:
           description: The display name of the Rev org.
         domain:
           type: string
+          deprecated: true
           description: The domain of the Rev org.
         phone_numbers:
           type: array
@@ -2349,7 +2360,12 @@ components:
         - github
     code-changes-create-request:
       type: object
-      additionalProperties: false
+      properties:
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
       title: code-changes-create-request
     code-changes-create-response:
       type: object
@@ -2438,6 +2454,11 @@ components:
     code-changes-update-request:
       type: object
       properties:
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         id:
           type: string
           description: The ID of the code change object to be updated.
@@ -3494,6 +3515,11 @@ components:
     custom-stage-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the state.
       title: custom-stage-summary
     custom-stages-create-request:
       type: object
@@ -3639,6 +3665,11 @@ components:
     custom-state-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the state.
       title: custom-state-summary
     custom-states-create-request:
       type: object
@@ -6953,6 +6984,11 @@ components:
         - $ref: '#/components/schemas/work-base'
         - type: object
           properties:
+            actual_start_date:
+              type: string
+              description: Actual start date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
             developed_with:
               type: array
               description: Parts associated based on git events.
@@ -9164,6 +9200,7 @@ components:
           description: Name of the Rev organization.
         domain:
           type: string
+          deprecated: true
           description: Company's domain name. Example - 'devrev.ai'.
         environment:
           $ref: '#/components/schemas/org-environment'
@@ -9355,6 +9392,7 @@ components:
           description: Customer chosen name for the Rev organization.
         domain:
           type: string
+          deprecated: true
           description: Company's domain name. Example - 'devrev.ai'.
         environment:
           $ref: '#/components/schemas/org-environment'
@@ -9667,6 +9705,78 @@ components:
         - rev_users
       title: rev-users-list-response
       x-go-name: RevUsersListResponseBody
+    rev-users-scan-request:
+      type: object
+      description: Scans the list of Rev users.
+      properties:
+        created_by:
+          type: array
+          description: |
+            Filters for Rev users that were created by the specified user(s).
+          items:
+            type: string
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration, otherwise the beginning if not
+            provided.
+        custom_fields:
+          type: object
+          description: Filters for custom fields.
+        email:
+          type: array
+          description: List of emails of Rev users to be filtered.
+          items:
+            type: string
+        external_ref:
+          type: array
+          description: List of external refs to filter Rev users for.
+          items:
+            type: string
+        is_verified:
+          type: boolean
+          description: Value of is_verified field to filter the Rev users.
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        phone_numbers:
+          type: array
+          description: |
+            List of phone numbers, in E.164 format, to filter Rev users on.
+          items:
+            type: string
+        rev_org:
+          type: array
+          description: List of IDs of Rev organizations to be filtered.
+          example:
+            - REV-AbCdEfGh
+          items:
+            type: string
+        tags:
+          type: array
+          description: List of tags to be filtered.
+          items:
+            type: string
+      title: rev-users-scan-request
+    rev-users-scan-response:
+      type: object
+      description: The response to scanning Rev users.
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor that should be used to resume iteration, otherwise if
+            not provided, then iteration has completed.
+        rev_users:
+          type: array
+          description: The iterated Rev users.
+          items:
+            $ref: '#/components/schemas/rev-user'
+      required:
+        - rev_users
+      title: rev-users-scan-response
+      x-go-name: RevUsersScanResponseBody
     rev-users-update-request:
       type: object
       description: Request to update details of a Rev user.
@@ -22396,6 +22506,181 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /rev-users.scan:
+    get:
+      description: Scans through all Rev users.
+      operationId: rev-users-scan
+      parameters:
+        - description: |
+            Filters for Rev users that were created by the specified user(s).
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: created_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: created_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            The cursor to resume iteration, otherwise the beginning if not
+            provided.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: Filters for custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
+        - description: List of emails of Rev users to be filtered.
+          explode: false
+          in: query
+          name: email
+          schema:
+            type: array
+            items:
+              type: string
+        - description: List of external refs to filter Rev users for.
+          explode: false
+          in: query
+          name: external_ref
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Value of is_verified field to filter the Rev users.
+          explode: false
+          in: query
+          name: is_verified
+          schema:
+            type: boolean
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: modified_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: modified_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            List of phone numbers, in E.164 format, to filter Rev users on.
+          explode: false
+          in: query
+          name: phone_numbers
+          schema:
+            type: array
+            items:
+              type: string
+        - description: List of IDs of Rev organizations to be filtered.
+          explode: false
+          in: query
+          name: rev_org
+          schema:
+            type: array
+            example:
+              - REV-AbCdEfGh
+            items:
+              type: string
+        - description: List of tags to be filtered.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rev-users-scan-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - rev-users
+      x-fern-audiences:
+        - docs
+      x-request-name: RevUsersScanQuery
+    post:
+      description: Scans through all Rev users.
+      operationId: rev-users-scan-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rev-users-scan-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rev-users-scan-response'
           description: Success.
         "400":
           $ref: '#/components/responses/bad-request'

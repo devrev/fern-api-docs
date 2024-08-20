@@ -199,6 +199,9 @@ navigation:
         path: ../docs/pages/best_practices.mdx
       - page: Locally testing snap-ins
         path: ../docs/pages/testing.mdx
+      - page: Handling errors and retrying
+        slug: handling-errors-and-retrying
+        path: ../docs/pages/retry-mechanism.mdx
       - page: Debugging
         path: ../docs/pages/debugging.mdx
       - page: Quotas and limits

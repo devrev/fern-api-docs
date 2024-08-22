@@ -2,10 +2,10 @@ name: EkLine
 on:
   pull_request:
     types: [labeled]
-
+permissions: write-all
 jobs:
   test-pr-review:
-    if: contains(github.event.label.name, 'ekline')
+    if: contains(github.event.label.name, 'EkLine')
     name: runner / EkLine Reviewer (github-pr-review)
     runs-on: ubuntu-latest
     steps:
@@ -17,4 +17,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           filter_mode: added
-          # ignore_rule: "EK00001,EK00004" # Optional
+          ignore_rule: "EK00031" # passive voice

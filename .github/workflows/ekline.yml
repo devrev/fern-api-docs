@@ -1,0 +1,20 @@
+name: EkLine
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  test-pr-review:
+    if: contains(github.event.label.name, 'ekline')
+    name: runner / EkLine Reviewer (github-pr-review)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ekline-io/ekline-github-action@v6
+        with:
+          content_dir: ./src/docs
+          ek_token: ${{ secrets.ek_token }}
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          filter_mode: added
+          # ignore_rule: "EK00001,EK00004" # Optional

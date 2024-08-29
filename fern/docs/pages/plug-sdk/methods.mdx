@@ -27,14 +27,9 @@ The `init()` method can accept multiple inputs, which are explained below:
 |session_recording_options   |Options for recording observability sessions.   |** x-ref   |No   |
 |accent_color   |The accent color of the plug affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |No   |
 |custom_launcher_selector   |A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the PLuG settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source.   |Boolean (True or False)   |No    |
-|spacing   |Padding from the launcher: This padding can also be set in the plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |object
-{
-bottom: string
-side: string
-}   |No   |
-|   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
+|spacing   |Padding from the launcher: This padding can also be set in the plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. **Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |**object {bottom: string side: string}   |No   |
+|theme   |The color scheme for the launcher and widget.   |light or dark   |No   |
+|widget_alignment   |The PLuG widget can be positioned on either the left or right side of the launcher. You can also adjust the widget alignment through the plug settings at app.devrev.ai. If alignment settings are configured in both places, the value from app.devrev.ai will override the launcher setting.   |**need info   |No   |
 
 
 

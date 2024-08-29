@@ -1,6 +1,42 @@
-Our PLuG widget SDK is a powerful tool to further enhance our widget on your website or application. With our SDK, you are empowered to create a dynamic and personalized user experience. Let's get started.
+The PLuG SDK is a robust tool designed to elevate your website or application by enhancing our widget’s capabilities. With our SDK, you can seamlessly integrate our feature-rich widget, creating a dynamic and personalized user experience.
 
 ## Methods
+
+### Initialise SDK
+
+To get started with the PLuG SDK on your website, call the `init()` method. This method is essential for enabling the SDK’s functionality, including session recording, the chat widget, and the search agent. Initialization is required before you can perform any other actions using the PLuG SDK.
+
+```jsx 
+useEffect(() => {
+    window.plugSDK.init({
+      app_id: <your_unique_app_id>,
+    });
+  }, []);
+```
+The `init()` method can accept multiple inputs, which are explained below:
+
+|Input Parameter   |Description   |Values   |Mandatory   |
+|---|---|---|---|
+|app_id   |This is the unique identifier for your PLuG SDK.    |String   |Yes   |
+|disable_plug_chat_window   |The chat widget is enabled by default. Use this option if you want to disable the chat widget.   |Boolean (True or False)   |No   |
+|session_recording_key   |This key identifies your session recording account and is required to enable the PLuG SDK session recording features.   |String   |No   |
+|enable_session_recording   |This instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |No   |
+|session_token   |This unique token identifies the user interacting with your app.   |String   |No   |
+|fetchSessionToken   |Request a new session token.   |Function of type () => Promise<string>   |No   |
+|primary_text_color   |This determines the launcher color, button text for new tickets and conversations, conversation user text, and more. It should be a valid hex code, such as #f0f0f0.   |String   |No   |
+|   |   |   |   |
+|   |   |   |   |
+|   |   |   |   |
+|   |   |   |   |
+|   |   |   |   |
+|   |   |   |   |
+|   |   |   |   |
+
+
+
+
+
+
 
 - `plugSDK.init()` Initialize the PLuG chat widget.
 

@@ -538,6 +538,21 @@ components:
         - account
       title: accounts-update-response
       x-go-name: AccountsUpdateResponseBody
+    add-tag-with-value:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the tag.
+          example: TAG-12345
+        value:
+          type: string
+          description: |
+            The value for the object's association with the tag. If specified,
+            the value must be one that's specified in the tag's allowed values.
+      required:
+        - id
+      title: add-tag-with-value
     aggregated-schema:
       type: object
       additionalProperties: false
@@ -2503,6 +2518,169 @@ components:
           type: string
           description: Text snippet where the search hit occurred.
       title: comment-search-summary
+    content-template:
+      type: object
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          $ref: '#/components/schemas/content-template-type'
+      required:
+        - type
+      title: content-template
+    content-template-create-request:
+      type: object
+      description: The request to create a new content template.
+      discriminator:
+        mapping:
+          notification_content_template: '#/components/schemas/content-template-create-request-notification-content-template'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/content-template-create-request-notification-content-template'
+      properties:
+        type:
+          $ref: '#/components/schemas/content-template-type'
+        input_fields_schema:
+          type: array
+          description: |
+            Input fields schema. The fields will be used to replace variables
+            present in the content template.
+          items:
+            $ref: '#/components/schemas/schema-field-descriptor'
+        name:
+          type: string
+          description: |
+            The name of the content template. The name must be unique for each
+            creator of the content template.
+      required:
+        - name
+        - type
+      title: content-template-create-request
+    content-template-create-request-notification-content-template:
+      type: object
+      properties:
+        defaults:
+          type: array
+          description: |
+            Default notification template per language. Only one is permitted
+            per language. These will be used to replace the notification
+            content on basis of language preferences of the user. Default is
+            EN(US).
+          items:
+            $ref: '#/components/schemas/content-template-create-request-notification-content-template-default-notification-content-template'
+      required:
+        - defaults
+      title: content-template-create-request-notification-content-template
+    content-template-create-request-notification-content-template-default-notification-content-template:
+      type: object
+      properties:
+        body:
+          type: string
+          description: |
+            Body for the notification. In order to use fields from input fields
+            schema, use {field_name} in the body.
+        title:
+          type: string
+          description: |
+            Title for the notification. In order to use fields from input
+            fields schema, use {field_name} in the title.
+      required:
+        - body
+        - title
+      title: content-template-create-request-notification-content-template-default-notification-content-template
+    content-template-create-response:
+      type: object
+      properties:
+        content_template:
+          $ref: '#/components/schemas/content-template'
+      required:
+        - content_template
+      title: content-template-create-response
+      x-go-name: ContentTemplateCreateResponseBody
+    content-template-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The content template's ID.
+      required:
+        - id
+      title: content-template-get-request
+    content-template-get-response:
+      type: object
+      properties:
+        content_template:
+          $ref: '#/components/schemas/content-template'
+      required:
+        - content_template
+      title: content-template-get-response
+      x-go-name: ContentTemplateGetResponseBody
+    content-template-list-request:
+      type: object
+      properties:
+        type:
+          type: array
+          description: Filters for content template of the provided types.
+          items:
+            $ref: '#/components/schemas/content-template-type'
+        created_by:
+          type: array
+          description: |
+            Filters for content template created by any of these users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        limit:
+          type: integer
+          description: |
+            The maximum number of content template to return. The default is
+            '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        name:
+          type: array
+          description: Filters for content template based on name.
+          items:
+            type: string
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the content template by and the direction to sort
+            them.
+          items:
+            type: string
+      title: content-template-list-request
+    content-template-list-response:
+      type: object
+      properties:
+        content_template:
+          type: array
+          description: The list of content templates.
+          items:
+            $ref: '#/components/schemas/content-template'
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+      required:
+        - content_template
+      title: content-template-list-response
+      x-go-name: ContentTemplateListResponseBody
+    content-template-type:
+      type: string
     conversation:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -4329,12 +4507,49 @@ components:
         display_name:
           type: string
           description: The updated display name of the Dev user.
+        experience_start_date:
+          type: string
+          description: Start date of Dev user's experience.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
         full_name:
           type: string
           description: The updated full name of the Dev user.
+        job_history:
+          type: array
+          description: Job history of the Dev user.
+          items:
+            $ref: '#/components/schemas/dev-users-update-job-history-item'
         job_title:
           $ref: '#/components/schemas/dev-user-job-title'
       title: dev-users-self-update-request
+    dev-users-update-job-history-item:
+      type: object
+      properties:
+        employment_status:
+          type: integer
+          description: Enum for the employment status of the user.
+          format: int64
+        end_date:
+          type: string
+          description: End date of the job.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        is_current:
+          type: boolean
+          description: Is this the current active job for the user.
+        location:
+          type: string
+          description: The job location for the user.
+        start_date:
+          type: string
+          description: Start date of the job.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        title:
+          type: string
+          description: The job title for the user.
+      title: dev-users-update-job-history-item
     dev-users-update-request:
       type: object
       description: |
@@ -4344,12 +4559,22 @@ components:
         display_name:
           type: string
           description: The updated display name of the Dev user.
+        experience_start_date:
+          type: string
+          description: Start date of Dev user's experience.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
         full_name:
           type: string
           description: The updated full name of the Dev user.
         id:
           type: string
           description: The ID for the Dev user to be updated.
+        job_history:
+          type: array
+          description: Job history of the Dev user.
+          items:
+            $ref: '#/components/schemas/dev-users-update-job-history-item'
         job_title:
           $ref: '#/components/schemas/dev-user-job-title'
       required:
@@ -4500,6 +4725,8 @@ components:
       description: Type of engagement.
       enum:
         - call
+        - conversation
+        - custom
         - default
         - email
         - linked_in
@@ -4975,6 +5202,8 @@ components:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-invalid-stage-transition'
         locked:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-locked'
+        stage_not_found_for_subtype:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-stage-not-found-for-subtype'
         subtype:
           type: string
           enum:
@@ -4984,6 +5213,7 @@ components:
             - different_workspace
             - invalid_stage_transition
             - locked
+            - stage_not_found_for_subtype
         work:
           type: string
           description: The ID of the work which failed the validation.
@@ -5045,6 +5275,14 @@ components:
       type: object
       additionalProperties: false
       title: error-bad-request-merge-works-error-error-locked
+    error-bad-request-merge-works-error-error-stage-not-found-for-subtype:
+      type: object
+      properties:
+        subtype:
+          type: string
+          description: |
+            The subtype of the work for which stage is not configured.
+      title: error-bad-request-merge-works-error-error-stage-not-found-for-subtype
     error-bad-request-missing-dependency:
       type: object
       properties:
@@ -5752,6 +5990,25 @@ components:
             immediately.
       title: event-sources-schedule-event-response
       x-go-name: EventSourcesScheduleEventResponseBody
+    event-survey-created:
+      type: object
+      properties:
+        survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - survey
+      title: event-survey-created
+    event-survey-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the survey that was deleted.
+        old_survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - id
+      title: event-survey-deleted
     event-survey-response-created:
       type: object
       properties:
@@ -5766,17 +6023,31 @@ components:
         id:
           type: string
           description: The ID of the survey response that was deleted.
+        old_survey_response:
+          $ref: '#/components/schemas/survey-response'
       required:
         - id
       title: event-survey-response-deleted
     event-survey-response-updated:
       type: object
       properties:
+        old_survey_response:
+          $ref: '#/components/schemas/survey-response'
         survey_response:
           $ref: '#/components/schemas/survey-response'
       required:
         - survey_response
       title: event-survey-response-updated
+    event-survey-updated:
+      type: object
+      properties:
+        old_survey:
+          $ref: '#/components/schemas/survey'
+        survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - survey
+      title: event-survey-updated
     event-tag-created:
       type: object
       properties:
@@ -6543,7 +6814,7 @@ components:
                 - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
               items:
                 type: string
-            identified_at:
+            identified_date:
               type: string
               description: Time when the incident was identified/reported.
               example: "2023-01-01T12:00:00.000Z"
@@ -6553,16 +6824,16 @@ components:
               description: List of customers impacted due to the incident.
               items:
                 $ref: '#/components/schemas/account-summary'
+            mitigated_date:
+              type: string
+              description: Timestamp when the incident was mitigated.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
             owned_by:
               type: array
               description: The users that own the incident.
               items:
                 $ref: '#/components/schemas/user-summary'
-            resolved_at:
-              type: string
-              description: Timestamp when the incident was resolved.
-              example: "2023-01-01T12:00:00.000Z"
-              format: date-time
             severity:
               $ref: '#/components/schemas/enum-value'
             stage:
@@ -6620,7 +6891,7 @@ components:
           description: Application-defined custom fields.
         custom_schema_spec:
           $ref: '#/components/schemas/custom-schema-spec'
-        identified_at:
+        identified_date:
           type: string
           description: Time when the incident was identified/reported.
           example: "2023-01-01T12:00:00.000Z"
@@ -6630,16 +6901,16 @@ components:
           description: List of customers impacted due to the incident.
           items:
             type: string
+        mitigated_date:
+          type: string
+          description: Timestamp when the incident was mitigated.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
         owned_by:
           type: array
           description: User IDs of the users that own the incident.
           items:
             type: string
-        resolved_at:
-          type: string
-          description: Timestamp when the incident was resolved.
-          example: "2023-01-01T12:00:00.000Z"
-          format: date-time
         severity:
           type: integer
           description: Severity of the incident.
@@ -6935,20 +7206,20 @@ components:
         id:
           type: string
           description: The ID of the incident to be updated.
-        identified_at:
+        identified_date:
           type: string
           description: Time when the incident was identified/reported.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
         impacted_customers:
           $ref: '#/components/schemas/update-incident-impacted-customers'
-        owned_by:
-          $ref: '#/components/schemas/update-incident-owned-by'
-        resolved_at:
+        mitigated_date:
           type: string
-          description: Timestamp when the incident was resolved.
+          description: Timestamp when the incident was mitigated.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+        owned_by:
+          $ref: '#/components/schemas/update-incident-owned-by'
         severity:
           type: integer
           description: Severity of the incident.
@@ -7245,6 +7516,7 @@ components:
         - developed_with
         - imports
         - is_analyzed_by
+        - is_converted_to
         - is_dependent_on
         - is_duplicate_of
         - is_merged_into
@@ -9080,6 +9352,16 @@ components:
         - question_answer
       title: question-answers-update-response
       x-go-name: QuestionAnswersUpdateResponseBody
+    remove-tag-with-value:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the tag.
+          example: TAG-12345
+      required:
+        - id
+      title: remove-tag-with-value
     removed-sla-metric-history:
       type: object
       additionalProperties: false
@@ -11719,6 +12001,7 @@ components:
       type: string
       description: Logical grouping of snap widgets. Useful for filtering.
       enum:
+        - ai_assistant_message
         - comment_suggestion_replies
         - email_preview
         - link_preview
@@ -11770,8 +12053,12 @@ components:
       x-go-name: SnapWidgetsCreateResponseBody
     stage:
       type: object
-      additionalProperties: false
       description: Describes the current stage of a object.
+      properties:
+        stage:
+          $ref: '#/components/schemas/custom-stage-summary'
+        state:
+          $ref: '#/components/schemas/custom-state-summary'
       title: stage
     stage-diagram-summary:
       allOf:
@@ -12364,6 +12651,12 @@ components:
     sync-metadata-filter:
       type: object
       properties:
+        external_reference:
+          type: array
+          description: |
+            Filters for issues with this specific external reference.
+          items:
+            type: string
         last_sync_in:
           $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter'
         last_sync_out:
@@ -13007,6 +13300,8 @@ components:
           description: |
             The external reference for the comment. This must be unique within
             the object's timeline.
+          maxLength: 512
+          minLength: 1
         link_previews:
           type: array
           description: |
@@ -13065,6 +13360,8 @@ components:
           description: |
             If set, then gets the entry with the given external reference for
             the provided entry ID's timeline.
+          maxLength: 512
+          minLength: 1
         id:
           type: string
           description: The ID of the timeline entry to get.
@@ -13184,6 +13481,15 @@ components:
           description: The updated comment's body.
         body_type:
           $ref: '#/components/schemas/timeline-comment-body-type'
+        external_ref:
+          type: string
+          description: |
+            The updated external reference for the comment. If set, this must
+            be unique within the object's timeline, otherwise if null, then
+            clears the value.
+          maxLength: 512
+          minLength: 1
+          nullable: true
         link_previews:
           $ref: '#/components/schemas/timeline-entries-update-request-timeline-comment-link-previews'
         snap_kit_body:
@@ -14232,12 +14538,18 @@ components:
           $ref: '#/components/schemas/event-sla-tracker-deleted'
         sla_tracker_updated:
           $ref: '#/components/schemas/event-sla-tracker-updated'
+        survey_created:
+          $ref: '#/components/schemas/event-survey-created'
+        survey_deleted:
+          $ref: '#/components/schemas/event-survey-deleted'
         survey_response_created:
           $ref: '#/components/schemas/event-survey-response-created'
         survey_response_deleted:
           $ref: '#/components/schemas/event-survey-response-deleted'
         survey_response_updated:
           $ref: '#/components/schemas/event-survey-response-updated'
+        survey_updated:
+          $ref: '#/components/schemas/event-survey-updated'
         tag_created:
           $ref: '#/components/schemas/event-tag-created'
         tag_deleted:
@@ -14325,6 +14637,12 @@ components:
         - sla_tracker_created
         - sla_tracker_deleted
         - sla_tracker_updated
+        - survey_created
+        - survey_deleted
+        - survey_response_created
+        - survey_response_deleted
+        - survey_response_updated
+        - survey_updated
         - tag_created
         - tag_deleted
         - tag_updated
@@ -15498,6 +15816,16 @@ components:
     works-update-request-tags:
       type: object
       properties:
+        add:
+          type: array
+          description: Adds the provided tags on the work item.
+          items:
+            $ref: '#/components/schemas/add-tag-with-value'
+        remove:
+          type: array
+          description: Removes the provided tags on the work item.
+          items:
+            $ref: '#/components/schemas/remove-tag-with-value'
         set:
           type: array
           description: Sets the provided tags on the work item.
@@ -15539,6 +15867,10 @@ components:
             Updates the Rev organization that the ticket is associated with.
           example: REV-AbCdEfGh
           nullable: true
+        sentiment:
+          type: integer
+          description: The enum ID for the sentiment of the ticket.
+          format: int64
         severity:
           $ref: '#/components/schemas/ticket-severity'
       title: works-update-request-ticket
@@ -17474,6 +17806,230 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - code-changes
+      x-fern-audiences:
+        - docs
+        - sdks
+  /content-template.create:
+    post:
+      description: Create the content template.
+      operationId: content-template-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/content-template-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/content-template-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - notifications
+      x-fern-audiences:
+        - docs
+        - sdks
+  /content-template.get:
+    get:
+      description: Get the content template.
+      operationId: content-template-get
+      parameters:
+        - description: The content template's ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/content-template-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - notifications
+      x-fern-audiences:
+        - docs
+      x-request-name: ContentTemplateGetQuery
+    post:
+      description: Get the content template.
+      operationId: content-template-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/content-template-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/content-template-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - notifications
+      x-fern-audiences:
+        - docs
+        - sdks
+  /content-template.list:
+    get:
+      description: Lists the content templates.
+      operationId: content-template-list
+      parameters:
+        - description: |
+            Filters for content template created by any of these users.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            The maximum number of content template to return. The default is
+            '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: Filters for content template based on name.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Fields to sort the content template by and the direction to sort
+            them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for content template of the provided types.
+          explode: false
+          in: query
+          name: type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/content-template-type'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/content-template-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - notifications
+      x-fern-audiences:
+        - docs
+      x-request-name: ContentTemplateListQuery
+    post:
+      description: Lists the content templates.
+      operationId: content-template-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/content-template-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/content-template-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - notifications
       x-fern-audiences:
         - docs
         - sdks
@@ -25516,6 +26072,8 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "409":
+          $ref: '#/components/responses/conflict'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -25581,6 +26139,8 @@ paths:
           name: external_ref
           schema:
             type: string
+            maxLength: 512
+            minLength: 1
       responses:
         "200":
           content:
@@ -25794,6 +26354,8 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "409":
+          $ref: '#/components/responses/conflict'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -26758,6 +27320,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for works with selected sync statuses.
           explode: false
           in: query
@@ -27208,6 +27778,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for works with selected sync statuses.
           explode: false
           in: query

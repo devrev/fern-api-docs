@@ -1779,6 +1779,8 @@ components:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-invalid-stage-transition'
         locked:
           $ref: '#/components/schemas/error-bad-request-merge-works-error-error-locked'
+        stage_not_found_for_subtype:
+          $ref: '#/components/schemas/error-bad-request-merge-works-error-error-stage-not-found-for-subtype'
         subtype:
           type: string
           enum:
@@ -1788,6 +1790,7 @@ components:
             - different_workspace
             - invalid_stage_transition
             - locked
+            - stage_not_found_for_subtype
         work:
           type: string
           description: The ID of the work which failed the validation.
@@ -1849,6 +1852,14 @@ components:
       type: object
       additionalProperties: false
       title: error-bad-request-merge-works-error-error-locked
+    error-bad-request-merge-works-error-error-stage-not-found-for-subtype:
+      type: object
+      properties:
+        subtype:
+          type: string
+          description: |
+            The subtype of the work for which stage is not configured.
+      title: error-bad-request-merge-works-error-error-stage-not-found-for-subtype
     error-bad-request-missing-dependency:
       type: object
       properties:
@@ -2437,6 +2448,25 @@ components:
       required:
         - sla_tracker
       title: event-sla-tracker-updated
+    event-survey-created:
+      type: object
+      properties:
+        survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - survey
+      title: event-survey-created
+    event-survey-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the survey that was deleted.
+        old_survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - id
+      title: event-survey-deleted
     event-survey-response-created:
       type: object
       properties:
@@ -2451,17 +2481,31 @@ components:
         id:
           type: string
           description: The ID of the survey response that was deleted.
+        old_survey_response:
+          $ref: '#/components/schemas/survey-response'
       required:
         - id
       title: event-survey-response-deleted
     event-survey-response-updated:
       type: object
       properties:
+        old_survey_response:
+          $ref: '#/components/schemas/survey-response'
         survey_response:
           $ref: '#/components/schemas/survey-response'
       required:
         - survey_response
       title: event-survey-response-updated
+    event-survey-updated:
+      type: object
+      properties:
+        old_survey:
+          $ref: '#/components/schemas/survey'
+        survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - survey
+      title: event-survey-updated
     event-tag-created:
       type: object
       properties:
@@ -2762,6 +2806,7 @@ components:
         - developed_with
         - imports
         - is_analyzed_by
+        - is_converted_to
         - is_dependent_on
         - is_duplicate_of
         - is_merged_into
@@ -3559,6 +3604,671 @@ components:
             rev_org:
               $ref: '#/components/schemas/org-summary'
       title: rev-user-summary
+    schema-bool-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: boolean
+              description: Default value.
+      title: schema-bool-field-descriptor
+    schema-bool-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: boolean
+      title: schema-bool-list-field-descriptor
+    schema-composite-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            composite_type:
+              type: string
+              description: Composite type. Required when field type is composite.
+      title: schema-composite-field-descriptor
+    schema-composite-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            composite_type:
+              type: string
+              description: Composite type. Required when field type is composite.
+      title: schema-composite-list-field-descriptor
+    schema-date-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: string
+              description: Default value.
+      title: schema-date-field-descriptor
+    schema-date-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: string
+      title: schema-date-list-field-descriptor
+    schema-double-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: number
+              description: Default value.
+              format: double
+      title: schema-double-field-descriptor
+    schema-double-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: number
+                format: double
+      title: schema-double-list-field-descriptor
+    schema-enum-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            allowed_values:
+              type: array
+              description: Allowed values for the field.
+              items:
+                type: string
+            default_value:
+              type: string
+              description: Default value.
+          required:
+            - allowed_values
+      title: schema-enum-field-descriptor
+    schema-enum-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            allowed_values:
+              type: array
+              description: Allowed values for the field.
+              items:
+                type: string
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: string
+          required:
+            - allowed_values
+      title: schema-enum-list-field-descriptor
+    schema-field-descriptor:
+      type: object
+      description: Set of field attributes.
+      discriminator:
+        mapping:
+          array: '#/components/schemas/schema-field-descriptor-array-type'
+          bool: '#/components/schemas/schema-bool-field-descriptor'
+          composite: '#/components/schemas/schema-composite-field-descriptor'
+          date: '#/components/schemas/schema-date-field-descriptor'
+          double: '#/components/schemas/schema-double-field-descriptor'
+          enum: '#/components/schemas/schema-enum-field-descriptor'
+          id: '#/components/schemas/schema-id-field-descriptor'
+          int: '#/components/schemas/schema-int-field-descriptor'
+          rich_text: '#/components/schemas/schema-rich-text-field-descriptor'
+          struct: '#/components/schemas/schema-struct-field-descriptor'
+          text: '#/components/schemas/schema-text-field-descriptor'
+          timestamp: '#/components/schemas/schema-timestamp-field-descriptor'
+          tokens: '#/components/schemas/schema-tokens-field-descriptor'
+          uenum: '#/components/schemas/schema-uenum-field-descriptor'
+          unknown: '#/components/schemas/schema-unknown-field-descriptor'
+        propertyName: field_type
+      oneOf:
+        - $ref: '#/components/schemas/schema-bool-field-descriptor'
+        - $ref: '#/components/schemas/schema-composite-field-descriptor'
+        - $ref: '#/components/schemas/schema-date-field-descriptor'
+        - $ref: '#/components/schemas/schema-double-field-descriptor'
+        - $ref: '#/components/schemas/schema-enum-field-descriptor'
+        - $ref: '#/components/schemas/schema-field-descriptor-array-type'
+        - $ref: '#/components/schemas/schema-id-field-descriptor'
+        - $ref: '#/components/schemas/schema-int-field-descriptor'
+        - $ref: '#/components/schemas/schema-rich-text-field-descriptor'
+        - $ref: '#/components/schemas/schema-struct-field-descriptor'
+        - $ref: '#/components/schemas/schema-text-field-descriptor'
+        - $ref: '#/components/schemas/schema-timestamp-field-descriptor'
+        - $ref: '#/components/schemas/schema-tokens-field-descriptor'
+        - $ref: '#/components/schemas/schema-uenum-field-descriptor'
+        - $ref: '#/components/schemas/schema-unknown-field-descriptor'
+      properties:
+        field_type:
+          $ref: '#/components/schemas/schema-field-descriptor-field-type'
+      required:
+        - field_type
+      title: schema-field-descriptor
+    schema-field-descriptor-array-type:
+      type: object
+      discriminator:
+        mapping:
+          bool: '#/components/schemas/schema-bool-list-field-descriptor'
+          composite: '#/components/schemas/schema-composite-list-field-descriptor'
+          date: '#/components/schemas/schema-date-list-field-descriptor'
+          double: '#/components/schemas/schema-double-list-field-descriptor'
+          enum: '#/components/schemas/schema-enum-list-field-descriptor'
+          id: '#/components/schemas/schema-id-list-field-descriptor'
+          int: '#/components/schemas/schema-int-list-field-descriptor'
+          rich_text: '#/components/schemas/schema-rich-text-list-field-descriptor'
+          struct: '#/components/schemas/schema-struct-list-field-descriptor'
+          text: '#/components/schemas/schema-text-list-field-descriptor'
+          timestamp: '#/components/schemas/schema-timestamp-list-field-descriptor'
+          tokens: '#/components/schemas/schema-tokens-list-field-descriptor'
+          uenum: '#/components/schemas/schema-uenum-list-field-descriptor'
+        propertyName: base_type
+      oneOf:
+        - $ref: '#/components/schemas/schema-bool-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-composite-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-date-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-double-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-enum-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-id-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-int-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-rich-text-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-struct-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-text-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-timestamp-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-tokens-list-field-descriptor'
+        - $ref: '#/components/schemas/schema-uenum-list-field-descriptor'
+      properties:
+        base_type:
+          $ref: '#/components/schemas/schema-field-descriptor-array-type-base-type'
+        eq_items:
+          type: integer
+          description: The exact array length.
+          format: int64
+        max_items:
+          type: integer
+          description: The maximum array length.
+          format: int64
+        min_items:
+          type: integer
+          description: The minimum array length.
+          format: int64
+      required:
+        - base_type
+      title: schema-field-descriptor-array-type
+    schema-field-descriptor-array-type-base-type:
+      type: string
+      enum:
+        - bool
+        - composite
+        - date
+        - double
+        - enum
+        - id
+        - int
+        - rich_text
+        - struct
+        - text
+        - timestamp
+        - tokens
+        - uenum
+    schema-field-descriptor-base:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the field.
+        is_filterable:
+          type: boolean
+          description: |
+            Whether this field is filterable, groupable and sortable.
+        is_immutable:
+          type: boolean
+          description: Whether this field is immutable or not.
+        is_pii:
+          type: boolean
+          description: |
+            Whether this field can hold Personally Identifiable Information
+            (PII).
+        is_required:
+          type: boolean
+          description: Whether this field is required or not.
+        mfz:
+          $ref: '#/components/schemas/schema-field-mfz-metadata'
+        name:
+          type: string
+          description: Name of the field.
+        oasis:
+          $ref: '#/components/schemas/schema-field-oasis-metadata'
+        origin:
+          type: string
+          description: Type this field is from.
+        ui:
+          $ref: '#/components/schemas/schema-field-ui-metadata'
+      required:
+        - name
+      title: schema-field-descriptor-base
+    schema-field-descriptor-field-type:
+      type: string
+      enum:
+        - array
+        - bool
+        - composite
+        - date
+        - double
+        - enum
+        - id
+        - int
+        - rich_text
+        - struct
+        - text
+        - timestamp
+        - tokens
+        - uenum
+        - unknown
+    schema-field-mfz-metadata:
+      type: object
+      additionalProperties: false
+      description: The schema of MFZ specific fields.
+      title: schema-field-mfz-metadata
+    schema-field-oasis-metadata:
+      type: object
+      additionalProperties: false
+      description: The schema of oasis specific fields.
+      title: schema-field-oasis-metadata
+    schema-field-uenum-value:
+      type: object
+      additionalProperties: false
+      description: A unified enum value.
+      title: schema-field-uenum-value
+    schema-field-ui-metadata:
+      type: object
+      additionalProperties: false
+      description: The schema of ui specific fields.
+      title: schema-field-ui-metadata
+    schema-id-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: string
+              description: Default value.
+            id_type:
+              type: array
+              description: Object ID types. Required when field type is ID.
+              items:
+                type: string
+      title: schema-id-field-descriptor
+    schema-id-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: string
+            id_type:
+              type: array
+              description: Object ID types. Required when field type is ID.
+              items:
+                type: string
+      title: schema-id-list-field-descriptor
+    schema-int-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: integer
+              description: Default value.
+              format: int64
+            gt:
+              type: integer
+              description: The minimum value for the integer (exclusive).
+              format: int64
+            gte:
+              type: integer
+              description: The minimum value for the integer (inclusive).
+              format: int64
+            lt:
+              type: integer
+              description: The maximum value for the integer (exclusive).
+              format: int64
+            lte:
+              type: integer
+              description: The maximum value for the integer (inclusive).
+              format: int64
+      title: schema-int-field-descriptor
+    schema-int-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: integer
+                format: int64
+            gt:
+              type: integer
+              description: The minimum value for the integer (exclusive).
+              format: int64
+            gte:
+              type: integer
+              description: The minimum value for the integer (inclusive).
+              format: int64
+            lt:
+              type: integer
+              description: The maximum value for the integer (exclusive).
+              format: int64
+            lte:
+              type: integer
+              description: The maximum value for the integer (inclusive).
+              format: int64
+      title: schema-int-list-field-descriptor
+    schema-rich-text-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            contains:
+              type: string
+              description: The contained substring.
+            default_value:
+              type: string
+              description: Default value.
+            eq_len:
+              type: integer
+              description: The exact string length.
+              format: int64
+            max_len:
+              type: integer
+              description: The maximum string length.
+              format: int64
+            min_len:
+              type: integer
+              description: The minimum string length.
+              format: int64
+            pattern:
+              type: string
+              description: The string pattern (regular expression).
+            prefix:
+              type: string
+              description: The string prefix.
+            suffix:
+              type: string
+              description: The string suffix.
+      title: schema-rich-text-field-descriptor
+    schema-rich-text-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            contains:
+              type: string
+              description: The contained substring.
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: string
+            eq_len:
+              type: integer
+              description: The exact string length.
+              format: int64
+            max_len:
+              type: integer
+              description: The maximum string length.
+              format: int64
+            min_len:
+              type: integer
+              description: The minimum string length.
+              format: int64
+            pattern:
+              type: string
+              description: The string pattern (regular expression).
+            prefix:
+              type: string
+              description: The string prefix.
+            suffix:
+              type: string
+              description: The string suffix.
+      title: schema-rich-text-list-field-descriptor
+    schema-struct-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: object
+              description: Default value.
+      title: schema-struct-field-descriptor
+    schema-struct-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: object
+      title: schema-struct-list-field-descriptor
+    schema-text-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            contains:
+              type: string
+              description: The contained substring.
+            default_value:
+              type: string
+              description: Default value.
+            eq_len:
+              type: integer
+              description: The exact string length.
+              format: int64
+            max_len:
+              type: integer
+              description: The maximum string length.
+              format: int64
+            min_len:
+              type: integer
+              description: The minimum string length.
+              format: int64
+            pattern:
+              type: string
+              description: The string pattern (regular expression).
+            prefix:
+              type: string
+              description: The string prefix.
+            suffix:
+              type: string
+              description: The string suffix.
+      title: schema-text-field-descriptor
+    schema-text-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            contains:
+              type: string
+              description: The contained substring.
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: string
+            eq_len:
+              type: integer
+              description: The exact string length.
+              format: int64
+            max_len:
+              type: integer
+              description: The maximum string length.
+              format: int64
+            min_len:
+              type: integer
+              description: The minimum string length.
+              format: int64
+            pattern:
+              type: string
+              description: The string pattern (regular expression).
+            prefix:
+              type: string
+              description: The string prefix.
+            suffix:
+              type: string
+              description: The string suffix.
+      title: schema-text-list-field-descriptor
+    schema-timestamp-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: string
+              description: Default value.
+      title: schema-timestamp-field-descriptor
+    schema-timestamp-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: string
+      title: schema-timestamp-list-field-descriptor
+    schema-tokens-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            contains:
+              type: string
+              description: The contained substring.
+            default_value:
+              type: string
+              description: Default value.
+            eq_len:
+              type: integer
+              description: The exact string length.
+              format: int64
+            max_len:
+              type: integer
+              description: The maximum string length.
+              format: int64
+            min_len:
+              type: integer
+              description: The minimum string length.
+              format: int64
+            pattern:
+              type: string
+              description: The string pattern (regular expression).
+            prefix:
+              type: string
+              description: The string prefix.
+            suffix:
+              type: string
+              description: The string suffix.
+      title: schema-tokens-field-descriptor
+    schema-tokens-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            contains:
+              type: string
+              description: The contained substring.
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: string
+            eq_len:
+              type: integer
+              description: The exact string length.
+              format: int64
+            max_len:
+              type: integer
+              description: The maximum string length.
+              format: int64
+            min_len:
+              type: integer
+              description: The minimum string length.
+              format: int64
+            pattern:
+              type: string
+              description: The string pattern (regular expression).
+            prefix:
+              type: string
+              description: The string prefix.
+            suffix:
+              type: string
+              description: The string suffix.
+      title: schema-tokens-list-field-descriptor
+    schema-uenum-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            allowed_values:
+              type: array
+              description: Allowed values for the field.
+              items:
+                $ref: '#/components/schemas/schema-field-uenum-value'
+            default_value:
+              type: integer
+              description: Default value.
+              format: int64
+          required:
+            - allowed_values
+      title: schema-uenum-field-descriptor
+    schema-uenum-list-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+        - type: object
+          properties:
+            allowed_values:
+              type: array
+              description: Allowed values for the field.
+              items:
+                $ref: '#/components/schemas/schema-field-uenum-value'
+            default_value:
+              type: array
+              description: Default value.
+              items:
+                type: integer
+                format: int64
+          required:
+            - allowed_values
+      title: schema-uenum-list-field-descriptor
+    schema-unknown-field-descriptor:
+      allOf:
+        - $ref: '#/components/schemas/schema-field-descriptor-base'
+      title: schema-unknown-field-descriptor
     set-tag-with-value:
       type: object
       properties:
@@ -3746,11 +4456,56 @@ components:
           type: boolean
           description: Filters for issues that are staged.
       title: staged-info-filter
+    survey:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            description:
+              type: string
+              description: Description of the survey.
+            introductory_text:
+              type: string
+              description: |
+                Text posted when introducing the survey to the responder.
+            name:
+              type: string
+              description: |
+                Survey name associated with schema. This name would be unique per
+                dev org.
+            response_text:
+              type: string
+              description: Text posted after the response is collected.
+            schema:
+              type: array
+              description: List of all fields in the schema.
+              items:
+                $ref: '#/components/schemas/schema-field-descriptor'
+            schema_with_metadata:
+              type: array
+              description: |
+                List of all the fields and their respective metadata in the schema.
+              items:
+                $ref: '#/components/schemas/survey-field-with-metadata'
+      title: survey
     survey-aggregation-filter:
       type: object
       additionalProperties: false
       description: The filter for survey aggregation.
       title: survey-aggregation-filter
+    survey-field-with-metadata:
+      type: object
+      description: Field descriptors with additional metadata for surveys.
+      properties:
+        field:
+          $ref: '#/components/schemas/schema-field-descriptor'
+        metadata:
+          type: object
+          description: Additional metadata for the input field.
+        question:
+          type: string
+          description: The question linked to the input field.
+      title: survey-field-with-metadata
     survey-response:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -3784,6 +4539,12 @@ components:
     sync-metadata-filter:
       type: object
       properties:
+        external_reference:
+          type: array
+          description: |
+            Filters for issues with this specific external reference.
+          items:
+            type: string
         last_sync_in:
           $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter'
         last_sync_out:
@@ -4689,12 +5450,18 @@ components:
           $ref: '#/components/schemas/event-sla-tracker-deleted'
         sla_tracker_updated:
           $ref: '#/components/schemas/event-sla-tracker-updated'
+        survey_created:
+          $ref: '#/components/schemas/event-survey-created'
+        survey_deleted:
+          $ref: '#/components/schemas/event-survey-deleted'
         survey_response_created:
           $ref: '#/components/schemas/event-survey-response-created'
         survey_response_deleted:
           $ref: '#/components/schemas/event-survey-response-deleted'
         survey_response_updated:
           $ref: '#/components/schemas/event-survey-response-updated'
+        survey_updated:
+          $ref: '#/components/schemas/event-survey-updated'
         tag_created:
           $ref: '#/components/schemas/event-tag-created'
         tag_deleted:
@@ -4782,6 +5549,12 @@ components:
         - sla_tracker_created
         - sla_tracker_deleted
         - sla_tracker_updated
+        - survey_created
+        - survey_deleted
+        - survey_response_created
+        - survey_response_deleted
+        - survey_response_updated
+        - survey_updated
         - tag_created
         - tag_deleted
         - tag_updated
@@ -5682,6 +6455,10 @@ components:
             Updates the Rev organization that the ticket is associated with.
           example: REV-AbCdEfGh
           nullable: true
+        sentiment:
+          type: integer
+          description: The enum ID for the sentiment of the ticket.
+          format: int64
         severity:
           $ref: '#/components/schemas/ticket-severity'
       title: works-update-request-ticket
@@ -8459,6 +9236,8 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "409":
+          $ref: '#/components/responses/conflict'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -8707,6 +9486,8 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "409":
+          $ref: '#/components/responses/conflict'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -9149,6 +9930,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for works with selected sync statuses.
           explode: false
           in: query
@@ -9540,6 +10329,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for works with selected sync statuses.
           explode: false
           in: query

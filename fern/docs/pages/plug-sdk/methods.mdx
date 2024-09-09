@@ -106,14 +106,29 @@ var properties = {
 window.plugSDK.trackEvent("signed_up",properties)
 ```
 
-To learn more about tracking events, visit [Track events](../plug-sdk/track-events).
+To learn more about tracking events, visit [Track events](/plug-sdk/track-events).
 
+### Toggle widget
 
+The `toggleWidget` method allows you to control the visibility of the PLuG chat widget.
 
+Passing input = true opens the chat widget.
 
+Passing input = false closes the chat widget.
 
+```jsx
+window.plugSDK.toggleWidget(true);
+```
 
+### Toggle search agent
 
+The `toggleSearchAgent` method allows you to control the visibility of the search agent.
+
+If no input is provided, the method toggles the search bar: opening it if it's closed, and closing it if it's open.
+
+```jsx
+window.plugSDK.toggleSearchAgent(true);
+```
 
 
 - `plugSDK.init()` Initialize the PLuG chat widget.

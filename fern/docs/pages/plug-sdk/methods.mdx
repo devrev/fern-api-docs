@@ -168,11 +168,48 @@ Use the `prefillSearchQuery` method to prefill a search query when opening and i
 window.plugSDK.prefillSearchQuery("search_query");
 ```
 
+### Start session recording
+
+The widget automatically starts session recording upon initialization. You can specify session recording options by passing the following inputs to the initialization method.
+
+```jsx
+PlugStartRecordingOptions {
+	sessionReplay: {
+		maskAllInputs?: boolean;
+		maskInputOptions?: Partial<{
+		  color: boolean;
+		  date: boolean;
+		  'datetime-local': boolean;
+		  email: boolean;
+		  month: boolean;
+		  number: boolean;
+		  range: boolean;
+		  search: boolean;
+		  tel: boolean;
+		  text: boolean;
+		  time: boolean;
+		  url: boolean;
+		  week: boolean;
+		  textarea: boolean;
+		  select: boolean;
+		}>;
+		captureMouseMove?: boolean;
+		captureNetworkLogs?: boolean;
+		captureConsoleLogs?: boolean;
+	}
+}
+```
+
+The following table describes the input values mentioned above:
 
 
-
-
-
+|Option   |Description   |Default   |
+|---|---|---|
+|maskAllInputs   |** need info   |False   |
+|maskInputOptions   |This preference determines whether specific input element types should be masked while capturing the session recording.   |Set to `true` for HTML input elements with `type` set to `email`, `tel`, or `password`. Set to `false` for other HTML input elements. For example, `<input type="email"/>` will be masked, whereas `<input type="text" name="email"/>` will not be masked.|
+|captureMouseMove   |This preference determines whether to track complete mouse movements or only clicks.   |False   |
+|captureNetworkLogs   |This preference determines whether the session should capture network logs or not.   |True   |
+|captureConsoleLogs   |This preference determines whether the session should capture console logs or not.   |True   |
 
 
 

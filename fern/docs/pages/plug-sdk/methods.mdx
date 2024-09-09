@@ -211,147 +211,30 @@ The following table describes the input values mentioned above:
 |captureNetworkLogs   |This preference determines whether the session should capture network logs or not.   |True   |
 |captureConsoleLogs   |This preference determines whether the session should capture console logs or not.   |True   |
 
+### Add session properties
 
-
-
-
-
-
-
-- `plugSDK.init()` Initialize the PLuG chat widget.
-
-- `plugSDK.initSearchAgent()` Initialize PLuG search agent.
-
-- `plugSDK.shutdown()` End the user session which is currently initialized in PLuG widget. 
-
-- `plugSDK.toggleWidget()` Open/close the chat widget.
-
-- `plugSDK.toggleSearchAgent()` Open/close the search agent.
-
-- `plugSDK.onEvent()` Perform specific actions based on the payload type received from the PLuG widget. 
-
-- `plugSDK.toggleTheme('light/dark')` Toggle PLuG widget theme.
-
-- `plugSDK.toggleWidget(true, 'create_conversation', {startConversationContent: 'Hi',});` Start a conversation.
-
-- `plugSDK.prefillSearchQuery(query:"string")` Prefill the search input of the search agent.
-
-## Initialize chat
-
-Calling the `init()` method initializes the PLuG chat widget on your website. Initializing the PLuG widget is necessary for you to perform any other actions on the PLuG widget SDK.
-
-```jsx 
-useEffect(() => {
-    window.plugSDK.init({
-      app_id: <your_unique_app_id>,
-    });
-  }, []);
-```
-
-<Callout intent="info">
-When React is using `Strict` mode, you might get a warning message from `window.plugSDK.init()` being called multiple times. These errors won't impact the installation and functioning of the widget.
-</Callout>
-
-## Initialize search
-
-Calling the `initSearchAgent()` method initializes the PLuG Search agent on your website. Initializing search is necessary for you to perform any other actions on the PLuG widget SDK.
+The `addSessionProperties` method is used to add properties to the session in the form of a key-value map.
 
 ```jsx
-useEffect(() => {
-  window.plugSDK.init({
-    app_id: '<your_unique_app_id>',
-    disable_plug_chat_window: true,
+window.plugSDK.addSessionProperties({
+	city: 'Bengaluru',
+	region: 'us-east'
 });
-
-  window.plugSDK.onEvent((payload) => {
-    if (payload.type === 'ON_PLUG_WIDGET_READY') {
-      window.plugSDK.initSearchAgent();
-    }
-  });
-}, []);
 ```
 
-## Shutdown the widget
+### Restart session recording
 
-The `shutdown()` method is helpful when you want to end the user session which is currently initialized in the PLuG widget. You can use this method to clear your users' conversations and tickets when they log out of your application.
+The `restartSessionRecording` method is used to restart session recording.
 
 ```jsx
-await window.plugSDK.shutdown();
+window.plugSDK.restartSessionRecording();
 ```
 
-After calling the `shutdown()` method, you can call the `init()` method to reinitialize PLuG widget on your website if you wish to showcase the PLuG widget again in the logged out version of your application. 
+### Start conversation
 
-<Callout intent="info">
-Once the `shutdown()` method is called, all the other functionality in the widget such as session recording or Nudges is also be stopped. You need to reinitialize the widget again to have these features active. 
-</Callout>
+The `startConversationContent` method opens the PLuG widget directly to the conversation creation view. It replicates the action of clicking the **Send us a message** button, launching the widget to the conversation initiation screen.
 
-<iframe src="https://codesandbox.io/embed/shutdown-plug-sdk-sstn8g?fontsize=14&hidenavigation=1&theme=dark"
-      style={{width:'100%', height:'600px', border:'0', borderRadius: '4px', overflow:'hidden',}}
-     title="Toggle_Plug_with_Button"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
-## Open or close the widget
-
-To control whether the PLuG widget launcher screen is open, you should use either the `togglewidget()` method with a boolean value or the `toggleSearchAgent()` method, depending on which PLuG instance you are using.
-
-```jsx
-window.plugSDK.toggleWidget(true);
-window.plugSDK.toggleSearchAgent(true);
-```
-
-<iframe src="https://codesandbox.io/embed/toggle-plug-with-button-nnkmk3?fontsize=14&hidenavigation=1&module=%2Fsrc%2FTogglePlug.js&theme=dark&view=preview&hidedevtools=1"
-      style={{width:'100%', height:'600px', border:'0', borderRadius: '4px', overflow:'hidden',}}
-     title="Toggle_Plug_with_Button"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
-## Take actions from events
-
-This method can be used to listen to events coming from the PLuG widget. The following are the different `PAYLOAD_TYPES`.
-
-- `ON_PLUG_WIDGET_CLOSED` The PLuG widget is closed.
-
-- `ON_PLUG_WIDGET_OPENED` The PLuG widget is opened.
-
-- `ON_PLUG_WIDGET_READY` The PLuG widget is ready.
-- 
-- `ON_PLUG_WIDGET_UNREAD_COUNT_CHANGE` The user receives a new message to their PLuG. You can also listen to the number of unread messages and display that to your user. 
-
-```jsx
-useEffect(() => {
-  window.plugSDK.onEvent((payload) => {
-    if (payload.type === PAYLOAD_TYPE) {
-      //Your logic goes here
-    }
-  });
-}, []);
-```
-
-<iframe src="https://codesandbox.io/embed/events-rendered-7rhzj7?fontsize=14&hidenavigation=1&module=%2Fsrc%2FOnEvents.js&theme=dark&view=preview&hidedevtools=1"
-     style={{width:'100%', height:'600px', border:'0', borderRadius: '4px', overflow:'hidden',}}
-     title="Events_Rendered"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
-
-## Toggle theme
-
-The toggle theme method allows you to dynamically modify the PLuG SDK's theme, even after initializing the PLuG widget. This functionality enables real-time adjustments to the PLuG widget's theme based on diverse themes preferred by your users.
-
-The method accepts two inputs: `light` and `dark`.
-```jsx
-window.plugSDK.toggleTheme('light | dark');
-```
-The parameter is optional; calling `toggleTheme()` toggles the current theme, and specifying a theme as a parameter allows toggling for that specific theme.
-
-## Start conversation
-
-This method is utilized to open the PLuG widget with the conversation creation view activated. It essentially replicates the action of clicking the **Send us a message** button, launching the widget directly to the conversation initiation screen.
-
-The method also accepts an optional input parameter, allowing you to pre-fill a message in the conversation creation screen. This provides your users with a prompt to initiate a conversation with your team.
+This method also accepts an optional input parameter to pre-fill a message on the conversation creation screen, providing your users with a prompt to start a conversation with your team.
 
 ```jsx
 plugSDK.toggleWidget(true, 'create_conversation', {

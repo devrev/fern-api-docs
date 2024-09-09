@@ -130,6 +130,56 @@ If no input is provided, the method toggles the search bar: opening it if it's c
 window.plugSDK.toggleSearchAgent(true);
 ```
 
+### Take action from PLuG chat events
+
+This method allows you to listen for events from the PLuG widget. Below are the available `PAYLOAD_TYPES`.
+- `ON_PLUG_WIDGET_CLOSED`: Triggered when the PLuG widget is closed.
+- `ON_PLUG_WIDGET_OPENED`: Triggered when the PLuG widget is opened.
+- `ON_PLUG_WIDGET_READY`: Triggered when the PLuG widget is ready.
+- `ON_PLUG_WIDGET_UNREAD_COUNT_CHANGE`: Triggered when the user receives a new message. You can also track the number of unread messages and display them to the user.
+- `ON_CONVERSATION_START`: Indicates that the user has started a new conversation.
+- `ON_SEARCH_AGENT_QUERY`: Indicates that a new search query has been made in the PLuG search agent.
+
+```jsx
+useEffect(() => {
+  window.plugSDK.onEvent((payload) => {
+    if (payload.type === PAYLOAD_TYPE) {
+      //Your logic goes here
+    }
+  });
+}, []);
+```
+
+### Check widget status
+
+Use `isWidgetOpen` method to determine whether your chat widget is currently open or closed.
+
+```jsx
+window.plugSDK.isWidgetOpen
+```
+
+This returns true if the chat widget is open and false if it is closed.
+
+### Prefill search query in search agent
+
+Use the `prefillSearchQuery` method to prefill a search query when opening and initializing the search agent.
+
+```jsx
+window.plugSDK.prefillSearchQuery("search_query");
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 - `plugSDK.init()` Initialize the PLuG chat widget.
 

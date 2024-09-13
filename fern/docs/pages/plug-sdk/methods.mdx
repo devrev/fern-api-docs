@@ -24,7 +24,7 @@ The `init()` method can accept multiple inputs, which are explained below:
 |session_token   |This unique token identifies the user interacting with your app.   |String   |No   |
 |fetchSessionToken   |Request a new session token.   |Function of type () => Promise<string>   |No   |
 |primary_text_color   |This determines the launcher color, button text for new tickets and conversations, conversation user text, and more. It should be a valid hex code, such as #f0f0f0.   |String   |No   |
-|session_recording_options   |Options for recording observability sessions.   |To view the vales [click here](#Start session recording) |No   |
+|session_recording_options   |Options for recording observability sessions.   |To view the values [click here](#Start session recording) |No   |
 |accent_color   |The accent color of the plug affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |No   |
 |custom_launcher_selector   |A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the PLuG settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source.   |Boolean (True or False)   |No    |
 |spacing   |Padding from the launcher: This padding can also be set in the plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |object {bottom: string side: string}   |No   |

@@ -352,6 +352,20 @@ components:
       type: object
       description: Metric with corresponding target values.
       properties:
+        breached_at:
+          type: string
+          description: |
+            For breached metrics the time they entered into breach. This is the
+            same as what the target date was, unless the breach happened due to
+            a different policy starting to apply.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        completed_in:
+          type: integer
+          description: |
+            For completed metrics the time (in minutes) it took to complete
+            them. (Taking into account the schedule if any).
+          format: int32
         is_out_of_schedule:
           type: boolean
           description: |
@@ -360,12 +374,27 @@ components:
             stage.
         metric_definition:
           $ref: '#/components/schemas/metric-definition-summary'
+        next_schedule_transition:
+          type: string
+          description: |
+            The next time the schedule will change its state, if such is known.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
         org_schedule:
           $ref: '#/components/schemas/org-schedule-summary'
         remaining_time:
           type: integer
           description: Time in minutes that remains on a paused metric.
           format: int32
+        stage:
+          type: string
+          description: Metric stage corresponding to the applicable SLA.
+        status:
+          type: string
+          description: |
+            It is an indicator of whether the metric has ever been breached
+            (missed). If not, it shows whether the metric is completed, in
+            progress, or not part of the applied policy.
         target_time:
           type: string
           description: |
@@ -381,6 +410,7 @@ components:
           format: date-time
       required:
         - metric_definition
+        - stage
       title: archetype-metric-target
     artifact:
       allOf:

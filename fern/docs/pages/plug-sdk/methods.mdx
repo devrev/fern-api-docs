@@ -31,9 +31,9 @@ The `init()` method can accept multiple inputs, which are explained below:
 |theme   |The color scheme for the launcher and widget.   |light or dark   |No   |
 |widget_alignment   |The PLuG widget can be positioned on either the left or right side of the launcher. You can also adjust the widget alignment through the plug settings at app.devrev.ai. If alignment settings are configured in both places, the value from app.devrev.ai will override the launcher setting.   |  |No   |
 
-:::note
+<Callout intent="note">
 When React is in Strict mode, you may receive a warning about `window.plugSDK.init()` being called multiple times. These warnings do not affect the widget's installation or functionality.
-:::
+</Callout>
 
 ### Initialize the search agent
 
@@ -63,9 +63,9 @@ await window.plugSDK.shutdown();
 ```
 After calling the `shutdown()` method, you can use the `init()` method to reinitialize the PLuG widget on your website if you want to display it again in the logged-out version of your application.
 
-:::note
+<Callout intent="note">
 Once the `shutdown()` method is called, all other widget functionalities, such as session recording and Nudges, will also be stopped. You will need to reinitialize the widget to reactivate these features.
-:::
+</Callout>
 
 ### Toggle widget theme
 
@@ -79,11 +79,9 @@ window.plugSDK.toggleTheme('light | dark');
 
 The parameter is optional; calling `toggleTheme()` will switch between the current themes. Specifying a theme as a parameter allows you to toggle directly to that specific theme.
 
-:::note
-
+<Callout intent="note">
 The theme specified in this method takes precedence over the theme configured in the PLuG settings in your DevRev app.
-
-:::
+</Callout>
 
 ### Track events
 

@@ -85,6 +85,7 @@ export const FOOTER_V3_SCHEMA = `
     compliance {
       ...,
       "link": link -> ,
+      "icon": icon.asset -> ,
     },
     logo {
       ...,

@@ -19,12 +19,12 @@ The `init()` method can accept multiple inputs, which are explained below:
 |---|---|---|---|
 |app_id   |This is the unique identifier for your PLuG SDK.    |String   |Yes   |
 |disable_plug_chat_window   |The chat widget is enabled by default. Use this option if you want to disable the chat widget.   |Boolean (True or False)   |No   |
-|enable_default_launcher   |**   |**   |**   |
+|enable_default_launcher   |Show/hide the default PLuG Widget launcher.   |Boolean (True or False)   |No   |
 |session_recording_key   |This key identifies your session recording account and is required to enable the PLuG SDK session recording features.   |String   |No   |
 |enable_session_recording   |This instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |No   |
 |session_token   |This unique token identifies the user interacting with your app.   |String   |No   |
 |primary_text_color   |This determines the launcher color, button text for new tickets and conversations, conversation user text, and more. It should be a valid hex code, such as #f0f0f0.   |String   |No   |
-|session_recording_options   |Options for recording observability sessions.   |To view the values, see [Session recording](#session-recording) |No   |
+|session_recording_options   |Options for recording observability sessions.   |To view the values, see [Session recording options](https://devrev.ai/docs/plug/observability-getting-started) |No   |
 |accent_color   |The accent color of the PLuG affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |No   |
 |custom_launcher_selector   |A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the PLuG settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source.   |Boolean (True or False)   |No    |
 |spacing   |Padding from the launcher: This padding can also be set in the plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |object `{bottom: string side: string;}`   |No   |
@@ -196,45 +196,3 @@ The `restartSessionRecording` method is used to restart session recording.
 ```jsx
 window.plugSDK.restartSessionRecording();
 ```
-
-### Start session recording <a id="session-recording"></a>
- 
-The widget automatically starts session recording upon initialization. You can specify session recording options by passing the following inputs to the initialization method.
-
-```jsx
-PlugStartRecordingOptions {
-	sessionReplay: {
-		maskAllInputs?: boolean;
-		maskInputOptions?: Partial<{
-		  color: boolean;
-		  date: boolean;
-		  'datetime-local': boolean;
-		  email: boolean;
-		  month: boolean;
-		  number: boolean;
-		  range: boolean;
-		  search: boolean;
-		  tel: boolean;
-		  text: boolean;
-		  time: boolean;
-		  url: boolean;
-		  week: boolean;
-		  textarea: boolean;
-		  select: boolean;
-		}>;
-		captureMouseMove?: boolean;
-		captureNetworkLogs?: boolean;
-		captureConsoleLogs?: boolean;
-	}
-}
-```
-
-The following table describes the input values mentioned above:
-
-|Option   |Description   |Default   |
-|---|---|---|
-|maskAllInputs   |  |False   |
-|maskInputOptions   |This preference determines whether specific input element types should be masked while capturing the session recording.   |Set to `true` for HTML input elements with `type` set to `email`, `tel`, or `password`. Set to `false` for other HTML input elements. For example, `<input type="email"/>` will be masked, whereas `<input type="text" name="email"/>` will not be masked.|
-|captureMouseMove   |This preference determines whether to track complete mouse movements or only clicks.   |False   |
-|captureNetworkLogs   |This preference determines whether the session should capture network logs or not.   |True   |
-|captureConsoleLogs   |This preference determines whether the session should capture console logs or not.   |True   |

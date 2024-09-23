@@ -23,7 +23,6 @@ The `init()` method can accept multiple inputs, which are explained below:
 |session_recording_key   |This key identifies your session recording account and is required to enable the PLuG SDK session recording features.   |String   |No   |
 |enable_session_recording   |This instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |No   |
 |session_token   |This unique token identifies the user interacting with your app.   |String   |No   |
-|fetchSessionToken   |Request a new session token.   |Function of type `() => Promise<string>`   |No   |
 |primary_text_color   |This determines the launcher color, button text for new tickets and conversations, conversation user text, and more. It should be a valid hex code, such as #f0f0f0.   |String   |No   |
 |session_recording_options   |Options for recording observability sessions.   |To view the values, see [Session recording](#session-recording) |No   |
 |accent_color   |The accent color of the PLuG affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |No   |
@@ -151,7 +150,7 @@ useEffect(() => {
 
 ### Check widget status
 
-Use `isWidgetOpen` method to determine whether your chat widget is currently open or closed.
+Use `isWidgetOpen` to determine whether your chat widget is currently open or closed.
 
 ```jsx
 window.plugSDK.isWidgetOpen
@@ -237,8 +236,8 @@ This method also accepts an optional input parameter to pre-fill a message on th
 
 ```jsx
 plugSDK.toggleWidget(true, 'create_conversation', {
-        startConversationContent: 'Hi',
-      });
+startConversationContent: 'Hi',
+});
 ```
 
 Looking for something more? Reach out to us through our own PLuG widget in the bottom right of this screen and we would be happy to assist you.

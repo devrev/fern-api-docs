@@ -19,7 +19,7 @@ The `init()` method can accept multiple inputs, which are explained below:
 |---|---|---|---|
 |app_id   |This is the unique identifier for your PLuG SDK.    |String   |Yes   |
 |disable_plug_chat_window   |The chat widget is enabled by default. Use this option if you want to disable the chat widget.   |Boolean (True or False)   |No   |
-|enable_default_launcher   |Show/hide the default PLuG Widget launcher.   |Boolean (True or False)   |No   |
+|enable_default_launcher   |Show/hide the default PLuG widget launcher.   |Boolean (True or False)   |No   |
 |session_recording_key   |This key identifies your session recording account and is required to enable the PLuG SDK session recording features.   |String   |No   |
 |enable_session_recording   |This instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |No   |
 |session_token   |This unique token identifies the user interacting with your app.   |String   |No   |
@@ -72,6 +72,7 @@ This method allows you to listen for events from the PLuG widget. Below are the 
 - `ON_PLUG_WIDGET_UNREAD_COUNT_CHANGE`: Triggered when the user receives a new message. You can also track the number of unread messages and display them to the user.
 - `ON_CONVERSATION_START`: Indicates that the user has started a new conversation.
 - `ON_SEARCH_AGENT_QUERY`: Indicates that a new search query has been made in the PLuG search agent.
+- `ON_OBSERVABILITY_READY`: Triggered when the session analytics capabilities of PLuG are initialized.
 
 ```jsx
 useEffect(() => {

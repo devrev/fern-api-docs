@@ -2286,6 +2286,12 @@ components:
       required:
         - dev_user
       title: event-dev-user-updated
+    event-fetched-result:
+      type: string
+      enum:
+        - forbidden
+        - not_found
+        - ok
     event-group-created:
       type: object
       properties:
@@ -2634,6 +2640,35 @@ components:
       required:
         - id
       title: event-work-deleted
+    event-work-fetched:
+      type: object
+      discriminator:
+        mapping:
+          forbidden: '#/components/schemas/empty'
+          not_found: '#/components/schemas/empty'
+          ok: '#/components/schemas/event-work-fetched-ok'
+        propertyName: result
+      oneOf:
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/event-work-fetched-ok'
+      properties:
+        id:
+          type: string
+          description: The ID of the work that was fetched.
+          example: ISS-12345
+        result:
+          $ref: '#/components/schemas/event-fetched-result'
+      required:
+        - id
+        - result
+      title: event-work-fetched
+    event-work-fetched-ok:
+      type: object
+      properties:
+        work:
+          $ref: '#/components/schemas/work'
+      title: event-work-fetched-ok
     event-work-updated:
       type: object
       properties:
@@ -4494,6 +4529,9 @@ components:
             description:
               type: string
               description: Description of the survey.
+            header:
+              type: string
+              description: Header of the survey.
             introductory_text:
               type: string
               description: |
@@ -4517,6 +4555,9 @@ components:
                 List of all the fields and their respective metadata in the schema.
               items:
                 $ref: '#/components/schemas/survey-field-with-metadata'
+            title:
+              type: string
+              description: Title of the survey.
       title: survey
     survey-aggregation-filter:
       type: object
@@ -4865,6 +4906,14 @@ components:
               $ref: '#/components/schemas/org-summary'
             sentiment:
               $ref: '#/components/schemas/enum-value'
+            sentiment_modified_date:
+              type: string
+              description: Timestamp when the sentiment was last modified.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            sentiment_summary:
+              type: string
+              description: Summary justifying the sentiment.
             severity:
               $ref: '#/components/schemas/ticket-severity'
             sla_tracker:
@@ -4929,6 +4978,7 @@ components:
       type: string
       description: The type of the body to use for the comment.
       enum:
+        - data
         - snap_kit
         - snap_widget
         - text
@@ -5529,6 +5579,8 @@ components:
           $ref: '#/components/schemas/event-work-created'
         work_deleted:
           $ref: '#/components/schemas/event-work-deleted'
+        work_fetched:
+          $ref: '#/components/schemas/event-work-fetched'
         work_updated:
           $ref: '#/components/schemas/event-work-updated'
       required:
@@ -5597,6 +5649,7 @@ components:
         - webhook_updated
         - work_created
         - work_deleted
+        - work_fetched
         - work_updated
     webhook-event-verify:
       type: object
@@ -6489,6 +6542,14 @@ components:
           type: integer
           description: The enum ID for the sentiment of the ticket.
           format: int64
+        sentiment_modified_date:
+          type: string
+          description: Timestamp at which sentiment was last modified.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        sentiment_summary:
+          type: string
+          description: Summary justifying the current sentiment.
         severity:
           $ref: '#/components/schemas/ticket-severity'
       title: works-update-request-ticket

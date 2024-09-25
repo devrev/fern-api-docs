@@ -3392,6 +3392,164 @@ components:
         - $ref: '#/components/schemas/vista-base-summary'
       description: Static collection of Devrev objects.
       title: curated-vista-summary
+    custom-link-type:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+      title: custom-link-type
+    custom-link-type-create-request:
+      type: object
+      properties:
+        backward_name:
+          type: string
+          description: The name of the link in the backward direction.
+        deprecated:
+          type: boolean
+          description: Whether the link type is deprecated.
+        forward_name:
+          type: string
+          description: The name of the link in the forward direction.
+        name:
+          type: string
+          description: The name of the custom link type.
+        source_types:
+          type: array
+          description: Types from which the link can be made from.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
+        target_types:
+          type: array
+          description: Types to which the link can be made to.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
+        tooltip:
+          type: string
+          description: The tooltip of the custom link type.
+      required:
+        - backward_name
+        - forward_name
+        - name
+        - source_types
+        - target_types
+      title: custom-link-type-create-request
+    custom-link-type-create-response:
+      type: object
+      properties:
+        custom_link_type:
+          $ref: '#/components/schemas/custom-link-type'
+      required:
+        - custom_link_type
+      title: custom-link-type-create-response
+      x-go-name: CustomLinkTypeCreateResponseBody
+    custom-link-type-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom link type to get.
+      required:
+        - id
+      title: custom-link-type-get-request
+    custom-link-type-get-response:
+      type: object
+      properties:
+        custom_link_type:
+          $ref: '#/components/schemas/custom-link-type'
+      required:
+        - custom_link_type
+      title: custom-link-type-get-response
+      x-go-name: CustomLinkTypeGetResponseBody
+    custom-link-type-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        deprecated:
+          type: boolean
+          description: Whether only deprecated link types should be filtered.
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        name:
+          type: array
+          description: The list of link type names.
+          items:
+            type: string
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+        source_types:
+          $ref: '#/components/schemas/link-descriptor-filter'
+        target_types:
+          $ref: '#/components/schemas/link-descriptor-filter'
+      title: custom-link-type-list-request
+    custom-link-type-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+        result:
+          type: array
+          description: The custom link types.
+          items:
+            $ref: '#/components/schemas/custom-link-type'
+      required:
+        - result
+      title: custom-link-type-list-response
+      x-go-name: CustomLinkTypeListResponseBody
+    custom-link-type-update-request:
+      type: object
+      properties:
+        backward_name:
+          type: string
+          description: The updated name of the link in the backward direction.
+        deprecated:
+          type: boolean
+          description: Whether the link type is deprecated.
+        forward_name:
+          type: string
+          description: The updated name of the link in the forward direction.
+        id:
+          type: string
+          description: The ID of the custom link type to update.
+        name:
+          type: string
+          description: The updated name of the custom link type.
+        source_types:
+          $ref: '#/components/schemas/update-link-target-descriptor-list'
+        target_types:
+          $ref: '#/components/schemas/update-link-target-descriptor-list'
+        tooltip:
+          type: string
+          description: The updated tooltip of the custom link type.
+      required:
+        - id
+      title: custom-link-type-update-request
+    custom-link-type-update-response:
+      type: object
+      properties:
+        custom_link_type:
+          $ref: '#/components/schemas/custom-link-type'
+      required:
+        - custom_link_type
+      title: custom-link-type-update-response
+      x-go-name: CustomLinkTypeUpdateResponseBody
     custom-object-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'
@@ -4342,6 +4500,16 @@ components:
         - $ref: '#/components/schemas/user-base'
         - type: object
           properties:
+            custom_fields:
+              type: object
+              description: Custom fields.
+            custom_schema_fragments:
+              type: array
+              description: Custom schema fragments.
+              example:
+                - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+              items:
+                type: string
             experience_start_date:
               type: string
               description: Start date of the user's employment.
@@ -4362,6 +4530,13 @@ components:
               description: Array of skills of the user.
               items:
                 $ref: '#/components/schemas/user-skill'
+            stock_schema_fragment:
+              type: string
+              description: Stock schema fragment.
+              example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+            subtype:
+              type: string
+              description: Subtype corresponding to the custom type fragment.
       title: dev-user
     dev-user-external-identity-filter:
       type: object
@@ -4483,6 +4658,9 @@ components:
           description: |
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
+        custom_fields:
+          type: object
+          description: Filters for custom fields.
         email:
           type: array
           description: Filters Dev users based on email addresses.
@@ -4559,6 +4737,11 @@ components:
         A request to update the user's information for the authenticated Dev
         user.
       properties:
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         display_name:
           type: string
           description: The updated display name of the Dev user.
@@ -4611,6 +4794,11 @@ components:
         A request to update the user's information corresponding to the
         provided Dev user.
       properties:
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         display_name:
           type: string
           description: The updated display name of the Dev user.
@@ -5734,6 +5922,12 @@ components:
       required:
         - dev_user
       title: event-dev-user-updated
+    event-fetched-result:
+      type: string
+      enum:
+        - forbidden
+        - not_found
+        - ok
     event-group-created:
       type: object
       properties:
@@ -6201,6 +6395,35 @@ components:
       required:
         - id
       title: event-work-deleted
+    event-work-fetched:
+      type: object
+      discriminator:
+        mapping:
+          forbidden: '#/components/schemas/empty'
+          not_found: '#/components/schemas/empty'
+          ok: '#/components/schemas/event-work-fetched-ok'
+        propertyName: result
+      oneOf:
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/event-work-fetched-ok'
+      properties:
+        id:
+          type: string
+          description: The ID of the work that was fetched.
+          example: ISS-12345
+        result:
+          $ref: '#/components/schemas/event-fetched-result'
+      required:
+        - id
+        - result
+      title: event-work-fetched
+    event-work-fetched-ok:
+      type: object
+      properties:
+        work:
+          $ref: '#/components/schemas/work'
+      title: event-work-fetched-ok
     event-work-updated:
       type: object
       properties:
@@ -7022,6 +7245,24 @@ components:
           description: User IDs of the users that own the incident.
           items:
             type: string
+        pia:
+          type: array
+          description: |
+            The article ids of the Post-Incident Analysis(PIA) of the incident.
+          items:
+            type: string
+        playbooks:
+          type: array
+          description: |
+            The article ids of the playbook(s) associated with the incident.
+          items:
+            type: string
+        related_docs:
+          type: array
+          description: |
+            The article ids of other documents associated with the incident.
+          items:
+            type: string
         reported_by:
           type: integer
           description: The entity that first reported the incident.
@@ -7113,8 +7354,7 @@ components:
           items:
             $ref: '#/components/schemas/incident'
         key:
-          type: string
-          description: Unique key according to which the items are grouped.
+          $ref: '#/components/schemas/field-value'
         next_cursor:
           type: string
           description: |
@@ -7184,6 +7424,29 @@ components:
           type: array
           description: |
             Filters for incidents owned by any of the provided users.
+          items:
+            type: string
+        pia:
+          type: array
+          description: Filters for incidents with any of the provided PIAs.
+          example:
+            - ARTICLE-12345
+          items:
+            type: string
+        playbook:
+          type: array
+          description: |
+            Filters for incidents with any of the provided playbooks.
+          example:
+            - ARTICLE-12345
+          items:
+            type: string
+        related_docs:
+          type: array
+          description: |
+            Filters for incidents with any of the provided related docs.
+          example:
+            - ARTICLE-12345
           items:
             type: string
         reported_by:
@@ -7294,6 +7557,29 @@ components:
             Filters for incidents owned by any of the provided users.
           items:
             type: string
+        pia:
+          type: array
+          description: Filters for incidents with any of the provided PIAs.
+          example:
+            - ARTICLE-12345
+          items:
+            type: string
+        playbook:
+          type: array
+          description: |
+            Filters for incidents with any of the provided playbooks.
+          example:
+            - ARTICLE-12345
+          items:
+            type: string
+        related_docs:
+          type: array
+          description: |
+            Filters for incidents with any of the provided related docs.
+          example:
+            - ARTICLE-12345
+          items:
+            type: string
         reported_by:
           type: array
           description: |
@@ -7394,6 +7680,12 @@ components:
           format: date-time
         owned_by:
           $ref: '#/components/schemas/update-incident-owned-by'
+        pia:
+          $ref: '#/components/schemas/update-incident-pia'
+        playbooks:
+          $ref: '#/components/schemas/update-incident-playbooks'
+        related_docs:
+          $ref: '#/components/schemas/update-incident-related-docs'
         reported_by:
           type: integer
           description: The entity that first reported the incident.
@@ -7588,6 +7880,17 @@ components:
             - source
             - target
       title: link
+    link-descriptor-filter:
+      type: object
+      properties:
+        link_descriptors:
+          type: array
+          description: List of link descriptors.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
+      required:
+        - link_descriptors
+      title: link-descriptor-filter
     link-endpoint-summary:
       type: object
       discriminator:
@@ -7692,6 +7995,11 @@ components:
             - source
             - target
       title: link-summary
+    link-target-descriptor:
+      type: object
+      additionalProperties: false
+      description: A link target descriptor.
+      title: link-target-descriptor
     link-type:
       type: string
       description: Type of link used to define the relationship.
@@ -11532,9 +11840,17 @@ components:
       title: set-org-schedule-fragment-summary
     set-shared-with-membership:
       type: object
-      additionalProperties: false
       description: |
         Information about the role the member receives due to the share.
+      properties:
+        member:
+          type: string
+          description: ID of the member the object is shared with.
+        role:
+          type: string
+          description: |
+            ID of the role that describes what privileges the membership
+            entails.
       title: set-shared-with-membership
     set-sla-policy:
       type: object
@@ -11695,8 +12011,15 @@ components:
       title: set-weekly-org-schedule
     shared-with-membership-filter:
       type: object
-      additionalProperties: false
       description: Filter on target item based on intended audience.
+      properties:
+        member:
+          type: string
+          description: ID of the group/member with whom the item is shared.
+        role:
+          type: string
+          description: |
+            Role ID of the group/member with whom the item is shared.
       title: shared-with-membership-filter
     sla:
       allOf:
@@ -12524,6 +12847,9 @@ components:
             description:
               type: string
               description: Description of the survey.
+            header:
+              type: string
+              description: Header of the survey.
             introductory_text:
               type: string
               description: |
@@ -12547,6 +12873,9 @@ components:
                 List of all the fields and their respective metadata in the schema.
               items:
                 $ref: '#/components/schemas/survey-field-with-metadata'
+            title:
+              type: string
+              description: Title of the survey.
       title: survey
     survey-aggregation-filter:
       type: object
@@ -12602,6 +12931,9 @@ components:
         description:
           type: string
           description: Description about the survey.
+        header:
+          type: string
+          description: Header of the survey.
         introductory_text:
           type: string
           description: |
@@ -12622,6 +12954,9 @@ components:
           description: The schema with metadata for the survey.
           items:
             $ref: '#/components/schemas/survey-field-with-metadata'
+        title:
+          type: string
+          description: Title of the survey.
       required:
         - name
       title: surveys-create-request
@@ -13311,6 +13646,14 @@ components:
               $ref: '#/components/schemas/org-summary'
             sentiment:
               $ref: '#/components/schemas/enum-value'
+            sentiment_modified_date:
+              type: string
+              description: Timestamp when the sentiment was last modified.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            sentiment_summary:
+              type: string
+              description: Summary justifying the sentiment.
             severity:
               $ref: '#/components/schemas/ticket-severity'
             sla_tracker:
@@ -13446,6 +13789,7 @@ components:
       type: string
       description: The type of the body to use for the comment.
       enum:
+        - data
         - snap_kit
         - snap_widget
         - text
@@ -13889,6 +14233,8 @@ components:
       type: string
       description: Display panels for the Timeline entry.
       enum:
+        - alerts
+        - broadcasts
         - customer_chat
         - discussions
         - events
@@ -14459,6 +14805,39 @@ components:
           items:
             type: string
       title: update-incident-owned-by
+    update-incident-pia:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Sets the the article ids of the Post-Incident Analysis(PIA) of the
+            incident.
+          items:
+            type: string
+      title: update-incident-pia
+    update-incident-playbooks:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Sets the the article ids of the playbook(s) associated with the
+            incident.
+          items:
+            type: string
+      title: update-incident-playbooks
+    update-incident-related-docs:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Sets the the article ids of other documents associated with the
+            incident.
+          items:
+            type: string
+      title: update-incident-related-docs
     update-incident-stakeholders:
       type: object
       properties:
@@ -14479,6 +14858,17 @@ components:
           items:
             $ref: '#/components/schemas/update-tag-with-value'
       title: update-incident-tags
+    update-link-target-descriptor-list:
+      type: object
+      properties:
+        link_descriptors:
+          type: array
+          description: List of link descriptors.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
+      required:
+        - link_descriptors
+      title: update-link-target-descriptor-list
     update-stage:
       type: object
       description: Update object for Stage.
@@ -14853,6 +15243,8 @@ components:
           $ref: '#/components/schemas/event-work-created'
         work_deleted:
           $ref: '#/components/schemas/event-work-deleted'
+        work_fetched:
+          $ref: '#/components/schemas/event-work-fetched'
         work_updated:
           $ref: '#/components/schemas/event-work-updated'
       required:
@@ -14921,6 +15313,7 @@ components:
         - webhook_updated
         - work_created
         - work_deleted
+        - work_fetched
         - work_updated
     webhook-event-verify:
       type: object
@@ -15016,6 +15409,28 @@ components:
       description: The response to deleting the webhook.
       title: webhooks-delete-response
       x-go-name: WebhooksDeleteResponseBody
+    webhooks-fetch-request:
+      type: object
+      description: The request to fetch an object for a webhook.
+      properties:
+        id:
+          type: string
+          description: The ID of the webhook to fetch the object for.
+          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+        object:
+          type: string
+          description: The ID of the object to fetch for the webhook.
+          example: ISS-12345
+      required:
+        - id
+        - object
+      title: webhooks-fetch-request
+    webhooks-fetch-response:
+      type: object
+      additionalProperties: false
+      description: The response to fetching an object for a webhook.
+      title: webhooks-fetch-response
+      x-go-name: WebhooksFetchResponseBody
     webhooks-get-request:
       type: object
       description: The request to get a webhook's information.
@@ -16137,6 +16552,14 @@ components:
           type: integer
           description: The enum ID for the sentiment of the ticket.
           format: int64
+        sentiment_modified_date:
+          type: string
+          description: Timestamp at which sentiment was last modified.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        sentiment_summary:
+          type: string
+          description: Summary justifying the current sentiment.
         severity:
           $ref: '#/components/schemas/ticket-severity'
       title: works-update-request-ticket
@@ -16819,6 +17242,18 @@ paths:
             items:
               type: integer
               format: int64
+        - description: ID of the group/member with whom the item is shared.
+          explode: false
+          in: query
+          name: shared_with.member
+          schema:
+            type: string
+        - description: Role ID of the group/member with whom the item is shared.
+          explode: false
+          in: query
+          name: shared_with.role
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -17122,6 +17557,18 @@ paths:
             items:
               type: integer
               format: int64
+        - description: ID of the group/member with whom the item is shared.
+          explode: false
+          in: query
+          name: shared_with.member
+          schema:
+            type: string
+        - description: Role ID of the group/member with whom the item is shared.
+          explode: false
+          in: query
+          name: shared_with.role
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -19308,6 +19755,12 @@ paths:
           name: cursor
           schema:
             type: string
+        - description: Filters for custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
         - description: Filters Dev users based on email addresses.
           explode: false
           in: query
@@ -20723,6 +21176,37 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for incidents with any of the provided PIAs.
+          explode: false
+          in: query
+          name: pia
+          schema:
+            type: array
+            example:
+              - ARTICLE-12345
+            items:
+              type: string
+        - description: Filters for incidents with any of the provided playbooks.
+          explode: false
+          in: query
+          name: playbook
+          schema:
+            type: array
+            example:
+              - ARTICLE-12345
+            items:
+              type: string
+        - description: |
+            Filters for incidents with any of the provided related docs.
+          explode: false
+          in: query
+          name: related_docs
+          schema:
+            type: array
+            example:
+              - ARTICLE-12345
+            items:
+              type: string
         - description: Filters for incidents with any of the provided reporters.
           explode: false
           in: query
@@ -20885,6 +21369,37 @@ paths:
           name: owned_by
           schema:
             type: array
+            items:
+              type: string
+        - description: Filters for incidents with any of the provided PIAs.
+          explode: false
+          in: query
+          name: pia
+          schema:
+            type: array
+            example:
+              - ARTICLE-12345
+            items:
+              type: string
+        - description: Filters for incidents with any of the provided playbooks.
+          explode: false
+          in: query
+          name: playbook
+          schema:
+            type: array
+            example:
+              - ARTICLE-12345
+            items:
+              type: string
+        - description: |
+            Filters for incidents with any of the provided related docs.
+          explode: false
+          in: query
+          name: related_docs
+          schema:
+            type: array
+            example:
+              - ARTICLE-12345
             items:
               type: string
         - description: Filters for incidents with any of the provided reporters.
@@ -21096,6 +21611,253 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - keyring
+      x-fern-audiences:
+        - docs
+        - sdks
+  /link-types.custom.create:
+    post:
+      description: Creates a custom link type.
+      operationId: custom-link-type-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-link-type-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-link-type-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /link-types.custom.get:
+    get:
+      description: Gets a custom link type.
+      operationId: custom-link-type-get
+      parameters:
+        - description: The ID of the custom link type to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-link-type-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-request-name: CustomLinkTypeGetQuery
+    post:
+      description: Gets a custom link type.
+      operationId: custom-link-type-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-link-type-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-link-type-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /link-types.custom.list:
+    get:
+      description: Lists custom link types.
+      operationId: custom-link-type-list
+      parameters:
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: Whether only deprecated link types should be filtered.
+          explode: false
+          in: query
+          name: deprecated
+          schema:
+            type: boolean
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: The list of link type names.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-link-type-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-request-name: CustomLinkTypeListQuery
+    post:
+      description: Lists custom link types.
+      operationId: custom-link-type-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-link-type-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-link-type-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /link-types.custom.update:
+    post:
+      description: Updates a custom link type.
+      operationId: custom-link-type-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-link-type-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-link-type-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
       x-fern-audiences:
         - docs
         - sdks
@@ -27278,6 +28040,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
+  /webhooks.fetch:
+    post:
+      description: Fetches an object via webhook.
+      operationId: webhooks-fetch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhooks-fetch-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhooks-fetch-response'
           description: Success.
         "400":
           $ref: '#/components/responses/bad-request'

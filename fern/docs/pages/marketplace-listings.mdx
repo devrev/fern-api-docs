@@ -66,7 +66,7 @@ To get started with creation of marketplace listings, you need to have the DevRe
 
 3. ### Publish marketplace submission
 
-    The newly created marketplace submission is in the `draft` state. In order to publish it, we first have to transition it to`waiting for review` state. This can be done by running the following command, which will start a wizard to guide you through the process:
+    The newly created marketplace submission is in the `draft` state. In order to publish it, we first have to transition it to `waiting for review` state. This can be done by running the following command, which will start a wizard to guide you through the process:
 
     ```bash
     devrev marketplace_submissions transition
@@ -148,7 +148,7 @@ When a listing is shared with an organization, this information is retained when
 Show a marketplace item:
 
 ```bash
-devrev marketplace_items show "<id>"
+devrev marketplace_items show "<id>" | jq "{name: .name, id: .id, type: .type}"
 ```
 
 List marketplace items:
@@ -160,7 +160,7 @@ devrev marketplace_items list | jq "{name: .name, id: .id, type: .type}"
 Show a marketplace submission:
 
 ```bash
-devrev marketplace_submissions show "<id>"
+devrev marketplace_submissions show "<id>" | jq "{name: .name, id: .id, type: .type}"
 ```
 
 List marketplace submissions:

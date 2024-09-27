@@ -145,26 +145,26 @@ When a listing is shared with an organization, this information is retained when
 
 ## Command reference
 
-Show a marketplace item:
-
-```bash
-devrev marketplace_items show "<id>" | jq "{name: .name, id: .id, type: .type}"
-```
-
-List marketplace items:
-
-```bash
-devrev marketplace_items list | jq "{name: .name, id: .id, type: .type}"
-```
-
 Show a marketplace submission:
 
 ```bash
-devrev marketplace_submissions show "<id>" | jq "{name: .name, id: .id, type: .type}"
+devrev marketplace_submissions show [marketplace_submission_id] | jq "{name: .name, id: .id, type: .type}"
 ```
 
 List marketplace submissions:
 
 ```bash
 devrev marketplace_submissions list | jq "{name: .name, id: .id, type: .type}"
+```
+
+Show a marketplace item:
+
+```bash
+devrev marketplace_items show [marketplace_item_id] | jq "{name: .name, id: .id, type: .type}"
+```
+
+List marketplace items:
+
+```bash
+devrev marketplace_items list | jq "{name: .name, id: .id, type: .type}"
 ```

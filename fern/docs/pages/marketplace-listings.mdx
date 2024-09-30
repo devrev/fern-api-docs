@@ -46,6 +46,8 @@ To get started with creation of marketplace listings, you need to have the DevRe
     devrev marketplace_submissions create
     ```
 
+    ![create initial submission](../img/marketplace-listings/create-initial-submission.png)
+
     #### New submission for an existing marketplace item
 
     When a marketplace listing already exists (there is at least one marketplace item in the `published` or `end of sale` state), we can modify it by creating a new marketplace submission. We can modify the submission as we desire.
@@ -55,6 +57,8 @@ To get started with creation of marketplace listings, you need to have the DevRe
     ```bash
     devrev marketplace_submissions create
     ```
+
+    ![create from existing item](../img/marketplace-listings/create-from-existing-item.png)
 
 2. ### Update marketplace submission
 
@@ -75,7 +79,7 @@ To get started with creation of marketplace listings, you need to have the DevRe
     Once the submission is transitioned to the `waiting for review` state, it needs to be approved by a marketplace admin. While in review, the state of the submission is `in review`. Once it is reviewed, the state will be changed to either `approved` or `rejected`.
 
     <Callout intent="note">
-    Submissions whose state is `in review` cannot be modified.
+    Submissions whose state is `in review` or `approved` cannot be modified.
     </Callout>
 
     If the submission was rejected, we can transition it back to `draft` state and modify it to satisfy the requirements. Once it is updated, we can transition it back to `waiting for review` state to be reviewed again.
@@ -108,9 +112,9 @@ To get started with creation of marketplace listings, you need to have the DevRe
     devrev marketplace_submissions delete
     ```
 
-## Automatic upgrade of marketplace listings
+## Automatic upgrade of marketplace listings installations
 
-Automatic upgrade is supported for marketplace listings. Once a new version of the listing is published, the respective snap-in will be automatically upgraded to the latest version.
+Automatic upgrade is supported for marketplace listings installations. Once a new version of the listing is published, the respective snap-in will be automatically upgraded to the latest version.
 
 However, there are some criteria that need to be met for automatic upgrade to work:
 
@@ -139,7 +143,9 @@ By default, all marketplace listings are accessible to all users. However, if so
 
 Once an organization is invited to a listing, their members can view and install it within their own organization.
 
+<Callout intent="note">
 When a listing is marked as restricted, it is possible to change the access level to `public`. However, the reverse process, changing the access level from `public` to `restricted`, is not permitted.
+</Callout>
 
 When a listing is shared with an organization, this information is retained when creating new submissions for the same listing. Additionally, automatic upgrades function seamlessly, just like in the case of public listings.
 

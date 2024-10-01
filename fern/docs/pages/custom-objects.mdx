@@ -1,0 +1,174 @@
+# Custom Objects
+
+## Table of Contents
+
+1. [Introduction](#custom-objects)
+2. [Quick Start](#quick-start)
+   - [Create a Schema and a Custom Object](#create-a-schema-and-a-custom-object)
+   - [Get a Custom Object](#get-a-custom-object)
+   - [List Custom Objects](#list-custom-objects)
+   - [Update a Custom Object](#update-a-custom-object)
+   - [Delete a Custom Object](#delete-a-custom-object)
+3. [Key Concepts](#key-concepts)
+4. [Custom Object Lifecycle](#custom-object-lifecycle)
+
+- - -
+
+## Introduction
+Custom objects allow you to extend DevRev's data model beyond the standard use-cases served by the native apps (build, support, etc).
+Custom Objects allow you to create and manage object types tailored to your specific business needs.
+
+## Quick Start
+
+Let's say you want to manage marketing campaigns on DevRev. We'll go through the process of creating a "Campaign" custom object with relevant fields.
+
+All DevRev objects require a schema. So, we'll first create a schema for the "Campaign" custom object. Make sure to replace the `<YOUR_API_TOKEN>` with your actual API token.
+
+### Create a Schema and a Custom Object
+
+```
+curl --location 'https://api.devrev.ai/schemas.custom.set' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "type": "tenant_fragment",
+    "description": "Attributes for Campaign",
+    "leaf_type": "campaign",
+    "fields": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "Name of the campaign"
+        },
+        {
+            "name": "start_date",
+            "type": "date",
+            "description": "Start date of the campaign"
+        },
+        {
+            "name": "end_date",
+            "type": "date",
+            "description": "End date of the campaign"
+        },
+        {
+            "name": "budget",
+            "type": "number",
+            "description": "Budget allocated for the campaign"
+        },
+        {
+            "name": "target_audience",
+            "type": "enum",
+            "description": "Target audience for the campaign",
+            "allowed_values": [
+                "young_adults",
+                "seniors",
+                "families",
+                "professionals",
+                "students"
+            ]
+        }
+    ],
+    "is_custom_leaf_type": true,
+    "id_prefix": "CAMP"
+}'
+```
+
+Once the schema is created, you can create a custom object of type "Campaign":
+
+```
+curl --location 'https://api.devrev.ai/custom-objects.create' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "leaf_type": "campaign",
+    "custom_fields": {
+        "name": "Summer Sale 2023",
+        "start_date": "2023-06-01",
+        "end_date": "2023-08-31",
+        "budget": 10000,
+        "target_audience": "Young adults"
+    },
+    "unique_key": "CAMP-001"
+}'
+```
+
+The sections below provide more details on the available API endpoints for Custom Objects.
+
+### Get a Custom Object
+
+To retrieve a specific custom object, use the `custom-objects.get` endpoint:
+
+```
+curl --location 'https://api.devrev.ai/custom-objects.get' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "leaf_type": "campaign",
+    "id": "<OBJECT_ID>"
+}'
+```
+
+### List Custom Objects
+
+To list custom objects based on specific criteria, use the `custom-objects.list` endpoint:
+
+```
+curl --location 'https://api.devrev.ai/custom-objects.list' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "leaf_type": "campaign",
+    "filter": {
+      "eq": ["custom_fields.target_audience", "Young adults"]
+    }
+}'
+```
+
+### Update a Custom Object
+
+To update an existing custom object, use the `custom-objects.update` endpoint. Here's an example of updating the budget of a campaign:
+
+```
+curl --location 'https://api.devrev.ai/custom-objects.update' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "leaf_type": "campaign",
+    "id": "<OBJECT_ID>",
+    "custom_fields": {
+        "budget": 15000
+    }
+}'
+```
+
+### Delete a Custom Object
+
+To delete a custom object, use the `custom-objects.delete` endpoint:
+
+```
+curl --location 'https://api.devrev.ai/custom-objects.delete' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "id": "<OBJECT_ID>"
+}
+```
+
+## Key Concepts
+
+1. **Leaf Type**: The base type of your custom object (e.g., "campaign").
+2. **Subtype**: A more specific categorization within a leaf type (e.g., "promotion" or "advertising" for a "campaign" leaf type).
+3. **Custom Fields**: User-defined fields that store specific data for your custom object.
+4. **Unique Key**: A unique identifier for each custom object, useful for maintaining idempotency.
+
+## Custom Object Lifecycle
+
+1. **Creation**: Define the leaf type, subtype (optional), and custom fields for your object.
+2. **Usage**: Create, update, and query custom objects as needed in your workflows.
+3. **Management**: Modify the structure or delete custom objects as your needs evolve.

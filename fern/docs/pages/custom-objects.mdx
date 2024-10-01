@@ -38,34 +38,31 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
     "fields": [
         {
             "name": "name",
-            "type": "string",
+            "field_type": "tokens",
             "description": "Name of the campaign"
         },
         {
             "name": "start_date",
-            "type": "date",
+            "field_type": "date",
             "description": "Start date of the campaign"
         },
         {
             "name": "end_date",
-            "type": "date",
+            "field_type": "date",
             "description": "End date of the campaign"
         },
         {
             "name": "budget",
-            "type": "number",
+            "field_type": "int",
             "description": "Budget allocated for the campaign"
         },
         {
             "name": "target_audience",
-            "type": "enum",
+            "field_type": "enum",
             "description": "Target audience for the campaign",
             "allowed_values": [
-                "young_adults",
-                "seniors",
-                "families",
-                "professionals",
-                "students"
+                "Professionals",
+                "Students"
             ]
         }
     ],
@@ -84,17 +81,46 @@ curl --location 'https://api.devrev.ai/custom-objects.create' \
 --data '{
     "leaf_type": "campaign",
     "custom_fields": {
-        "name": "Summer Sale 2023",
-        "start_date": "2023-06-01",
-        "end_date": "2023-08-31",
-        "budget": 10000,
-        "target_audience": "Young adults"
+        "tnt__name": "Summer Sale 2023",
+        "tnt__start_date": "2023-06-01",
+        "tnt__end_date": "2023-08-31",
+        "tnt__budget": 10000,
+        "tnt__target_audience": "Professionals"
     },
     "unique_key": "CAMP-001"
 }'
 ```
 
-The sections below provide more details on the available API endpoints for Custom Objects.
+The response of the above API call will be the ID of the custom object created.
+```
+{
+  "custom_object": {
+    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1",
+    "created_by": {...},
+    "created_date": "2024-10-01T07:02:58.958Z",
+    "modified_by": {...},
+    "modified_date": "2024-10-01T07:02:58.958Z",
+    "display_id": "C-CAMP-1",
+    "leaf_type": "campaign",
+    "unique_key": "CAMP-001"
+    "stock_schema_fragment": "don:core:dvrv-us-1:stock_sf/1522526",
+    "custom_schema_fragments": [
+      "don:core:dvrv-us-1:devo/11FVC3ScK:tenant_fragment/261"
+    ],
+    "custom_fields": {
+      "tnt__budget": 10000,
+      "tnt__end_date": "2023-08-31",
+      "tnt__name": "Summer Sale 2023",
+      "tnt__start_date": "2023-06-01",
+      "tnt__target_audience": "Professionals"
+    },
+  }
+}
+```
+
+Note that the `id` field in the above response is the system generated ID for the custom object.
+
+The sections below provide more details on the available API endpoints for interacting with Custom Objects.
 
 ### Get a Custom Object
 
@@ -106,8 +132,7 @@ curl --location 'https://api.devrev.ai/custom-objects.get' \
 --header 'Accept: application/json' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
-    "leaf_type": "campaign",
-    "id": "<OBJECT_ID>"
+    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1"
 }'
 ```
 
@@ -122,9 +147,11 @@ curl --location 'https://api.devrev.ai/custom-objects.list' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
     "leaf_type": "campaign",
-    "filter": {
-      "eq": ["custom_fields.target_audience", "Young adults"]
-    }
+    "filter": [
+      "eq",
+      "$custom_fields.ctype__target_audience",
+      "Young adults"
+    ]
 }'
 ```
 
@@ -138,10 +165,9 @@ curl --location 'https://api.devrev.ai/custom-objects.update' \
 --header 'Accept: application/json' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
-    "leaf_type": "campaign",
-    "id": "<OBJECT_ID>",
+    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1",
     "custom_fields": {
-        "budget": 15000
+        "tnt__budget": 15000
     }
 }'
 ```
@@ -156,8 +182,8 @@ curl --location 'https://api.devrev.ai/custom-objects.delete' \
 --header 'Accept: application/json' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
-    "id": "<OBJECT_ID>"
-}
+    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1"
+}'
 ```
 
 ## Key Concepts
@@ -167,7 +193,7 @@ curl --location 'https://api.devrev.ai/custom-objects.delete' \
 3. **Custom Fields**: User-defined fields that store specific data for your custom object.
 4. **Unique Key**: A unique identifier for each custom object, useful for maintaining idempotency.
 
-For more details, please refer to the [Customization](./customization.mdx) documentation.
+For more details on customization concepts, please refer to the [Customization](./customization.mdx) documentation.
 
 ## Custom Object Lifecycle
 

@@ -211,3 +211,5 @@ navigation:
         path: ../docs/pages/upgrades.mdx
       - page: Code Samples
         path: ../docs/pages/examples/samples.mdx
+      - page: Marketplace listings
+        path: ../docs/pages/marketplace-listings.mdx

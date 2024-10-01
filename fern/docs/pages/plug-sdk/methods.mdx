@@ -15,21 +15,22 @@ useEffect(() => {
 ```
 The `init()` method can accept multiple inputs, which are explained below:
 
-| Input Parameter            | Description                                                                                                                                                                           | Values                              |
-|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------|
-| `app_id`                     | This is the unique identifier for your PLuG SDK. This is a mandatory parameter.                                                                                                       | String                              |
-| `disable_plug_chat_window`   | The chat widget is enabled by default. Use this option if you want to disable the chat widget.                                                                                        | Boolean (True or False)             |
-| `enable_default_launcher`    | Show/hide the default PLuG widget launcher.                                                                                                                                           | Boolean (True or False)             |
-| `session_recording_key`      | This key identifies your session recording account and is required to enable the PLuG SDK session recording features.                                                                  | String                              |
-| `enable_session_recording`   | This instructs the widget to determine whether to start the session recording.                                                                                                        | Boolean (True or False)             |
-| `session_token`              | This unique token identifies the user interacting with your app.                                                                                                                      | String                              |
-| `primary_text_color`         | This determines the launcher color, button text for new tickets and conversations, conversation user text, and more. It should be a valid hex code, such as #f0f0f0.                   | String                              |
-| `session_recording_options`  | Options for recording observability sessions.                                                                                                                                         | To view the values, see [Session recording options](https://devrev.ai/docs/plug/observability-getting-started) |
-| `accent_color`               | The accent color of the PLuG affects the launcher, new ticket and conversation buttons, conversation user text, and more.                                                              | String                              |
-| `custom_launcher_selector`   | A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the PLuG settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source. | Boolean (True or False)             |
-| `spacing`                    | Padding from the launcher: This padding can also be set in the plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher | object {bottom: string; side: string;} |
-| `theme`                      | The color scheme for the launcher and widget.                                                                                                                                         | light or dark                       |
-| `widget_alignment`           | The PLuG widget can be positioned on either the left or right side of the launcher. You can also adjust the widget alignment through the plug settings at app.devrev.ai. If alignment settings are configured in both places, the value from app.devrev.ai will override the launcher setting. | left or right                       |
+|Input Parameter    |Description   |Values   |
+|---|---|---|
+|`app_id`   |This is the unique identifier for your PLuG SDK. This is a mandatory parameter.   |String   |
+|`disable_plug_chat_window`   |The chat widget is enabled by default. Use this option if you want to disable the chat widget.   | Boolean (True or False)   |
+|`enable_default_launcher`   |Show/hide the default PLuG widget launcher.    |Boolean (True or False)   |
+|`session_recording_key`    |This key identifies your session recording account and is required to enable the PLuG SDK session recording features.   |String   |
+|`enable_session_recording`   |This instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |
+|`session_token`   |This unique token identifies the user interacting with your app.   |String   |
+|`primary_text_color`   |This determines the launcher color, button text for new tickets and conversations, conversation user text, and more. It should be a valid hex code, such as #f0f0f0.   |String   |
+|`session_recording_options`   |Options for recording observability sessions.   |To view the values, see [Session recording options](https://devrev.ai/docs/plug/observability-getting-started)   |
+|`accent_color`   |The accent color of the PLuG affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |
+|`custom_launcher_selector`   |A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the PLuG settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source.   |Boolean (True or False)   |
+|`spacing`    |Padding from the launcher: This padding can also be set in the plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |object {bottom: string; side: string;}   |
+|`theme`   |The color scheme for the launcher and widget.     |light or dark       |
+|`widget_alignment`   |The PLuG widget can be positioned on either the left or right side of the launcher. You can also adjust the widget alignment through the plug settings at app.devrev.ai. If alignment settings are configured in both places, the value from app.devrev.ai will override the launcher setting.   |left or right   |
+
 <Callout intent="note">
 When React is in Strict mode, you may receive a warning about `window.plugSDK.init()` being called multiple times. These warnings do not affect the widget's installation or functionality.
 </Callout>

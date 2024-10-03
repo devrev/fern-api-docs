@@ -1,20 +1,24 @@
 ## Table of contents
 
-1. [Introduction](#custom-objects)
-2. [Quick start](#quick-start)
-   - [Create a Schema and a custom object](#create-a-schema-and-a-custom-object)
+* [Introduction](#custom-objects)
+* [Quick start](#quick-start)
+   - [Create a schema and a custom object](#create-a-schema-and-a-custom-object)
    - [Get a custom object](#get-a-custom-object)
    - [List custom objects](#list-custom-objects)
    - [Update a custom object](#update-a-custom-object)
    - [Delete a custom object](#delete-a-custom-object)
-3. [Key concepts](#key-concepts)
-4. [Custom object lifecycle](#custom-object-lifecycle)
+* [Key concepts](#key-concepts)
+* [Custom object lifecycle](#custom-object-lifecycle)
+* [Extended use cases](#extended-use-cases)
+    - [Reference custom objects in other objects](#reference-custom-objects-in-other-objects)
+    - [Add subtypes to custom objects](#add-subtypes-to-custom-objects)
 
 - - -
 
 ## Introduction
-Custom objects allow you to extend DevRev's data model beyond the standard use-cases served by the native apps like Build and Support.
-Custom objects allow you to create and manage object types tailored to your specific business needs.
+Custom objects allow you to extend DevRev's data model beyond the standard use-cases
+served by the native apps like Build and Support.  Custom objects allow you to create
+and manage object types tailored to your specific business needs.
 
 ## Quick start
 
@@ -78,14 +82,17 @@ curl --location 'https://api.devrev.ai/custom-objects.create' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
     "leaf_type": "campaign",
+    "unique_key": "CAMP-001",
+    "custom_schema_spec": {
+        "tenant_fragment": true
+    },
     "custom_fields": {
         "tnt__name": "Summer Sale 2023",
         "tnt__start_date": "2023-06-01",
         "tnt__end_date": "2023-08-31",
         "tnt__budget": 10000,
         "tnt__target_audience": "Professionals"
-    },
-    "unique_key": "CAMP-001"
+    }
 }'
 ```
 
@@ -93,7 +100,7 @@ The response of the above API call will be the ID of the custom object created.
 ```
 {
   "custom_object": {
-    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1",
+    "id": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1",
     "created_by": {...},
     "created_date": "2024-10-01T07:02:58.958Z",
     "modified_by": {...},
@@ -101,17 +108,17 @@ The response of the above API call will be the ID of the custom object created.
     "display_id": "C-CAMP-1",
     "leaf_type": "campaign",
     "unique_key": "CAMP-001"
-    "stock_schema_fragment": "don:core:dvrv-us-1:stock_sf/1522526",
+    "stock_schema_fragment": "don:core:dvrv-us-1:stock_sf/1",
     "custom_schema_fragments": [
-      "don:core:dvrv-us-1:devo/11FVC3ScK:tenant_fragment/261"
+      "don:core:dvrv-us-1:devo/demo:tenant_fragment/1"
     ],
     "custom_fields": {
-      "tnt__budget": 10000,
-      "tnt__end_date": "2023-08-31",
       "tnt__name": "Summer Sale 2023",
       "tnt__start_date": "2023-06-01",
+      "tnt__end_date": "2023-08-31",
+      "tnt__budget": 10000,
       "tnt__target_audience": "Professionals"
-    },
+    }
   }
 }
 ```
@@ -130,7 +137,7 @@ curl --location 'https://api.devrev.ai/custom-objects.get' \
 --header 'Accept: application/json' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
-    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1"
+    "id": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1"
 }'
 ```
 
@@ -155,8 +162,8 @@ curl --location 'https://api.devrev.ai/custom-objects.list' \
 
 ### Update a custom object
 
-To update an existing custom object, use the `custom-objects.update` endpoint.
-The following example updates the budget of the previously created campaign custom object:
+To update an existing custom object, use the `custom-objects.update` endpoint. The
+following example updates the budget of the previously created campaign custom object:
 
 ```
 curl --location 'https://api.devrev.ai/custom-objects.update' \
@@ -164,7 +171,7 @@ curl --location 'https://api.devrev.ai/custom-objects.update' \
 --header 'Accept: application/json' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
-    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1",
+    "id": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1",
     "custom_fields": {
         "tnt__budget": 15000
     }
@@ -182,7 +189,7 @@ curl --location 'https://api.devrev.ai/custom-objects.delete' \
 --header 'Accept: application/json' \
 --header 'Authorization: <YOUR_API_TOKEN>' \
 --data '{
-    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:custom_object/campaign/1"
+    "id": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1"
 }'
 ```
 
@@ -193,10 +200,73 @@ curl --location 'https://api.devrev.ai/custom-objects.delete' \
 3. **Custom Fields**: User-defined fields that store specific data for your custom object.
 4. **Unique Key**: A unique identifier for each custom object, useful for maintaining idempotency.
 
-For more details on customization concepts, please refer to the [Customization](./object-customization) documentation.
+For more details on customization concepts, please refer to the
+[Customization](./object-customization) documentation.
 
 ## Custom object lifecycle
 
 1. **Creation**: Define the leaf type, subtype (optional), and custom fields for your custom object.
 2. **Usage**: Create, update, and query custom objects as needed in your workflows.
 3. **Management**: Modify the schema of the custom object as your needs evolve.
+
+## Extended use cases
+
+### Reference custom objects in other objects
+Let's say you want to reference all the campaigns that have been run for a customer
+workspace. You can do so by adding a field of type "id" and "id_type: custom_object.campaign"
+in the account object.
+
+```
+curl --location 'https://api.devrev.ai/schemas.custom.set' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "type": "tenant_fragment",
+    "description": "Tenant attributes for Account",
+    "leaf_type": "account",
+    "fields": [
+        {
+            "name": "campaigns",
+            "field_type": "array",
+            "base_type": "id",
+            "id_type": "custom_object.campaign",
+        },
+        ... // other fields
+    ],
+}'
+```
+
+### Add subtypes to custom objects
+Adding subtypes to custom objects allows you to categorize and manage your custom
+objects more effectively. The process is the same as adding subtypes to other standard
+DevRev objects like issues and tickets.
+
+Let's say you have run different types of campaigns like social media and email
+marketing. You can create a subtype for each of these variants. If you want to create a
+campaign custom object with subtype "social_media", you can do so as follows:
+
+```
+curl --location 'https://api.devrev.ai/custom-objects.create' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <YOUR_API_TOKEN>' \
+--data '{
+    "leaf_type": "campaign",
+    "custom_schema_spec": {
+        "subtype": "social_media",
+        "tenant_fragment": true
+    },
+    "custom_fields": {
+        "tnt__name": "Summer Sale 2023",
+        "tnt__start_date": "2023-06-01",
+        "tnt__end_date": "2023-08-31",
+        "tnt__budget": 10000,
+        "tnt__target_audience": "Professionals",
+        "ctype__social_media_platform": "Facebook",
+        "ctype__post_id": "1234567890"
+    },
+    "unique_key": "CAMP-001"
+}'
+```
+

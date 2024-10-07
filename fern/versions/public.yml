@@ -88,7 +88,10 @@ navigation:
             path: ../docs/pages/plug-sdk/methods.mdx
           - page: Customization
             slug: customize
-            path: ../docs/pages/plug-sdk/customize.mdx           
+            path: ../docs/pages/plug-sdk/customize.mdx  
+          - page: Installation
+            slug: installation
+            path: ../docs/pages/plug-sdk/web-sdk-install.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

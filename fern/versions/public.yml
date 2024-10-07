@@ -98,6 +98,8 @@ navigation:
           - page: Install PLuG search
             slug: install-PLuG-search
             path: ../docs/pages/plug-sdk/search-install.mdx
+    - section: SDKs
+      slug: sdks
       contents:
       - section: PLuG SDK
         slug: plug

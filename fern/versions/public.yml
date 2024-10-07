@@ -89,6 +89,32 @@ navigation:
           - page: Customization
             slug: customize
             path: ../docs/pages/plug-sdk/customize.mdx
+             contents:
+      - section: PLuG Web SDK
+        slug: plug
+        contents:
+          - page: Overview
+            slug: overview
+            path: ../docs/pages/plug-sdk/sdk-intro.mdx
+            - page: Installation
+            slug: installation
+            path: ../docs/pages/plug-sdk/web-sdk-install.mdx
+          - page: User identification
+            slug: user-identification
+            path: ../docs/pages/plug-sdk/identify-web-user.mdx
+          - page: Custom implementation of PLuG widget
+            slug: custom-implementation-of-PLuG-widget
+            path: ../docs/pages/plug-sdk/customize.mdx
+          - page: Install PLuG search
+            slug: install-PLuG-search
+            path: ../docs/pages/plug-sdk/search-install.mdx
+          - page: Track events
+            slug: track-events
+            path: ../docs/pages/plug-sdk/track-events.mdx
+          - page: Methods
+            slug: methods
+            path: ../docs/pages/plug-sdk/methods.mdx
+          
   - section: Snap-in development
     slug: snapin-development
     contents:

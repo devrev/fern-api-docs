@@ -88,8 +88,7 @@ navigation:
             path: ../docs/pages/plug-sdk/methods.mdx
           - page: Customization
             slug: customize
-            path: ../docs/pages/plug-sdk/customize.mdx
-             contents:
+            path: ../docs/pages/plug-sdk/customize.mdx        
   - section: SDKs
     slug: sdks
     contents:
@@ -116,8 +115,7 @@ navigation:
             path: ../docs/pages/plug-sdk/track-events.mdx
           - page: Methods
             slug: methods
-            path: ../docs/pages/plug-sdk/methods.mdx
-          
+            path: ../docs/pages/plug-sdk/methods.mdx       
   - section: Snap-in development
     slug: snapin-development
     contents:

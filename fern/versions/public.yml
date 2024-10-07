@@ -90,6 +90,9 @@ navigation:
             slug: customize
             path: ../docs/pages/plug-sdk/customize.mdx
              contents:
+  - section: SDKs
+    slug: sdks
+    contents:
       - section: PLuG Web SDK
         slug: plug
         contents:

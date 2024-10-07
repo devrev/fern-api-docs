@@ -92,6 +92,12 @@ navigation:
           - page: Installation
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx
+          - page: User identity
+            slug: user-identity
+            path: ../docs/pages/plug-sdk/identify-web-user.mdx
+          - page: Install PLuG search
+            slug: install-PLuG-search
+            path: ../docs/pages/plug-sdk/search-install.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

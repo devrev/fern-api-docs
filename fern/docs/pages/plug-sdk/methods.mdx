@@ -1,7 +1,5 @@
 The PLuG SDK is a robust tool designed to elevate your website or application by enhancing our widget’s capabilities. With our SDK, you can integrate our feature-rich widget, creating a dynamic and personalized user experience.
 
-## Methods
-
 ## Initialize SDK
 
 To get started with the PLuG SDK on your website, call the `init()` method. This method is essential for enabling the SDK’s functionality, including session recording, the chat widget, and the search agent. Initialization is required before you can perform any other actions using the PLuG SDK.
@@ -17,18 +15,18 @@ The `init()` method can accept multiple inputs, which are explained below:
 
 |Input parameter   |Description   |Values   |
 |---|---|---|
-|`app_id`   |This is the unique identifier for your PLuG SDK. This is a mandatory parameter.   |String   |
+|`app_id`   |The unique identifier for your PLuG SDK. This parameter is required.   |String   |
 |`disable_plug_chat_window`   |The chat widget is enabled by default. Use this option if you want to disable the chat widget.   |Boolean (True or False)   |
 |`enable_default_launcher`   |Show/hide the default PLuG widget launcher.   |Boolean (True or False)   |
-|`session_recording_key`   |This key identifies your session recording account and is required to enable the PLuG SDK session recording features.    |String   |
-|`enable_session_recording`   |This instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |
-|`session_token`   |This unique token identifies the user interacting with your app.   |String   |
-|`primary_text_color`   |This determines the launcher color, button text for new tickets and conversations, conversation user text, and more. It should be a valid hex code, such as #f0f0f0.    |String   |
-|`session_recording_options`    |Options for recording observability sessions.   |To view the values, see [Session recording options](https://devrev.ai/docs/plug/session-recording)    |
+|`session_recording_key`   |Identifies your session recording account and is required to enable the PLuG SDK session recording features.    |String   |
+|`enable_session_recording`   |Instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |
+|`session_token`   |Identifies the user interacting with your app.   |String   |
+|`primary_text_color`   |The color of the launcher, button text for new tickets and conversations, conversation user text, and more. It must be a valid hex color code, such as `#f0f0f0`.    |String   |
+|`session_recording_options`    |Options for recording observability sessions.   |Refer to [Session recording options](https://devrev.ai/docs/plug/session-recording)    |
 |`accent_color`   |The accent color of the PLuG affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |
 |`custom_launcher_selector`   |A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the PLuG settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source.   |Boolean (True or False)   |
 |`spacing`   |Padding from the launcher: This padding can also be set in the plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |object `{bottom: string; side: string;}`  |
-|`theme`   |The color scheme for the launcher and widget.   |light or dark         |
+|`theme`   |The color scheme for the launcher and widget.   |`light` or `dark`         |
 |`widget_alignment`   |The PLuG widget can be positioned on either the left or right side of the launcher. You can also adjust the widget alignment through the plug settings at app.devrev.ai. If alignment settings are configured in both places, the value from app.devrev.ai will override the launcher setting.    |left or right   |
 
 <Callout intent="note">
@@ -45,7 +43,7 @@ The method accepts the input options: `light` and `dark`.
 window.plugSDK.toggleTheme('light | dark');
 ```
 
-The parameter is optional; calling `toggleTheme()` will switch between the current themes. Specifying a theme as a parameter allows you to toggle directly to that specific theme.
+Calling `toggleTheme()` switches between the current themes. Specifying a theme as a parameter allows you to toggle directly to that specific theme.
 
 <Callout intent="note">
 The theme specified in this method takes precedence over the theme configured in the PLuG settings in your DevRev app.
@@ -55,9 +53,9 @@ The theme specified in this method takes precedence over the theme configured in
 
 The `toggleWidget` method allows you to control the visibility of the PLuG chat widget.
 
-Passing input = true opens the chat widget.
+Passing `true` opens the chat widget.
 
-Passing input = false closes the chat widget.
+Passing `false` closes the chat widget.
 
 ```jsx
 window.plugSDK.toggleWidget(true);
@@ -65,7 +63,7 @@ window.plugSDK.toggleWidget(true);
 
 ## Take action from PLuG chat events
 
-This method allows you to listen for events from the PLuG widget. Below are the available `PAYLOAD_TYPES`.
+This method allows you to listen for events from the PLuG widget. Below are the available values for `PAYLOAD_TYPE`.
 - `ON_PLUG_WIDGET_CLOSED`: Triggered when the PLuG widget is closed.
 - `ON_PLUG_WIDGET_OPENED`: Triggered when the PLuG widget is opened.
 - `ON_PLUG_WIDGET_READY`: Triggered when the PLuG widget is ready.

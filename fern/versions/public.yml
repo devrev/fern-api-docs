@@ -80,6 +80,15 @@ navigation:
           - page: Integrate PLuG with your iOS app
             slug: install-ios
             path: ../docs/pages/plug-sdk/install-ios.mdx
+          - page: Installation
+            slug: installation
+            path: ../docs/pages/plug-sdk/web-sdk-install.mdx
+          - page: User identity
+            slug: user-identity
+            path: ../docs/pages/plug-sdk/identify-web-user.mdx
+          - page: Install PLuG search
+            slug: install-search
+            path: ../docs/pages/plug-sdk/search-install.mdx
           - page: Track events
             slug: track-events
             path: ../docs/pages/plug-sdk/track-events.mdx
@@ -89,15 +98,6 @@ navigation:
           - page: Customization
             slug: customize
             path: ../docs/pages/plug-sdk/customize.mdx  
-          - page: Installation
-            slug: installation
-            path: ../docs/pages/plug-sdk/web-sdk-install.mdx
-          - page: User identity
-            slug: user-identity
-            path: ../docs/pages/plug-sdk/identify-web-user.mdx
-          - page: Install PLuG search
-            slug: install-PLuG-search
-            path: ../docs/pages/plug-sdk/search-install.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

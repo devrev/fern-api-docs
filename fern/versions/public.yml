@@ -83,7 +83,7 @@ navigation:
           - page: Installing the Web SDK
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx
-          - page: User identity
+          - page: Identify your users with PLuG
             slug: user-identity
             path: ../docs/pages/plug-sdk/identify-web-user.mdx
           - page: Install PLuG search
@@ -95,7 +95,7 @@ navigation:
           - page: Methods
             slug: methods
             path: ../docs/pages/plug-sdk/methods.mdx
-          - page: Customization
+          - page: Custom implementation of PLuG widget
             slug: customize
             path: ../docs/pages/plug-sdk/customize.mdx  
   - section: Snap-in development

@@ -13,5 +13,7 @@ navigation:
     contents:
       - page: Object Customization
         path: ../docs/pages/customization.mdx
+      - page: Custom Objects
+        path: ../docs/pages/custom-objects.mdx
       - page: Create accounts and contacts in DevRev
         path: ../docs/pages/create-accounts.mdx

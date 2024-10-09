@@ -1,29 +1,24 @@
 ## Table of contents
 
-* [Introduction](#custom-objects)
-* [Quick start](#quick-start)
-   - [Create a schema and a custom object](#create-a-schema-and-a-custom-object)
-   - [Get a custom object](#get-a-custom-object)
-   - [List custom objects](#list-custom-objects)
-   - [Update a custom object](#update-a-custom-object)
-   - [Delete a custom object](#delete-a-custom-object)
-* [Key concepts](#key-concepts)
-* [Custom object lifecycle](#custom-object-lifecycle)
-* [Extended use cases](#extended-use-cases)
-    - [Reference custom objects in other objects](#reference-custom-objects-in-other-objects)
-    - [Add subtypes to custom objects](#add-subtypes-to-custom-objects)
-
-- - -
-
-## Introduction
 Custom objects allow you to extend DevRev's data model beyond the standard use-cases
-served by the native apps like Build and Support.  Custom objects allow you to create
+served by the native apps like Build and Support. Custom objects allow you to create
 and manage object types tailored to your specific business needs.
 
-## Quick start
-Let's say you want to manage marketing campaigns on DevRev. We'll go through the process of creating a "Campaign" custom object with relevant fields.
+## Key concepts
 
-All DevRev objects require a schema. So, we'll first create a schema for the "Campaign" custom object. Make sure to replace the `<YOUR_API_TOKEN>` with your actual API token.
+1. **Leaf type**: The base type of a custom object (for example, "campaign").
+2. **Subtype**: A categorization of a leaf type (for example, "promotion" or "advertising" for a "campaign" leaf type).
+3. **Custom fields**: User-defined fields that store specific data for your custom object.
+4. **Unique key**: A unique identifier for each custom object. This is useful for maintaining idempotency when retrying custom object creation requests.
+5. **ID prefix**: A unique prefix used to generate the display ID for the custom object. In the above example, the `id_prefix` is "CAMP" and the generated custom object display ID is "C-CAMP-1". The display ID is used to identify the custom object in the UI, similar to the standard DevRev object display IDs like "ISS-001" for issues.
+
+For more details on customization concepts, please refer to the
+[Customization](./object-customization) documentation.
+
+## Custom object lifecycle
+Let's say you want to manage marketing campaigns on DevRev. This guide will go through the process of creating a "Campaign" custom object with relevant fields.
+
+All DevRev objects require a schema. First, create a schema for the "Campaign" custom object. Make sure to replace the `<YOUR_API_TOKEN>` with your actual API token.
 
 ### Create a schema and a custom object
 
@@ -72,6 +67,8 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 }'
 ```
 
+Note that for custom objects, `is_custom_leaf_type` must be set to `true` to differentiate it from standard DevRev objects.
+
 Once the schema is created, you can create a custom object of type "Campaign":
 
 ```
@@ -95,7 +92,7 @@ curl --location 'https://api.devrev.ai/custom-objects.create' \
 }'
 ```
 
-The response of the above API call will be the ID of the custom object created.
+The response of the above API call is the ID of the custom object created.
 ```
 {
   "custom_object": {
@@ -191,23 +188,6 @@ curl --location 'https://api.devrev.ai/custom-objects.delete' \
     "id": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1"
 }'
 ```
-
-## Key concepts
-
-1. **Leaf Type**: The base type of your custom object (e.g., "campaign"). Note that for custom objects, `is_custom_leaf_type` must be set to `true` to differentiate it from standard DevRev objects.
-2. **Subtype**: A more specific categorization within a leaf type (e.g., "promotion" or "advertising" for a "campaign" leaf type).
-3. **Custom Fields**: User-defined fields that store specific data for your custom object.
-4. **Unique Key**: The `unique_key` is a unique identifier for each custom object. This is useful for maintaining idempotency when retrying custom object creation requests.
-5. **ID Prefix**: The `id_prefix` should be unique and is used to generate the display ID for the custom object. In the above example, the `id_prefix` is "CAMP" and the generated custom object display ID is "C-CAMP-1". The display ID is used to identify the custom object in the UI, similar to the standard DevRev object display IDs like "ISS-001" for issues.
-
-For more details on customization concepts, please refer to the
-[Customization](./object-customization) documentation.
-
-## Custom object lifecycle
-
-1. **Creation**: Define the leaf type, subtype (optional), and custom fields for your custom object.
-2. **Usage**: Create, update, and query custom objects as needed in your workflows.
-3. **Management**: Modify the schema of the custom object as your needs evolve.
 
 ## Extended use cases
 

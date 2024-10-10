@@ -8,9 +8,9 @@ Ensure to replace the app ID with your app ID which identifies your PLuG search 
 2. Click **Enable PLuG Widget** if it isn't already enabled.
 3. Copy your **Unique App ID** from the **Configuration tab**.
 
-## Setup
-
-Place the following code in the `<head>` section of your HTML page:
+<Tabs>
+  <Tab title="Setup">
+   Place the following code in the `<head>` section of your HTML page:
 ```html
 <script
   src="https://plug-platform.devrev.ai/static/plug.js"                         
@@ -33,10 +33,9 @@ Place the following code in the `<body>` section of your HTML page:
     });
 </script>
 ```
-
-## Setup for React
-
-Place this code inside the react component where you want to render the chat widget. Typically you should do it as top level component like `App.js`.
+  </Tab>
+  <Tab title="Setup for React">
+  Place this code inside the react component where you want to render the chat widget. Typically you should do it as top level component like `App.js`.
 
 ```jsx
 useEffect(() => {
@@ -52,7 +51,9 @@ window.plugSDK.onEvent((payload) => {
 });
  }, []);
 ```
-
+</Tab>
+ 
+</Tabs>
 
 To toggle `searchAgent`, call the following method on any event required: 
     ```

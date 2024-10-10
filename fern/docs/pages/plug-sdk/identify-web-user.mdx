@@ -69,13 +69,12 @@ Ensure that you follow the specified format when providing your phone number.
 To create custom attributes, see [Object customization](https://devrev.ai/docs/product/object-customization).
 
 You can pass the custom attributes that are created as shown below:
-```bash
+```json
 
 "custom_fields": {
-                   "tnt__custom_attribute_name1": <<value>>,
-                    "tnt__custom_attribute_name2": <<value>>,
-            }
-
+  "tnt__custom_attribute_name1": <value>,
+  "tnt__custom_attribute_name2": <value>,
+}
  ```
 
 You can pass custom traits, as shown above, not only for `users` but also for `workspaces` and `accounts`.

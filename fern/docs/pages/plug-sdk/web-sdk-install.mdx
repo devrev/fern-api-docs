@@ -1,4 +1,4 @@
-To install the PLuG SDK on your website or web application, insert the code snippet provided below on every page where you want the SDK to be active.
+To install the PLuG SDK on your website or web application, insert the code snippet provided below on every page where you want the SDK to be active. Once the SDK is installed, the chat widget appears by default.
 
 ## Getting your unique app ID
 
@@ -9,9 +9,9 @@ You can access your app ID from your DevRev account by following these steps:
 
 3. Under the **Configuration** tab, copy the **Unique App ID**.
 
-### Setup 
-
-Place the following code in the `<head>` section of your HTML page:
+<Tabs>
+  <Tab title="Setup">
+  Place the following code in the `<head>` section of your HTML page:
 ```html
 <script
   type="text/javascript"
@@ -29,10 +29,9 @@ Place the following code in the `<body>` section of your HTML page:
   });
 </script>
 ```
-
-### Setup for React
-
-Add the following code to the public/index.html file, inside the `<body>` tag of your HTML page:
+  </Tab>
+  <Tab title="Setup for React">
+  Add the following code to the public/index.html file, inside the `<body>` tag of your HTML page:
 
 ```jsx
 <script
@@ -51,7 +50,10 @@ useEffect(() => {
     app_id: "<your_unique_app_id>",
   });
 }, []);
-```
+``` 
+  </Tab>
+  
+</Tabs>
 
 The PLuG widget should now be installed on your website. If you experience any issues, you can reach out to us using our PLuG chat widget in the bottom right corner of your screen.
 

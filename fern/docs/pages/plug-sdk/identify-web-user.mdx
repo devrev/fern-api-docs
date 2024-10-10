@@ -83,28 +83,28 @@ If you prefer a two-level structure, where users are directly associated with an
 
 **Attributes for users**
 
-| Config option  | Type   | Required | Description                                                                                            |
-| -------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------ |
-| `user_ref`     | string | Yes      | A unique user reference that the DevRev app uses for identifying your users.                           |
-| `email`        | string | No       | The email address of the customer. It's used for sending email notifications of any support messages. |
-| `display_name` | string | No       | The name of the user that's shown on the widget.                                                 |
-| `phone_numbers` | array | No        | The mobile number of the customer.                                                                         |
+|Attributes   |Description   |Type   |
+|---|---|---|
+|`user_ref`   |A unique user reference that the DevRev app uses for identifying your users. This parameter is required.   |string   |
+|`email`   |The email address of the customer. It's used for sending email notifications of any support messages.   |string   |
+|`display_name`   |The name of the user that's shown on the widget.   |string   |
+|`phone_numbers`   |The mobile number of the customer.   |array   |
 
-**Attributes for workspaces**
+**Attributes for workspaces**                                              |
 
-| Config option  | Type   | Required | Description                                                                                            |
-| -------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------ |
-|`workspace_ref` | string | No       | A unique reference for the user's workspace. If not provided, and an account reference is passed, the user will be directly attached to the account.|
-| `display_name` | string | No       | The name of the user that's shown on the widget.                                                 |
+|Attributes   |Description   |Type   |
+|---|---|---|
+|`workspace_ref`   |A unique reference for the user's workspace. If not provided, and an account reference is passed, the user will be directly attached to the account.   |string   |
+|`display_name`   |The name of the user that's shown on the widget.   |string   |
 
-**Attributes for accounts**
+**Attributes for accounts**                                                        |
 
-| Config option  | Type   | Required | Description                                                                                            |
-| -------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------ |
-| `account_ref`  | string | No       | A unique reference for the account.                            |
-| `display_name` | string | No       | The name of the user that's shown on the widget.                                                 |
-| `domains`       | array | No       | The domain names of the accounts that the users belongs to.                                          |
-| `phone_numbers` | array | No        | The mobile number of the customer.                                                                         |
+|Attributes   |Description   |Type   |
+|---|---|---|
+|`account_ref`   |A unique reference for the account.    |string   |
+|`display_name`    | The name of the user that's shown on the widget.    |string   |
+|`domains`   |The domain names of the accounts that the users belongs to.   |array   |
+| `phone_numbers`    |The mobile number of the customer.   |array   |
 
 ## Passing the session token 
 

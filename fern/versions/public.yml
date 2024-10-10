@@ -83,12 +83,12 @@ navigation:
           - page: Installing the Web SDK
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx
-          - page: Identify your users with PLuG
-            slug: user-identity
-            path: ../docs/pages/plug-sdk/identify-web-user.mdx
           - page: Install PLuG search
             slug: install-search
             path: ../docs/pages/plug-sdk/search-install.mdx
+          - page: Identify your users with PLuG
+            slug: user-identity
+            path: ../docs/pages/plug-sdk/identify-web-user.mdx
           - page: Track events
             slug: track-events
             path: ../docs/pages/plug-sdk/track-events.mdx

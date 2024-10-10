@@ -80,7 +80,7 @@ navigation:
           - page: Integrate PLuG with your iOS app
             slug: install-ios
             path: ../docs/pages/plug-sdk/install-ios.mdx
-          - page: Installing the Web SDK
+          - page: Install the Web SDK
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx
           - page: Install PLuG search

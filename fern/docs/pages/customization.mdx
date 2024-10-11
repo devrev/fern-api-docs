@@ -16,13 +16,15 @@ fields or defining new categorizations of the existing objects.
 
 ### Tenant custom fields
 
-Use tenant custom fields to extend a DevRev object type with new fields that apply to all records of the object type in your application workspace.
+Tenant custom fields allow you to extend DevRev object types by adding new fields. These
+custom fields are applied to all records of the specified object type within your
+application workspace.
 
 ### Subtypes
 
-Subtypes categorize DevRev object types. For instance, you can make an "Incident"
-subtype for the "Ticket" leaf type. This subtype keeps all fields from the original type
-and adds new ones specific to the subtype.
+Subtypes are categories of DevRev object types. They inherit all fields from the parent
+type and can include additional, specific fields. For example, an "Incident" subtype of
+the "Ticket" type would have all ticket fields plus incident-specific ones.
 
 ### Schema fragments
 
@@ -108,10 +110,15 @@ curl --location 'https://api.devrev.ai/works.create' \
 }'
 ```
 
+After resolving the incident, the developer can update the issue object with release
+notes. This allows tracking the specific changes or fixes that were implemented to
+address the incident. Adding release notes provides a clear record of what was deployed
+to resolve the incident which can be valuable for future reference and communication
+with stakeholders.
+
 To add release notes for completed work, you can create a tenant custom field for the
-issue object type. This enables developers to include release notes directly in the
-issue objects that represent their work. Since release notes are relevant to all issues,
-we'll use a tenant custom field rather than a subtype-specific field.
+issue object type. Since release notes are relevant to all issues, we'll use a tenant
+custom field rather than a subtype-specific field.
 
 Here's how to add this custom field:
 
@@ -135,12 +142,6 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
     ]
 }'
 ```
-
-After resolving the incident, developers can update the issue object with release notes.
-This allows for tracking the specific changes or fixes that were implemented to address
-the incident. Adding release notes provides a clear record of what was deployed to
-resolve the issue, which can be valuable for future reference and communication with
-stakeholders.
 
 ```curl
 curl --location 'https://api.devrev.ai/works.update' \

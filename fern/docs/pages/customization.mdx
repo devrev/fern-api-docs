@@ -1,110 +1,62 @@
 <Callout intent="warning">
-This functionality is in Beta. We do not recommend using it in production applications.
+This functionality is in Beta. It is not recommended for use in production applications.
 </Callout>
 
-DevRev's customization framework offers workspace admins the ability to customize DevRev objects to your organization's needs.
-Extend entities in your DevRev workspace by adding new custom fields or defining new subtypes from existing objects.
+DevRev's customization framework offers the ability to customize DevRev objects to your
+organization's needs. Extend entities in your DevRev workspace by adding new custom
+fields or defining new categorizations of the existing objects.
 
 ## Glossary
 
 1. **Leaf type**: A DevRev object type. For example, _issue_, _ticket_.
-1. **Subtype**: A flavor of a leaf type. For example, _incident_ can be a subtype of _issue_.
+1. **Subtype**: A categorization of a leaf type. For example, _incident_ can be a subtype of _issue_.
+1. **Schema fragment**: A schema fragment defines the schema for an object.
 
-## Customization options
+## Concepts
 
 ### Tenant custom fields
 
 Use tenant custom fields to extend a DevRev object type with new fields that apply to all records of the object type in your application workspace.
 
-![Custom field 'Closure Code' on the Ticket object type](../img/custom-field.webp)
-
 ### Subtypes
 
-Use subtypes to create specific flavors of a DevRev object type that includes an additional fieldset and stock fields on the object type.
-Once subtypes are defined, your application can maintain records of the original object type, and optionally a subtype with its defined fields.
-
-![A Subtype of Ticket called Incident, that defines additional fields 'Incident Level' & 'Root Cause'](../img/custom-subtype.webp)
-
-## Concepts
+Subtypes categorize DevRev object types. For instance, you can make an "Incident"
+subtype for the "Ticket" leaf type. This subtype keeps all fields from the original type
+and adds new ones specific to the subtype.
 
 ### Schema fragments
 
-Objects in DevRev are customized with "schema fragments".
-When an object record is created or updated, multiple such schema fragments can be mixed to define the aggregate custom fields available to that record.
+DevRev objects are customized using "schema fragments". These fragments are the building
+blocks that define specific sets of custom fields. When creating or updating an object
+record, multiple schema fragments can be combined to determine the full set of custom
+fields available for that record. The term "fragment" is used because each schema
+fragment contributes a portion of the overall object schema.
 
-Multiple object records can reference the same fragment specifying a set of custom fields.
+Multiple object records can reference the same schema fragment.
 
-![customization](../img/customization.png)
+## Customizing a DevRev object
+Let's say you want to manage incidents across various environments (Dev, QA, Prod) in
+your organization. This guide goes through the process of creating a subtype called
+"Incident" for the "Issue" leaf type.
 
-Custom schema fragments are immutable, and thus updating a fragment means creating a new one.
-
-Two older objects (1 and 2) and one newer object referencing different fragment versions.
-
-![customization2](../img/customization2.png)
-
-### References
-
-References to each fragment describing the object fields are stored with the object. An object can contain references to a subtype fragment and a tenant fragment.
-
-### Prefixing
-
-Fields defined by different schema fragments are held in different namespaces in an object. Stock fields, subtype fields, tenant custom fields, and app custom fields live in their respective namespaces to prevent field name conflicts. Specifically:
-
-1. Names for tenant custom fields are in the form `tnt__<name>`.
-2. Names for subtype custom fields are of the form `ctype__<name>`.
-
-For illustration, a fully populated object might look like this:
-
-<CodeBlock title="Object">
-```json {14,15}
-{
-    "id": "don:core:dvrv-us-1:devo/test:issue/1",
-    "dev_oid": "don:identity:dvrv-us-1:devo/test",
-    ... // other stock fields
-
-    // references to schema fragments used
-    "schema_fragments": [
-        "don:core:dvrv-us-1:devo/test:tenant_fragment/1"
-        "don:core:dvrv-us-1:devo/test:custom_type_fragment/1",
-    ],
-
-    // map of custom fields
-    "custom_fields": {
-        "tnt__field_1": 1234,
-        "tnt__field_2": "enterprise custom data",
-        "ctype__field_1": 5678
-        ...
-    }
-}
-```
-</CodeBlock>
-
-## Using the APIs for customization
-
-### Creating a custom schema fragment
-
-An example usage of custom fields is to extend the [DevRev schema](https://devrev.ai/docs/apis/beta-api-spec#/operations/custom-schema-fragments-set) for ticket to track incidents across various environments (dev, QA, prod). This can be done by creating a subtype called "Incident". The following API call describes the custom attributes introduced by the subtype.
+First, create a schema fragment for the subtype.
 
 ```curl maxLines=10
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
---header 'X-Devrev-Scope: beta' \
 --header 'Authorization: <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "description": "Attributes for tracking an incident",
-    "leaf_type": "ticket",
+    "leaf_type": "issue",
     "subtype": "Incident",
     "fields": [
         {
-            "field_type": "enum",
-            "allowed_values": [
-                "Yes",
-                "No"
-            ],
-            "is_filterable": true,
             "name": "regression",
+            "field_type": "enum",
+            "allowed_values": [ "Yes", "No" ],
+            "is_filterable": true,
             "is_required": true,
             "default_value": "No",
             "ui": {
@@ -112,30 +64,134 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
             }
         },
         {
-            "field_type": "text",
+            "name": "impacted_environments",
+            "field_type": "array",
+            "base_type": "enum",
+            "allowed_values": [ "Dev", "QA", "Prod" ],
+            "is_filterable": true,
+            "ui": {
+                "display_name": "Impacted Environments",
+            }
+        },
+        {
             "name": "pia",
+            "field_type": "rich_text",
             "ui": {
                 "display_name": "PIA",
             }
         },
+    ]
+}'
+```
+
+Let's say there was an incident in the Prod environment. The developer working on the
+mitigation can create an issue object using the subtype to track the incident.
+
+```curl
+curl --location 'https://api.devrev.ai/works.create' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <TOKEN>' \
+--data '{
+    "type": "issue",
+    "title": "API failure in Prod",
+
+    ... // other required fields
+
+    "custom_schema_spec": {
+        "subtype": "Incident"
+    },
+    "custom_fields": {
+        "ctype__regression": "Yes",
+        "ctype__impacted_environments": [ "Prod" ]
+    }
+}'
+```
+
+To add release notes for completed work, you can create a tenant custom field for the
+issue object type. This enables developers to include release notes directly in the
+issue objects that represent their work. Since release notes are relevant to all issues,
+we'll use a tenant custom field rather than a subtype-specific field.
+
+Here's how to add this custom field:
+
+```curl
+curl --location 'https://api.devrev.ai/schemas.custom.set' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <TOKEN>' \
+--data '{
+    "type": "tenant_fragment",
+    "description": "Tenant attributes for issues",
+    "leaf_type": "issue",
+    "fields": [
         {
-            "field_type": "array",
-            "base_type": "enum",
-            "allowed_values": [
-                "Dev",
-                "QA",
-                "Prod"
-            ],
-            "name": "impacted_environments",
+            "name": "release_notes",
+            "field_type": "rich_text",
             "ui": {
-                "display_name": "Impacted Environments",
+                "display_name": "Release Notes",
             }
         }
     ]
 }'
 ```
 
-### Supported custom field types
+After resolving the incident, developers can update the issue object with release notes.
+This allows for tracking the specific changes or fixes that were implemented to address
+the incident. Adding release notes provides a clear record of what was deployed to
+resolve the issue, which can be valuable for future reference and communication with
+stakeholders.
+
+```curl
+curl --location 'https://api.devrev.ai/works.update' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: <TOKEN>' \
+--data '{
+    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:issue/1",
+    "type": "issue",
+    "custom_schema_spec": {
+        "tenant_fragment": true
+    },
+    "custom_fields": {
+        "tnt__release_notes": "<RELEASE_NOTES>"
+    }
+}'
+```
+
+The final issue object now looks like this:
+```json
+{
+    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:issue/1",
+    "type": "issue",
+    "title": "API failure in Prod",
+    "display_id": "ISS-1",
+    "created_by": {...},
+    "created_date": "2024-10-11T06:48:57.759Z",
+    "custom_fields": {
+        "ctype__regression": "Yes",
+        "ctype__impacted_environments": [ "Prod" ],
+        "tnt__release_notes": "<RELEASE_NOTES>"
+    },
+    "subtype": "Incident",
+    "custom_schema_fragments": [
+        "don:core:dvrv-us-1:devo/11FVC3ScK:tenant_fragment/1",
+        "don:core:dvrv-us-1:devo/11FVC3ScK:custom_type_fragment/1"
+    ]
+}
+```
+
+Note that fields defined by different schema fragments are held in different namespaces
+in an object. Stock fields, subtype fields, and tenant custom fields live in their
+respective namespaces to prevent field name conflicts. Specifically:
+
+1. Names for tenant custom fields are in the form `tnt__<name>`.
+2. Names for subtype custom fields are of the form `ctype__<name>`.
+
+References to each fragment describing the object fields are stored with the object. An
+object can contain references to a subtype fragment and a tenant fragment.
+
+## Supported custom field types
 
 The following custom field types are supported -
 
@@ -153,6 +209,13 @@ The following custom field types are supported -
 | id        | `"don:core:dvrv-us-1:devo/test:issue/1"` |
 
 The list variants of all the supported custom field types are also supported (`[]tokens`, `[]text`, etc).
+
+## Schema fragment versioning
+Custom schema fragments are immutable, and thus updating a fragment means creating a new one.
+
+Two older objects (1 and 2) and one newer object referencing different fragment versions.
+
+![customization2](../img/customization2.png)
 
 ### Deprecating a custom schema fragment
 
@@ -178,7 +241,6 @@ To verify the result of the above API invocation, you can [list the custom schem
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.list' \
 --header 'Accept: application/json' \
---header 'X-Devrev-Scope: beta' \
 --header 'Authorization: <TOKEN>'
 ```
 

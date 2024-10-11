@@ -1,5 +1,5 @@
 <Callout intent="warning">
-This functionality is in Beta. We do not recommend using it in production applications.
+This functionality is in Beta. It is not recommended for use in production applications.
 </Callout>
 
 Custom objects allow you to extend DevRev's data model beyond the standard use-cases
@@ -10,7 +10,7 @@ and manage object types tailored to your specific business needs.
 
 1. **Leaf type**: The base type of a custom object. For example, "campaign".
 2. **Subtype**: A categorization of a leaf type. For example, "promotion" or "advertising" for a "campaign" leaf type.
-3. **Schema fragment**: A schema fragment (or simply fragment) defines the schema for an object.
+3. **Schema fragment**: A schema fragment defines the schema for an object.
 4. **Custom fields**: User-defined fields that store specific data for your custom object.
 5. **Unique key**: A unique identifier for each custom object. This is useful for maintaining idempotency when retrying custom object creation requests.
 6. **ID prefix**: A unique prefix used to generate the display ID for the custom object. If the `id_prefix` is "CAMP", the generated custom object display ID is "C-CAMP-1". The display ID is used to identify the custom object in the UI, similar to the standard DevRev object display IDs like "ISS-001" for issues.
@@ -19,7 +19,7 @@ For more details on customization concepts, please refer to the
 [Customization](./object-customization) documentation.
 
 ## Custom object lifecycle
-Let's say you want to manage marketing campaigns on DevRev. This guide will go through the process of creating a "Campaign" custom object with relevant fields.
+Let's say you want to manage marketing campaigns on DevRev. This guide goes through the process of creating a "Campaign" custom object with relevant fields.
 
 All DevRev objects require a schema. First, create a schema for the "Campaign" custom object. Make sure to replace the `<TOKEN>` with your API token.
 

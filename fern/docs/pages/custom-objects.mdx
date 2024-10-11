@@ -25,7 +25,7 @@ All DevRev objects require a schema. First, create a schema for the "Campaign" c
 
 ### Create a schema and a custom object
 
-```
+```curl
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -75,7 +75,7 @@ differentiate it from standard DevRev object schemas.
 
 Once the schema is created, you can create a custom object of type "Campaign":
 
-```
+```curl
 curl --location 'https://api.devrev.ai/custom-objects.create' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -97,7 +97,7 @@ curl --location 'https://api.devrev.ai/custom-objects.create' \
 ```
 
 The response of the above API call is the ID of the custom object created.
-```
+```json {12-21}
 {
   "custom_object": {
     "id": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1",
@@ -131,7 +131,7 @@ The sections below provide more details on the available API endpoints for inter
 
 To get a custom object, use the `custom-objects.get` endpoint:
 
-```
+```curl
 curl --location 'https://api.devrev.ai/custom-objects.get' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -145,7 +145,7 @@ curl --location 'https://api.devrev.ai/custom-objects.get' \
 
 To list custom objects, use the `custom-objects.list` endpoint:
 
-```
+```curl
 curl --location 'https://api.devrev.ai/custom-objects.list' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -165,7 +165,7 @@ curl --location 'https://api.devrev.ai/custom-objects.list' \
 To update an existing custom object, use the `custom-objects.update` endpoint. The
 following example updates the budget of the previously created campaign custom object:
 
-```
+```curl
 curl --location 'https://api.devrev.ai/custom-objects.update' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -183,7 +183,7 @@ curl --location 'https://api.devrev.ai/custom-objects.update' \
 To delete a custom object, use the `custom-objects.delete` endpoint.
 The following example deletes the previously created campaign custom object:
 
-```
+```curl
 curl --location 'https://api.devrev.ai/custom-objects.delete' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -200,7 +200,7 @@ Let's say you want to reference all the campaigns that have been run for a custo
 workspace. You can do so by adding a field of type "id" and "id_type: custom_object.campaign"
 in the account tenant schema.
 
-```
+```curl {13-14}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -230,7 +230,7 @@ Let's say you have run different types of campaigns like social media and email
 marketing. You can create a subtype for each of these variants. If you want to create a
 campaign custom object with subtype "social_media", you can do so as follows:
 
-```
+```curl {8, 17-18}
 curl --location 'https://api.devrev.ai/custom-objects.create' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \

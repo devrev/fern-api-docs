@@ -41,9 +41,10 @@ Let's say you want to manage incidents across various environments (Dev, QA, Pro
 your organization. This guide goes through the process of creating a subtype called
 "Incident" for the "Issue" leaf type.
 
-First, create a schema fragment for the subtype.
+First, create a schema fragment for the subtype. Make sure to replace `<TOKEN>` with
+your API token.
 
-```curl maxLines=10
+```curl
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -160,8 +161,8 @@ curl --location 'https://api.devrev.ai/works.update' \
 }'
 ```
 
-The final issue object now looks like this:
-```json
+The final issue object now looks as follows:
+```json {8-17}
 {
     "id": "don:core:dvrv-us-1:devo/11FVC3ScK:issue/1",
     "type": "issue",
@@ -218,7 +219,7 @@ Two older objects (1 and 2) and one newer object referencing different fragment 
 
 ![customization2](../img/customization2.png)
 
-### Deprecating a custom schema fragment
+## Deprecating a custom schema fragment
 
 Custom schema fragments can be marked as deprecated to avoid creating work items with them. The following POST request payload can be used for the same.
 
@@ -235,7 +236,7 @@ Custom schema fragments can be marked as deprecated to avoid creating work items
 }
 ```
 
-### Listing custom schema fragments
+## Listing custom schema fragments
 
 To verify the result of the above API invocation, you can [list the custom schema fragments](https://devrev.ai/docs/apis/beta-api-spec#/operations/custom-schema-fragments-list) in the org:
 

@@ -39,7 +39,7 @@ _issue_ would have all _issue_ fields plus _bug_-specific fields like _RCA_.
 Subtypes are defined in a schema fragment of type `custom_type_fragment`.
 
 ## Customizing a DevRev object
-<Callout>
+<Callout intent="note">
 Let's say you want to track bugs across various environments in your organization.
 </Callout>
 
@@ -86,7 +86,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 }'
 ```
 
-<Callout>
+<Callout intent="note">
 Let's say a bug has been identified in the Prod environment. The person who reported the
 anomaly creates a _bug_-flavored _issue_ object to track it and assigns a relevant
 owner.
@@ -121,7 +121,7 @@ bug which can be valuable for future reference and communication with stakeholde
 To add release notes for the completed work, you can create a tenant custom field for
 the _issue_.
 
-<Callout intent="info">
+<Callout intent="tip">
 Since release notes are relevant to all issues, a tenant custom field is used instead of
 a subtype-specific field.
 </Callout>
@@ -227,7 +227,7 @@ Schema fragments are immutable. When evolving a fragment:
 The same API endpoint `schemas.custom.set` is used to create and update fragments. The
 API internally figures out how to version and chain the fragments.
 
-<Callout>
+<Callout intent="note">
 Let's say you want to add a new boolean field _customer_impact_ to the _bug_ subtype
 and delete the _regression_ field.
 </Callout>
@@ -375,7 +375,7 @@ hints:
 * `is_sortable`: Whether the field is sortable. Requires `is_filterable` to be true.
 * `is_groupable`: Whether the field is groupable. Requires `is_filterable` to be true.
 
-<Callout intent="info">
+<Callout intent="tip">
 `is_filterable` is not a UI hint but a top level field property.
 </Callout>
 
@@ -384,11 +384,11 @@ hints:
 The fields available in native DevRev objects are called stock fields. For example,
 `priority` is a stock field of _issue_.
 
-<Callout>
-Let's say you want to do the following modifications to the priority field in your org:
+<Callout intent="note">
+Let's say you want to do the following modifications to the priority field in your organization:
 
-1. Update the UI display name of the priority field to "Urgency Level" from "Priority".
-1. Update the allowed values of the priority field to _Low_, _Medium_, _High_, and _Blocker_. By default, the priority field has _P0_, _P1_, _P2_, and _P3_ as allowed values.
+1. Update the UI display name from _Priority_ to _Urgency Level_.
+1. Update the allowed values from _P0_, _P1_, _P2_, and _P3_ to _Low_, _Medium_, _High_, and _Blocker_.
 </Callout>
 
 Since the modification is applicable to all issues, you can create a tenant schema
@@ -462,7 +462,7 @@ A state is a group of stages. For example, the _open_ state groups the _triage_,
 _backlog_, and _prioritized_ stages. By default, DevRev creates _open_, _in_progress_,
 and _closed_ states in your organization.
 
-<Callout>
+<Callout intent="note">
 Let's say you want to add a new stage _Needs RCA_ to the _bug_ subtype.
 </Callout>
 
@@ -489,9 +489,7 @@ bound to an _issue_ or _ticket_.
 A stage diagram determines the allowed transitions between stages for a given object.
 For example, _triage_ stage can transition to _backlog_ stage but not vice versa.
 
-<Callout>
 Let's create a stage diagram for the _bug_ subtype:
-</Callout>
 
 ![Stage Diagram](../img/customization-stage-diagram.png)
 
@@ -536,7 +534,7 @@ curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 }'
 ```
 
-<Callout intent="info">
+<Callout intent="tip">
 It is important to specify the start stage for the diagram. This is the default stage that gets assigned to the newly created objects.
 </Callout>
 
@@ -564,7 +562,7 @@ All objects of the _bug_ subtype now adhere to the stage diagram created above.
 
 ## Dependent fields
 
-<Callout>
+<Callout intent="note">
 Let's say that the developers in your organization tend to forget to add a RCA when
 resolving the bugs. You can make the _RCA_ field required when a _bug_ object
 is moved to the _completed_ stage by adding a dependent field constraint.
@@ -607,7 +605,7 @@ The `effects` array contains the list of effects of the condition. The following
 * `show`: Whether the field must be shown for the condition to be met.
 * `allowed_values`: The conditional allowed values for the enum type field.
 
-<Callout intent="info">
+<Callout intent="tip">
 `don:core:dvrv-us-1:devo/11FVC3ScK:stage/5` is the ID of the _completed_ stage. The
 stage display name is not used in the expression because it is liable to change.
 </Callout>

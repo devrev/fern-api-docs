@@ -1,11 +1,13 @@
 name: EkLine
 on:
+  push:
+    branches:
+      - main
   pull_request:
-    types: [labeled]
 permissions: write-all
 jobs:
   test-pr-review:
-    if: contains(github.event.label.name, 'EkLine')
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'No EkLine') == false 
     name: runner / EkLine Reviewer (github-pr-review)
     runs-on: ubuntu-latest
     steps:

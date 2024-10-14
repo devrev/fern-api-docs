@@ -2829,6 +2829,11 @@ components:
             $ref: '#/components/schemas/conversations-create-request-message'
         metadata:
           $ref: '#/components/schemas/conversations-create-request-metadata'
+        owned_by:
+          type: array
+          description: The users that own the conversation.
+          items:
+            type: string
         source_channel:
           type: string
           description: Whether the conversation is from a source channel.
@@ -3142,6 +3147,8 @@ components:
           description: Whether the conversation is spam.
         metadata:
           $ref: '#/components/schemas/conversations-update-request-metadata'
+        owned_by:
+          $ref: '#/components/schemas/conversations-update-request-owned-by'
         stage:
           $ref: '#/components/schemas/stage-update'
         status:
@@ -3174,6 +3181,20 @@ components:
         url_context:
           type: string
       title: conversations-update-request-metadata
+    conversations-update-request-owned-by:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Sets the owner IDs to the provided user IDs. This must not be
+            empty.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+          minItems: 1
+      title: conversations-update-request-owned-by
     conversations-update-request-tags:
       type: object
       properties:
@@ -3550,6 +3571,29 @@ components:
         - custom_link_type
       title: custom-link-type-update-response
       x-go-name: CustomLinkTypeUpdateResponseBody
+    custom-object:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            custom_fields:
+              type: object
+              description: Custom fields.
+            custom_schema_fragments:
+              type: array
+              description: Custom schema fragments.
+              example:
+                - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+              items:
+                type: string
+            stock_schema_fragment:
+              type: string
+              description: Stock schema fragment.
+              example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+            subtype:
+              type: string
+              description: Subtype corresponding to the custom type fragment.
+      title: custom-object
     custom-object-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'
@@ -3564,6 +3608,192 @@ components:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
       title: custom-object-summary
+    custom-objects-count-request:
+      type: object
+      properties:
+        filters:
+          type: array
+          description: List of filters to apply.
+          items: {}
+        leaf_type:
+          type: string
+          description: Leaf type to filter.
+      required:
+        - leaf_type
+      title: custom-objects-count-request
+    custom-objects-count-response:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The count of custom objects.
+          format: int64
+      required:
+        - count
+      title: custom-objects-count-response
+      x-go-name: CustomObjectsCountResponseBody
+    custom-objects-create-request:
+      type: object
+      properties:
+        custom_fields:
+          type: object
+          description: Custom fields of the custom object.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
+        leaf_type:
+          type: string
+          description: Leaf type of the custom object.
+        stage:
+          type: string
+          description: The stage of the custom object.
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when creating a custom
+            object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-create'
+        title:
+          type: string
+          description: Title of the custom object.
+        unique_key:
+          type: string
+          description: |
+            The unique key of the custom object.This can be used to hold an
+            external reference to another object.
+      required:
+        - leaf_type
+        - unique_key
+      title: custom-objects-create-request
+    custom-objects-create-response:
+      type: object
+      properties:
+        custom_object:
+          $ref: '#/components/schemas/custom-object'
+      required:
+        - custom_object
+      title: custom-objects-create-response
+      x-go-name: CustomObjectsCreateResponseBody
+    custom-objects-delete-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom object to get.
+      required:
+        - id
+      title: custom-objects-delete-request
+    custom-objects-delete-response:
+      type: object
+      additionalProperties: false
+      title: custom-objects-delete-response
+      x-go-name: CustomObjectsDeleteResponseBody
+    custom-objects-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom object to get.
+      title: custom-objects-get-request
+    custom-objects-get-response:
+      type: object
+      properties:
+        custom_object:
+          $ref: '#/components/schemas/custom-object'
+      required:
+        - custom_object
+      title: custom-objects-get-response
+      x-go-name: CustomObjectsGetResponseBody
+    custom-objects-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        filter:
+          type: array
+          description: List of filters to apply.
+          items: {}
+        leaf_type:
+          type: string
+          description: Leaf type to filter.
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+      required:
+        - leaf_type
+      title: custom-objects-list-request
+    custom-objects-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+        result:
+          type: array
+          description: The custom objects.
+          items:
+            $ref: '#/components/schemas/custom-object'
+      required:
+        - result
+      title: custom-objects-list-response
+      x-go-name: CustomObjectsListResponseBody
+    custom-objects-update-request:
+      type: object
+      properties:
+        custom_fields:
+          type: object
+          description: Custom fields of the custom object.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
+        id:
+          type: string
+          description: The ID of the custom object to update.
+        stage:
+          type: string
+          description: Updates the stage of the custom object.
+          nullable: true
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when updating the stage of a
+            custom object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-update'
+        title:
+          type: string
+          description: Updates the title of the custom object.
+          nullable: true
+      required:
+        - id
+      title: custom-objects-update-request
+    custom-objects-update-response:
+      type: object
+      properties:
+        custom_object:
+          $ref: '#/components/schemas/custom-object'
+      required:
+        - custom_object
+      title: custom-objects-update-response
+      x-go-name: CustomObjectsUpdateResponseBody
     custom-schema-fragment:
       type: object
       discriminator:
@@ -3690,6 +3920,9 @@ components:
         deprecated:
           type: boolean
           description: Whether only deprecated fragments should be filtered.
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object
         leaf_type:
           type: array
           description: The list of leaf types.
@@ -4833,6 +5066,266 @@ components:
         - dev_user
       title: dev-users-update-response
       x-go-name: DevUsersUpdateResponseBody
+    directories-count-request:
+      type: object
+      properties:
+        created_by:
+          type: array
+          description: |
+            Filters for directories created by any of the provided users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+        modified_by:
+          type: array
+          description: |
+            Filters for directories modified by any of the provided users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+      title: directories-count-request
+    directories-count-response:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The total number of directories matching the filter.
+          format: int32
+      required:
+        - count
+      title: directories-count-response
+      x-go-name: DirectoriesCountResponseBody
+    directories-create-request:
+      type: object
+      description: The request to create a directory.
+      properties:
+        description:
+          type: string
+          description: Description for the directory.
+        icon:
+          type: string
+          description: Icon for the directory.
+        parent:
+          type: string
+          description: Parent directory of the directory.
+        published:
+          type: boolean
+          description: Whether the directory is published.
+        tags:
+          type: array
+          description: Tags associated with the directory.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+        thumbnail:
+          type: string
+          description: ID of the thumbnail artifact.
+          example: ARTIFACT-12345
+        title:
+          type: string
+          description: Title of the directory.
+      required:
+        - title
+      title: directories-create-request
+    directories-create-response:
+      type: object
+      description: Create directory response.
+      properties:
+        directory:
+          $ref: '#/components/schemas/directory'
+      required:
+        - directory
+      title: directories-create-response
+      x-go-name: DirectoriesCreateResponseBody
+    directories-delete-request:
+      type: object
+      description: The request to delete a directory.
+      properties:
+        id:
+          type: string
+          description: The ID of the directory to delete.
+      required:
+        - id
+      title: directories-delete-request
+    directories-delete-response:
+      type: object
+      additionalProperties: false
+      title: directories-delete-response
+      x-go-name: DirectoriesDeleteResponseBody
+    directories-get-request:
+      type: object
+      description: The request to get a directory.
+      properties:
+        id:
+          type: string
+          description: The ID of the requested directory.
+      required:
+        - id
+      title: directories-get-request
+    directories-get-response:
+      type: object
+      description: Get directory response.
+      properties:
+        directory:
+          $ref: '#/components/schemas/directory'
+      required:
+        - directory
+      title: directories-get-response
+      x-go-name: DirectoriesGetResponseBody
+    directories-list-request:
+      type: object
+      description: The request to list directories.
+      properties:
+        created_by:
+          type: array
+          description: |
+            Filters for directories created by any of the provided users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        limit:
+          type: integer
+          description: |
+            The maximum number of directories to return. The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_by:
+          type: array
+          description: |
+            Filters for directories modified by any of the provided users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+      title: directories-list-request
+    directories-list-response:
+      type: object
+      description: List directory response.
+      properties:
+        directories:
+          type: array
+          description: The list of directories.
+          items:
+            $ref: '#/components/schemas/directory'
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+      required:
+        - directories
+      title: directories-list-response
+      x-go-name: DirectoriesListResponseBody
+    directories-update-request:
+      type: object
+      description: The request to update a directory.
+      properties:
+        description:
+          type: string
+          description: The updated description for the directory.
+        icon:
+          type: string
+          description: The updated icon for the directory.
+        id:
+          type: string
+          description: The ID of the directory to update.
+        parent:
+          type: string
+          description: The updated parent directory for the directory.
+          nullable: true
+        published:
+          type: boolean
+          description: Whether the directory is published.
+        reorder:
+          $ref: '#/components/schemas/directories-update-request-reorder'
+        tags:
+          $ref: '#/components/schemas/directories-update-request-tags'
+        thumbnail:
+          type: string
+          description: ID of the thumbnail artifact.
+          example: ARTIFACT-12345
+        title:
+          type: string
+          description: The updated title for the directory.
+      required:
+        - id
+      title: directories-update-request
+    directories-update-request-reorder:
+      type: object
+      properties:
+        after:
+          type: string
+          description: |
+            The directory after which the reordered directory is placed.
+        before:
+          type: string
+          description: |
+            The directory before which the reordered directory is placed.
+      title: directories-update-request-reorder
+    directories-update-request-tags:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the provided tags on the directory.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+      title: directories-update-request-tags
+    directories-update-response:
+      type: object
+      description: Update directory response.
+      properties:
+        directory:
+          $ref: '#/components/schemas/directory'
+      required:
+        - directory
+      title: directories-update-response
+      x-go-name: DirectoriesUpdateResponseBody
+    directory:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            body:
+              $ref: '#/components/schemas/artifact-summary'
+            description:
+              type: string
+              description: Description of the directory.
+            icon:
+              type: string
+              description: Icon of the directory.
+            parent:
+              $ref: '#/components/schemas/directory-summary'
+            published:
+              type: boolean
+              description: Whether the directory is published.
+            rank:
+              type: string
+              description: Rank of the directory.
+            tags:
+              type: array
+              description: Tags associated with the directory.
+              items:
+                $ref: '#/components/schemas/tag-with-value'
+            thumbnail:
+              $ref: '#/components/schemas/artifact-summary'
+            title:
+              type: string
+              description: Title of the directory.
+      title: directory
     directory-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -5052,6 +5545,15 @@ components:
             The parent object ID in which the engagement was created.
             Currently, only accounts and opportunities are supported.
           example: ACC-12345
+        parents:
+          type: array
+          description: |
+            The parent object IDs to which the engagement is associated.
+            Currently, only accounts and opportunities are supported.
+          example:
+            - ACC-12345
+          items:
+            type: string
         scheduled_date:
           type: string
           description: The date and time when the engagement was scheduled.
@@ -5067,7 +5569,6 @@ components:
           description: The title of the engagement.
       required:
         - members
-        - parent
         - scheduled_date
         - title
       title: engagements-create-request
@@ -5207,6 +5708,8 @@ components:
           description: The engagement ID.
         members:
           $ref: '#/components/schemas/engagements-update-request-members'
+        parents:
+          $ref: '#/components/schemas/engagements-update-request-parents'
         scheduled_date:
           type: string
           description: |
@@ -5247,6 +5750,18 @@ components:
             type: string
           maxItems: 50
       title: engagements-update-request-members
+    engagements-update-request-parents:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the parent IDs.
+          example:
+            - ACC-12345
+          items:
+            type: string
+          maxItems: 50
+      title: engagements-update-request-parents
     engagements-update-request-tags:
       type: object
       properties:
@@ -6754,7 +7269,10 @@ components:
       description: Preferred locale of the user.
       enum:
         - en_us
+        - es_ar
         - ja_jp
+        - nl_aw
+        - nl_sx
     generic-notification-event-type:
       type: string
       description: Event type of the notification.
@@ -8011,6 +8529,7 @@ components:
         - is_converted_to
         - is_dependent_on
         - is_duplicate_of
+        - is_follow_up_of
         - is_merged_into
         - is_parent_of
         - is_part_of
@@ -10530,6 +11049,30 @@ components:
         - rev_users
       title: rev-users-list-response
       x-go-name: RevUsersListResponseBody
+    rev-users-merge-request:
+      type: object
+      description: Request to merge two Rev users, retaining the primary user.
+      properties:
+        primary_user:
+          type: string
+          description: The ID of the primary Rev user, which will be retained.
+        secondary_user:
+          type: string
+          description: |
+            The ID of the secondary Rev user, which will be merged into the
+            Primary Rev user.
+      required:
+        - primary_user
+        - secondary_user
+      title: rev-users-merge-request
+    rev-users-merge-response:
+      type: object
+      additionalProperties: false
+      description: |
+        Acknowledgment response indicating that the merge request has been
+        received for processing asynchronously.
+      title: rev-users-merge-response
+      x-go-name: RevUsersMergeResponseBody
     rev-users-scan-request:
       type: object
       description: Scans the list of Rev users.
@@ -12231,6 +12774,58 @@ components:
         - sla_tracker
       title: sla-trackers-get-response
       x-go-name: SlaTrackersGetResponseBody
+    sla-trackers-list-request:
+      type: object
+      properties:
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        limit:
+          type: integer
+          description: |
+            The maximum number of SLA trackers to return. The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        stage:
+          type: array
+          description: The SLA tracker stages the filter matches.
+          items:
+            type: string
+        status:
+          type: array
+          description: The SLA tracker statuses the filter matches.
+          items:
+            type: string
+      title: sla-trackers-list-request
+    sla-trackers-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+        sla_trackers:
+          type: array
+          description: The list of SLA trackers.
+          items:
+            $ref: '#/components/schemas/sla-tracker'
+      required:
+        - sla_trackers
+      title: sla-trackers-list-response
+      x-go-name: SlaTrackersListResponseBody
     sla-type:
       type: string
       description: Type of the SLA.
@@ -14192,6 +14787,11 @@ components:
                 The display ID of the object that the Timeline entry belongs to.
             object_type:
               $ref: '#/components/schemas/timeline-entry-object-type'
+            panels:
+              type: array
+              description: Display panels for the Timeline entry.
+              items:
+                $ref: '#/components/schemas/timeline-entry-panel'
             reactions:
               type: array
               description: The reactions to the entry.
@@ -19308,6 +19908,360 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /custom-objects.count:
+    get:
+      description: Counts custom objects.
+      operationId: custom-objects-count
+      parameters:
+        - description: Leaf type to filter.
+          explode: false
+          in: query
+          name: leaf_type
+          required: true
+          schema:
+            type: string
+        - description: List of filters to apply.
+          explode: false
+          in: query
+          name: filters
+          schema:
+            type: array
+            items: {}
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-request-name: CustomObjectsCountQuery
+    post:
+      description: Counts custom objects.
+      operationId: custom-objects-count-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-count-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /custom-objects.create:
+    post:
+      description: Creates a custom object.
+      operationId: custom-objects-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /custom-objects.delete:
+    post:
+      description: Deletes a custom object.
+      operationId: custom-objects-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-delete-request'
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /custom-objects.get:
+    get:
+      description: Gets a custom object.
+      operationId: custom-objects-get
+      parameters:
+        - description: The ID of the custom object to get.
+          explode: false
+          in: query
+          name: id
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-request-name: CustomObjectsGetQuery
+    post:
+      description: Gets a custom object.
+      operationId: custom-objects-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /custom-objects.list:
+    get:
+      description: Lists custom objects.
+      operationId: custom-objects-list
+      parameters:
+        - description: Leaf type to filter.
+          explode: false
+          in: query
+          name: leaf_type
+          required: true
+          schema:
+            type: string
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: List of filters to apply.
+          explode: false
+          in: query
+          name: filter
+          schema:
+            type: array
+            items: {}
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-request-name: CustomObjectsListQuery
+    post:
+      description: Lists custom objects.
+      operationId: custom-objects-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /custom-objects.update:
+    post:
+      description: Updates a custom object.
+      operationId: custom-objects-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
   /dev-orgs.auth-connections.create:
     post:
       description: |
@@ -19993,6 +20947,371 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - dev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /directories.count:
+    get:
+      description: Get count of directories matching given filter.
+      operationId: directories-count
+      parameters:
+        - description: |
+            Filters for directories created by any of the provided users.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+        - description: |
+            Filters for directories modified by any of the provided users.
+          explode: false
+          in: query
+          name: modified_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+      x-request-name: DirectoriesCountQuery
+    post:
+      description: Get count of directories matching given filter.
+      operationId: directories-count-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/directories-count-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+        - sdks
+  /directories.create:
+    post:
+      description: Creates a directory for the specified inputs.
+      operationId: directories-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/directories-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+        - sdks
+  /directories.delete:
+    post:
+      description: Delete the specified directory.
+      operationId: directories-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/directories-delete-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+        - sdks
+  /directories.get:
+    get:
+      description: Gets the specified directory.
+      operationId: directories-get
+      parameters:
+        - description: The ID of the requested directory.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+      x-request-name: DirectoriesGetQuery
+    post:
+      description: Gets the specified directory.
+      operationId: directories-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/directories-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+        - sdks
+  /directories.list:
+    get:
+      description: Lists directories matching the request.
+      operationId: directories-list
+      parameters:
+        - description: |
+            Filters for directories created by any of the provided users.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            The maximum number of directories to return. The default is '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            Filters for directories modified by any of the provided users.
+          explode: false
+          in: query
+          name: modified_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+      x-request-name: DirectoriesListQuery
+    post:
+      description: Lists directories matching the request.
+      operationId: directories-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/directories-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
+      x-fern-audiences:
+        - docs
+        - sdks
+  /directories.update:
+    post:
+      description: Updates the specified directory.
+      operationId: directories-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/directories-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directories-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - directory
       x-fern-audiences:
         - docs
         - sdks
@@ -24236,6 +25555,41 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /rev-users.merge:
+    post:
+      description: Merges the secondary Rev user into the primary Rev user.
+      operationId: rev-users-merge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rev-users-merge-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rev-users-merge-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-users.scan:
     get:
       description: Scans through all Rev users.
@@ -24669,6 +26023,12 @@ paths:
           explode: false
           in: query
           name: deprecated
+          schema:
+            type: boolean
+        - description: Whether the leaf type corresponds to a custom object
+          explode: false
+          in: query
+          name: is_custom_leaf_type
           schema:
             type: boolean
         - description: The list of leaf types.
@@ -25431,6 +26791,145 @@ paths:
           $ref: '#/components/responses/forbidden'
         "404":
           $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /sla-trackers.list:
+    get:
+      description: Lists SLA trackers matching a filter.
+      operationId: sla-trackers-list
+      parameters:
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: created_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: created_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            The maximum number of SLA trackers to return. The default is '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: modified_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: modified_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: The SLA tracker stages the filter matches.
+          explode: false
+          in: query
+          name: stage
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The SLA tracker statuses the filter matches.
+          explode: false
+          in: query
+          name: status
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: SlaTrackersListQuery
+    post:
+      description: Lists SLA trackers matching a filter.
+      operationId: sla-trackers-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sla-trackers-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -29231,6 +30730,8 @@ tags:
     name: dev-orgs
   - description: Dev user interactions.
     name: dev-users
+  - description: Directory APIs
+    name: directory
   - description: DevRev engagements.
     name: engagements
   - description: Event source interactions.

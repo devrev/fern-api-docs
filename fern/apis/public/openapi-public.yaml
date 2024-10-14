@@ -2874,6 +2874,7 @@ components:
         - is_converted_to
         - is_dependent_on
         - is_duplicate_of
+        - is_follow_up_of
         - is_merged_into
         - is_parent_of
         - is_part_of
@@ -4458,6 +4459,58 @@ components:
         - sla_tracker
       title: sla-trackers-get-response
       x-go-name: SlaTrackersGetResponseBody
+    sla-trackers-list-request:
+      type: object
+      properties:
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        limit:
+          type: integer
+          description: |
+            The maximum number of SLA trackers to return. The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        stage:
+          type: array
+          description: The SLA tracker stages the filter matches.
+          items:
+            type: string
+        status:
+          type: array
+          description: The SLA tracker statuses the filter matches.
+          items:
+            type: string
+      title: sla-trackers-list-request
+    sla-trackers-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+        sla_trackers:
+          type: array
+          description: The list of SLA trackers.
+          items:
+            $ref: '#/components/schemas/sla-tracker'
+      required:
+        - sla_trackers
+      title: sla-trackers-list-response
+      x-go-name: SlaTrackersListResponseBody
     sla-type:
       type: string
       description: Type of the SLA.
@@ -9016,6 +9069,145 @@ paths:
           $ref: '#/components/responses/forbidden'
         "404":
           $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /sla-trackers.list:
+    get:
+      description: Lists SLA trackers matching a filter.
+      operationId: sla-trackers-list
+      parameters:
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: created_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: created_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            The maximum number of SLA trackers to return. The default is '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: modified_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: modified_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: The SLA tracker stages the filter matches.
+          explode: false
+          in: query
+          name: stage
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The SLA tracker statuses the filter matches.
+          explode: false
+          in: query
+          name: status
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: SlaTrackersListQuery
+    post:
+      description: Lists SLA trackers matching a filter.
+      operationId: sla-trackers-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sla-trackers-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":

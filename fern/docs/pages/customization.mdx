@@ -36,7 +36,7 @@ Subtypes are kinds of DevRev object types. They inherit all fields from the pare
 and can include additional specific fields. For example, a _bug_ subtype of
 _issue_ would have all _issue_ fields plus _bug_-specific fields like _RCA_.
 
-Subtypes are defined in a schema fragment of type `custom_type_fragment`.
+Subtypes are defined using a schema fragment of type `custom_type_fragment`.
 
 ## Customizing a DevRev object
 <Callout intent="note">
@@ -100,7 +100,7 @@ curl --location 'https://api.devrev.ai/works.create' \
 --data '{
     "type": "issue",
     "title": "API failure in Prod",
-    "owner": "<OWNER_ID>",
+    "owned_by": "<OWNER_ID>",
 
     ... // other required fields
 
@@ -155,7 +155,7 @@ curl --location 'https://api.devrev.ai/works.update' \
 --header 'Accept: application/json' \
 --header 'Authorization: <TOKEN>' \
 --data '{
-    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:issue/1",
+    "id": "don:core:dvrv-us-1:devo/test:issue/1",
     "type": "issue",
     "custom_schema_spec": {
         "tenant_fragment": true
@@ -169,7 +169,7 @@ curl --location 'https://api.devrev.ai/works.update' \
 The final issue object now looks as follows:
 ```json {10-19}
 {
-    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:issue/1",
+    "id": "don:core:dvrv-us-1:devo/test:issue/1",
     "type": "issue",
     "title": "API failure in Prod",
     "display_id": "ISS-1",
@@ -184,8 +184,8 @@ The final issue object now looks as follows:
     },
     "subtype": "bug",
     "custom_schema_fragments": [
-        "don:core:dvrv-us-1:devo/11FVC3ScK:custom_type_fragment/1"
-        "don:core:dvrv-us-1:devo/11FVC3ScK:tenant_fragment/1",
+        "don:core:dvrv-us-1:devo/test:custom_type_fragment/1"
+        "don:core:dvrv-us-1:devo/test:tenant_fragment/1",
     ]
 }
 ```
@@ -305,12 +305,12 @@ curl --location 'https://api.devrev.ai/works.get' \
 --header 'Accept: application/json' \
 --header 'Authorization: <TOKEN>' \
 --data '{
-    "id": "don:core:dvrv-us-1:devo/11FVC3ScK:issue/2"
+    "id": "don:core:dvrv-us-1:devo/test:issue/2"
 }'
 
 {
     "work": {
-        "id": "don:core:dvrv-us-1:devo/11FVC3ScK:issue/2",
+        "id": "don:core:dvrv-us-1:devo/test:issue/2",
         "type": "issue",
         "title": "Critical Service Outage",
         "display_id": "ISS-x",
@@ -321,8 +321,8 @@ curl --location 'https://api.devrev.ai/works.get' \
         },
         "subtype": "bug",
         "custom_schema_fragments": [
-            "don:core:dvrv-us-1:devo/11FVC3ScK:custom_type_fragment/2"
-            "don:core:dvrv-us-1:devo/11FVC3ScK:tenant_fragment/1",
+            "don:core:dvrv-us-1:devo/test:custom_type_fragment/2"
+            "don:core:dvrv-us-1:devo/test:tenant_fragment/1",
         ]
     }
 }
@@ -503,32 +503,32 @@ curl --location 'https://api.devrev.ai/stage-diagrams.create' \
     "subtype": "bug",
     "stages": [
         {
-            "stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/1",
+            "stage_id": "don:core:dvrv-us-1:devo/test:stage/1",
             "is_start": true,
             "transitions": [
                 {
-                    "target_stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/2",
+                    "target_stage_id": "don:core:dvrv-us-1:devo/test:stage/2",
                 }
             ]
         },
         {
-            "stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/2",
+            "stage_id": "don:core:dvrv-us-1:devo/test:stage/2",
             "transitions": [
                 {
-                    "target_stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/3"
+                    "target_stage_id": "don:core:dvrv-us-1:devo/test:stage/3"
                 }
             ]
         },
         {
-            "stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/3",
+            "stage_id": "don:core:dvrv-us-1:devo/test:stage/3",
             "transitions": [
                 {
-                    "target_stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/4"
+                    "target_stage_id": "don:core:dvrv-us-1:devo/test:stage/4"
                 }
             ]
         },
         {
-            "stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/4",
+            "stage_id": "don:core:dvrv-us-1:devo/test:stage/4",
         }
     ]
 }'
@@ -551,7 +551,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
     "type": "custom_type_fragment",
     "leaf_type": "issue",
     "subtype": "bug",
-    "stage_diagram_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stages_diagram/1",
+    "stage_diagram_id": "don:core:dvrv-us-1:devo/test:stages_diagram/1",
     "fields": [
         ... // no changes
     ]
@@ -582,7 +582,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
     ],
     "conditions": [
         {
-            "expression": "stage == 'don:core:dvrv-us-1:devo/11FVC3ScK:stage/5'",
+            "expression": "stage == 'don:core:dvrv-us-1:devo/test:stage/5'",
             "effects": [
                 {
                     "fields": [ "custom_fields.rca" ],
@@ -606,6 +606,6 @@ The `effects` array contains the list of effects of the condition. The following
 * `allowed_values`: The conditional allowed values for the enum type field.
 
 <Callout intent="tip">
-`don:core:dvrv-us-1:devo/11FVC3ScK:stage/5` is the ID of the _completed_ stage. The
+`don:core:dvrv-us-1:devo/test:stage/5` is the ID of the _completed_ stage. The
 stage display name is not used in the expression because it is liable to change.
 </Callout>

@@ -2,9 +2,14 @@
 This functionality is in Beta. It is not recommended for use in production applications.
 </Callout>
 
-DevRev allows you to customize its core objects, such as _issue_ and _ticket_, to fit
+DevRev allows you to customize its core objects such as _issue_ and _ticket_ to fit
 your organization's unique workflows and reporting needs. By using the customization
 framework, you can extend these objects with custom fields that reflect your processes.
+
+This guide provides an overview of the customization framework and walks you through the process of tracking incidents in your organization. By the end of this guide, you'll be able to:
+1. Customize DevRev objects such as _issue_ and _ticket_.
+1. Create custom stages and stage transition diagrams for your objects.
+1. Create dependent fields for your objects.
 
 ## Concepts
 
@@ -34,8 +39,9 @@ _issue_ would have all _issue_ fields plus _incident_-specific fields.
 Subtypes are defined in a schema fragment of type `custom_type_fragment`.
 
 ## Customizing a DevRev object
+<Callout intent="success">
 Let's say you want to track incidents across various environments in your organization.
-This guide goes through the process of creating an _incident_ subtype for _issue_.
+</Callout>
 
 First, create a schema fragment defining the fields for the _incident_ subtype.
 Make sure to replace `<TOKEN>` with your API token.
@@ -80,8 +86,10 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 }'
 ```
 
+<Callout intent="success">
 Let's say there was an incident in the Prod environment. The developer working on the
 mitigation can create an _incident_-flavored _issue_ object to track the incident.
+</Callout>
 
 ```curl {11-17}
 curl --location 'https://api.devrev.ai/works.create' \
@@ -213,10 +221,12 @@ Schema fragments are immutable. When evolving a fragment:
 The same API endpoint `schemas.custom.set` is used to create and update fragments. The
 API internally figures out how to version and chain the fragments.
 
+<Callout intent="success">
 Let's say you want to add a new boolean field _customer_impact_ to the _incident_ subtype
 and delete the _regression_ field. The API call for this is shown below:
+</Callout>
 
-```curl {35-41}
+```curl {28-36}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -334,7 +344,7 @@ following POST request payload to `schemas.custom.set` can be used:
 
 ## Listing custom schema fragments
 
-To verify the result of the above API invocation, you can list the custom schema fragments:
+To view the custom schema fragments, use the following API call:
 
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.list' \
@@ -347,11 +357,14 @@ Deprecated fragments aren't listed in the response.
 ## Stock field overrides
 
 The fields available in native DevRev objects are called stock fields. For example,
-`priority` is a stock field of _issue_. Let's say you want to do the following
-modifications to the priority field in your org:
+`priority` is a stock field of _issue_.
+
+<Callout intent="success">
+Let's say you want to do the following modifications to the priority field in your org:
 
 1. Update the UI display name of the priority field to "Urgency Level" from "Priority".
 1. Update the allowed values of the priority field to _Low_, _Medium_, _High_, and _Blocker_. By default, the priority field has _P0_, _P1_, _P2_, and _P3_ as allowed values.
+</Callout>
 
 Since the modification is applicable to all issues, you can create a tenant schema
 fragment with the following payload:
@@ -419,8 +432,12 @@ hints:
 * `display_name`: The display name of the field.
 * `is_hidden`: Whether the field is hidden.
 * `placeholder`: The placeholder text for the field.
-* `is_sortable`: Whether the field is sortable. Requires `is_filterable` to be true. Note that `is_filterable` is not a UI hint but a top level field property.
+* `is_sortable`: Whether the field is sortable. Requires `is_filterable` to be true.
 * `is_groupable`: Whether the field is groupable. Requires `is_filterable` to be true.
+
+<Callout intent="info">
+`is_filterable` is not a UI hint but a top level field property.
+</Callout>
 
 ## Stage customization
 
@@ -436,7 +453,9 @@ A state is a group of stages. For example, the _open_ state groups the _triage_,
 _backlog_, and _prioritized_ stages. By default, DevRev creates _open_, _in_progress_,
 and _closed_ states in your organization.
 
+<Callout intent="success">
 Let's say you want to add a new stage _needs_pia_ to the _incident_ subtype.
+</Callout>
 
 ### Adding a custom stage
 
@@ -461,12 +480,14 @@ bound to an _issue_ or _ticket_.
 A stage diagram determines the allowed transitions between stages for a given object.
 For example, _triage_ stage can transition to _backlog_ stage but not vice versa.
 
+<Callout intent="success">
 Let's create a stage diagram for the _incident_ subtype:
+</Callout>
 
 ![Stage Diagram](../img/customization-stage-diagram.png)
 
 ```curl {11}
-curl --location 'https://api.devrev.ai/stages-diagrams.create' \
+curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
 --header 'Authorization: <TOKEN>' \
@@ -480,9 +501,6 @@ curl --location 'https://api.devrev.ai/stages-diagrams.create' \
             "transitions": [
                 {
                     "target_stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/2",
-                },
-                {
-                    "target_stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/3",
                 }
             ]
         },
@@ -490,7 +508,7 @@ curl --location 'https://api.devrev.ai/stages-diagrams.create' \
             "stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/2",
             "transitions": [
                 {
-                    "target_stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/4"
+                    "target_stage_id": "don:core:dvrv-us-1:devo/11FVC3ScK:stage/3"
                 }
             ]
         },
@@ -509,13 +527,15 @@ curl --location 'https://api.devrev.ai/stages-diagrams.create' \
 }'
 ```
 
-Note that it is important to specify the start stage for the diagram. This is the default stage that gets assigned to the newly created objects.
+<Callout intent="info">
+It is important to specify the start stage for the diagram. This is the default stage that gets assigned to the newly created objects.
+</Callout>
 
 ### Using a stage diagram
 
 The stage diagram created above can be referenced in the _incident_ subtype as follows:
 
-```curl
+```curl {9}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -535,11 +555,13 @@ All objects of the _incident_ subtype now adhere to the stage diagram created ab
 
 ## Dependent fields
 
+<Callout intent="success">
 Let's say that the developers in your organization tend to forget to add a PIA when
 resolving the incidents. You can make the _PIA_ field required when an _incident_ object
 is moved to the _completed_ stage by adding a dependent field constraint.
+</Callout>
 
-```curl
+```curl {12-22}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
@@ -565,11 +587,8 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 }'
 ```
 
-Any attempts to update an _incident_ object to the _completed_ stage without populating
-the _PIA_ field are rejected.
-
-Note that `don:core:dvrv-us-1:devo/11FVC3ScK:stage/5` is the ID of the _completed_
-stage. The stage display name is not used in the expression because it is liable to change.
+Any attempt to update an _incident_ object to the _completed_ stage without populating
+the _PIA_ field is rejected.
 
 The supported operators are `==`, `!=`, `>`, `>=`, `<`, `<=`. The `expression` is a
 boolean expression that must return a boolean value.
@@ -578,3 +597,8 @@ The `effects` array contains the list of effects of the condition. The following
 * `require`: Whether the field must be set for the condition to be met.
 * `show`: Whether the field must be shown for the condition to be met.
 * `allowed_values`: The conditional allowed values for the enum type field.
+
+<Callout intent="info">
+`don:core:dvrv-us-1:devo/11FVC3ScK:stage/5` is the ID of the _completed_ stage. The
+stage display name is not used in the expression because it is liable to change.
+</Callout>

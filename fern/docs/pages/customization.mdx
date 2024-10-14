@@ -181,9 +181,7 @@ The following observations can be made from the above example:
   - Subtype fields are of the form `ctype__<field_name>`.
   - Tenant fields are of the form `tnt__<field_name>`.
 * References to each fragment are stored with the object.
-* When updating an object, the `custom_schema_spec` can specify only the fragments
-being modified. Here, only the tenant fragment is specified as only the release notes
-field is being updated.
+* When updating an object, the `custom_schema_spec` can specify only the fragments being modified. Here, only the tenant fragment is specified as only the release notes field is being updated.
 
 ## Supported custom field types
 
@@ -260,9 +258,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 
 Note that:
 * The API payload reflects the entire state of the new fragment version.
-* The `deleted_fields` array specifies the field names that are being deleted. If
-not provided, the API call fails due to the lack of an explicit field deletion
-confirmation. This prevents accidental field deletions.
+* The `deleted_fields` array specifies the field names that are being deleted. If not provided, the API call fails due to the lack of an explicit field deletion confirmation. This prevents accidental field deletions.
 
 The above API call internally performs the following steps:
 1. Creates a new fragment with the specified payload.
@@ -274,13 +270,7 @@ field in the old fragment points to the new fragment.
 The diagram below shows the relationship between the fragments and how the versioning
 scheme preserves the referential integrity.
 
-```mermaid
-flowchart BT;
-    A[Fragment V1] -.-> B[Fragment V2];
-    C[Object 1] --> A[Fragment V1];
-    D[Object 2] --> A[Fragment V1];
-    E[Object 3] --> B[Fragment V2];
-```
+![Fragment Versioning](../img/customization-versioning.png)
 
 ### Object upgrades
 
@@ -422,9 +412,9 @@ fragment instead.
 
 ## UI hints
 
-UI hints allow customizing the UI/UX of custom fields. So far we've seen the use of
-`ui.display_name` to set the display name of a field. Let's look at the other supported
-UI hints:
+UI hints allow customizing the UI/UX of custom fields. So far, `ui.display_name` has
+been used to set the display name of a field. Let's look at the other supported UI
+hints:
 
 * `display_name`: The display name of the field.
 * `is_hidden`: Whether the field is hidden.
@@ -437,13 +427,13 @@ UI hints:
 Stages represent the different phases an object can be in during its lifecycle. For
 example, an issue might go through the following lifecycle:
 
-_triage_ -> _prioritised_ -> _in_development_ -> _completed_
+![Issue Lifecycle](../img/customization-stage-transition.png)
 
 Customizing the stages allows you to tailor the object lifecycle to your organization's
 specific requirements.
 
 A state is a group of stages. For example, the _open_ state groups the _triage_,
-_backlog_, and _prioritised_ stages. By default, DevRev creates _open_, _in_progress_,
+_backlog_, and _prioritized_ stages. By default, DevRev creates _open_, _in_progress_,
 and _closed_ states in your organization.
 
 Let's say you want to add a new stage _needs_pia_ to the _incident_ subtype.
@@ -471,23 +461,9 @@ bound to an _issue_ or _ticket_.
 A stage diagram determines the allowed transitions between stages for a given object.
 For example, _triage_ stage can transition to _backlog_ stage but not vice versa.
 
-Let's create a simple stage diagram for the _incident_ subtype:
+Let's create a stage diagram for the _incident_ subtype:
 
-```mermaid
-graph LR;
-    backlog["Backlog
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/1"]-->in_development["In development
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/2"];
-    backlog["Backlog
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/1"]-->needs_pia["needs_pia
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/3"];
-    in_development["In Development
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/2"]-->completed["Completed
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/4"];
-    needs_pia["Needs PIA
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/3"]-->completed["Completed
-    don:core:dvrv-us-1:devo/11FVC3ScK:stage/4"];
-```
+![Stage Diagram](../img/customization-stage-diagram.png)
 
 ```curl {11}
 curl --location 'https://api.devrev.ai/stages-diagrams.create' \
@@ -593,17 +569,12 @@ Any attempts to update an _incident_ object to the _completed_ stage without pop
 the _PIA_ field are rejected.
 
 Note that `don:core:dvrv-us-1:devo/11FVC3ScK:stage/5` is the ID of the _completed_
-stage. We don't use the stage display name because it is liable to change.
+stage. The stage display name is not used in the expression because it is liable to change.
 
 The supported operators are `==`, `!=`, `>`, `>=`, `<`, `<=`. The `expression` is a
 boolean expression that must return a boolean value.
 
-The `effects` array contains the list of effects of the condition. The `fields` array
-contains the list of fields that are being affected by the condition. The `require`
-field is a boolean field that specifies whether the field must be set for the condition
-to be met.
-
-The following effects are supported:
+The `effects` array contains the list of effects of the condition. The following effects are supported:
 * `require`: Whether the field must be set for the condition to be met.
 * `show`: Whether the field must be shown for the condition to be met.
 * `allowed_values`: The conditional allowed values for the enum type field.

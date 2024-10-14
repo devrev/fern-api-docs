@@ -39,7 +39,7 @@ _issue_ would have all _issue_ fields plus _incident_-specific fields.
 Subtypes are defined in a schema fragment of type `custom_type_fragment`.
 
 ## Customizing a DevRev object
-<Callout intent="success">
+<Callout>
 Let's say you want to track incidents across various environments in your organization.
 </Callout>
 
@@ -86,7 +86,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 }'
 ```
 
-<Callout intent="success">
+<Callout>
 Let's say there was an incident in the Prod environment. The developer working on the
 mitigation can create an _incident_-flavored _issue_ object to track the incident.
 </Callout>
@@ -221,7 +221,7 @@ Schema fragments are immutable. When evolving a fragment:
 The same API endpoint `schemas.custom.set` is used to create and update fragments. The
 API internally figures out how to version and chain the fragments.
 
-<Callout intent="success">
+<Callout>
 Let's say you want to add a new boolean field _customer_impact_ to the _incident_ subtype
 and delete the _regression_ field. The API call for this is shown below:
 </Callout>
@@ -359,7 +359,7 @@ Deprecated fragments aren't listed in the response.
 The fields available in native DevRev objects are called stock fields. For example,
 `priority` is a stock field of _issue_.
 
-<Callout intent="success">
+<Callout>
 Let's say you want to do the following modifications to the priority field in your org:
 
 1. Update the UI display name of the priority field to "Urgency Level" from "Priority".
@@ -453,7 +453,7 @@ A state is a group of stages. For example, the _open_ state groups the _triage_,
 _backlog_, and _prioritized_ stages. By default, DevRev creates _open_, _in_progress_,
 and _closed_ states in your organization.
 
-<Callout intent="success">
+<Callout>
 Let's say you want to add a new stage _needs_pia_ to the _incident_ subtype.
 </Callout>
 
@@ -480,7 +480,7 @@ bound to an _issue_ or _ticket_.
 A stage diagram determines the allowed transitions between stages for a given object.
 For example, _triage_ stage can transition to _backlog_ stage but not vice versa.
 
-<Callout intent="success">
+<Callout>
 Let's create a stage diagram for the _incident_ subtype:
 </Callout>
 
@@ -555,7 +555,7 @@ All objects of the _incident_ subtype now adhere to the stage diagram created ab
 
 ## Dependent fields
 
-<Callout intent="success">
+<Callout>
 Let's say that the developers in your organization tend to forget to add a PIA when
 resolving the incidents. You can make the _PIA_ field required when an _incident_ object
 is moved to the _completed_ stage by adding a dependent field constraint.

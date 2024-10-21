@@ -762,6 +762,8 @@ components:
               $ref: '#/components/schemas/resource'
             scope:
               $ref: '#/components/schemas/enum-value'
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata'
             title:
               type: string
               description: Title of the article.
@@ -4549,6 +4551,25 @@ components:
       enum:
         - last_n_days
         - next_n_days
+    delete-rev-users-personal-data-request:
+      type: object
+      description: Request object to delete a contact's information.
+      properties:
+        email:
+          type: string
+          description: Email of the contact.
+      required:
+        - email
+      title: delete-rev-users-personal-data-request
+    delete-rev-users-personal-data-response:
+      type: object
+      additionalProperties: false
+      description: |
+        Response for the contacts personal data detete request. Response is
+        empty as the process is asynchronous. Upon completion, the user will be
+        notified.
+      title: delete-rev-users-personal-data-response
+      x-go-name: DeleteRevUsersPersonalDataResponseBody
     dev-org-auth-connections-create-request:
       type: object
       description: |
@@ -6949,6 +6970,32 @@ components:
       required:
         - work
       title: event-work-updated
+    export-audit-logs-request:
+      type: object
+      description: Request object to get a log's information.
+      properties:
+        from:
+          type: string
+          description: Time from which logs are to be retrieved.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        to:
+          type: string
+          description: Time till which logs are to be retrieved.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      required:
+        - from
+        - to
+      title: export-audit-logs-request
+    export-audit-logs-response:
+      type: object
+      additionalProperties: false
+      description: |
+        Response for the audit logs export request. Response is empty as the
+        process is asynchronous. Upon completion, the user will be notified.
+      title: export-audit-logs-response
+      x-go-name: ExportAuditLogsResponseBody
     external-identity:
       type: object
       description: External identity of a user.
@@ -7282,6 +7329,25 @@ components:
         - mention
         - reminder
         - update
+    get-rev-users-personal-data-request:
+      type: object
+      description: Request object to get a contact's information.
+      properties:
+        email:
+          type: string
+          description: Email of the contact.
+      required:
+        - email
+      title: get-rev-users-personal-data-request
+    get-rev-users-personal-data-response:
+      type: object
+      additionalProperties: false
+      description: |
+        Response for the contacts personal data export request. Response is
+        empty as the process is asynchronous. Upon completion, the user will be
+        notified.
+      title: get-rev-users-personal-data-response
+      x-go-name: GetRevUsersPersonalDataResponseBody
     group:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -7300,6 +7366,8 @@ components:
               description: Name of the group.
             owner:
               $ref: '#/components/schemas/user-summary'
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata'
           required:
             - is_default
       title: group
@@ -7630,6 +7698,11 @@ components:
               description: Timestamp when the incident was acknowledged.
               example: "2023-01-01T12:00:00.000Z"
               format: date-time
+            actual_close_date:
+              type: string
+              description: Timestamp when the incident was actually resolved.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
             applies_to_parts:
               type: array
               description: Parts to which the incident is applicable to.
@@ -7675,6 +7748,18 @@ components:
               description: The users that own the incident.
               items:
                 $ref: '#/components/schemas/user-summary'
+            pia:
+              type: array
+              description: |
+                The article ids of the Post-Incident Analysis(PIA) of the incident.
+              items:
+                $ref: '#/components/schemas/article-summary'
+            playbooks:
+              type: array
+              description: |
+                The article ids of the playbook(s) associated with the incident.
+              items:
+                $ref: '#/components/schemas/article-summary'
             reported_by:
               $ref: '#/components/schemas/enum-value'
             severity:
@@ -8716,6 +8801,44 @@ components:
         - dev_user
         - rev_user
         - sys_user
+    metric-action-execute-request:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/metric-action-execute-request-action'
+        event_date:
+          type: string
+          description: Timestamp of the event.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        metric:
+          type: string
+          description: |
+            The metric's ID for which the metric action is to be executed.
+        object:
+          type: string
+          description: |
+            The underlying object's ID on which the metric action is to be
+            executed.
+      required:
+        - action
+        - event_date
+        - metric
+        - object
+      title: metric-action-execute-request
+    metric-action-execute-request-action:
+      type: string
+      enum:
+        - complete
+        - pause
+        - restart
+        - resume
+        - start
+    metric-action-execute-response:
+      type: object
+      additionalProperties: false
+      title: metric-action-execute-response
+      x-go-name: MetricActionExecuteResponseBody
     metric-data-point:
       type: object
       properties:
@@ -8812,6 +8935,73 @@ components:
               type: string
               description: Human readable name of the metric.
       title: metric-definition-summary
+    metric-definitions-create-request:
+      type: object
+      properties:
+        applies_to:
+          type: array
+          description: |
+            The list of object types on which the metric can be applied.
+          items:
+            $ref: '#/components/schemas/metric-definition-applies-to'
+        description:
+          type: string
+          description: Description of the purpose and operation of the metric.
+          maxLength: 1024
+        name:
+          type: string
+          description: A unique human readable name of the metric.
+          maxLength: 64
+          minLength: 1
+      required:
+        - applies_to
+        - name
+      title: metric-definitions-create-request
+    metric-definitions-create-response:
+      type: object
+      properties:
+        metric_definition:
+          $ref: '#/components/schemas/metric-definition'
+      required:
+        - metric_definition
+      title: metric-definitions-create-response
+      x-go-name: MetricDefinitionsCreateResponseBody
+    metric-definitions-delete-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the metric definition to be deleted.
+      required:
+        - id
+      title: metric-definitions-delete-request
+    metric-definitions-delete-response:
+      type: object
+      additionalProperties: false
+      description: The response to deleting a metric definition.
+      title: metric-definitions-delete-response
+      x-go-name: MetricDefinitionsDeleteResponseBody
+    metric-definitions-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the metric definition to get.
+        name:
+          type: string
+          description: The unique human readable name of the metric.
+          maxLength: 64
+          minLength: 1
+      title: metric-definitions-get-request
+    metric-definitions-get-response:
+      type: object
+      properties:
+        metric_definition:
+          $ref: '#/components/schemas/metric-definition'
+      required:
+        - metric_definition
+      title: metric-definitions-get-response
+      x-go-name: MetricDefinitionsGetResponseBody
     metric-definitions-list-request:
       type: object
       properties:
@@ -8870,6 +9060,36 @@ components:
         - metric_definitions
       title: metric-definitions-list-response
       x-go-name: MetricDefinitionsListResponseBody
+    metric-definitions-update-request:
+      type: object
+      properties:
+        description:
+          type: string
+          description: |
+            The updated description of the purpose and operation of the metric.
+          maxLength: 1024
+        id:
+          type: string
+          description: The ID of the metric definition to update.
+        name:
+          type: string
+          description: The updated unique human readable name of the metric.
+          maxLength: 64
+          minLength: 1
+        status:
+          $ref: '#/components/schemas/metric-definition-status'
+      required:
+        - id
+      title: metric-definitions-update-request
+    metric-definitions-update-response:
+      type: object
+      properties:
+        metric_definition:
+          $ref: '#/components/schemas/metric-definition'
+      required:
+        - metric_definition
+      title: metric-definitions-update-response
+      x-go-name: MetricDefinitionsUpdateResponseBody
     metrics-data:
       type: object
       properties:
@@ -13813,6 +14033,43 @@ components:
       additionalProperties: false
       title: surveys-submit-response
       x-go-name: SurveysSubmitResponseBody
+    sync-in:
+      type: object
+      description: Information about the sync to DevRev.
+      properties:
+        status:
+          $ref: '#/components/schemas/sync-in-status'
+        sync_date:
+          type: string
+          description: Timestamp when the object was synced in/from DevRev.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        sync_unit:
+          $ref: '#/components/schemas/sync-unit-summary'
+      title: sync-in
+    sync-in-status:
+      type: string
+      description: Status of the sync for the object.
+      enum:
+        - failed
+        - modified
+        - staged
+        - succeeded
+    sync-metadata:
+      type: object
+      description: Mixin for storing sync metadata.
+      properties:
+        external_reference:
+          type: string
+          description: External record URL.
+        last_sync_in:
+          $ref: '#/components/schemas/sync-in'
+        last_sync_out:
+          $ref: '#/components/schemas/sync-out'
+        origin_system:
+          type: string
+          description: Where the record was first created.
+      title: sync-metadata
     sync-metadata-filter:
       type: object
       properties:
@@ -13877,6 +14134,31 @@ components:
       enum:
         - failed
         - succeeded
+    sync-out:
+      type: object
+      description: Information about the sync to DevRev.
+      properties:
+        status:
+          $ref: '#/components/schemas/sync-out-status'
+        sync_date:
+          type: string
+          description: Timestamp when the object was synced in/from DevRev.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        sync_unit:
+          $ref: '#/components/schemas/sync-unit-summary'
+      title: sync-out
+    sync-out-status:
+      type: string
+      description: Status of the sync for the object.
+      enum:
+        - failed
+        - modified
+        - succeeded
+    sync-unit-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: sync-unit-summary
     sys-user:
       allOf:
         - $ref: '#/components/schemas/user-base'
@@ -16247,6 +16529,8 @@ components:
             subtype:
               type: string
               description: Subtype corresponding to the custom type fragment.
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata'
             tags:
               type: array
               description: Tags associated with the object.
@@ -18558,6 +18842,41 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /audit-logs.fetch:
+    post:
+      description: Retrieves audit logs.
+      operationId: export-audit-logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/export-audit-logs-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/export-audit-logs-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - compliance
+      x-fern-audiences:
+        - docs
+        - sdks
   /auth-tokens.create:
     post:
       description: |
@@ -20026,7 +20345,7 @@ paths:
             schema:
               $ref: '#/components/schemas/custom-objects-delete-request'
       responses:
-        "204":
+        "200":
           content:
             application/json:
               schema:
@@ -20038,6 +20357,8 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -23453,6 +23774,184 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /metric-action.execute:
+    post:
+      description: Executes the metric action on the given object.
+      operationId: metric-action-execute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-action-execute-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-action-execute-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /metric-definitions.create:
+    post:
+      description: Creates a custom metric definition
+      operationId: metric-definitions-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-definitions-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-definitions-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /metric-definitions.delete:
+    post:
+      description: Deletes a custom metric definition
+      operationId: metric-definitions-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-definitions-delete-request'
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-definitions-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /metric-definitions.get:
+    get:
+      description: Gets a custom metric definition
+      operationId: metric-definitions-get
+      parameters:
+        - description: The ID of the metric definition to get.
+          explode: false
+          in: query
+          name: id
+          schema:
+            type: string
+        - description: The unique human readable name of the metric.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: string
+            maxLength: 64
+            minLength: 1
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-definitions-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: MetricDefinitionsGetQuery
+    post:
+      description: Gets a custom metric definition
+      operationId: metric-definitions-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-definitions-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-definitions-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
   /metric-definitions.list:
     get:
       description: Lists metric definitions matching a filter.
@@ -23559,6 +24058,41 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /metric-definitions.update:
+    post:
+      description: Updates a custom metric definition
+      operationId: metric-definitions-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-definitions-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-definitions-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
@@ -25244,6 +25778,41 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /rev-users.delete-personal-data:
+    post:
+      description: Deletes data of a contact.
+      operationId: delete-rev-users-personal-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/delete-rev-users-personal-data-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-rev-users-personal-data-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - compliance
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-users.get:
     get:
       description: Returns the Rev user of a Rev organization by its ID.
@@ -25587,6 +26156,41 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /rev-users.personal-data:
+    post:
+      description: Retrieves data of a contact.
+      operationId: get-rev-users-personal-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get-rev-users-personal-data-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-rev-users-personal-data-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - compliance
       x-fern-audiences:
         - docs
         - sdks
@@ -30722,6 +31326,8 @@ tags:
     name: auth-tokens
   - description: Code change interactions.
     name: code-changes
+  - description: Compliance APIs
+    name: compliance
   - description: DevRev conversation interaction.
     name: conversations
   - description: DevRev customization.

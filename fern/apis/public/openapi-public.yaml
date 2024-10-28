@@ -5215,7 +5215,12 @@ components:
           $ref: '#/components/schemas/timeline-entries-update-request-type'
         id:
           type: string
-          description: The ID of the timeline entry to update.
+          description: |
+            The ID of the timeline entry to update.\nTest one line break.\n\nTest two line breaks.
+            - Test bullet 1.
+            - Test bullet 2.
+            - Test bullet 3\n- Test bullet 4
+            Test code `foo` and `[foo, bar]` and `{foo, bar, baz}`.
           example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
       required:
         - id

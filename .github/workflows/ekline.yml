@@ -7,7 +7,7 @@ on:
 permissions: write-all
 jobs:
   test-pr-review:
-    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'No EkLine') == false 
+    if: contains(github.event.label.name, 'EkLine')
     name: runner / EkLine Reviewer (github-pr-review)
     runs-on: ubuntu-latest
     steps:

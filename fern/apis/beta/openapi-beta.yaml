@@ -921,9 +921,9 @@ components:
             - ARTIFACT-12345
           items:
             type: string
-        language:
+        language_iso:
           type: string
-          description: Language of the article.
+          description: ISO code for the language of the article.
         owned_by:
           type: array
           description: The users that own the article.

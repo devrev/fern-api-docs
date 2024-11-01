@@ -18,4 +18,4 @@ jobs:
     - name: Run OpenAPI Diff (from HEAD rev)
       uses: docker://openapitools/openapi-diff:latest 
       with:
-        args: --fail-on-incompatible base/schemas/YOUR-SCHEMA.yaml head/schemas/YOUR-SCHEMA.yaml
+        args: --markdown beta-diff.md base/fern/apis/beta/openapi-beta.yaml head/fern/apis/beta/openapi-beta.yaml

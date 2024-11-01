@@ -1,7 +1,8 @@
-on: [pull_request]
-  paths:
-    - fern/apis/public/openapi-public.yaml
-    - fern/apis/beta/openapi-beta.yaml
+on: 
+  pull_request:
+    paths:
+      - fern/apis/public/openapi-public.yaml
+      - fern/apis/beta/openapi-beta.yaml
 
 name: validate-schema-changes
 jobs:

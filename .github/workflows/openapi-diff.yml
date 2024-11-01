@@ -1,7 +1,6 @@
 on: 
   pull_request:
     paths:
-      - fern/apis/public/openapi-public.yaml
       - fern/apis/beta/openapi-beta.yaml
 
 name: generate-changelog
@@ -19,10 +18,6 @@ jobs:
       with:
         ref: ${{ github.base_ref }}
         path: base   
-    - name: Run OpenAPI Diff for public (from HEAD rev)
-      uses: docker://openapitools/openapi-diff:latest 
-      with:
-        args: --markdown changelog/public-diff.md base/fern/apis/public/openapi-public.yaml head/fern/apis/public/openapi-public.yaml
     - name: Run OpenAPI Diff for beta (from HEAD rev)
       uses: docker://openapitools/openapi-diff:latest 
       with:
@@ -31,4 +26,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: changelog
-        path: changelog/**
+        path: changelog/beta-diff.md

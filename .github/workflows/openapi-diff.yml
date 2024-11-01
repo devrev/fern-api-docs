@@ -22,8 +22,8 @@ jobs:
     - name: Run OpenAPI Diff for public (from HEAD rev)
       uses: docker://openapitools/openapi-diff:latest 
       with:
-        args: --json beta-diff.json base/fern/apis/public/openapi-public.yaml head/fern/apis/public/openapi-public.yaml
+        args: --markdown public-diff.md base/fern/apis/public/openapi-public.yaml head/fern/apis/public/openapi-public.yaml
     - name: Run OpenAPI Diff for beta (from HEAD rev)
       uses: docker://openapitools/openapi-diff:latest 
       with:
-        args: --json beta-diff.json base/fern/apis/beta/openapi-beta.yaml head/fern/apis/beta/openapi-beta.yaml
+        args: --markdown beta-diff.md base/fern/apis/beta/openapi-beta.yaml head/fern/apis/beta/openapi-beta.yaml

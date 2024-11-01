@@ -4,9 +4,9 @@ on:
       - fern/apis/public/openapi-public.yaml
       - fern/apis/beta/openapi-beta.yaml
 
-name: validate-schema-changes
+name: generate-changelog
 jobs:
-  detect-breaking-changes: 
+  get-diff: 
     runs-on: ubuntu-latest
     steps: 
     - name: Check out HEAD rev
@@ -26,4 +26,4 @@ jobs:
     - name: Run OpenAPI Diff for beta (from HEAD rev)
       uses: docker://openapitools/openapi-diff:latest 
       with:
-        args: --markdown beta-diff.md base/fern/apis/beta/openapi-beta.yaml head/fern/apis/beta/openapi-beta.yaml
+        args: --json beta-diff.json base/fern/apis/beta/openapi-beta.yaml head/fern/apis/beta/openapi-beta.yaml

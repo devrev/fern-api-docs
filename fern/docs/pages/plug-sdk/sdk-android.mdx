@@ -1,1 +1,54 @@
-# Android SDKs
+# Integrate PLuG SDKs with your Android app 
+
+This section describes the process of integrating PLuG using the DevRev SDK with your Android app.
+
+## Requirements
+
+- Android Studio 2022.1.1 or later
+- Android Gradle Plugin version 7.4 or later
+- Gradle version 7.6 or later
+- Minimum Android SDK 24
+
+## Integration
+
+To integrate the latest version of our SDK into your app, follow these steps:
+
+<Tabs>
+<Tab title="Kotlin">
+
+1. Add the following dependencies to your app's `build.gradle.kts` file to get the latest version of our SDK:
+
+```kotlin
+dependencies {
+    implementation("ai.devrev.sdk:devrev-sdk:<version>")
+}
+```
+2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle.kts` file.
+```kotlin
+repositories {
+    mavenCentral()
+}
+```
+After completing these steps in your `build.gradle.kts` Kotlin script, you should be able to import and use the DevRev SDK in your Android application.
+
+</Tab>
+<Tab title="Groovy">
+
+1. Add the following dependencies to your app's `build.gradle` file to get the latest version of our SDK:
+
+```groovy
+dependencies {
+    implementation 'ai.devrev.sdk:devrev-sdk:<version>'
+}
+```
+
+2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle` file.
+```groovy
+repositories {
+    mavenCentral()
+}
+```
+After completing these steps in your `build.gradle` Groovy script, you should be able to import and use the DevRev SDK in your Android application.
+
+</Tab>
+</Tabs>

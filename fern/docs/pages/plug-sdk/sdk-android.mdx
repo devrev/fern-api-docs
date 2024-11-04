@@ -69,6 +69,54 @@ DevRev.INSTANCE.configure(Context context, String appId);
 ```
   </Tab>
 </Tabs>
-3. To configure the SDK, you need to call the following method inside your Application class:
+3. To configure the SDK, you need to call the following method inside your `Application` class:
+**NEED SYNTAX**
 
+<Callout intent="note">
+If you don’t have a custom `Application` class, create one as shown below.
+</Callout>
 
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+import ai.devrev.sdk.DevRev
+
+class FooApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        DevRev.configure(
+            context = this,
+            appId = "<APP_ID>"
+        )
+    }
+}
+```
+  </Tab>
+  <Tab title="Java">
+```java
+import ai.devrev.sdk.DevRev;
+
+public class FooApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        DevRev.INSTANCE.configure(
+            this,
+            "<APP_ID>"
+        );
+    }
+}
+```
+  </Tab>
+</Tabs>
+
+4. In the `onCreate` method of your `Application`, configure the DevRev SDK with the required parameters using the credentials obtained earlier.
+5. Ensure that the custom application is specified in the `AndroidManifest.xml`, as shown below:
+
+```xml
+<application
+    android:name=".FooApplication">
+</application>
+```

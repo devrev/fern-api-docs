@@ -211,3 +211,7 @@ navigation:
         path: ../docs/pages/upgrades.mdx
       - page: Code Samples
         path: ../docs/pages/examples/samples.mdx
+  - section: Changelog
+    contents:
+      - page: October 25, 2024
+        path: ../docs/pages/changelog/2024-10-25-public.mdx

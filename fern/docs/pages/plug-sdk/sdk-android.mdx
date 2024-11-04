@@ -52,3 +52,23 @@ After completing these steps in your `build.gradle` Groovy script, you should be
 
 </Tab>
 </Tabs>
+
+## Set up the DevRev SDK
+
+1. In DevRev, go to **Settings** > **PLuG settings** to obtain **Your unique App ID** (referred to as `supportID` in the code).
+2. After obtaining the credentials, you can configure the DevRev SDK in your app. The SDK will be ready for use once you execute the configuration method.
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.configure(context: Context, appId: String)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRev.INSTANCE.configure(Context context, String appId);
+```
+  </Tab>
+</Tabs>
+3. To configure the SDK, you need to call the following method inside your Application class:
+
+

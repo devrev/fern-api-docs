@@ -225,3 +225,61 @@ DevRevExtKt.showSupport(DevRev.INSTANCE, context);
 ```    
   </Tab>
 </Tabs>
+
+The DevRev SDK also provides a support button, which can be integrated into your application. To include it on the current screen, add the following code to your XML layout:
+
+```xml
+<ai.devrev.sdk.plug.view.PlugFloatingActionButton
+    android:id="@+id/plug_fab"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+```
+The support button can be customized using default parameters, enabling you to tailor its appearance to your application's design.
+
+```kotlin
+android:src="@your_drawable_here"
+```
+and
+
+```kotlin
+android:backgroundTint="@your_background_color"
+```
+
+At this stage, your app should be fully configured to utilize all functionalities of the DevRev PLuG SDK. Pressing the support button will direct the user to the chat interface, enabling effective interaction and support.
+
+## Analytics
+
+The DevRev SDK allows you to send custom analytic events by using a name and a string hashmap. You can track these events using the following function:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.trackEvent(name: String, properties: HashMap<String, String>)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevAnalyticsExtKt.trackEvent(DevRev instance, String name, HashMap<String, String> properties);
+```
+  </Tab>
+</Tabs>
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.trackEvent(name = "open-message-screen", properties = {"id": "foo-bar-1337"})
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevAnalyticsExtKt.trackEvent(DevRev.INSTANCE, "open-message-screen", new HashMap<>().put("id", "foo-bar-1337"));
+```
+  </Tab>
+</Tabs>
+
+

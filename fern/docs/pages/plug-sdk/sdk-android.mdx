@@ -324,3 +324,51 @@ If session recording was disabled for the user using the `stopAllMonitoring()` m
 This feature only stores a monitoring permission flag and does not provide any user interface or dialog.
 </Callout>
 
+## Session recording
+
+You can enable session recording to capture user interactions with your app.
+
+<Callout intent="note">
+The session recording feature is opt-out and is enabled by default.
+</Callout>
+
+Here are the available methods to help you control the session recording feature:
+
+| Kotlin                   | Java                                                               | Action                                                    |
+|--------------------------|--------------------------------------------------------------------|-----------------------------------------------------------|
+| DevRev.startRecording()  | DevRevObservabilityExtKt.startRecording(DevRev.INSTANCE, context); | Starts the session recording.                             |
+| DevRev.stopRecording()   | DevRevObservabilityExtKt.stopRecording(DevRev.INSTANCE);           | Ends the session recording and uploads it to the portal. |
+| DevRev.pauseRecording()  | DevRevObservabilityExtKt.pauseRecording(DevRev.INSTANCE);          | Pauses the ongoing session recording.                     |
+| DevRev.resumeRecording() | DevRevObservabilityExtKt.resumeRecording(DevRev.INSTANCE);         | Resumes a paused session recording.                       |
+
+## Session properties
+
+You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a dictionary of string values.
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.addSessionProperties(properties: HashMap<String, Any>)
+```    
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.addSessionProperties(DevRev.INSTANCE, HashMap<String, Object> properties);
+```    
+  </Tab>
+</Tabs>
+
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.clearSessionProperties()
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.clearSessionProperties(DevRev.INSTANCE);
+```
+  </Tab>
+</Tabs>

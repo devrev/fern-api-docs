@@ -539,3 +539,98 @@ DevRev.INSTANCE.unregisterDevice(
 </Tabs>
 
 The method requires the device identifier, which should be the same as the one used when registering the device.
+
+### Handle push notifications
+
+The DevRev SDK currently does not support automatic handling of push notifications. To open the PLuG chat and manage navigation internally, you must pass the message payload received in the notification to the SDK.
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.processPushNotification(
+    context: Context,
+    userInfo: String
+)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRev.INSTANCE.processPushNotification(
+    Context context,
+    String userInfo
+);
+```
+  </Tab>
+</Tabs>
+
+To extract the notification payload, do the following:
+
+1. In Firebase Cloud Messaging (FCM), when a push notification is received, it triggers the `onMessageReceived` function in your `FirebaseMessagingService` class.
+
+2. This function receives a `RemoteMessage` object as a parameter, which contains the notification data.
+
+3. The `RemoteMessage` object has a `data` property, which is a map containing key-value pairs of the notification payload.
+
+4. To extract a specific piece of data from the payload, use the key to access the value in the data map.
+
+5. To retrieve the "message" from the payload:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+val message = remoteMessage.data["message"]
+```
+  </Tab>
+  <Tab title="Java">
+```java
+String messageData = remoteMessage.getData().get("message");
+```
+ </Tab>
+</Tabs>
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+class MyFirebaseMessagingService: FirebaseMessagingService {
+    // ...
+  
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        // ...
+        val messageData = remoteMessage.data["message"]
+        DevRev.processPushNotification(messageData)
+    }
+}
+```
+  </Tab>
+  <Tab title="Java">
+```java
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    // ...
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        // ...
+        String messageData = remoteMessage.getData().get("message");
+        DevRev.processPushNotification(messageData);
+    }
+}
+```
+ </Tab>
+</Tabs>
+
+## Sample app
+
+A sample app demonstrating functionality and XML implementation is included in this repository **NEED REPO LINK** . Users are encouraged to run it before integrating the DevRev SDK into their application.
+
+## Troubleshooting
+
+- **Issue**: Encountering problems with DevRev SDK integration.   
+    **Solution**: Verify the correct SDK dependency setup in the project. Ensure `mavenCentral` is accessible from the IDE, and confirm accurate detection of the selected DevRev PLuG SDK version.
+
+- **Issue**: The `showSupport()` function or XML button is unresponsive.   
+    **Solution**: Confirm that user identification is performed before using the `showSupport()` function or XML button.
+
+- **Issue**: Incorrect operation due to `App ID` and `secret` misconfiguration.   
+    **Solution**: Ensure correct functionality by double-checking that both `App ID` and `secret` values are accurately configured in your application or sample app.

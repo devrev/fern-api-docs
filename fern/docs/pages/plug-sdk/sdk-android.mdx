@@ -120,3 +120,51 @@ public class FooApplication extends Application {
     android:name=".FooApplication">
 </application>
 ```
+
+## Identification
+
+To utilize certain features of the DevRev SDK, user identification is required. You can select from the following methods to identify users within your application:
+
+### Anonymous identification
+
+The anonymous identification method allows you to create an anonymous user with an optional or random user identifier, ensuring that no other data is stored or associated with the user.
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.identifyAnonymousUser(
+    userId: String
+)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRev.INSTANCE.identifyAnonymousUser(
+    String userId
+);
+```
+  </Tab>
+</Tabs>
+
+### Unverified identification
+
+The unverified identification method identifies users with a unique identifier, but it does not verify their identity with the DevRev backend.
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.identifyUnverifiedUser(
+    indentity: Identity
+)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRev.INSTANCE.identifyUnverifiedUser(
+    Identity identity
+);
+```   
+  </Tab>
+</Tabs>
+
+The function accepts the `Identity` object, where the user identifier (`userId`) is the only required property; all other properties are optional.

@@ -282,4 +282,45 @@ DevRevAnalyticsExtKt.trackEvent(DevRev.INSTANCE, "open-message-screen", new Hash
   </Tab>
 </Tabs>
 
+## Session analytics
+
+The DevRev SDK offers session analytics features to help you understand how users interact with your app.
+
+### Opting In/Out
+
+End users can opt in or out of the session analytics feature, enabling them to control whether their interactions are tracked for analytics.
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.stopAllMonitoring()
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.stopAllMonitoring(DevRev.INSTANCE);
+```
+  </Tab>
+</Tabs>
+
+This method terminates and deletes the current session recording and also disables future session recording by our SDK for this user.
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.resumeAllMonitoring()
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.resumeAllMonitoring(DevRev.INSTANCE);
+```
+  </Tab>
+</Tabs>
+
+If session recording was disabled for the user using the `stopAllMonitoring()` method, you can enable recording at runtime with this method.
+
+<Callout intent="note">
+This feature only stores a monitoring permission flag and does not provide any user interface or dialog.
+</Callout>
 

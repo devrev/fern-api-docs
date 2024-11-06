@@ -463,3 +463,79 @@ DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, "profile-screen");
 ```
   </Tab>
 </Tabs>
+
+## Push notifications
+
+You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
+
+The DevRev backend sends push notifications to your app to alert users about new messages in the PLuG support chat.
+
+You need to ensure that your Android app is configured to receive push notifications. To set it up, follow the [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/android/client).
+
+### Register for push notifications
+
+<Callout intent="note">
+Push notifications require SDK configuration and user identification, whether unverified or anonymous, to ensure delivery to the correct user.
+</Callout>
+
+The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.registerDeviceToken(
+  context: Context,
+  deviceId: String,
+  deviceToken: String
+)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRev.INSTANCE.registerDeviceToken(
+  Context context,
+  String deviceId,
+  String deviceToken
+);
+```
+  </Tab>
+</Tabs>
+
+The method requires a device identifier that persists across device restarts and app launches. This could be a Firebase installation ID, Android ID, or a unique system identifier. To obtain the device token for Firebase Cloud Messaging, follow these steps:
+1. Use the `FirebaseMessaging` object.
+2. Call the `firebaseMessaging.token.await()` method.
+
+This method will generate and return the device token.
+
+```kotlin
+val firebaseMessaging = FirebaseMessaging.getInstance()
+val token = firebaseMessaging.token.await()
+// Use the token as needed
+```
+
+### Unregister from push notifications
+
+If your app no longer needs to receive push notifications, you can unregister the device. 
+
+Use the following method to unregister the device:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.unregisterDevice(
+  context: Context, 
+  deviceId: String
+)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRev.INSTANCE.unregisterDevice(
+  Context context, 
+  String deviceId
+);
+```
+  </Tab>
+</Tabs>
+
+The method requires the device identifier, which should be the same as the one used when registering the device.

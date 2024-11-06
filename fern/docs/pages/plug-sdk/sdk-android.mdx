@@ -125,6 +125,10 @@ public class FooApplication extends Application {
 
 To utilize certain features of the DevRev SDK, user identification is required. You can select from the following methods to identify users within your application:
 
+<Callout intent="note">
+The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(context, appID)` method.
+</Callout>
+
 ### Anonymous identification
 
 The anonymous identification method allows you to create an anonymous user with an optional or random user identifier, ensuring that no other data is stored or associated with the user.
@@ -142,6 +146,23 @@ DevRev.identifyAnonymousUser(
 DevRev.INSTANCE.identifyAnonymousUser(
     String userId
 );
+```
+  </Tab>
+</Tabs>
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+// Identify an anonymous user without a user identifier.
+DevRev.identifyAnonymousUser("abcd1234")
+```
+  </Tab>
+  <Tab title="Java">
+```java
+// Identify an anonymous user without a user identifier.
+DevRev.INSTANCE.identifyAnonymousUser("abcd1234");
 ```
   </Tab>
 </Tabs>
@@ -168,3 +189,39 @@ DevRev.INSTANCE.identifyUnverifiedUser(
 </Tabs>
 
 The function accepts the `Identity` object, where the user identifier (`userId`) is the only required property; all other properties are optional.
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+// Identify an unverified user using their email address as the user identifier.
+DevRev.identifyUnverifiedUser(Identity(userId = "foo@example.org"))
+```
+  </Tab>
+  <Tab title="Java">
+```java
+// Identify an unverified user using their email address as the user identifier.
+DevRev.identifyUnverifiedUser(
+        new Identity("foo@example.org", null, null, null, null, null)
+);
+```
+  </Tab>
+</Tabs>
+
+## PLuG support chat
+
+Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. To open the chat dialog, your application should use the `showSupport` API, as shown in the following example:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.showSupport(context: Context)
+```    
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevExtKt.showSupport(DevRev.INSTANCE, context);
+```    
+  </Tab>
+</Tabs>

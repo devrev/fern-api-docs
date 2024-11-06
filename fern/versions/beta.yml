@@ -15,7 +15,3 @@ navigation:
         path: ../docs/pages/customization.mdx
       - page: Create accounts and contacts in DevRev
         path: ../docs/pages/create-accounts.mdx
-  - section: Changelog
-    contents:
-      - page: October 25, 2024
-        path: ../docs/pages/changelog/2024-10-25-beta.mdx

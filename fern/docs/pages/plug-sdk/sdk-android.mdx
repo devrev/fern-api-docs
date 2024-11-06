@@ -372,3 +372,94 @@ DevRevObservabilityExtKt.clearSessionProperties(DevRev.INSTANCE);
 ```
   </Tab>
 </Tabs>
+
+## Timers
+
+The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
+
+The mechanism utilizes balanced start and stop methods, both of which accept a timer name and an optional dictionary of properties.
+
+To start a timer, use the following method:
+
+<Tabs>
+  <Tab title="Kotlin">
+ ```kotlin
+DevRev.startTimer(name: String, properties: HashMap<String, String>)
+```  
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, String name, HashMap<String, String> properties);
+```    
+  </Tab>
+</Tabs>
+
+To balance it with a stop method, use the following:
+
+<Tabs>
+  <Tab title="Kotlin">
+ ```kotlin
+DevRev.endTimer(name: String, properties: HashMap<String, String>)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, String name, HashMap<String, String> properties);
+```
+  </Tab>
+</Tabs>
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.startTimer("response-time", properties: {"id": "foo-bar-1337"})
+
+// Perform the task that you want to measure.
+
+DevRev.endTimer("response-time", properties: {"id": "foo-bar-1337"})
+``` 
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
+
+// Perform the task that you want to measure.
+        
+DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
+```
+  </Tab>
+</Tabs>
+
+## Screen tracking
+
+The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although activities are automatically tracked, you can manually track screens or fragments using the following method:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.trackScreenName(screenName: String)
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, String screenName);
+```
+  </Tab>
+</Tabs>
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+```kotlin
+DevRev.trackScreenName("profile-screen")
+```
+  </Tab>
+  <Tab title="Java">
+```java
+DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, "profile-screen");
+```
+  </Tab>
+</Tabs>

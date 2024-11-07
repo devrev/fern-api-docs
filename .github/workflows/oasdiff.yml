@@ -27,13 +27,15 @@ jobs:
       with:
         base: 'base/fern/apis/public/openapi-public.yaml'
         revision: 'head/fern/apis/public/openapi-public.yaml'
-        output-to-file: 'changelog/public-diff.yaml'
+        format: markdown
+        output-to-file: 'changelog/public-diff.md'
     - name: Running beta OpenAPI Spec diff action
       uses: oasdiff/oasdiff-action/diff@main
       with:
         base: 'base/fern/apis/beta/openapi-beta.yaml'
         revision: 'head/fern/apis/beta/openapi-beta.yaml'  
-        output-to-file: 'changelog/beta-diff.yaml'
+        format: markdown
+        output-to-file: 'changelog/beta-diff.md'
     - name: Archive changelogs
       uses: actions/upload-artifact@v4
       with:

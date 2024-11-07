@@ -214,7 +214,7 @@ To opt back in, use the following method:
 DevRev.resumeAllMonitoring()
 ```
 
-## Session recording
+### Session recording
 
 You can enable session recording to capture user interactions with your app.
 
@@ -231,7 +231,7 @@ The session recording feature includes the following methods to control the reco
 |`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
 |`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
 
-## Session properties
+### Session properties
 
 You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a dictionary of string values.
 
@@ -245,7 +245,7 @@ To clear the session properties in scenarios such as user logout or when the ses
 DevRev.clearSessionProperties()
 ```
 
-## Masking sensitive data
+### Masking sensitive data
 
 To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as text fields, text views, and web views are automatically masked.
 
@@ -261,7 +261,7 @@ If any previously masked views need to be unmasked, you can use the following me
 DevRev.unmarkSensitiveViews(_:)
 ```
 
-## Timers
+### Timers
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
 
@@ -289,7 +289,7 @@ DevRev.startTimer("response-time", properties: ["id": "foo-bar-1337"])
 DevRev.stopTimer("response-time", properties: ["id": "foo-bar-1337"])
 ```
 
-## Screen tracking
+### Screen tracking
 
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although activities are automatically tracked, you can manually track screens using the following method:
 

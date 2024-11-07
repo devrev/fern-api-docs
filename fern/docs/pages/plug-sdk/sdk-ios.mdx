@@ -262,3 +262,140 @@ If any previously masked views need to be unmasked, you can use the following me
 ```swift
 DevRev.unmarkSensitiveViews(_:)
 ```
+
+## Timers
+
+The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
+
+The mechanism utilizes balanced start and stop methods, both of which accept a timer name and an optional dictionary of properties.
+
+To start a timer, use the following method:
+
+```swift
+DevRev.startTimer(_:properties:)
+```
+
+To balance it with a stop method, use the following:
+
+```swift
+DevRev.stopTimer(_:properties:)
+```
+
+For example:
+
+```swift
+DevRev.startTimer("response-time", properties: ["id": "foo-bar-1337"])
+
+// Perform the task that you want to measure.
+
+DevRev.stopTimer("response-time", properties: ["id": "foo-bar-1337"])
+```
+
+## Screen tracking
+
+The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although activities are automatically tracked, you can manually track screens using the following method:
+
+```swift
+DevRev.trackScreenName(_:)
+```
+
+For example:
+
+```swift
+DevRev.trackScreenName("profile-screen")
+```
+
+## Push notifications
+
+You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
+
+The DevRev backend sends push notifications to your app to alert users about new messages in the PLuG support chat.
+
+### Configuration
+
+To receive push notifications, you need to configure your DevRev organization by following the Push Notifications Integration guide (**TBD ITEM**).
+
+You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNS).
+
+### Register for push notifications
+
+<Callout intent="note">
+Push notifications require SDK configuration and user identification, whether unverified or anonymous, to ensure delivery to the correct user.
+</Callout>
+
+The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
+
+```swift
+DevRev.registerDeviceToken(_:deviceID:)
+```
+
+The method requires a device identifier, which can either be an identifier unique to your system or the Apple-provided Vendor Identifier (IDFV). Typically, registration is called from the `AppDelegate.application(_:didRegisterForRemoteNotificationsWithDeviceToken:)` method.
+
+For example:
+
+```swift
+func application(
+	_ application: UIApplication,
+	didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+) {
+	guard
+		let deviceID = UIDevice.current.identifierForVendor?.uuidString
+	else {
+		return
+	}
+
+	Task {
+		await DevRev.registerDeviceToken(
+			deviceToken,
+			deviceID: deviceID
+		)
+	}
+}
+```
+
+### Unregister from push notifications
+
+If your app no longer needs to receive push notifications, you can unregister the device.
+
+Use the following method to unregister the device:
+
+```swift
+DevRev.unregisterDevice(_:)
+```
+
+This method requires the device identifier, which should be the same as the one used during registration. It is recommended to place this method after calling `UIApplication.unregisterForRemoteNotifications()` in your app.
+
+For example:
+
+```swift
+UIApplication.shared.unregisterForRemoteNotifications()
+
+Task {
+	guard
+		let deviceID = UIDevice.current.identifierForVendor?.uuidString
+	else {
+		return
+	}
+
+	await DevRev.unregisterDevice(deviceID)
+}
+```
+
+### Handle push notifications
+
+To properly handle push notifications, implement the following method, typically in either the `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)` or `UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`:
+
+```swift
+DevRev.processPushNotification(_:)
+```
+
+For example:
+
+```swift
+func userNotificationCenter(
+	_ center: UNUserNotificationCenter,
+	didReceive response: UNNotificationResponse
+) async {
+	await DevRev.processPushNotification(response.notification.request.content.userInfo)
+}
+```

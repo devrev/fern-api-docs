@@ -77,9 +77,6 @@ navigation:
           - page: Integrate PLuG SDKs with your Android app
             slug: sdk-android
             path: ../docs/pages/plug-sdk/sdk-android.mdx
-          - page: Integrate PLuG with your iOS app
-            slug: sdk-ios
-            path: ../docs/pages/plug-sdk/sdk-ios.mdx
           - page: Install the Web SDK
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx

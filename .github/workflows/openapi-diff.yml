@@ -22,14 +22,16 @@ jobs:
     - name: Create dir
       run: |
         mkdir changelog
-    - name: Run OpenAPI Diff for public (from HEAD rev)
-      uses: docker://openapitools/openapi-diff:latest 
+    - name: Running public OpenAPI Spec diff action
+      uses: oasdiff/oasdiff-action/diff@main
       with:
-        args: --markdown changelog/public-diff.md --json changelog/public-diff.json base/fern/apis/public/openapi-public.yaml head/fern/apis/public/openapi-public.yaml
-    - name: Run OpenAPI Diff for beta (from HEAD rev)
-      uses: docker://openapitools/openapi-diff:latest 
+        base: 'base/fern/apis/public/openapi-public.yaml'
+        revision: 'head/fern/apis/public/openapi-public.yaml'
+    - name: Running beta OpenAPI Spec diff action
+      uses: oasdiff/oasdiff-action/diff@main
       with:
-        args: --markdown changelog/beta-diff.md --json changelog/beta-diff.json base/fern/apis/beta/openapi-beta.yaml head/fern/apis/beta/openapi-beta.yaml
+        base: 'base/fern/apis/beta/openapi-beta.yaml'
+        revision: 'head/fern/apis/beta/openapi-beta.yaml'  
     - name: Archive changelogs
       uses: actions/upload-artifact@v4
       with:

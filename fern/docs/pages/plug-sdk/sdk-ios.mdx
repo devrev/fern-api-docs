@@ -21,7 +21,7 @@ To integrate the DevRev SDK into your project using Swift Package Manager (SPM):
 1. Open your project in Xcode and navigate to the **Add Package Dependency**.
 2. Enter the DevRev SDK URL under **Enter Package URL**:
 - For HTTPS: https://github.com/devrev/devrev-sdk-ios
-- For SSH: git@github.com:devrev/devrev-sdk-ios.git
+- For SSH: git@github.com:devrev/devrev-sdk-ios.git **RECONFIRM THIS**
 3. In the **Build Phases** section of your app target, locate the **Link Binary With Libraries** phase and confirm that `DevRevSDK` is linked. If not, add it by clicking **+** and selecting `DevRevSDK` from the list.
 
 Now you should be able to import and use the DevRev SDK in your project.
@@ -200,7 +200,7 @@ await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "foo-bar
 
 The DevRev SDK offers session analytics features to help you understand how users interact with your app.
 
-### Opt In/Out
+### Opt in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 

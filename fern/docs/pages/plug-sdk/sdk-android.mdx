@@ -322,7 +322,7 @@ If session recording was disabled for the user using the `stopAllMonitoring()` m
 This feature only stores a monitoring permission flag and does not provide any user interface or dialog.
 </Callout>
 
-## Session recording
+### Session recording
 
 You can enable session recording to capture user interactions with your app.
 
@@ -339,7 +339,7 @@ Here are the available methods to help you control the session recording feature
 | DevRev.pauseRecording()  | DevRevObservabilityExtKt.pauseRecording(DevRev.INSTANCE);          | Pauses the ongoing session recording.                     |
 | DevRev.resumeRecording() | DevRevObservabilityExtKt.resumeRecording(DevRev.INSTANCE);         | Resumes a paused session recording.                       |
 
-## Session properties
+### Session properties
 
 You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a dictionary of string values.
 
@@ -371,7 +371,7 @@ DevRevObservabilityExtKt.clearSessionProperties(DevRev.INSTANCE);
   </Tab>
 </Tabs>
 
-## Timers
+### Timers
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
 
@@ -430,7 +430,7 @@ DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, "response-time", new HashMap<
   </Tab>
 </Tabs>
 
-## Screen tracking
+### Screen tracking
 
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although activities are automatically tracked, you can manually track screens or fragments using the following method:
 

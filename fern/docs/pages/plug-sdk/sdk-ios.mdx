@@ -106,3 +106,159 @@ DevRev.updateUser(_:)
 ```
 
 This function accepts the `DevRev.Identity` structure.
+
+<Callout intent="note">
+The identification functions are asynchronous. Ensure you wrap them in a `Task` when calling from synchronous contexts.
+</Callout>
+
+For example:
+
+```swift
+// Identify an anonymous user without a user identifier.
+await DevRev.identifyAnonymousUser()
+
+// Identify an unverified user using their email address as the user identifier.
+await DevRev.identifyUnverifiedUser(Identity(userID: "foo@example.org"))
+
+// Update the user's information.
+await DevRev.updateUser(Identity(organizationID: "foo-bar-1337"))
+```
+
+## PLuG support chat
+
+### UIKit
+
+The support chat feature can be displayed either as a modal screen from a specific view controller or pushed onto a navigation stack. 
+
+To show the support chat screen in your app, you can use the following overloaded method:
+
+```swift
+await DevRev.showSupport(from:isAnimated:)
+```
+
+- When a `UIViewController` is passed as the `from` parameter, the screen is shown modally.
+
+- When a `UINavigationController` is passed as the `from` parameter, the screen is pushed onto the navigation stack.
+
+If you want to display the support chat screen from the top-most view controller, use the following method:
+
+```swift
+await DevRev.showSupport(isAnimated:)
+```
+
+For example:
+
+```swift
+/// Push the support chat screen to a navigation stack.
+await DevRev.showSupport(from: mainNavigationController)
+
+/// Show the support chat screen modally from a specific view controller.
+await DevRev.showSupport(from: settingsViewController)
+
+/// Show the support chat screen from the top-most view controller, without an animation.
+await DevRev.showSupport(isAnimated: false)
+```
+### SwiftUI
+
+To display the support chat screen in a SwiftUI app, you can use the following view:
+
+```swift
+DevRev.supportView
+```
+
+#### New conversation closure
+
+You can receive a callback when a new conversation is created by using the following:
+
+```swift
+DevRev.conversationCreatedCompletion
+```
+
+This allows your app to access the ID of the newly created conversation.
+
+For example:
+
+```swift
+DevRev.conversationCreatedCompletion = { conversationID in
+	print("A new conversation has been created: \(conversationID).")
+}
+```
+
+ ## Analytics
+
+The DevRev SDK allows you to send custom analytic events by using a name and a string dictionary. You can track these events using the following function:
+
+```swift
+DevRev.trackEvent(name:properties:)
+```
+
+For example:
+
+```swift
+await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "foo-bar-1337"])
+```
+
+## Session analytics
+
+The DevRev SDK offers session analytics features to help you understand how users interact with your app.
+
+### Opt In/Out
+
+Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
+
+```swift
+DevRev.stopAllMonitoring()
+```
+
+To opt back in, use the following method:
+
+```swift
+DevRev.resumeAllMonitoring()
+```
+
+## Session recording
+
+You can enable session recording to capture user interactions with your app.
+
+<Callout intent="note">
+The session recording feature is opt-in and is enabled by default.
+</Callout>
+
+The session recording feature includes the following methods to control the recording:
+
+| Method                                                               | Action                                                    |
+|--------------------------------------------------------------------|-----------------------------------------------------------|
+|`DevRev.startRecording()`   | Starts the session recording.                             |
+|`DevRev.stopRecording()`    | Ends the session recording and uploads it to the portal. |
+|`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
+|`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
+
+## Session properties
+
+You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a dictionary of string values.
+
+```swift
+DevRev.addSessionProperties(_:)
+```
+
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+
+```swift
+DevRev.clearSessionProperties()
+```
+
+## Masking sensitive data
+
+To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as text fields, text views, and web views are automatically masked.
+
+While the auto-masking feature may be sufficient for most situations, you can manually mark additional views as sensitive using the following method:
+
+```swift
+DevRev.markSensitiveViews(_:)
+```
+
+If any previously masked views need to be unmasked, you can use the following method:
+
+```swift
+DevRev.unmarkSensitiveViews(_:)
+```

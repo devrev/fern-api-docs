@@ -20,13 +20,13 @@ To integrate the latest version of our SDK into your app, follow these steps:
 dependencies {
     implementation("ai.devrev.sdk:devrev-sdk:<version>")
 }
-```
+   ```
 2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle.kts` file.
-```kotlin
+   ```kotlin
 repositories {
     mavenCentral()
 }
-```
+   ```
 After completing these steps in your `build.gradle.kts` Kotlin script, you should be able to import and use the DevRev SDK in your Android application.
 
 </Tab>
@@ -34,18 +34,18 @@ After completing these steps in your `build.gradle.kts` Kotlin script, you shoul
 
 1. Add the following dependencies to your app's `build.gradle` file to get the latest version of our SDK:
 
-```groovy
+   ```groovy
 dependencies {
     implementation 'ai.devrev.sdk:devrev-sdk:<version>'
 }
-```
+   ```
 
 2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle` file.
-```groovy
+   ```groovy
 repositories {
     mavenCentral()
 }
-```
+   ```
 After completing these steps in your `build.gradle` Groovy script, you should be able to import and use the DevRev SDK in your Android application.
 
 </Tab>
@@ -57,14 +57,14 @@ After completing these steps in your `build.gradle` Groovy script, you should be
 2. After obtaining the credentials, you can configure the DevRev SDK in your app. The SDK will be ready for use once you execute the configuration method.
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
+   ```kotlin
 DevRev.configure(context: Context, appId: String)
-```
+   ```
   </Tab>
   <Tab title="Java">
-```java
+   ```java
 DevRev.INSTANCE.configure(Context context, String appId);
-```
+   ```
   </Tab>
 </Tabs>
 3. To configure the SDK, you need to call the following method inside your `Application` class:
@@ -76,7 +76,7 @@ If you don’t have a custom `Application` class, create one as shown below.
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
+   ```kotlin
 import ai.devrev.sdk.DevRev
 
 class FooApplication : Application() {
@@ -89,10 +89,10 @@ class FooApplication : Application() {
         )
     }
 }
-```
+   ```
   </Tab>
   <Tab title="Java">
-```java
+   ```java
 import ai.devrev.sdk.DevRev;
 
 public class FooApplication extends Application {
@@ -106,18 +106,18 @@ public class FooApplication extends Application {
         );
     }
 }
-```
+   ```
   </Tab>
 </Tabs>
 
 4. In the `onCreate` method of your `Application`, configure the DevRev SDK with the required parameters using the credentials obtained earlier.
 5. Ensure that the custom application is specified in the `AndroidManifest.xml`, as shown below:
 
-```xml
+   ```xml
 <application
     android:name=".ExampleApplication">
 </application>
-```
+   ```
 
 ## Identification
 
@@ -133,18 +133,18 @@ The anonymous identification method allows you to create an anonymous user with 
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
+   ```kotlin
 DevRev.identifyAnonymousUser(
     userId: String
 )
-```
+   ```
   </Tab>
   <Tab title="Java">
-```java
+   ```java
 DevRev.INSTANCE.identifyAnonymousUser(
     String userId
 );
-```
+   ```
   </Tab>
 </Tabs>
 
@@ -152,16 +152,16 @@ For example:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
+   ```kotlin
 // Identify an anonymous user without a user identifier.
 DevRev.identifyAnonymousUser("abcd1234")
-```
+   ```
   </Tab>
   <Tab title="Java">
-```java
+   ```java
 // Identify an anonymous user without a user identifier.
 DevRev.INSTANCE.identifyAnonymousUser("abcd1234");
-```
+   ```
   </Tab>
 </Tabs>
 
@@ -171,18 +171,18 @@ The unverified identification method identifies users with a unique identifier, 
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
+   ```kotlin
 DevRev.identifyUnverifiedUser(
     indentity: Identity
 )
-```
+   ```
   </Tab>
   <Tab title="Java">
-```java
+   ```java
 DevRev.INSTANCE.identifyUnverifiedUser(
     Identity identity
 );
-```   
+   ```   
   </Tab>
 </Tabs>
 
@@ -192,18 +192,18 @@ For example:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
+   ```kotlin
 // Identify an unverified user using their email address as the user identifier.
 DevRev.identifyUnverifiedUser(Identity(userId = "foo@example.org"))
-```
+   ```
   </Tab>
   <Tab title="Java">
-```java
+   ```java
 // Identify an unverified user using their email address as the user identifier.
 DevRev.identifyUnverifiedUser(
         new Identity("foo@example.org", null, null, null, null, null)
 );
-```
+   ```
   </Tab>
 </Tabs>
 
@@ -213,14 +213,14 @@ Once user identification is complete, you can start using the chat (conversation
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
+   ```kotlin
 DevRev.showSupport(context: Context)
-```    
+   ```    
   </Tab>
   <Tab title="Java">
-```java
+   ```java
 DevRevExtKt.showSupport(DevRev.INSTANCE, context);
-```    
+   ```    
   </Tab>
 </Tabs>
 

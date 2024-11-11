@@ -11,17 +11,17 @@ This section describes the process of integrating PLuG using the DevRev SDK with
 The DevRev SDK can be integrated using either Swift Package Manager (SPM) or CocoaPods.
 
 <Callout intent="note">
-We recommend integrating the DevRev SDK using Swift Package Manager.
+We recommend integrating the DevRev SDK using SPM.
 </Callout>
 
-### Swift Package Manager (Recommended)
+### Swift Package Manager
 
-To integrate the DevRev SDK into your project using Swift Package Manager (SPM):
+To integrate the DevRev SDK into your project using SPM:
 
 1. Open your project in Xcode and navigate to the **Add Package Dependency**.
 2. Enter the DevRev SDK URL under **Enter Package URL**:
 - For HTTPS: https://github.com/devrev/devrev-sdk-ios
-- For SSH: git@github.com:devrev/devrev-sdk-ios.git **RECONFIRM THIS**
+- For SSH: `git@github.com:devrev/devrev-sdk-ios.git` 
 3. In the **Build Phases** section of your app target, locate the **Link Binary With Libraries** phase and confirm that `DevRevSDK` is linked. If not, add it by clicking **+** and selecting `DevRevSDK` from the list.
 
 Now you should be able to import and use the DevRev SDK in your project.
@@ -31,11 +31,8 @@ Now you should be able to import and use the DevRev SDK in your project.
 To integrate the DevRev SDK using CocoaPods:
 
 1. Add the following to your Podfile:
-
 ```ruby
-
 pod 'DevRevSDK', '~> 1.0.0'
-
 ```
 2. Run `pod install` in your project directory.
 
@@ -44,8 +41,14 @@ This will install the DevRev SDK in your project, making it ready for use.
 ## Set up the DevRev SDK
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
-2. Under **PLuG settings** obtain **Your unique App ID** (referred to as `supportID` in the code).
-3. After obtaining the credentials, you can configure the DevRev SDK in your app. The SDK will be ready for use once you execute the following configuration method.
+2. Under **PLuG settings** copy the value under **Your unique App ID**.
+3. After obtaining the credentials, you can configure the DevRev SDK in your app.
+
+<Callout intent="note">
+The DevRev SDK must be configured before you can use any of its features.
+</Callout>
+
+The SDK will be ready for use once you execute the following configuration method.
 ```swift
 DevRev.configure(appID:)
 ```
@@ -65,7 +68,7 @@ Depending on your app's architecture, configure the SDK at the app's entry point
 
 ## Identification
 
-To utilize certain features of the DevRev SDK, user identification is required.
+To access certain features of the DevRev SDK, user identification is required.
 
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID:)` method.
 
@@ -126,7 +129,7 @@ await DevRev.updateUser(Identity(organizationID: "foo-bar-1337"))
 
 ### UIKit
 
-The support chat feature can be displayed either as a modal screen from a specific view controller or pushed onto a navigation stack. 
+The support chat feature can be shown as a modal screen from a specific view controller or the top-most one, or can be pushed onto a navigation stack. 
 
 To show the support chat screen in your app, you can use the following overloaded method:
 
@@ -147,13 +150,13 @@ await DevRev.showSupport(isAnimated:)
 For example:
 
 ```swift
-/// Push the support chat screen to a navigation stack.
+// Push the support chat screen to a navigation stack.
 await DevRev.showSupport(from: mainNavigationController)
 
-/// Show the support chat screen modally from a specific view controller.
+// Show the support chat screen modally from a specific view controller.
 await DevRev.showSupport(from: settingsViewController)
 
-/// Show the support chat screen from the top-most view controller, without an animation.
+// Show the support chat screen from the top-most view controller, without an animation.
 await DevRev.showSupport(isAnimated: false)
 ```
 ### SwiftUI
@@ -166,7 +169,7 @@ DevRev.supportView
 
 #### New conversation closure
 
-You can receive a callback when a new conversation is created by using the following:
+You can receive a callback when a new conversation is created by setting the following closure:
 
 ```swift
 DevRev.conversationCreatedCompletion
@@ -200,7 +203,7 @@ await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "foo-bar
 
 The DevRev SDK offers session analytics features to help you understand how users interact with your app.
 
-### Opt in or out
+### Opting-in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -291,7 +294,7 @@ DevRev.stopTimer("response-time", properties: ["id": "foo-bar-1337"])
 
 ### Screen tracking
 
-The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although activities are automatically tracked, you can manually track screens using the following method:
+The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although view controllers are automatically tracked, you can manually track screens using the following method:
 
 ```swift
 DevRev.trackScreenName(_:)
@@ -313,7 +316,7 @@ The DevRev backend sends push notifications to your app to alert users about new
 
 To receive push notifications, you need to configure your DevRev organization by following the Push Notifications Integration guide (**TBD ITEM**).
 
-You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNS).
+You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNs).
 
 ### Register for push notifications
 
@@ -327,7 +330,7 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRev.registerDeviceToken(_:deviceID:)
 ```
 
-The method requires a device identifier, which can either be an identifier unique to your system or the Apple-provided Vendor Identifier (IDFV). Typically, registration is called from the `AppDelegate.application(_:didRegisterForRemoteNotificationsWithDeviceToken:)` method.
+The method requires a device identifier, which can either be an identifier unique to your system or the Apple-provided Vendor Identifier (IDFV). Typically, the token registration is called from the `AppDelegate.application(_:didRegisterForRemoteNotificationsWithDeviceToken:)` method.
 
 For example:
 
@@ -417,7 +420,7 @@ Before using the sample app, configure it with your Apple Developer team and Dev
 	c. Go to the **Signing & Capabilities** section.
 
 	d. Under **Team**, select your development team.
-![iOS-sample-app](../../img/ios-sample-app.png)
+![iOS-sample-app](../../img/ios-sample-xcode-configuration.png)
 
 ## Troubleshooting
 

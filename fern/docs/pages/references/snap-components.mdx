@@ -6,11 +6,11 @@ Snap components are defined in the snap-in manifest file. DevRev UI renders thes
 
 Each snap-component has the following properties:
 
-- `surface` : the surfaces where the snap component can be displayed. Currently, only `issue` is supported. // TODO: Confirm this.
+- `surface` : the surfaces where the snap component can be displayed. Currently, only `issue` is supported. {/* TODO: Confirm this. */}
 - `snap_kit_action_name` : the name of the snap kit action that will be triggered when the action defined in the snap-kit of the snap component is interacted with.
-<!-- - `snap_kit_body` : the initial body of the snap kit action that will be rendered when the snap component is loaded. -->
+{/* - `snap_kit_body` : the initial body of the snap kit action that will be rendered when the snap component is loaded. */}
 
-<!-- - `initializer` : references a function that can be called to initialize the snap component. This is useful when the snap component needs to be initialized with data from the server based on the context where it is being initialized. -->
+{/* - `initializer` : references a function that can be called to initialize the snap component. This is useful when the snap component needs to be initialized with data from the server based on the context where it is being initialized. */}
 
 ```yaml
 functions:
@@ -27,7 +27,7 @@ snap_components:
     description: Test Case Details
     surface: issue
     snap_kit_action_name: show_test_cases
-    <!-- initializer: upgrade_test_function_1 -->
+    {/* initializer: upgrade_test_function_1 */}
     snap_kit_body:
       {
         "snaps":[]
@@ -103,10 +103,6 @@ interface Event {
   input_data: InputData;
 }
 ```
-
-## Screenshots
-
-<!-- ## Example for initializer -->
 
 ## List of surfaces
 

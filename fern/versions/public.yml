@@ -197,6 +197,8 @@ navigation:
             path: ../docs/pages/references/hooks.mdx
           - page: Snapkit
             path: ../docs/pages/references/snapkit.mdx
+          - page: Snap Components
+            path: ../docs/pages/references/snap-components.mdx
           - page: Snap-in resources
             slug: snap-in-resources
             path: ../docs/pages/references/snap-in-resources.mdx

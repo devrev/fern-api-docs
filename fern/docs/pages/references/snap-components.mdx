@@ -4,10 +4,10 @@ Snap components are defined in the snap-in manifest file. DevRev UI renders thes
 
 Each snap-component has the following properties:
 
-- `surface` : the surfaces where the snap component can be displayed.
-- `snap_kit_action_name` : the name of the snap kit action that will be triggered when the action defined in the snap-kit of the snap component is interacted with.
-- `snap_kit_body` : the initial body of the snap kit action that will be rendered when the snap component is loaded.
-- `initializer` : references a function that can be called to initialize the snap component. This is useful when the snap component needs to be initialized with data from the server based on the context where it is being initialized.
+- `surface` : The surface where the snap component can be displayed.
+- `snap_kit_action_name` : The name of the action within the snap kit that is triggered when the snap component's defined action is engaged.
+- `snap_kit_body` : The initial body content of the snap kit action that is rendered upon loading the snap component.
+- `initializer` : Refers to a function that can be invoked to set up the snap component. This is particularly useful when the component needs to be initialized with server data, depending on the context in which it is being deployed.
 
 ```yaml
 functions:

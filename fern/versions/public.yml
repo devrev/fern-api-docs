@@ -80,6 +80,9 @@ navigation:
           - page: Integrate PLuG SDKs with your iOS app
             slug: sdk-ios
             path: ../docs/pages/plug-sdk/sdk-ios.mdx
+          - page: Setting up push notifications in the DevRev SDK
+            slug: push-notification
+            path: ../docs/pages/plug-sdk/push-notification.mdx
           - page: Install the Web SDK
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx

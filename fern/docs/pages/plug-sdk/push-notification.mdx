@@ -12,14 +12,16 @@ This section describes the process of setting up push notifications within the D
 
 1. Accessing PLuG Settings
 
-  a. Go to **Settings** > **Support** > **PLuG settings** > **Mobile app notification via PLuG**
+  a. Go to **Settings** > **Support** > **PLuG settings** > **Mobile app notification via PLuG**.
+
   b. Click **+ Configure app** > and select either **iOS App** or **Android App** based on your target platform.
 
 <Callout intent="note">
 If you are configuring an iOS app, proceed to step 2. For an Android app, skip to step 3.
 </Callout>
 2.  iOS app configuration
-  a. After selecting **iOS App**, fill out the configuration form:
+
+    a. After selecting **iOS App**, fill out the configuration form:
     - **App name**: Enter your iOS app's name.
     - **Bundle ID**: Provide your app's unique identifier in reverse domain notation, such as, `com.example.app`. Refer to [Apple's documentation](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) to confirm your bundle ID.
     - **Apple Team ID**: Enter the 10-character Apple Team ID assigned to your organization. Details are available in [Apple's Team ID documentation](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id/).
@@ -27,13 +29,15 @@ If you are configuring an iOS app, proceed to step 2. For an Android app, skip t
     - **Upload APNs Auth Key**: Upload the `.p8` APNs Auth Key file (maximum size: 10 MB).
     - **Sandbox Environment**: Check this for development environments to enable notifications in debug builds.
 
-b. Click **Save App** to complete the iOS setup.
+  b. Click **Save App** to complete the iOS setup.
 
 3. Android app configuration
+
   a. Select **Android App** and complete the configuration form:
     - **App name**: Enter your Android app's name.
     - **Bundle ID**: Provide your app's unique identifier in reverse domain notation, such as, `com.example.app`. Refer to [Google’s documentation](https://developer.android.com/studio/build/application-id) to confirm your bundle ID.
     - **Upload Service Account Key**: Upload a Service Account Key JSON file (up to 10 MB) generated via Google Cloud for Firebase Cloud Messaging (FCM). Create this key following [Google’s documentation](https://firebase.google.com/docs/).
+
   b. Click **Save App** to complete the Android setup.
 
 4. Click **Save and Publish** to activate push notifications in your DevRev SDK.

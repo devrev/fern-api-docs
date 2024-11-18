@@ -100,8 +100,8 @@ navigation:
             path: ../docs/pages/plug-sdk/methods.mdx
           - page: Custom implementation of PLuG widget
             slug: customize
-            path: ../docs/pages/plug-sdk/customize.mdx 
- - section: Snap-in development
+            path: ../docs/pages/plug-sdk/customize.mdx
+  - section: Snap-in development
     slug: snapin-development
     contents:
       - page: Concepts

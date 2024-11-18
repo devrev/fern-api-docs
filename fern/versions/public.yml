@@ -68,21 +68,12 @@ navigation:
   - section: SDKs
     slug: sdks
     contents:
-      - section: PLuG SDK
-        slug: plug
+      - section: Web SDK
+        slug: web
         contents:
           - page: Overview
             slug: overview
             path: ../docs/pages/plug-sdk/sdk-intro.mdx
-          - page: Integrate PLuG SDKs with your Android app
-            slug: android
-            path: ../docs/pages/plug-sdk/sdk-android.mdx
-          - page: Integrate PLuG SDKs with your iOS app
-            slug: ios
-            path: ../docs/pages/plug-sdk/sdk-ios.mdx
-          - page: Setting up push notifications in the DevRev SDK
-            slug: push-notification
-            path: ../docs/pages/plug-sdk/push-notification.mdx
           - page: Install the Web SDK
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx
@@ -101,6 +92,18 @@ navigation:
           - page: Custom implementation of PLuG widget
             slug: customize
             path: ../docs/pages/plug-sdk/customize.mdx
+      - section: Mobile SDK
+        slug: mobile
+        contents:
+          - page: Integrate PLuG SDKs with your Android app
+            slug: android
+            path: ../docs/pages/plug-sdk/sdk-android.mdx
+          - page: Integrate PLuG SDKs with your iOS app
+            slug: ios
+            path: ../docs/pages/plug-sdk/sdk-ios.mdx
+          - page: Setting up push notifications in the DevRev SDK
+            slug: push-notification
+            path: ../docs/pages/plug-sdk/push-notification.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

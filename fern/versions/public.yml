@@ -65,9 +65,9 @@ navigation:
       - page: Restricted messages on a timeline
         slug: timeline-entries
         path: ../docs/pages/timeline-entries.mdx
-- section: SDKs
-  slug: sdks
-  contents:
+ - section: SDKs
+   slug: sdks
+   contents:
     - section: Web SDKs
       slug: web
       contents:

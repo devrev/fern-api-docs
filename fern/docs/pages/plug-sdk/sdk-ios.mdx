@@ -20,8 +20,8 @@ To integrate the DevRev SDK into your project using SPM:
 
 1. Open your project in Xcode and navigate to the **Add Package Dependency**.
 2. Enter the DevRev SDK URL under **Enter Package URL**:
-- For HTTPS: https://github.com/devrev/devrev-sdk-ios
-- For SSH: `git@github.com:devrev/devrev-sdk-ios.git` 
+	- For HTTPS: https://github.com/devrev/devrev-sdk-ios
+	- For SSH: `git@github.com:devrev/devrev-sdk-ios.git` 
 3. In the **Build Phases** section of your app target, locate the **Link Binary With Libraries** phase and confirm that `DevRevSDK` is linked. If not, add it by clicking **+** and selecting `DevRevSDK` from the list.
 
 Now you should be able to import and use the DevRev SDK in your project.
@@ -31,9 +31,9 @@ Now you should be able to import and use the DevRev SDK in your project.
 To integrate the DevRev SDK using CocoaPods:
 
 1. Add the following to your Podfile:
-```ruby
-pod 'DevRevSDK', '~> 1.0.0'
-```
+	```ruby
+	pod 'DevRevSDK', '~> 1.0.0'
+	```
 2. Run `pod install` in your project directory.
 
 This will install the DevRev SDK in your project, making it ready for use.
@@ -276,7 +276,7 @@ To start a timer, use the following method:
 DevRev.startTimer(_:properties:)
 ```
 
-To balance it with a stop method, use the following:
+To stop a timer, use the following method:
 
 ```swift
 DevRev.stopTimer(_:properties:)
@@ -314,7 +314,7 @@ The DevRev backend sends push notifications to your app to alert users about new
 
 ### Configuration
 
-To receive push notifications, you need to configure your DevRev organization by following the Push Notifications Integration guide (**TBD ITEM**).
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
 
 You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNs).
 
@@ -408,8 +408,8 @@ This repository includes a sample app demonstrating use cases for both UIKit and
 Before using the sample app, configure it with your Apple Developer team and DevRev credentials. For convenience, the code is marked with compiler error directives (`#error`) in areas that require your attention.
 
 1. Add your credentials:
-- For SwiftUI, add your credentials to `ContentView.swift`.
-- For UIKit, add your credentials to `AppDelegate.swift`.
+	- For SwiftUI, add your credentials to `ContentView.swift`.
+	- For UIKit, add your credentials to `AppDelegate.swift`.
 2. Once you've added your credentials, delete or comment out the compiler error lines in the respective files.
 3. Configure code signing for the sample target:
 

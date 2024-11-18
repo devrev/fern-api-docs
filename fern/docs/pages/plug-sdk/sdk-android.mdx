@@ -68,7 +68,6 @@ DevRev.INSTANCE.configure(Context context, String appId);
   </Tab>
 </Tabs>
 3. To configure the SDK, you need to call the following method inside your `Application` class:
-**NEED SYNTAX**
 
 <Callout intent="note">
 If you don’t have a custom `Application` class, create one as shown below.
@@ -121,7 +120,7 @@ public class FooApplication extends Application {
 
 ## Identification
 
-To utilize certain features of the DevRev SDK, user identification is required. You can select from the following methods to identify users within your application:
+To use certain features of the DevRev SDK, user identification is required. You can select from the following methods to identify users within your application:
 
 <Callout intent="note">
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(context, appID)` method.
@@ -144,23 +143,6 @@ DevRev.identifyAnonymousUser(
 DevRev.INSTANCE.identifyAnonymousUser(
     String userId
 );
-```
-  </Tab>
-</Tabs>
-
-For example:
-
-<Tabs>
-  <Tab title="Kotlin">
-```kotlin
-// Identify an anonymous user without a user identifier.
-DevRev.identifyAnonymousUser("abcd1234")
-```
-  </Tab>
-  <Tab title="Java">
-```java
-// Identify an anonymous user without a user identifier.
-DevRev.INSTANCE.identifyAnonymousUser("abcd1234");
 ```
   </Tab>
 </Tabs>
@@ -332,16 +314,16 @@ The session recording feature is opt-out and is enabled by default.
 
 Here are the available methods to help you control the session recording feature:
 
-| Kotlin                   | Java                                                               | Action                                                    |
-|--------------------------|--------------------------------------------------------------------|-----------------------------------------------------------|
-| DevRev.startRecording()  | DevRevObservabilityExtKt.startRecording(DevRev.INSTANCE, context); | Starts the session recording.                             |
-| DevRev.stopRecording()   | DevRevObservabilityExtKt.stopRecording(DevRev.INSTANCE);           | Ends the session recording and uploads it to the portal. |
-| DevRev.pauseRecording()  | DevRevObservabilityExtKt.pauseRecording(DevRev.INSTANCE);          | Pauses the ongoing session recording.                     |
-| DevRev.resumeRecording() | DevRevObservabilityExtKt.resumeRecording(DevRev.INSTANCE);         | Resumes a paused session recording.                       |
+|Action   |Kotlin (`DevRev`)    |Java (`DevRevObservabilityExtKt`)   |
+|---|---|---|
+|Starts the session recording.   |startRecording()   |startRecording(DevRev.INSTANCE, context);   |
+|Ends the session recording and uploads it to the portal.   |stopRecording()   |stopRecording(DevRev.INSTANCE);    |
+|Pauses the ongoing session recording.   |pauseRecording()   |pauseRecording(DevRev.INSTANCE);    |
+|Resumes a paused session recording.   |resumeRecording()   |resumeRecording(DevRev.INSTANCE);   |
 
 ### Session properties
 
-You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a dictionary of string values.
+You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a hashmap of string values.
 
 <Tabs>
   <Tab title="Kotlin">
@@ -375,7 +357,7 @@ DevRevObservabilityExtKt.clearSessionProperties(DevRev.INSTANCE);
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
 
-The mechanism utilizes balanced start and stop methods, both of which accept a timer name and an optional dictionary of properties.
+The mechanism utilizes balanced start and stop methods, both of which accept a timer name and an optional hashmap of properties.
 
 To start a timer, use the following method:
 
@@ -392,7 +374,7 @@ DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, String name, HashMap<String
   </Tab>
 </Tabs>
 
-To balance it with a stop method, use the following:
+To stop a timer, use the following method:
 
 <Tabs>
   <Tab title="Kotlin">
@@ -466,9 +448,9 @@ DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, "profile-screen");
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to alert users about new messages in the PLuG support chat.
+DevRev sends push notifications to your app to alert users about new messages in the PLuG support chat.
 
-To receive push notifications, you need to configure your DevRev organization by following the Push Notifications Integration guide (TBD ITEM).
+To receive push notifications, you need to configure your DevRev organization by following the [Push Notifications](./push-notification).
 
 You need to ensure that your Android app is configured to receive push notifications. To set it up, follow the [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/android/client).
 

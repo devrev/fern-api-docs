@@ -34,18 +34,18 @@ After completing these steps in your `build.gradle.kts` Kotlin script, you shoul
 
 1. Add the following dependencies to your app's `build.gradle` file to get the latest version of our SDK:
 
-```groovy
-dependencies {
+   ```groovy
+   dependencies {
     implementation 'ai.devrev.sdk:devrev-sdk:<version>'
-}
-```
+   }
+   ```
 
 2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle` file.
-```groovy
-repositories {
-    mavenCentral()
-}
-```
+   ```groovy
+   repositories {
+       mavenCentral()
+   }
+   ```
 After completing these steps in your `build.gradle` Groovy script, you should be able to import and use the DevRev SDK in your Android application.
 
 </Tab>
@@ -57,14 +57,14 @@ After completing these steps in your `build.gradle` Groovy script, you should be
 2. After obtaining the credentials, you can configure the DevRev SDK in your app. The SDK will be ready for use once you execute the configuration method.
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.configure(context: Context, appId: String)
-```
+   ```kotlin
+   DevRev.configure(context: Context, appId: String)
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRev.INSTANCE.configure(Context context, String appId);
-```
+   ```java
+   DevRev.INSTANCE.configure(Context context, String appId);
+   ```
   </Tab>
 </Tabs>
 3. To configure the SDK, you need to call the following method inside your `Application` class:
@@ -75,48 +75,48 @@ If you don’t have a custom `Application` class, create one as shown below.
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-import ai.devrev.sdk.DevRev
-
-class FooApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-        DevRev.configure(
-            context = this,
-            appId = "<APP_ID>"
-        )
-    }
-}
-```
+   ```kotlin
+   import ai.devrev.sdk.DevRev
+   
+   class FooApplication : Application() {
+   
+       override fun onCreate() {
+           super.onCreate()
+           DevRev.configure(
+               context = this,
+               appId = "<APP_ID>"
+           )
+       }
+   }
+   ```
   </Tab>
   <Tab title="Java">
-```java
-import ai.devrev.sdk.DevRev;
-
-public class FooApplication extends Application {
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DevRev.INSTANCE.configure(
-            this,
-            "<APP_ID>"
-        );
-    }
-}
-```
+   ```java
+   import ai.devrev.sdk.DevRev;
+   
+   public class FooApplication extends Application {
+   
+       @Override
+       public void onCreate() {
+           super.onCreate();
+           DevRev.INSTANCE.configure(
+               this,
+               "<APP_ID>"
+           );
+       }
+   }
+   ```
   </Tab>
 </Tabs>
 
 4. In the `onCreate` method of your `Application`, configure the DevRev SDK with the required parameters using the credentials obtained earlier.
 5. Ensure that the custom application is specified in the `AndroidManifest.xml`, as shown below:
 
-```xml
-<application
-    android:name=".ExampleApplication">
-</application>
-```
+   ```xml
+   <application
+       android:name=".ExampleApplication">
+   </application>
+   ```
 
 ## Identification
 
@@ -132,18 +132,18 @@ The anonymous identification method allows you to create an anonymous user with 
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.identifyAnonymousUser(
-    userId: String
-)
-```
+   ```kotlin
+   DevRev.identifyAnonymousUser(
+       userId: String
+   )
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRev.INSTANCE.identifyAnonymousUser(
-    String userId
-);
-```
+   ```java
+   DevRev.INSTANCE.identifyAnonymousUser(
+       String userId
+   );
+   ```
   </Tab>
 </Tabs>
 
@@ -153,18 +153,18 @@ The unverified identification method identifies users with a unique identifier, 
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.identifyUnverifiedUser(
-    indentity: Identity
-)
-```
+   ```kotlin
+   DevRev.identifyUnverifiedUser(
+       indentity: Identity
+   )
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRev.INSTANCE.identifyUnverifiedUser(
-    Identity identity
-);
-```   
+   ```java
+   DevRev.INSTANCE.identifyUnverifiedUser(
+       Identity identity
+   );
+   ```   
   </Tab>
 </Tabs>
 
@@ -174,18 +174,18 @@ For example:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-// Identify an unverified user using their email address as the user identifier.
-DevRev.identifyUnverifiedUser(Identity(userId = "foo@example.org"))
-```
+   ```kotlin
+   // Identify an unverified user using their email address as the user identifier.
+   DevRev.identifyUnverifiedUser(Identity(userId = "foo@example.org"))
+   ```
   </Tab>
   <Tab title="Java">
-```java
-// Identify an unverified user using their email address as the user identifier.
-DevRev.identifyUnverifiedUser(
-        new Identity("foo@example.org", null, null, null, null, null)
-);
-```
+   ```java
+   // Identify an unverified user using their email address as the user identifier.
+   DevRev.identifyUnverifiedUser(
+           new Identity("foo@example.org", null, null, null, null, null)
+   );
+   ```
   </Tab>
 </Tabs>
 
@@ -195,14 +195,14 @@ Once user identification is complete, you can start using the chat (conversation
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.showSupport(context: Context)
-```    
+   ```kotlin
+   DevRev.showSupport(context: Context)
+   ```    
   </Tab>
   <Tab title="Java">
-```java
-DevRevExtKt.showSupport(DevRev.INSTANCE, context);
-```    
+   ```java
+   DevRevExtKt.showSupport(DevRev.INSTANCE, context);
+   ```    
   </Tab>
 </Tabs>
 
@@ -236,14 +236,14 @@ The DevRev SDK allows you to send custom analytic events by using a name and a s
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.trackEvent(name: String, properties: HashMap<String, String>)
-```
+   ```kotlin
+   DevRev.trackEvent(name: String, properties: HashMap<String, String>)
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevAnalyticsExtKt.trackEvent(DevRev instance, String name, HashMap<String, String> properties);
-```
+   ```java
+   DevRevAnalyticsExtKt.trackEvent(DevRev instance, String name, HashMap<String, String> properties);
+   ```
   </Tab>
 </Tabs>
 
@@ -251,14 +251,14 @@ For example:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.trackEvent(name = "open-message-screen", properties = {"id": "foo-bar-1337"})
-```
+   ```kotlin
+   DevRev.trackEvent(name = "open-message-screen", properties = {"id": "foo-bar-1337"})
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevAnalyticsExtKt.trackEvent(DevRev.INSTANCE, "open-message-screen", new HashMap<>().put("id", "foo-bar-1337"));
-```
+   ```java
+   DevRevAnalyticsExtKt.trackEvent(DevRev.INSTANCE, "open-message-screen", new HashMap<>().put("id", "foo-bar-1337"));
+   ```
   </Tab>
 </Tabs>
 
@@ -272,14 +272,14 @@ End users can opt in or out of the session analytics feature, enabling them to c
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.stopAllMonitoring()
-```
+   ```kotlin
+   DevRev.stopAllMonitoring()
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.stopAllMonitoring(DevRev.INSTANCE);
-```
+   ```java
+   DevRevObservabilityExtKt.stopAllMonitoring(DevRev.INSTANCE);
+   ```
   </Tab>
 </Tabs>
 
@@ -287,14 +287,14 @@ This method terminates and deletes the current session recording and also disabl
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.resumeAllMonitoring()
-```
+   ```kotlin
+   DevRev.resumeAllMonitoring()
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.resumeAllMonitoring(DevRev.INSTANCE);
-```
+   ```java
+   DevRevObservabilityExtKt.resumeAllMonitoring(DevRev.INSTANCE);
+   ```
   </Tab>
 </Tabs>
 
@@ -327,14 +327,14 @@ You can add custom properties to the session recording to help you understand th
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.addSessionProperties(properties: HashMap<String, Any>)
-```    
+   ```kotlin
+   DevRev.addSessionProperties(properties: HashMap<String, Any>)
+   ```    
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.addSessionProperties(DevRev.INSTANCE, HashMap<String, Object> properties);
-```    
+   ```java
+   DevRevObservabilityExtKt.addSessionProperties(DevRev.INSTANCE, HashMap<String, Object> properties);
+   ```    
   </Tab>
 </Tabs>
 
@@ -342,14 +342,14 @@ To clear the session properties in scenarios such as user logout or when the ses
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.clearSessionProperties()
-```
+   ```kotlin
+   DevRev.clearSessionProperties()
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.clearSessionProperties(DevRev.INSTANCE);
-```
+   ```java
+   DevRevObservabilityExtKt.clearSessionProperties(DevRev.INSTANCE);
+   ```
   </Tab>
 </Tabs>
 
@@ -363,14 +363,14 @@ To start a timer, use the following method:
 
 <Tabs>
   <Tab title="Kotlin">
- ```kotlin
-DevRev.startTimer(name: String, properties: HashMap<String, String>)
-```  
+    ```kotlin
+   DevRev.startTimer(name: String, properties: HashMap<String, String>)
+   ```  
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, String name, HashMap<String, String> properties);
-```    
+   ```java
+   DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, String name, HashMap<String, String> properties);
+   ```    
   </Tab>
 </Tabs>
 
@@ -378,14 +378,14 @@ To stop a timer, use the following method:
 
 <Tabs>
   <Tab title="Kotlin">
- ```kotlin
-DevRev.endTimer(name: String, properties: HashMap<String, String>)
-```
+    ```kotlin
+   DevRev.endTimer(name: String, properties: HashMap<String, String>)
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, String name, HashMap<String, String> properties);
-```
+   ```java
+   DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, String name, HashMap<String, String> properties);
+   ```
   </Tab>
 </Tabs>
 
@@ -393,22 +393,22 @@ For example:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.startTimer("response-time", properties: {"id": "foo-bar-1337"})
-
-// Perform the task that you want to measure.
-
-DevRev.endTimer("response-time", properties: {"id": "foo-bar-1337"})
-``` 
+   ```kotlin
+   DevRev.startTimer("response-time", properties: {"id": "foo-bar-1337"})
+   
+   // Perform the task that you want to measure.
+   
+   DevRev.endTimer("response-time", properties: {"id": "foo-bar-1337"})
+   ``` 
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
-
-// Perform the task that you want to measure.
-        
-DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
-```
+   ```java
+   DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
+   
+   // Perform the task that you want to measure.
+           
+   DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
+   ```
   </Tab>
 </Tabs>
 
@@ -418,14 +418,14 @@ The DevRev SDK offers automatic screen tracking to help you understand how users
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.trackScreenName(screenName: String)
-```
+   ```kotlin
+   DevRev.trackScreenName(screenName: String)
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, String screenName);
-```
+   ```java
+   DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, String screenName);
+   ```
   </Tab>
 </Tabs>
 
@@ -433,14 +433,14 @@ For example:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.trackScreenName("profile-screen")
-```
+   ```kotlin
+   DevRev.trackScreenName("profile-screen")
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, "profile-screen");
-```
+   ```java
+   DevRevObservabilityExtKt.trackScreenName(DevRev.INSTANCE, "profile-screen");
+   ```
   </Tab>
 </Tabs>
 
@@ -464,22 +464,22 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.registerDeviceToken(
-  context: Context,
-  deviceId: String,
-  deviceToken: String
-)
-```
+   ```kotlin
+   DevRev.registerDeviceToken(
+     context: Context,
+     deviceId: String,
+     deviceToken: String
+   )
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRev.INSTANCE.registerDeviceToken(
-  Context context,
-  String deviceId,
-  String deviceToken
-);
-```
+   ```java
+   DevRev.INSTANCE.registerDeviceToken(
+     Context context,
+     String deviceId,
+     String deviceToken
+   );
+   ```
   </Tab>
 </Tabs>
 
@@ -503,20 +503,20 @@ Use the following method to unregister the device:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.unregisterDevice(
-  context: Context, 
-  deviceId: String
-)
-```
+   ```kotlin
+   DevRev.unregisterDevice(
+     context: Context, 
+     deviceId: String
+   )
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRev.INSTANCE.unregisterDevice(
-  Context context, 
-  String deviceId
-);
-```
+   ```java
+   DevRev.INSTANCE.unregisterDevice(
+     Context context, 
+     String deviceId
+   );
+   ```
   </Tab>
 </Tabs>
 
@@ -528,20 +528,20 @@ The DevRev SDK currently does not support automatic handling of push notificatio
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-DevRev.processPushNotification(
-    context: Context,
-    userInfo: String
-)
-```
+   ```kotlin
+   DevRev.processPushNotification(
+       context: Context,
+       userInfo: String
+   )
+   ```
   </Tab>
   <Tab title="Java">
-```java
-DevRev.INSTANCE.processPushNotification(
-    Context context,
-    String userInfo
-);
-```
+   ```java
+   DevRev.INSTANCE.processPushNotification(
+       Context context,
+       String userInfo
+   );
+   ```
   </Tab>
 </Tabs>
 
@@ -559,14 +559,14 @@ To extract the notification payload, do the following:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-val message = remoteMessage.data["message"]
-```
+   ```kotlin
+   val message = remoteMessage.data["message"]
+   ```
   </Tab>
   <Tab title="Java">
-```java
-String messageData = remoteMessage.getData().get("message");
-```
+   ```java
+   String messageData = remoteMessage.getData().get("message");
+   ```
  </Tab>
 </Tabs>
 
@@ -574,31 +574,31 @@ For example:
 
 <Tabs>
   <Tab title="Kotlin">
-```kotlin
-class MyFirebaseMessagingService: FirebaseMessagingService {
-    // ...
-  
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // ...
-        val messageData = remoteMessage.data["message"]
-        DevRev.processPushNotification(messageData)
-    }
-}
-```
+   ```kotlin
+   class MyFirebaseMessagingService: FirebaseMessagingService {
+       // ...
+     
+       override fun onMessageReceived(remoteMessage: RemoteMessage) {
+           // ...
+           val messageData = remoteMessage.data["message"]
+           DevRev.processPushNotification(messageData)
+       }
+   }
+   ```
   </Tab>
   <Tab title="Java">
-```java
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    // ...
-
-    @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
-        // ...
-        String messageData = remoteMessage.getData().get("message");
-        DevRev.processPushNotification(messageData);
-    }
-}
-```
+   ```java
+   public class MyFirebaseMessagingService extends FirebaseMessagingService {
+       // ...
+   
+       @Override
+       public void onMessageReceived(RemoteMessage remoteMessage) {
+           // ...
+           String messageData = remoteMessage.getData().get("message");
+           DevRev.processPushNotification(messageData);
+       }
+   }
+   ```
  </Tab>
 </Tabs>
 

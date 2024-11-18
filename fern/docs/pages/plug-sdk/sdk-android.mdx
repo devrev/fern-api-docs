@@ -489,11 +489,11 @@ The method requires a device identifier that persists across device restarts and
 
 This method will generate and return the device token.
 
-```kotlin
-val firebaseMessaging = FirebaseMessaging.getInstance()
-val token = firebaseMessaging.token.await()
-// Use the token as needed
-```
+   ```kotlin
+   val firebaseMessaging = FirebaseMessaging.getInstance()
+   val token = firebaseMessaging.token.await()
+   // Use the token as needed
+   ```
 
 ### Unregister from push notifications
 

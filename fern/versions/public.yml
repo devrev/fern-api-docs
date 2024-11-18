@@ -75,10 +75,10 @@ navigation:
             slug: overview
             path: ../docs/pages/plug-sdk/sdk-intro.mdx
           - page: Integrate PLuG SDKs with your Android app
-            slug: sdk-android
+            slug: android
             path: ../docs/pages/plug-sdk/sdk-android.mdx
           - page: Integrate PLuG SDKs with your iOS app
-            slug: sdk-ios
+            slug: ios
             path: ../docs/pages/plug-sdk/sdk-ios.mdx
           - page: Setting up push notifications in the DevRev SDK
             slug: push-notification
@@ -100,7 +100,46 @@ navigation:
             path: ../docs/pages/plug-sdk/methods.mdx
           - page: Custom implementation of PLuG widget
             slug: customize
-            path: ../docs/pages/plug-sdk/customize.mdx  
+            path: ../docs/pages/plug-sdk/customize.mdx 
+  - section: SDKs
+  slug: sdks
+  contents:
+    - page: Overview
+      slug: overview
+      path: ../docs/pages/plug-sdk/sdk-intro.mdx
+    - section: Mobile SDKs
+      slug: mobile
+      contents:
+        - page: Integrate PLuG SDKs with your Android app
+          slug: android
+          path: ../docs/pages/plug-sdk/sdk-android.mdx
+        - page: Integrate PLuG SDKs with your iOS app
+          slug: ios
+          path: ../docs/pages/plug-sdk/sdk-ios.mdx
+        - page: Setting up push notifications in the DevRev SDK
+          slug: push-notification
+          path: ../docs/pages/plug-sdk/push-notification.mdx
+    - section: Web SDKs
+      slug: web
+      contents:
+        - page: Install the Web SDK
+          slug: installation
+          path: ../docs/pages/plug-sdk/web-sdk-install.mdx
+        - page: Install PLuG search
+          slug: install-search
+          path: ../docs/pages/plug-sdk/search-install.mdx
+        - page: Identify your users with PLuG
+          slug: user-identity
+          path: ../docs/pages/plug-sdk/identify-web-user.mdx
+        - page: Track events
+          slug: track-events
+          path: ../docs/pages/plug-sdk/track-events.mdx
+        - page: Methods
+          slug: methods
+          path: ../docs/pages/plug-sdk/methods.mdx
+        - page: Custom implementation of PLuG widget
+          slug: customize
+          path: ../docs/pages/plug-sdk/customize.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

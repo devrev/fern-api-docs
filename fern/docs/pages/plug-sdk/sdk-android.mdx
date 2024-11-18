@@ -78,7 +78,7 @@ If you don’t have a custom `Application` class, create one as shown below.
    ```kotlin
    import ai.devrev.sdk.DevRev
    
-   class FooApplication : Application() {
+   class MyApp : Application() {
    
        override fun onCreate() {
            super.onCreate()
@@ -94,7 +94,7 @@ If you don’t have a custom `Application` class, create one as shown below.
    ```java
    import ai.devrev.sdk.DevRev;
    
-   public class FooApplication extends Application {
+   public class MyApp extends Application {
    
        @Override
        public void onCreate() {
@@ -176,14 +176,14 @@ For example:
   <Tab title="Kotlin">
    ```kotlin
    // Identify an unverified user using their email address as the user identifier.
-   DevRev.identifyUnverifiedUser(Identity(userId = "foo@example.org"))
+   DevRev.identifyUnverifiedUser(Identity(userId = "user@example.org"))
    ```
   </Tab>
   <Tab title="Java">
    ```java
    // Identify an unverified user using their email address as the user identifier.
    DevRev.identifyUnverifiedUser(
-           new Identity("foo@example.org", null, null, null, null, null)
+           new Identity("user@example.org", null, null, null, null, null)
    );
    ```
   </Tab>
@@ -252,12 +252,12 @@ For example:
 <Tabs>
   <Tab title="Kotlin">
    ```kotlin
-   DevRev.trackEvent(name = "open-message-screen", properties = {"id": "foo-bar-1337"})
+   DevRev.trackEvent(name = "open-message-screen", properties = {"id": "message-1337"})
    ```
   </Tab>
   <Tab title="Java">
    ```java
-   DevRevAnalyticsExtKt.trackEvent(DevRev.INSTANCE, "open-message-screen", new HashMap<>().put("id", "foo-bar-1337"));
+   DevRevAnalyticsExtKt.trackEvent(DevRev.INSTANCE, "open-message-screen", new HashMap<>().put("id", "message-1337"));
    ```
   </Tab>
 </Tabs>
@@ -394,20 +394,20 @@ For example:
 <Tabs>
   <Tab title="Kotlin">
    ```kotlin
-   DevRev.startTimer("response-time", properties: {"id": "foo-bar-1337"})
+   DevRev.startTimer("response-time", properties: {"id": "task-1337"})
    
    // Perform the task that you want to measure.
    
-   DevRev.endTimer("response-time", properties: {"id": "foo-bar-1337"})
+   DevRev.endTimer("response-time", properties: {"id": "task-1337"})
    ``` 
   </Tab>
   <Tab title="Java">
    ```java
-   DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
+   DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "task-1337"));
    
    // Perform the task that you want to measure.
            
-   DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "foo-bar-1337"));
+   DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "task-1337"));
    ```
   </Tab>
 </Tabs>

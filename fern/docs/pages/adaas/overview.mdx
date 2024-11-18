@@ -7,7 +7,42 @@ It enables developers to create external workers (extractors and loaders) to bri
 
 <Tip>DevRev offers a repository template to help you create ADaaS snap-ins. Refer to [Getting started](getting-started) for instructions.</Tip>
 
-![ADaaS architecture](../../img/adaas/adaas-architecture.svg)
+```mermaid
+flowchart TD
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#000',
+        'primaryTextColor': 'white',
+        'primaryColor': '#2a33ff',
+        'primaryBorderColor': '#62D65D',
+        'secondaryColor': '#5D0E1C',
+        'tertiaryColor': '#e6e6e6',
+        'clusterBorder': 'white'
+    }
+  }
+}%%
+externalSystem[External system]
+worker([Worker])
+s3interact[s3interact]
+airdrop[Airdrop]
+s3[(AWS S3)]
+
+	externalSystem <-- Get/create users, issues, ... --> worker
+	
+	worker <-- Exchange artifact upload/download URLs --> s3interact
+	worker <-- Upload/download artifacts --> s3
+	worker <-- ADaaS messages and REST API --> airdrop
+
+	
+	subgraph DevRev
+	s3interact <-- Prepare upload/download URL --> s3
+	airdrop <-- Download/upload artifacts --> s3
+	end
+
+```
 
 An _extractor_ is a function in an ADaaS-capable snap-in responsible for extracting data from an _external system_, such as Jira, Zendesk,
 or HubSpot. It uses a standardized communication protocol for talking to Airdrop and a standardized

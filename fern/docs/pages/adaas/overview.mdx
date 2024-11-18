@@ -5,6 +5,8 @@ You can read more about Airdrop in the [general documentation](https://docs.devr
 _Airdrop-as-a-Service (ADaaS)_ gives snap-in developers the ability to integrate with DevRev’s Airdrop functionality.
 It enables developers to create external workers (extractors and loaders) to bring data from various external systems.
 
+<Tip>DevRev offers a repository template to help you create ADaaS snap-ins. Refer to [Getting started](getting-started) for instructions.</Tip>
+
 ![ADaaS architecture](../../img/adaas/adaas-architecture.svg)
 
 An _extractor_ is a function in an ADaaS-capable snap-in responsible for extracting data from an _external system_, such as Jira, Zendesk,
@@ -22,4 +24,17 @@ external system.
 A _reverse sync_ is a sync run from DevRev to an external system. It uses a loader function, to create or update data
 in the external system.
 
+## Keyrings
 
+_Keyrings_ are a DevRev-specific mechanism for managing authentication to external systems.
+They are called **Connections** in the DevRev app.
+
+Keyrings provide a secure way to store and manage credentials within your DevRev snap-In.
+This eliminates the need to expose sensitive information like passwords
+or access tokens directly within your code or configuration files, enhancing overall security. They also provide a valid
+token by abstracting Oauth token renewal from the end user.
+
+A keyring is used by a worker to authenticate to the external system in API calls. They include the key (for example,
+a PAT or API key), its type, the organization ID for which a key is valid, and in some cases the organization name.
+
+Refer to [Keyrings](/snapin-development/references/keyrings) for more information.

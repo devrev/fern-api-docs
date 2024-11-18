@@ -119,10 +119,10 @@ For example:
 await DevRev.identifyAnonymousUser()
 
 // Identify an unverified user using their email address as the user identifier.
-await DevRev.identifyUnverifiedUser(Identity(userID: "foo@example.org"))
+await DevRev.identifyUnverifiedUser(Identity(userID: "user@example.org"))
 
 // Update the user's information.
-await DevRev.updateUser(Identity(organizationID: "foo-bar-1337"))
+await DevRev.updateUser(Identity(organizationID: "organization-1337"))
 ```
 
 ## PLuG support chat
@@ -196,7 +196,7 @@ DevRev.trackEvent(name:properties:)
 For example:
 
 ```swift
-await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "foo-bar-1337"])
+await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "message-1337"])
 ```
 
 ## Session analytics
@@ -285,11 +285,11 @@ DevRev.stopTimer(_:properties:)
 For example:
 
 ```swift
-DevRev.startTimer("response-time", properties: ["id": "foo-bar-1337"])
+DevRev.startTimer("response-time", properties: ["id": "task-1337"])
 
 // Perform the task that you want to measure.
 
-DevRev.stopTimer("response-time", properties: ["id": "foo-bar-1337"])
+DevRev.stopTimer("response-time", properties: ["id": "task-1337"])
 ```
 
 ### Screen tracking

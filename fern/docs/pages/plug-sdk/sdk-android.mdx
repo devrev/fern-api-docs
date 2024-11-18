@@ -17,16 +17,16 @@ To integrate the latest version of our SDK into your app, follow these steps:
 1. Add the following dependencies to your app's `build.gradle.kts` file to get the latest version of our SDK:
 
    ```kotlin
-dependencies {
+   dependencies {
     implementation("ai.devrev.sdk:devrev-sdk:<version>")
-}
-```
+   }
+   ```
 2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle.kts` file.
-```kotlin
-repositories {
+   ```kotlin
+   repositories {
     mavenCentral()
-}
-```
+   }
+   ```
 After completing these steps in your `build.gradle.kts` Kotlin script, you should be able to import and use the DevRev SDK in your Android application.
 
 </Tab>
@@ -450,7 +450,7 @@ You can configure your app to receive push notifications from the DevRev SDK. Th
 
 DevRev sends push notifications to your app to alert users about new messages in the PLuG support chat.
 
-To receive push notifications, you need to configure your DevRev organization by following the [Push Notifications](./push-notification).
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
 
 You need to ensure that your Android app is configured to receive push notifications. To set it up, follow the [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/android/client).
 

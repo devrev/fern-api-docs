@@ -156,6 +156,8 @@ components:
         custom_fields:
           type: object
           description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Description of the account.
@@ -181,6 +183,7 @@ components:
             type: string
         schema_fragment_ids:
           type: array
+          deprecated: true
           description: Schema fragment IDs associated with this account SOR.
           example:
             - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
@@ -463,6 +466,31 @@ components:
         - accounts
       title: accounts-list-response
       x-go-name: AccountsListResponseBody
+    accounts-merge-request:
+      type: object
+      description: Request object to merge two accounts.
+      properties:
+        primary_account:
+          type: string
+          description: |
+            The ID of the primary account, which will be retained post merge.
+          example: ACC-12345
+        secondary_account:
+          type: string
+          description: |
+            The ID of the secondary account, which will be merged into the
+            primary account.
+          example: ACC-12345
+      required:
+        - primary_account
+        - secondary_account
+      title: accounts-merge-request
+    accounts-merge-response:
+      type: object
+      additionalProperties: false
+      description: The response to merging an account.
+      title: accounts-merge-response
+      x-go-name: AccountsMergeResponseBody
     accounts-update-request:
       type: object
       description: Request to update details of the account.
@@ -472,6 +500,8 @@ components:
         custom_fields:
           type: object
           description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Updated description of the account.
@@ -500,6 +530,7 @@ components:
             type: string
         schema_fragment_ids:
           type: array
+          deprecated: true
           description: Schema fragment IDs associated with this account SOR.
           example:
             - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
@@ -722,7 +753,7 @@ components:
           properties:
             applies_to_parts:
               type: array
-              description: Details of the parts relevant to the article.
+              description: Parts relevant to the article.
               items:
                 $ref: '#/components/schemas/part-summary'
             article_type:
@@ -737,7 +768,7 @@ components:
               description: Description of the article.
             extracted_content:
               type: array
-              description: Artifacts containing the extracted content.
+              description: Extracted content of the article.
               items:
                 $ref: '#/components/schemas/artifact-summary'
             num_downvotes:
@@ -750,7 +781,7 @@ components:
               format: int32
             owned_by:
               type: array
-              description: The users that own the article.
+              description: Users that own the article.
               items:
                 $ref: '#/components/schemas/user-summary'
             parent:
@@ -977,6 +1008,13 @@ components:
             - ARTIFACT-12345
           items:
             type: string
+        content_blocks:
+          type: array
+          description: List of content blocks used in the article.
+          example:
+            - ARTICLE-12345
+          items:
+            type: string
         published_version:
           type: string
           description: The latest published version.
@@ -1147,6 +1185,8 @@ components:
           $ref: '#/components/schemas/articles-update-request-artifacts'
         authored_by:
           $ref: '#/components/schemas/articles-update-request-authored-by'
+        content_blocks:
+          $ref: '#/components/schemas/articles-update-request-content-blocks'
         custom_fields:
           type: object
           description: Application-defined custom fields.
@@ -1226,6 +1266,19 @@ components:
           items:
             type: string
       title: articles-update-request-authored-by
+    articles-update-request-content-blocks:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Updates IDs of the content blocks.
+          example:
+            - ARTICLE-12345
+          items:
+            type: string
+      required:
+        - set
+      title: articles-update-request-content-blocks
     articles-update-request-extracted-content:
       type: object
       properties:
@@ -2034,6 +2087,31 @@ components:
         - token
       title: auth-tokens-get-response
       x-go-name: AuthTokensGetResponseBody
+    auth-tokens-info-request:
+      type: object
+      additionalProperties: false
+      description: |
+        The request to get the Dev organization, user and token attributes
+        extracted from the auth token.
+      title: auth-tokens-info-request
+    auth-tokens-info-response:
+      type: object
+      description: |
+        The Dev organization, user and token attributes extracted from the auth
+        token.
+      properties:
+        organization:
+          $ref: '#/components/schemas/auth-tokens-org-attributes'
+        token:
+          $ref: '#/components/schemas/auth-tokens-token-attributes'
+        user:
+          $ref: '#/components/schemas/auth-tokens-user-attributes'
+      required:
+        - organization
+        - token
+        - user
+      title: auth-tokens-info-response
+      x-go-name: AuthTokensInfoResponseBody
     auth-tokens-list-request:
       type: object
       description: A request to list the token metadata.
@@ -2065,6 +2143,25 @@ components:
         - tokens
       title: auth-tokens-list-response
       x-go-name: AuthTokensListResponseBody
+    auth-tokens-org-attributes:
+      type: object
+      description: |
+        The Dev organization attributes extracted from the auth token.
+      properties:
+        display_id:
+          type: string
+          description: The display ID of the Dev organization.
+        id:
+          type: string
+          description: The ID of the the Dev organization.
+          example: DEV-AbCdEfGh
+        slug:
+          type: string
+          description: The slug of the Dev organization.
+      required:
+        - display_id
+        - id
+      title: auth-tokens-org-attributes
     auth-tokens-org-traits:
       type: object
       description: Carries Rev org info.
@@ -2131,6 +2228,32 @@ components:
         requested_token_type:
           $ref: '#/components/schemas/auth-token-requested-token-type'
       title: auth-tokens-self-delete-request
+    auth-tokens-token-attributes:
+      type: object
+      description: The token attributes extracted from the auth token.
+      properties:
+        expiry:
+          type: integer
+          description: |
+            The expiry (exp) of the token in seconds from Unix epoch.
+          format: int64
+        issued_at:
+          type: integer
+          description: |
+            The issued at (iat) time of the token in seconds from Unix epoch.
+          format: int64
+        issuer:
+          type: string
+          description: The issuer ID (iss) of the token.
+        subject:
+          type: string
+          description: The subject (sub) of the token.
+      required:
+        - expiry
+        - issued_at
+        - issuer
+        - subject
+      title: auth-tokens-token-attributes
     auth-tokens-update-request:
       type: object
       description: A request to update the token metadata.
@@ -2156,6 +2279,32 @@ components:
         - token
       title: auth-tokens-update-response
       x-go-name: AuthTokensUpdateResponseBody
+    auth-tokens-user-attributes:
+      type: object
+      description: The user attributes extracted from the auth token.
+      properties:
+        type:
+          $ref: '#/components/schemas/user-type'
+        display_id:
+          type: string
+          description: The display ID of the user.
+        display_name:
+          type: string
+          description: The display name of the user.
+        email:
+          type: string
+          description: The email address of the user.
+        full_name:
+          type: string
+          description: The full name of the user.
+        id:
+          type: string
+          description: The ID of the user.
+      required:
+        - display_id
+        - id
+        - type
+      title: auth-tokens-user-attributes
     auth-tokens-user-traits:
       type: object
       description: Carries Rev user info.
@@ -2808,6 +2957,11 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/conversations-create-request-type-value'
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Description for the conversation.
@@ -2919,6 +3073,9 @@ components:
             - PROD-12345
           items:
             type: string
+        custom_fields:
+          type: object
+          description: Filters for custom fields.
         first:
           type: integer
           description: |
@@ -2955,6 +3112,16 @@ components:
             type: string
         rev_org:
           type: array
+          deprecated: true
+          description: |
+            Filters for conversations that are associated with any of the
+            provided Rev organizations.
+          example:
+            - REV-AbCdEfGh
+          items:
+            type: string
+        rev_orgs:
+          type: array
           description: |
             Filters for conversations that are associated with any of the
             provided Rev organizations.
@@ -2964,14 +3131,27 @@ components:
             type: string
         sla_summary:
           $ref: '#/components/schemas/sla-summary-filter'
+        source_channel:
+          type: array
+          description: |
+            Filters for conversations with any of the provided source channels.
+          items:
+            type: string
         source_channels:
           type: array
+          deprecated: true
           description: |
             Filters for conversations with any of the provided source channels.
           items:
             type: string
         stage:
           $ref: '#/components/schemas/stage-filter'
+        subtype:
+          type: array
+          description: |
+            Filters for conversation with any of the provided subtypes.
+          items:
+            type: string
         tags:
           type: array
           deprecated: true
@@ -3037,6 +3217,9 @@ components:
           description: |
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
+        custom_fields:
+          type: object
+          description: Filters for custom fields.
         group:
           type: array
           description: |
@@ -3074,6 +3257,16 @@ components:
             type: string
         rev_org:
           type: array
+          deprecated: true
+          description: |
+            Filters for conversations that are associated with any of the
+            provided Rev organizations.
+          example:
+            - REV-AbCdEfGh
+          items:
+            type: string
+        rev_orgs:
+          type: array
           description: |
             Filters for conversations that are associated with any of the
             provided Rev organizations.
@@ -3083,14 +3276,27 @@ components:
             type: string
         sla_summary:
           $ref: '#/components/schemas/sla-summary-filter'
+        source_channel:
+          type: array
+          description: |
+            Filters for conversations with any of the provided source channels.
+          items:
+            type: string
         source_channels:
           type: array
+          deprecated: true
           description: |
             Filters for conversations with any of the provided source channels.
           items:
             type: string
         stage:
           $ref: '#/components/schemas/stage-filter'
+        subtype:
+          type: array
+          description: |
+            Filters for conversation with any of the provided subtypes.
+          items:
+            type: string
         tags:
           type: array
           deprecated: true
@@ -3135,6 +3341,11 @@ components:
       properties:
         applies_to_parts:
           $ref: '#/components/schemas/conversations-update-request-applies-to-parts'
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: The updated description for the conversation.
@@ -3200,6 +3411,16 @@ components:
     conversations-update-request-tags:
       type: object
       properties:
+        add:
+          type: array
+          description: Adds the provided tags on the conversation.
+          items:
+            $ref: '#/components/schemas/add-tag-with-value'
+        remove:
+          type: array
+          description: Removes the provided tags on the conversation.
+          items:
+            $ref: '#/components/schemas/remove-tag-with-value'
         set:
           type: array
           description: Sets the tag IDs to the provided tags.
@@ -3738,6 +3959,9 @@ components:
       title: custom-objects-list-request
     custom-objects-list-response:
       type: object
+      description: |
+        The response to listing all custom objects matching the filter
+        criteria.
       properties:
         next_cursor:
           type: string
@@ -4002,6 +4226,11 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/custom-schema-fragments-set-request-type'
+        composite_schemas:
+          type: array
+          description: List of all composite schemas used in this fragment.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragments-set-request-composite-schema'
         conditions:
           type: array
           description: List of conditions for this fragment.
@@ -4043,6 +4272,23 @@ components:
       required:
         - app
       title: custom-schema-fragments-set-request-app-fragment
+    custom-schema-fragments-set-request-composite-schema:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of this composite type.
+        fields:
+          type: array
+          description: List of fields in this composite type.
+          items:
+            $ref: '#/components/schemas/schema-field-descriptor'
+        name:
+          type: string
+          description: The name of this composite type.
+      required:
+        - fields
+      title: custom-schema-fragments-set-request-composite-schema
     custom-schema-fragments-set-request-custom-type-fragment:
       type: object
       properties:
@@ -4293,6 +4539,9 @@ components:
         - $ref: '#/components/schemas/atom-base-summary'
         - type: object
           properties:
+            is_final:
+              type: boolean
+              description: True if this is a final state.
             name:
               type: string
               description: The human readable name of the state.
@@ -4565,7 +4814,7 @@ components:
       type: object
       additionalProperties: false
       description: |
-        Response for the contacts personal data detete request. Response is
+        Response for the contacts personal data delete request. Response is
         empty as the process is asynchronous. Upon completion, the user will be
         notified.
       title: delete-rev-users-personal-data-response
@@ -6848,12 +7097,16 @@ components:
           type: string
           description: The ID of the tag that was deleted.
           example: TAG-12345
+        old_tag:
+          $ref: '#/components/schemas/tag'
       required:
         - id
       title: event-tag-deleted
     event-tag-updated:
       type: object
       properties:
+        old_tag:
+          $ref: '#/components/schemas/tag'
         tag:
           $ref: '#/components/schemas/tag'
       required:
@@ -6874,6 +7127,8 @@ components:
           type: string
           description: The ID of the timeline entry that was deleted.
           example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+        old_entry:
+          $ref: '#/components/schemas/timeline-entry'
       required:
         - id
       title: event-timeline-entry-deleted
@@ -6881,6 +7136,8 @@ components:
       type: object
       properties:
         entry:
+          $ref: '#/components/schemas/timeline-entry'
+        old_entry:
           $ref: '#/components/schemas/timeline-entry'
       required:
         - entry
@@ -7309,17 +7566,9 @@ components:
         availability:
           $ref: '#/components/schemas/availability-preferences-group'
         preferred_locale:
-          $ref: '#/components/schemas/general-preferences-group-preferred-locale'
+          type: string
+          description: Preferred locale of the user.
       title: general-preferences-group
-    general-preferences-group-preferred-locale:
-      type: string
-      description: Preferred locale of the user.
-      enum:
-        - en_us
-        - es_ar
-        - ja_jp
-        - nl_aw
-        - nl_sx
     generic-notification-event-type:
       type: string
       description: Event type of the notification.
@@ -8082,6 +8331,11 @@ components:
           description: Filters for incidents in any of the provided stages.
           items:
             type: string
+        subtype:
+          type: array
+          description: Filters for incidents with any of the provided subtypes.
+          items:
+            type: string
         target_close_date:
           $ref: '#/components/schemas/date-filter'
         title:
@@ -8212,6 +8466,11 @@ components:
         stage:
           type: array
           description: Filters for incidents in any of the provided stages.
+          items:
+            type: string
+        subtype:
+          type: array
+          description: Filters for incidents with any of the provided subtypes.
           items:
             type: string
         target_close_date:
@@ -8498,24 +8757,32 @@ components:
       type: object
       discriminator:
         mapping:
+          account: '#/components/schemas/account-summary'
           capability: '#/components/schemas/capability-summary'
           conversation: '#/components/schemas/conversation-summary'
+          dev_user: '#/components/schemas/dev-user-summary'
           enhancement: '#/components/schemas/enhancement-summary'
           feature: '#/components/schemas/feature-summary'
           issue: '#/components/schemas/issue-summary'
           opportunity: '#/components/schemas/opportunity-summary'
           product: '#/components/schemas/product-summary'
+          rev_org: '#/components/schemas/rev-org-summary'
+          rev_user: '#/components/schemas/rev-user-summary'
           task: '#/components/schemas/task-summary'
           ticket: '#/components/schemas/ticket-summary'
         propertyName: type
       oneOf:
+        - $ref: '#/components/schemas/account-summary'
         - $ref: '#/components/schemas/capability-summary'
         - $ref: '#/components/schemas/conversation-summary'
+        - $ref: '#/components/schemas/dev-user-summary'
         - $ref: '#/components/schemas/enhancement-summary'
         - $ref: '#/components/schemas/feature-summary'
         - $ref: '#/components/schemas/issue-summary'
         - $ref: '#/components/schemas/opportunity-summary'
         - $ref: '#/components/schemas/product-summary'
+        - $ref: '#/components/schemas/rev-org-summary'
+        - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/task-summary'
         - $ref: '#/components/schemas/ticket-summary'
       properties:
@@ -8527,13 +8794,17 @@ components:
     link-endpoint-type:
       type: string
       enum:
+        - account
         - capability
         - conversation
+        - dev_user
         - enhancement
         - feature
         - issue
         - opportunity
         - product
+        - rev_org
+        - rev_user
         - task
         - ticket
     link-rev-user-to-rev-org-request:
@@ -9032,6 +9303,12 @@ components:
           format: int32
         mode:
           $ref: '#/components/schemas/list-mode'
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the records by and the direction to sort them.
+          items:
+            type: string
         status:
           type: array
           description: The status of the metric definition.
@@ -10654,12 +10931,13 @@ components:
       properties:
         artifacts:
           type: array
-          description: Ids of the artifacts.
+          description: |
+            Artifacts of the resource (relevant only for type artifact).
           items:
             $ref: '#/components/schemas/artifact-summary'
         url:
           type: string
-          description: URL of the external article.
+          description: URL of the resource (relevant only for type url).
       title: resource
     resource-summary:
       type: object
@@ -10667,12 +10945,13 @@ components:
       properties:
         artifacts:
           type: array
-          description: Ids of the artifacts.
+          description: |
+            Artifacts of the resource (relevant only for type artifact).
           items:
             $ref: '#/components/schemas/artifact-summary'
         url:
           type: string
-          description: URL of the external article.
+          description: URL of the resource (relevant only for type url).
       title: resource-summary
     rev-org:
       allOf:
@@ -11089,11 +11368,14 @@ components:
           description: Application-defined custom fields.
         custom_schema_fragments:
           type: array
+          deprecated: true
           description: The schema fragment IDs associated with the Rev user.
           example:
             - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
           items:
             type: string
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Description of the Rev user.
@@ -11376,6 +11658,8 @@ components:
           description: Application-defined custom fields.
         custom_schema_fragments:
           $ref: '#/components/schemas/rev-users-update-request-custom-schema-fragments'
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Updated description of the Rev user.
@@ -13013,6 +13297,12 @@ components:
           $ref: '#/components/schemas/list-mode'
         modified_date:
           $ref: '#/components/schemas/date-time-filter'
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the SLA Trackers by and the direction to sort them.
+          items:
+            type: string
         stage:
           type: array
           description: The SLA tracker stages the filter matches.
@@ -13172,6 +13462,12 @@ components:
           description: The SLA types the filter matches.
           items:
             $ref: '#/components/schemas/sla-type'
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the SLAs by and the direction to sort them.
+          items:
+            type: string
         status:
           type: array
           description: The SLA statuses the filter matches.
@@ -14133,6 +14429,7 @@ components:
       type: string
       enum:
         - failed
+        - modified
         - succeeded
     sync-out:
       type: object
@@ -16748,6 +17045,10 @@ components:
           format: double
         forecast_category:
           $ref: '#/components/schemas/opportunity-forecast-category'
+        forecast_category_v2:
+          type: integer
+          description: Forecast category enum ID of an opportunity.
+          format: int64
         priority:
           $ref: '#/components/schemas/opportunity-priority'
         probability:
@@ -16979,6 +17280,14 @@ components:
             Filters for opportunities with any of the provided contacts.
           items:
             type: string
+        forecast_category_v2:
+          type: array
+          description: |
+            Filters for opportunities with any of the provided forecast
+            category enum IDs.
+          items:
+            type: integer
+            format: int64
         subtype:
           type: array
           description: |
@@ -17323,6 +17632,10 @@ components:
           description: Updates the customer budget.
           format: double
           nullable: true
+        forecast_category_v2:
+          type: integer
+          description: Forecast category enum ID of an opportunity.
+          format: int64
         probability:
           type: number
           description: |
@@ -17420,6 +17733,9 @@ components:
           type: string
           description: Updates the group that the ticket is associated with.
           nullable: true
+        is_archived:
+          type: boolean
+          description: Whether the ticket is archived.
         is_spam:
           type: boolean
           description: Updates whether the ticket is spam.
@@ -17492,13 +17808,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -17527,13 +17843,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -17682,7 +17998,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -17708,13 +18023,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-export-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -17751,7 +18066,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -17779,13 +18093,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -17950,7 +18264,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -17978,13 +18291,48 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
-          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
+  /accounts.merge:
+    post:
+      description: Merges two accounts.
+      operationId: accounts-merge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/accounts-merge-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts-merge-response'
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18013,13 +18361,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18144,7 +18492,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18170,13 +18517,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/articles-count-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18206,13 +18553,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/articles-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18239,13 +18586,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/articles-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18284,7 +18631,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18312,13 +18658,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/articles-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18459,7 +18805,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18485,13 +18830,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/articles-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18518,13 +18863,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/articles-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18569,7 +18914,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18597,13 +18941,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18640,7 +18984,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18668,13 +19011,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18719,7 +19062,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18747,13 +19089,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-locate-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18783,13 +19125,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-prepare-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-prepare-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18818,13 +19160,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-versions-prepare-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-versions-prepare-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18851,13 +19193,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/export-audit-logs-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/export-audit-logs-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18888,13 +19230,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18925,6 +19267,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-delete-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -18968,7 +19311,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18998,13 +19340,80 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
-          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
+  /auth-tokens.info:
+    get:
+      description: |
+        Returns the Dev organization, user and token attributes extracted from
+        the auth token.
+      operationId: auth-tokens-info
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth-tokens-info-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - auth-tokens
+      x-fern-audiences:
+        - docs
+      x-request-name: AuthTokensInfoQuery
+    post:
+      description: |
+        Returns the Dev organization, user and token attributes extracted from
+        the auth token.
+      operationId: auth-tokens-info-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth-tokens-info-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth-tokens-info-response'
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19062,7 +19471,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19092,13 +19500,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19129,6 +19537,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-self-delete-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -19162,13 +19571,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19197,13 +19606,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/code-changes-create-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19230,13 +19639,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/code-changes-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19272,7 +19681,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19298,13 +19706,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/code-changes-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19358,7 +19766,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19384,13 +19791,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/code-changes-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19417,13 +19824,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/code-changes-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19450,13 +19857,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/content-template-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19492,7 +19899,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19518,13 +19924,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/content-template-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19615,7 +20021,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19641,13 +20046,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/content-template-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19674,13 +20079,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/conversations-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19707,13 +20112,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/conversations-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19749,6 +20154,12 @@ paths:
               - PROD-12345
             items:
               type: string
+        - description: Filters for custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
         - description: |
             The number of conversation items to return. The default is '50', the
             maximum is '5000'.
@@ -19808,6 +20219,19 @@ paths:
           name: rev_org
           schema:
             type: array
+            deprecated: true
+            example:
+              - REV-AbCdEfGh
+            items:
+              type: string
+        - description: |
+            Filters for conversations that are associated with any of the
+            provided Rev organizations.
+          explode: false
+          in: query
+          name: rev_orgs
+          schema:
+            type: array
             example:
               - REV-AbCdEfGh
             items:
@@ -19824,15 +20248,34 @@ paths:
             Filters for conversations with any of the provided source channels.
           explode: false
           in: query
+          name: source_channel
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for conversations with any of the provided source channels.
+          explode: false
+          in: query
           name: source_channels
           schema:
             type: array
+            deprecated: true
             items:
               type: string
         - description: Filters for records in the provided stage(s) by name.
           explode: false
           in: query
           name: stage.name
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for conversation with any of the provided subtypes.
+          explode: false
+          in: query
+          name: subtype
           schema:
             type: array
             items:
@@ -19869,7 +20312,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19895,13 +20337,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/conversations-export-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19937,7 +20379,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19965,13 +20406,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/conversations-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20015,6 +20456,12 @@ paths:
           name: cursor
           schema:
             type: string
+        - description: Filters for custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
         - description: Filters for conversation that belong to the given groups.
           explode: false
           in: query
@@ -20081,6 +20528,19 @@ paths:
           name: rev_org
           schema:
             type: array
+            deprecated: true
+            example:
+              - REV-AbCdEfGh
+            items:
+              type: string
+        - description: |
+            Filters for conversations that are associated with any of the
+            provided Rev organizations.
+          explode: false
+          in: query
+          name: rev_orgs
+          schema:
+            type: array
             example:
               - REV-AbCdEfGh
             items:
@@ -20097,15 +20557,34 @@ paths:
             Filters for conversations with any of the provided source channels.
           explode: false
           in: query
+          name: source_channel
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for conversations with any of the provided source channels.
+          explode: false
+          in: query
           name: source_channels
           schema:
             type: array
+            deprecated: true
             items:
               type: string
         - description: Filters for records in the provided stage(s) by name.
           explode: false
           in: query
           name: stage.name
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for conversation with any of the provided subtypes.
+          explode: false
+          in: query
+          name: subtype
           schema:
             type: array
             items:
@@ -20142,7 +20621,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20168,13 +20646,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/conversations-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20201,13 +20679,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/conversations-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20252,7 +20730,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20278,13 +20755,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-objects-count-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20311,13 +20788,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-objects-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20344,13 +20821,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-objects-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20387,7 +20864,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20415,13 +20891,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-objects-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20498,7 +20974,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20524,13 +20999,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-objects-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20557,13 +21032,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-objects-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20598,13 +21073,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20635,6 +21110,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-delete-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -20676,7 +21152,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20705,13 +21180,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20746,7 +21221,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20777,13 +21251,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/empty'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20816,6 +21290,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-toggle-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -20848,13 +21323,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-update-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20893,7 +21368,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20921,13 +21395,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20956,13 +21430,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-identities-link-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-identities-link-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20991,13 +21465,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-identities-unlink-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-identities-unlink-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21095,7 +21569,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21121,13 +21594,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21155,7 +21628,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21181,13 +21653,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-self-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21214,13 +21686,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-self-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21247,13 +21719,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21304,7 +21776,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21330,13 +21801,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/directories-count-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21363,13 +21834,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/directories-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21396,13 +21867,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/directories-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21440,7 +21911,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21468,13 +21938,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/directories-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21551,7 +22021,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21577,13 +22046,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/directories-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21610,13 +22079,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/directories-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21683,7 +22152,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21709,13 +22177,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/engagements-count-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21742,13 +22210,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/engagements-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21775,13 +22243,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/engagements-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21819,7 +22287,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21847,13 +22314,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/engagements-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21952,7 +22419,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21978,13 +22444,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/engagements-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22011,13 +22477,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/engagements-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22055,7 +22521,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/event-source-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22083,13 +22548,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/event-source-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/event-source-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22119,13 +22584,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/event-sources-schedule-event-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/event-sources-schedule-event-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22154,6 +22619,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/event-sources-delete-scheduled-event-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -22185,13 +22651,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/groups-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22227,7 +22693,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22255,13 +22720,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/groups-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22354,7 +22819,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22380,13 +22844,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/groups-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22413,13 +22877,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/group-members-add-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-add-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22482,7 +22946,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22508,13 +22971,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/group-members-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22541,13 +23004,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/group-members-remove-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-remove-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22576,13 +23039,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/groups-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22611,13 +23074,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/incidents-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22644,13 +23107,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/incidents-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22688,7 +23151,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22716,13 +23178,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/incidents-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22891,6 +23353,14 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for incidents with any of the provided subtypes.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for incidents by the provided titles.
           explode: false
           in: query
@@ -22905,7 +23375,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-group-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22931,13 +23400,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/incidents-group-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-group-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23087,6 +23556,14 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for incidents with any of the provided subtypes.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for incidents by the provided titles.
           explode: false
           in: query
@@ -23101,7 +23578,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23127,13 +23603,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/incidents-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23160,13 +23636,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/incidents-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23234,6 +23710,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/keyrings-create-callback-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -23263,13 +23740,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-link-type-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23305,7 +23782,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23333,13 +23809,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-link-type-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23416,7 +23892,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23442,13 +23917,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-link-type-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23475,13 +23950,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-link-type-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23511,13 +23986,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/links-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23544,13 +24019,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/links-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23588,7 +24063,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23616,13 +24090,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/links-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23724,7 +24198,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23750,13 +24223,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/links-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23783,13 +24256,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/metric-action-execute-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-action-execute-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23818,13 +24291,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/metric-definitions-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23851,13 +24324,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/metric-definitions-delete-request'
+        required: true
       responses:
         "204":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23902,7 +24375,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23928,13 +24400,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/metric-definitions-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23997,6 +24469,15 @@ paths:
           name: mode
           schema:
             $ref: '#/components/schemas/list-mode'
+        - description: |
+            Fields to sort the records by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
         - description: The status of the metric definition.
           explode: false
           in: query
@@ -24019,7 +24500,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24045,13 +24525,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/metric-definitions-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24078,13 +24558,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/metric-definitions-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24113,6 +24593,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/metrics-data-ingest-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -24142,13 +24623,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/notifications-send-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/notifications-send-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24175,13 +24656,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedule-fragments-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24217,7 +24698,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24243,13 +24723,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedule-fragments-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24276,13 +24756,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedule-fragments-transition-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-transition-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24311,13 +24791,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedules-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24353,7 +24833,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24379,13 +24858,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedules-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24455,7 +24934,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24481,13 +24959,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedules-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24516,13 +24994,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedules-set-future-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-set-future-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24549,13 +25027,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedules-transition-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-transition-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24582,13 +25060,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/org-schedules-update-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24617,13 +25095,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24650,13 +25128,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24696,7 +25174,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24725,13 +25202,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24844,7 +25321,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24871,13 +25347,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24905,13 +25381,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24959,7 +25435,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/preferences-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24987,13 +25462,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/preferences-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/preferences-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25022,13 +25497,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/question-answers-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25055,6 +25530,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/question-answers-delete-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -25095,7 +25571,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25123,13 +25598,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/question-answers-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25230,7 +25705,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25256,13 +25730,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/question-answers-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25289,13 +25763,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/question-answers-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25326,13 +25800,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25361,13 +25835,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25414,7 +25888,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25442,13 +25915,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25612,7 +26085,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25643,13 +26115,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25678,13 +26150,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25717,13 +26189,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-users-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25752,13 +26224,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-users-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25787,13 +26259,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/delete-rev-users-personal-data-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/delete-rev-users-personal-data-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25831,7 +26303,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25859,13 +26330,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-users-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25894,13 +26365,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/link-rev-user-to-rev-org-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/link-rev-user-to-rev-org-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26068,7 +26539,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26098,13 +26568,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-users-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26133,13 +26603,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-users-merge-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-merge-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26168,13 +26638,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/get-rev-users-personal-data-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/get-rev-users-personal-data-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26315,7 +26785,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-scan-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26343,13 +26812,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-users-scan-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-scan-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26378,13 +26847,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/unlink-rev-user-from-rev-org-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/unlink-rev-user-from-rev-org-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26413,13 +26882,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-users-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26476,7 +26945,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/aggregated-schema-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26504,13 +26972,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/aggregated-schema-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/aggregated-schema-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26548,7 +27016,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26576,13 +27043,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-schema-fragments-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26699,7 +27166,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26725,13 +27191,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-schema-fragments-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26758,13 +27224,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-schema-fragments-set-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-set-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26805,7 +27271,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26833,13 +27298,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/stock-schema-fragments-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26928,7 +27393,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26954,13 +27418,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/stock-schema-fragments-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27004,7 +27468,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/subtypes-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27030,13 +27493,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/subtypes-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/subtypes-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27112,7 +27575,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-core-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27138,13 +27600,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/search-core-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-core-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27211,7 +27673,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-hybrid-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27238,13 +27699,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/search-hybrid-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-hybrid-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27280,7 +27741,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/service-accounts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27308,13 +27768,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/service-accounts-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/service-accounts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27352,7 +27812,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27380,13 +27839,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/sla-trackers-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27473,6 +27932,15 @@ paths:
             type: string
             example: "2023-01-01T12:00:00.000Z"
             format: date-time
+        - description: |
+            Fields to sort the SLA Trackers by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
         - description: The SLA tracker stages the filter matches.
           explode: false
           in: query
@@ -27495,7 +27963,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27521,13 +27988,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/sla-trackers-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27554,13 +28021,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/slas-assign-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-assign-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27589,13 +28056,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/slas-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27631,7 +28098,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27659,13 +28125,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/slas-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27737,6 +28203,14 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sla-type'
+        - description: Fields to sort the SLAs by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
         - description: The SLA statuses the filter matches.
           explode: false
           in: query
@@ -27751,7 +28225,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27777,13 +28250,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/slas-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27810,13 +28283,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/slas-transition-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-transition-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27845,13 +28318,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/slas-update-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27896,7 +28369,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-ins-resources-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27922,13 +28394,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/snap-ins-resources-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-ins-resources-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27955,13 +28427,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/snap-ins-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-ins-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27990,13 +28462,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/snap-widgets-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-widgets-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28023,13 +28495,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-stages-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28065,7 +28537,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28093,13 +28564,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-stages-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28171,7 +28642,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28197,13 +28667,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-stages-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28230,13 +28700,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-stages-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28265,13 +28735,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-states-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28307,7 +28777,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28335,13 +28804,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-states-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28419,7 +28888,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28445,13 +28913,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-states-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28478,13 +28946,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/custom-states-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28515,13 +28983,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/surveys-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28548,13 +29016,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/surveys-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28637,7 +29105,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28663,13 +29130,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/surveys-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28782,7 +29249,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-responses-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28808,13 +29274,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/surveys-responses-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-responses-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28841,13 +29307,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/surveys-send-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-send-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28875,13 +29341,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/surveys-submit-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-submit-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28944,7 +29410,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sys-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28970,13 +29435,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/sys-users-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/sys-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29003,13 +29468,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/sys-users-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/sys-users-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29040,13 +29505,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29073,13 +29538,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29118,7 +29583,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29146,13 +29610,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29222,7 +29686,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29248,13 +29711,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29281,13 +29744,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29316,13 +29779,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29351,13 +29814,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29404,7 +29867,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29432,13 +29894,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29535,7 +29997,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29563,13 +30024,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29598,13 +30059,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29633,13 +30094,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/track-events-publish-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/track-events-publish-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29723,7 +30184,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29750,13 +30210,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/uoms-count-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-count-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29783,13 +30243,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/uoms-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29816,6 +30276,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/uoms-delete-request'
+        required: true
       responses:
         "204":
           description: Success.
@@ -29856,7 +30317,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29884,13 +30344,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/uoms-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30010,7 +30470,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30036,13 +30495,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/uoms-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30069,13 +30528,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/uoms-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30104,13 +30563,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30137,13 +30596,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30172,13 +30631,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-fetch-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-fetch-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30217,7 +30676,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30245,13 +30703,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30281,7 +30739,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30307,13 +30764,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30340,13 +30797,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30379,13 +30836,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30412,13 +30869,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30561,6 +31018,17 @@ paths:
             type: array
             items:
               type: string
+        - description: |
+            Filters for opportunities with any of the provided forecast category
+            enum IDs.
+          explode: false
+          in: query
+          name: opportunity.forecast_category_v2
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
         - description: Filters for opportunity with any of the provided subtypes.
           explode: false
           in: query
@@ -30758,7 +31226,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30784,13 +31251,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-export-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30827,7 +31294,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30855,13 +31321,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31019,6 +31485,17 @@ paths:
             type: array
             items:
               type: string
+        - description: |
+            Filters for opportunities with any of the provided forecast category
+            enum IDs.
+          explode: false
+          in: query
+          name: opportunity.forecast_category_v2
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
         - description: Filters for opportunity with any of the provided subtypes.
           explode: false
           in: query
@@ -31216,7 +31693,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31242,13 +31718,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31275,13 +31751,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":

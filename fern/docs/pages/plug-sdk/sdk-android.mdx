@@ -126,6 +126,10 @@ To use certain features of the DevRev SDK, user identification is required. You 
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(context, appID)` method.
 </Callout>
 
+<Callout intent="note">
+The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
+</Callout>
+
 ### Anonymous identification
 
 The anonymous identification method allows you to create an anonymous user with an optional or random user identifier, ensuring that no other data is stored or associated with the user.
@@ -155,7 +159,7 @@ The unverified identification method identifies users with a unique identifier, 
   <Tab title="Kotlin">
    ```kotlin
    DevRev.identifyUnverifiedUser(
-       indentity: Identity
+       identity: Identity
    )
    ```
   </Tab>
@@ -188,6 +192,33 @@ For example:
    ```
   </Tab>
 </Tabs>
+
+## Update user information
+
+To update a user's information, use the following method:
+
+<Tabs>
+  <Tab title="Kotlin">
+   ```kotlin
+DevRev.updateUser(
+    identity: Identity
+)
+```
+  </Tab>
+  <Tab title="Java">
+  ```java
+DevRev.INSTANCE.updateUser(
+    Identity identity
+);
+```
+  </Tab>
+</Tabs>
+
+The function accepts the `DevRev.Identity` ojbect.
+
+<Callout intent="note">
+The `userID` property cannot be updated.
+</Callout>
 
 ## PLuG support chat
 

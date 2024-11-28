@@ -76,6 +76,10 @@ The identification function should be placed appropriately in your app after the
 If you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
 </Callout>
 
+<Callout intent="note">
+The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
+</Callout>
+
 You can select from the following methods to identify users within your application:
 
 ### Anonymous identification
@@ -107,6 +111,10 @@ DevRev.updateUser(_:)
 ```
 
 This function accepts the `DevRev.Identity` structure.
+
+<Callout intent="note">
+The `userID` property cannot be updated.
+</Callout>
 
 <Callout intent="note">
 The identification functions are asynchronous. Ensure you wrap them in a `Task` when calling from synchronous contexts.

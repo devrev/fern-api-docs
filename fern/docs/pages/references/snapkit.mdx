@@ -10,9 +10,7 @@ The `snap_kit_body` field has the following properties:
 - `snap_in_action_name`: The name of the action this snap-kit represents.
 - `body`: An object that holds the actual snap-kit content in the form of `snaps`.
 
-Example
-
-```json
+```json Example
 {
   "object": "<source_id>",
   "body": "Giphy",
@@ -54,9 +52,9 @@ Snap-kit generates payloads when a user interacts with an actionable snap. The p
 - [Tag picker](#tag-picker)
 - [User picker](#user-picker)
 
-All actionable snaps share the same base payload structure. The base payload has the following structure:
+All actionable snaps share the same base payload structure.
 
-```json
+```json Base payload structure
 {
   "type": "<type of snap that generated the payload>",
   "action_id": "<the action identifier of the snap that generated the payload>",
@@ -255,9 +253,7 @@ Many elements share the same base properties. The base types these elements inhe
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "action_id": "PRIMARY",
     "action_type": "remote",
@@ -739,9 +735,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "action_id": "checkboxes",
     "action_type": "remote",
@@ -820,7 +814,6 @@ _Example_
 
   ![plain_text_input](../../img/plain-text-input.png)
 
-
   ```json
   {
     "element": {
@@ -859,9 +852,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "type": "plain_text_input",
     "action_id": "name",
@@ -921,9 +912,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "type": "number_input",
     "action_id": "age",
@@ -987,9 +976,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "type": "email_text_input",
     "action_id": "email",
@@ -1060,9 +1047,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "type": "rich_text_input",
     "action_id": "notes",
@@ -1212,11 +1197,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  Standard string list input.
-
-  ```json
+  ```json Example payload: Standard string list input
   {
     "type": "string_list",
     "action_id": "keywords",
@@ -1226,9 +1207,7 @@ _Example_
   }
   ```
 
-  Multiline string list input.
-
-  ```json
+  ```json Example payload: Multiline string list input.
   {
     "type": "string_list",
     "action_id": "multiline",
@@ -1301,9 +1280,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "type": "number_list",
     "action_id": "numbers",
@@ -1369,9 +1346,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "type": "email_list",
     "action_id": "emails",
@@ -1478,9 +1453,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "action_id": "static_select",
     "action_type": "remote",
@@ -1594,9 +1567,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "action_id": "multi_static_select",
     "action_type": "remote",
@@ -1695,9 +1666,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "action_id": "in-app",
     "action_type": "remote",
@@ -1796,9 +1765,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "action_id": "toggle",
     "action_type": "remote",
@@ -1891,9 +1858,7 @@ _Example_
   }
   ```
 
-  _Example payload_
-
-  ```json
+  ```json Example payload
   {
     "action_id": "upload",
     "action_type": "remote",
@@ -2421,9 +2386,7 @@ Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](
 }
 ```
 
-_Example payload_
-
-```json
+```json Example payload
 {
   "action_id": "user_form",
   "action_type": "remote",
@@ -2664,9 +2627,7 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload]
 }
 ```
 
-_Example payload_
-
-```json
+```json Example payload
 {
   "action_id": "part_picker",
   "action_type": "remote",
@@ -2749,9 +2710,7 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload]
 }
 ```
 
-_Example payload_
-
-```json
+```json Example payload
 {
   "action_id": "tag_picker",
   "action_type": "remote",
@@ -2835,9 +2794,7 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload]
 }
 ```
 
-_Example payload_
-
-```json
+```json Example payload
 {
   "action_id": "user_picker",
   "action_type": "remote",

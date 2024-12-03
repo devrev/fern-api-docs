@@ -80,15 +80,24 @@ navigation:
           - page: Integrate PLuG with your iOS app
             slug: install-ios
             path: ../docs/pages/plug-sdk/install-ios.mdx
+          - page: Install the Web SDK
+            slug: installation
+            path: ../docs/pages/plug-sdk/web-sdk-install.mdx
+          - page: Install PLuG search
+            slug: install-search
+            path: ../docs/pages/plug-sdk/search-install.mdx
+          - page: Identify your users with PLuG
+            slug: user-identity
+            path: ../docs/pages/plug-sdk/identify-web-user.mdx
           - page: Track events
             slug: track-events
             path: ../docs/pages/plug-sdk/track-events.mdx
           - page: Methods
             slug: methods
             path: ../docs/pages/plug-sdk/methods.mdx
-          - page: Customization
+          - page: Custom implementation of PLuG widget
             slug: customize
-            path: ../docs/pages/plug-sdk/customize.mdx
+            path: ../docs/pages/plug-sdk/customize.mdx  
   - section: Snap-in development
     slug: snapin-development
     contents:
@@ -188,6 +197,8 @@ navigation:
             path: ../docs/pages/references/hooks.mdx
           - page: Snapkit
             path: ../docs/pages/references/snapkit.mdx
+          - page: Snap Components
+            path: ../docs/pages/references/snap-components.mdx
           - page: Snap-in resources
             slug: snap-in-resources
             path: ../docs/pages/references/snap-in-resources.mdx
@@ -211,3 +222,5 @@ navigation:
         path: ../docs/pages/upgrades.mdx
       - page: Code Samples
         path: ../docs/pages/examples/samples.mdx
+      - page: Marketplace listings
+        path: ../docs/pages/marketplace-listings.mdx

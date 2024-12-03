@@ -86,6 +86,10 @@ components:
             - external_refs
             - owned_by
       title: account
+    account-summary:
+      allOf:
+        - $ref: '#/components/schemas/org-base-summary'
+      title: account-summary
     accounts-create-request:
       type: object
       description: |
@@ -208,6 +212,34 @@ components:
         - accounts
       title: accounts-export-response
       x-go-name: AccountsExportResponseBody
+    accounts-filters:
+      type: object
+      properties:
+        created_by:
+          type: array
+          description: Filters for accounts created by the specified user(s).
+          items:
+            type: string
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        display_name:
+          type: array
+          description: Array of display names of accounts to be filtered.
+          items:
+            type: string
+        external_refs:
+          type: array
+          description: Array of references of accounts to be filtered.
+          items:
+            type: string
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        stage:
+          type: array
+          description: Filters for accounts on specified stages.
+          items:
+            type: string
+      title: accounts-filters
     accounts-get-request:
       type: object
       description: Request object to get an account's information.
@@ -352,6 +384,20 @@ components:
       type: object
       description: Metric with corresponding target values.
       properties:
+        breached_at:
+          type: string
+          description: |
+            For breached metrics the time they entered into breach. This is the
+            same as what the target date was, unless the breach happened due to
+            a different policy starting to apply.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        completed_in:
+          type: integer
+          description: |
+            For completed metrics the time (in minutes) it took to complete
+            them. (Taking into account the schedule if any).
+          format: int32
         is_out_of_schedule:
           type: boolean
           description: |
@@ -360,12 +406,27 @@ components:
             stage.
         metric_definition:
           $ref: '#/components/schemas/metric-definition-summary'
+        next_schedule_transition:
+          type: string
+          description: |
+            The next time the schedule will change its state, if such is known.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
         org_schedule:
           $ref: '#/components/schemas/org-schedule-summary'
         remaining_time:
           type: integer
           description: Time in minutes that remains on a paused metric.
           format: int32
+        stage:
+          type: string
+          description: Metric stage corresponding to the applicable SLA.
+        status:
+          type: string
+          description: |
+            It is an indicator of whether the metric has ever been breached
+            (missed). If not, it shows whether the metric is completed, in
+            progress, or not part of the applied policy.
         target_time:
           type: string
           description: |
@@ -381,6 +442,7 @@ components:
           format: date-time
       required:
         - metric_definition
+        - stage
       title: archetype-metric-target
     artifact:
       allOf:
@@ -616,6 +678,7 @@ components:
       title: auth-connection
     auth-connection-options-azure-ad:
       type: object
+      deprecated: true
       description: |
         Object encapsulating the configuration parameters for an Azure AD
         authentication connection.
@@ -632,6 +695,7 @@ components:
       title: auth-connection-options-azure-ad
     auth-connection-options-google-apps:
       type: object
+      deprecated: true
       description: |
         Object encapsulating the configuration parameters for a Google Apps
         authentication connection.
@@ -1645,6 +1709,23 @@ components:
         - label
         - ordinal
       title: enum-value
+    error:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The error type.
+        message:
+          type: string
+          description: Information about the error.
+        status:
+          type: integer
+          description: The corresponding HTTP status code.
+          format: int32
+      required:
+        - message
+        - status
+      title: error
     error-bad-request:
       allOf:
         - $ref: '#/components/schemas/error-base'
@@ -2256,6 +2337,12 @@ components:
       required:
         - dev_user
       title: event-dev-user-updated
+    event-fetched-result:
+      type: string
+      enum:
+        - forbidden
+        - not_found
+        - ok
     event-group-created:
       type: object
       properties:
@@ -2307,6 +2394,35 @@ components:
       required:
         - group
       title: event-group-updated
+    event-incident-created:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - incident
+      title: event-incident-created
+    event-incident-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the incident that was deleted.
+        old_incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - id
+      title: event-incident-deleted
+    event-incident-updated:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/incident'
+        old_incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - incident
+      title: event-incident-updated
     event-link-created:
       type: object
       properties:
@@ -2521,12 +2637,16 @@ components:
           type: string
           description: The ID of the tag that was deleted.
           example: TAG-12345
+        old_tag:
+          $ref: '#/components/schemas/tag'
       required:
         - id
       title: event-tag-deleted
     event-tag-updated:
       type: object
       properties:
+        old_tag:
+          $ref: '#/components/schemas/tag'
         tag:
           $ref: '#/components/schemas/tag'
       required:
@@ -2547,6 +2667,8 @@ components:
           type: string
           description: The ID of the timeline entry that was deleted.
           example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+        old_entry:
+          $ref: '#/components/schemas/timeline-entry'
       required:
         - id
       title: event-timeline-entry-deleted
@@ -2554,6 +2676,8 @@ components:
       type: object
       properties:
         entry:
+          $ref: '#/components/schemas/timeline-entry'
+        old_entry:
           $ref: '#/components/schemas/timeline-entry'
       required:
         - entry
@@ -2604,6 +2728,35 @@ components:
       required:
         - id
       title: event-work-deleted
+    event-work-fetched:
+      type: object
+      discriminator:
+        mapping:
+          forbidden: '#/components/schemas/empty'
+          not_found: '#/components/schemas/empty'
+          ok: '#/components/schemas/event-work-fetched-ok'
+        propertyName: result
+      oneOf:
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/event-work-fetched-ok'
+      properties:
+        id:
+          type: string
+          description: The ID of the work that was fetched.
+          example: ISS-12345
+        result:
+          $ref: '#/components/schemas/event-fetched-result'
+      required:
+        - id
+        - result
+      title: event-work-fetched
+    event-work-fetched-ok:
+      type: object
+      properties:
+        work:
+          $ref: '#/components/schemas/work'
+      title: event-work-fetched-ok
     event-work-updated:
       type: object
       properties:
@@ -2647,6 +2800,94 @@ components:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
       title: group-summary
+    impacted-customer-details:
+      type: object
+      description: Details of the impact due to the incident.
+      properties:
+        count:
+          $ref: '#/components/schemas/enum-value'
+        customer_ids:
+          type: array
+          description: List of customers impacted due to the incident.
+          items:
+            $ref: '#/components/schemas/account-summary'
+      title: impacted-customer-details
+    incident:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            acknowledged_date:
+              type: string
+              description: Timestamp when the incident was acknowledged.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            applies_to_parts:
+              type: array
+              description: Parts to which the incident is applicable to.
+              items:
+                $ref: '#/components/schemas/part-summary'
+            artifacts:
+              type: array
+              description: Artifacts attached to the incident.
+              items:
+                $ref: '#/components/schemas/artifact-summary'
+            body:
+              type: string
+              description: Body of the incident.
+            identified_date:
+              type: string
+              description: Time when the incident was identified/reported.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            impact:
+              $ref: '#/components/schemas/impacted-customer-details'
+            impacted_customers:
+              type: array
+              description: List of customers impacted due to the incident.
+              items:
+                $ref: '#/components/schemas/account-summary'
+            mitigated_date:
+              type: string
+              description: Timestamp when the incident was mitigated.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            owned_by:
+              type: array
+              description: The users that own the incident.
+              items:
+                $ref: '#/components/schemas/user-summary'
+            reported_by:
+              $ref: '#/components/schemas/enum-value'
+            severity:
+              $ref: '#/components/schemas/enum-value'
+            source:
+              $ref: '#/components/schemas/enum-value'
+            stage:
+              $ref: '#/components/schemas/stage'
+            stakeholders:
+              type: array
+              description: |
+                Users, along with the incident commander, involved in resolving
+                incidents and handling communication.
+              items:
+                $ref: '#/components/schemas/user-summary'
+            tags:
+              type: array
+              description: Tags associated with the object.
+              items:
+                $ref: '#/components/schemas/tag-with-value'
+            target_close_date:
+              type: string
+              description: Timestamp when the incident is expected to be resolved.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            title:
+              type: string
+              description: Title of the incident.
+          required:
+            - title
+      title: incident
     issue:
       allOf:
         - $ref: '#/components/schemas/work-base'
@@ -2768,19 +3009,25 @@ components:
         mapping:
           capability: '#/components/schemas/capability-summary'
           conversation: '#/components/schemas/conversation-summary'
+          dev_user: '#/components/schemas/dev-user-summary'
           enhancement: '#/components/schemas/enhancement-summary'
           feature: '#/components/schemas/feature-summary'
           issue: '#/components/schemas/issue-summary'
           product: '#/components/schemas/product-summary'
+          rev_org: '#/components/schemas/rev-org-summary'
+          rev_user: '#/components/schemas/rev-user-summary'
           ticket: '#/components/schemas/ticket-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/capability-summary'
         - $ref: '#/components/schemas/conversation-summary'
+        - $ref: '#/components/schemas/dev-user-summary'
         - $ref: '#/components/schemas/enhancement-summary'
         - $ref: '#/components/schemas/feature-summary'
         - $ref: '#/components/schemas/issue-summary'
         - $ref: '#/components/schemas/product-summary'
+        - $ref: '#/components/schemas/rev-org-summary'
+        - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/ticket-summary'
       properties:
         type:
@@ -2793,10 +3040,13 @@ components:
       enum:
         - capability
         - conversation
+        - dev_user
         - enhancement
         - feature
         - issue
         - product
+        - rev_org
+        - rev_user
         - ticket
     link-type:
       type: string
@@ -2809,6 +3059,7 @@ components:
         - is_converted_to
         - is_dependent_on
         - is_duplicate_of
+        - is_follow_up_of
         - is_merged_into
         - is_parent_of
         - is_part_of
@@ -2825,6 +3076,41 @@ components:
       enum:
         - after
         - before
+    metric-definition:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: Human readable name of the metric.
+      title: metric-definition
+    metric-definition-applies-to:
+      type: string
+      description: The list of item types on which the metric might be applied.
+      enum:
+        - conversation
+        - issue
+        - ticket
+    metric-definition-metric-type:
+      type: string
+      description: |
+        The type of the metric. 'time' metrics track the time spent in some
+        state, supporting operations like 'start', 'stop', 'pause', 'resume'.
+        'value' metrics track a value, supporting operations like 'set',
+        'increment', 'decrement'.
+      enum:
+        - time
+        - value
+    metric-definition-status:
+      type: string
+      description: |
+        The status of the metric. 'active' metrics can be used to create new
+        SLAs, while 'inactive' metrics can not be used in new SLAs. Metrics can
+        be updated between 'active' and 'inactive' states.
+      enum:
+        - active
+        - inactive
     metric-definition-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -2834,6 +3120,70 @@ components:
               type: string
               description: Human readable name of the metric.
       title: metric-definition-summary
+    metric-definitions-list-request:
+      type: object
+      properties:
+        type:
+          type: array
+          description: The type of metric definitions sought.
+          items:
+            $ref: '#/components/schemas/metric-definition-metric-type'
+        applies_to_type:
+          type: array
+          description: The type of objects the metric definition applies to.
+          items:
+            $ref: '#/components/schemas/metric-definition-applies-to'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        include_custom_metrics:
+          type: boolean
+          description: |
+            Whether to include custom metrics in the response. If not set, then
+            custom metrics are excluded.
+        limit:
+          type: integer
+          description: |
+            The maximum number of records to return. The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the records by and the direction to sort them.
+          items:
+            type: string
+        status:
+          type: array
+          description: The status of the metric definition.
+          items:
+            $ref: '#/components/schemas/metric-definition-status'
+      title: metric-definitions-list-request
+    metric-definitions-list-response:
+      type: object
+      properties:
+        metric_definitions:
+          type: array
+          description: The list of metric definitions.
+          items:
+            $ref: '#/components/schemas/metric-definition'
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+      required:
+        - metric_definitions
+      title: metric-definitions-list-response
+      x-go-name: MetricDefinitionsListResponseBody
     org-base:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -4269,6 +4619,180 @@ components:
       allOf:
         - $ref: '#/components/schemas/schema-field-descriptor-base'
       title: schema-unknown-field-descriptor
+    set-issue-selector:
+      type: object
+      properties:
+        custom_fields:
+          type: object
+          description: |
+            Custom fields on the issue with their fully qualified names and the
+            associated with their exact allowed values. The SLA policy applies
+            to issues where all named custom fields have exactly the specified
+            values.
+        owners:
+          type: array
+          description: The SLA policy applies to the issues of these owners.
+          items:
+            type: string
+        parts:
+          type: array
+          description: The SLA policy applies to the issues of these parts.
+          example:
+            - PROD-12345
+          items:
+            type: string
+        rev_orgs:
+          type: array
+          description: The SLA policy applies to the issues of these revorgs.
+          example:
+            - REV-AbCdEfGh
+          items:
+            type: string
+        stage_name:
+          type: array
+          description: The SLA policy applies to issues with these stages.
+          items:
+            type: string
+        subtype:
+          type: array
+          description: The issue subtype for which the SLA policy applies.
+          items:
+            type: string
+        tags:
+          type: array
+          description: |
+            The SLA policy applies to issues with these tags. If empty, the tag
+            filter isn't applied.
+          example:
+            - TAG-12345
+          items:
+            type: string
+      title: set-issue-selector
+    set-sla-policy:
+      type: object
+      properties:
+        metrics:
+          type: array
+          description: Metrics to apply to the selected items.
+          items:
+            $ref: '#/components/schemas/set-support-metric-target'
+        name:
+          type: string
+          description: Human-readable name.
+        selector:
+          $ref: '#/components/schemas/set-sla-selector'
+      required:
+        - name
+        - selector
+      title: set-sla-policy
+    set-sla-selector:
+      type: object
+      properties:
+        applies_to:
+          $ref: '#/components/schemas/sla-selector-applies-to'
+        custom_fields:
+          type: object
+          description: |
+            Custom fields with their fully qualified names and associated with
+            their exact allowed values. The SLA policy applies to records where
+            all named custom fields have exactly the specified values. If the
+            value is null, the field must have null value or not be present.
+        groups:
+          type: array
+          description: |
+            The SLA policy applies to the tickets or conversations of these
+            groups.
+          items:
+            type: string
+        issue_selector:
+          $ref: '#/components/schemas/set-issue-selector'
+        owners:
+          type: array
+          description: |
+            The SLA policy applies to the tickets or conversations of these
+            owners.
+          items:
+            type: string
+        parts:
+          type: array
+          description: The SLA policy applies to the tickets of these parts.
+          example:
+            - PROD-12345
+          items:
+            type: string
+        priority:
+          type: array
+          description: |
+            The SLA policy applies to conversations with these priorities.
+          items:
+            $ref: '#/components/schemas/sla-selector-priority'
+        severity:
+          type: array
+          description: The SLA policy applies to tickets with these severities.
+          items:
+            $ref: '#/components/schemas/sla-selector-severity'
+        source_channel:
+          type: array
+          description: |
+            The SLA policy applies to conversations with these sources.
+          items:
+            type: string
+        subtype:
+          type: array
+          description: The SLA policy applies to tickets with these subtypes.
+          items:
+            type: string
+        tags:
+          type: array
+          description: The SLA policy applies to items with these tags.
+          example:
+            - TAG-12345
+          items:
+            type: string
+        ticket_source_channel:
+          type: array
+          description: |
+            The SLA policy applies to tickets with these source channels.
+          items:
+            type: string
+      required:
+        - applies_to
+      title: set-sla-selector
+    set-support-metric-target:
+      type: object
+      properties:
+        metric:
+          type: string
+          description: The metric to apply.
+        org_schedule_id:
+          type: string
+          description: |
+            The organization schedule controlling this metrics calculation.
+            Time based metrics don't consume time while their schedule is off.
+        performance:
+          type: number
+          description: |
+            The percentage of instances for which this metric's target must not
+            be breached, in order to avoid breaching the overall SLA policy.
+          format: double
+        target:
+          type: integer
+          description: |
+            The target value to be achieved, for example the time in which to
+            do something, or the maximum allowed number of message pairs. The
+            units and interpretation of the value is controlled by the
+            properties of the referenced metric.
+          format: int32
+        warning_target:
+          type: integer
+          description: |
+            The threshold in the same units as target where the metric is
+            considered to be 'at risk'.
+          format: int32
+      required:
+        - metric
+        - target
+      title: set-support-metric-target
     set-tag-with-value:
       type: object
       properties:
@@ -4284,6 +4808,107 @@ components:
       required:
         - id
       title: set-tag-with-value
+    sla:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            compensation:
+              $ref: '#/components/schemas/sla-compensation'
+            description:
+              type: string
+              description: Description of the purpose and capabilities of the SLA.
+            evaluation_period:
+              $ref: '#/components/schemas/sla-evaluation-period'
+            name:
+              type: string
+              description: Human-readable name.
+            policies:
+              type: array
+              description: |
+                The policies encompassed by this SLA, ordered in decreasing
+                priority.
+              items:
+                $ref: '#/components/schemas/sla-policy'
+            sla_type:
+              $ref: '#/components/schemas/sla-type'
+            status:
+              $ref: '#/components/schemas/sla-status'
+          required:
+            - name
+            - status
+      title: sla
+    sla-applies-to:
+      type: string
+      description: |
+        The object types on which the SLA applies. An external SLA can apply to
+        multiple object types, but an internal SLA can apply to only one object
+        type.
+      enum:
+        - conversation
+        - issue
+        - ticket
+    sla-assign-result:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/error'
+        rev_org:
+          $ref: '#/components/schemas/rev-org-summary'
+      required:
+        - rev_org
+      title: sla-assign-result
+    sla-compensation:
+      type: object
+      additionalProperties: false
+      description: |
+        Describes the compensation to be provided in case of SLA breach. It is
+        not 'self-executing', it is the responsibility of the organization
+        providing the SLA to actually transfer the promised credit, resource or
+        other payment.
+      title: sla-compensation
+    sla-evaluation-period:
+      type: string
+      description: |
+        Specifies the frequency of when the contractually-meaningful evaluation
+        of the SLA happens. The organization for their own information might
+        evaluate the various metrics contained in the policy as often as we can
+        make it feasible for them, but only the evaluation at the end of the
+        evaluation period triggers a compensation and needs to be shared with
+        the customer.
+      enum:
+        - monthly
+        - quarterly
+        - weekly
+        - yearly
+    sla-policy:
+      type: object
+      additionalProperties: false
+      description: A policy that represents a promise to your revs.
+      title: sla-policy
+    sla-selector-applies-to:
+      type: string
+      description: The item type for which the SLA policy applies.
+      enum:
+        - conversation
+        - issue
+        - ticket
+    sla-selector-priority:
+      type: string
+      description: |
+        The SLA policy applies to conversations with these priorities.
+      enum:
+        - p0
+        - p1
+        - p2
+    sla-selector-severity:
+      type: string
+      description: The SLA policy applies to tickets with these severities.
+      enum:
+        - blocker
+        - high
+        - low
+        - medium
     sla-status:
       type: string
       description: |
@@ -4393,12 +5018,281 @@ components:
         - sla_tracker
       title: sla-trackers-get-response
       x-go-name: SlaTrackersGetResponseBody
+    sla-trackers-list-request:
+      type: object
+      properties:
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        limit:
+          type: integer
+          description: |
+            The maximum number of SLA trackers to return. The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the SLA Trackers by and the direction to sort them.
+          items:
+            type: string
+        stage:
+          type: array
+          description: The SLA tracker stages the filter matches.
+          items:
+            type: string
+        status:
+          type: array
+          description: The SLA tracker statuses the filter matches.
+          items:
+            type: string
+      title: sla-trackers-list-request
+    sla-trackers-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+        sla_trackers:
+          type: array
+          description: The list of SLA trackers.
+          items:
+            $ref: '#/components/schemas/sla-tracker'
+      required:
+        - sla_trackers
+      title: sla-trackers-list-response
+      x-go-name: SlaTrackersListResponseBody
     sla-type:
       type: string
       description: Type of the SLA.
       enum:
         - external
         - internal
+    slas-assign-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |
+            The SLA which would be assigned to the Rev organizations. If
+            omitted, the SLA of all the rev organizations referenced will be
+            unset.
+        rev_orgs:
+          type: array
+          description: The Rev organizations to apply the SLA to.
+          example:
+            - REV-AbCdEfGh
+          items:
+            type: string
+      required:
+        - rev_orgs
+      title: slas-assign-request
+    slas-assign-response:
+      type: object
+      properties:
+        results:
+          type: array
+          description: The list of outcomes for each Rev organization.
+          items:
+            $ref: '#/components/schemas/sla-assign-result'
+      required:
+        - results
+      title: slas-assign-response
+      x-go-name: SlasAssignResponseBody
+    slas-create-request:
+      type: object
+      properties:
+        account_selector:
+          $ref: '#/components/schemas/accounts-filters'
+        applies_to:
+          type: array
+          description: The object types this SLA can apply to.
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+        description:
+          type: string
+          description: Description of the purpose and capabilities of the SLA.
+        evaluation_period:
+          $ref: '#/components/schemas/sla-evaluation-period'
+        name:
+          type: string
+          description: Human-readable name.
+        policies:
+          type: array
+          description: |
+            The policies encompassed by this SLA, ordered in decreasing
+            priority.
+          items:
+            $ref: '#/components/schemas/set-sla-policy'
+        sla_type:
+          $ref: '#/components/schemas/sla-type'
+      required:
+        - name
+      title: slas-create-request
+    slas-create-response:
+      type: object
+      properties:
+        sla:
+          $ref: '#/components/schemas/sla'
+      required:
+        - sla
+      title: slas-create-response
+      x-go-name: SlasCreateResponseBody
+    slas-filter-applies-to-operator-type:
+      type: string
+      enum:
+        - all
+        - any
+    slas-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the SLA to get.
+      required:
+        - id
+      title: slas-get-request
+    slas-get-response:
+      type: object
+      properties:
+        sla:
+          $ref: '#/components/schemas/sla'
+      required:
+        - sla
+      title: slas-get-response
+      x-go-name: SlasGetResponseBody
+    slas-list-request:
+      type: object
+      properties:
+        applies_to:
+          type: array
+          description: The object types the SLA applies to.
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+        applies_to_op:
+          $ref: '#/components/schemas/slas-filter-applies-to-operator-type'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        limit:
+          type: integer
+          description: |
+            The maximum number of SLAs to return. The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        sla_type:
+          type: array
+          description: The SLA types the filter matches.
+          items:
+            $ref: '#/components/schemas/sla-type'
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the SLAs by and the direction to sort them.
+          items:
+            type: string
+        status:
+          type: array
+          description: The SLA statuses the filter matches.
+          items:
+            $ref: '#/components/schemas/sla-status'
+      title: slas-list-request
+    slas-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+        slas:
+          type: array
+          description: The list of SLAs.
+          items:
+            $ref: '#/components/schemas/sla'
+      required:
+        - slas
+      title: slas-list-response
+      x-go-name: SlasListResponseBody
+    slas-transition-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The updated SLA.
+        status:
+          $ref: '#/components/schemas/sla-status'
+      required:
+        - id
+        - status
+      title: slas-transition-request
+    slas-transition-response:
+      type: object
+      properties:
+        sla:
+          $ref: '#/components/schemas/sla'
+      required:
+        - sla
+      title: slas-transition-response
+      x-go-name: SlasTransitionResponseBody
+    slas-update-request:
+      type: object
+      properties:
+        account_selector:
+          $ref: '#/components/schemas/accounts-filters'
+        description:
+          type: string
+          description: Description of the purpose and capabilities of the SLA.
+        evaluation_period:
+          $ref: '#/components/schemas/sla-evaluation-period'
+        id:
+          type: string
+          description: The SLA's ID.
+        name:
+          type: string
+          description: Human-readable name.
+        policies:
+          type: array
+          description: |
+            The policies encompassed by this SLA, ordered in decreasing
+            priority, the whole array will be overwritten by the contents of
+            this array.
+          items:
+            $ref: '#/components/schemas/set-sla-policy'
+      required:
+        - id
+      title: slas-update-request
+    slas-update-response:
+      type: object
+      properties:
+        sla:
+          $ref: '#/components/schemas/sla'
+      required:
+        - sla
+      title: slas-update-response
+      x-go-name: SlasUpdateResponseBody
     snap-widget:
       type: object
       discriminator:
@@ -4411,6 +5305,11 @@ components:
       title: snap-widget
     snap-widget-type:
       type: string
+    stage:
+      type: object
+      additionalProperties: false
+      description: Describes the current stage of a object.
+      title: stage
     stage-filter:
       type: object
       description: The filter for stages.
@@ -4464,6 +5363,9 @@ components:
             description:
               type: string
               description: Description of the survey.
+            header:
+              type: string
+              description: Header of the survey.
             introductory_text:
               type: string
               description: |
@@ -4487,6 +5389,9 @@ components:
                 List of all the fields and their respective metadata in the schema.
               items:
                 $ref: '#/components/schemas/survey-field-with-metadata'
+            title:
+              type: string
+              description: Title of the survey.
       title: survey
     survey-aggregation-filter:
       type: object
@@ -4599,6 +5504,7 @@ components:
       type: string
       enum:
         - failed
+        - modified
         - succeeded
     sys-user-summary:
       allOf:
@@ -4835,6 +5741,14 @@ components:
               $ref: '#/components/schemas/org-summary'
             sentiment:
               $ref: '#/components/schemas/enum-value'
+            sentiment_modified_date:
+              type: string
+              description: Timestamp when the sentiment was last modified.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            sentiment_summary:
+              type: string
+              description: Summary justifying the sentiment.
             severity:
               $ref: '#/components/schemas/ticket-severity'
             sla_tracker:
@@ -4899,6 +5813,7 @@ components:
       type: string
       description: The type of the body to use for the comment.
       enum:
+        - data
         - snap_kit
         - snap_widget
         - text
@@ -5420,6 +6335,12 @@ components:
         id:
           type: string
           description: The event's ID.
+        incident_created:
+          $ref: '#/components/schemas/event-incident-created'
+        incident_deleted:
+          $ref: '#/components/schemas/event-incident-deleted'
+        incident_updated:
+          $ref: '#/components/schemas/event-incident-updated'
         link_created:
           $ref: '#/components/schemas/event-link-created'
         link_deleted:
@@ -5499,6 +6420,8 @@ components:
           $ref: '#/components/schemas/event-work-created'
         work_deleted:
           $ref: '#/components/schemas/event-work-deleted'
+        work_fetched:
+          $ref: '#/components/schemas/event-work-fetched'
         work_updated:
           $ref: '#/components/schemas/event-work-updated'
       required:
@@ -5534,6 +6457,9 @@ components:
         - group_member_added
         - group_member_removed
         - group_updated
+        - incident_created
+        - incident_deleted
+        - incident_updated
         - link_created
         - link_deleted
         - link_updated
@@ -5567,6 +6493,7 @@ components:
         - webhook_updated
         - work_created
         - work_deleted
+        - work_fetched
         - work_updated
     webhook-event-verify:
       type: object
@@ -6306,7 +7233,7 @@ components:
           items:
             $ref: '#/components/schemas/stage-validation-option-for-update'
         staged_info:
-          $ref: '#/components/schemas/works-update-request-staged-info-staged-info-update'
+          $ref: '#/components/schemas/works-update-request-staged-info-update'
         tags:
           $ref: '#/components/schemas/works-update-request-tags'
         target_close_date:
@@ -6414,17 +7341,40 @@ components:
           items:
             type: string
       title: works-update-request-reported-by
-    works-update-request-staged-info-staged-info-update:
+    works-update-request-staged-info-update:
       type: object
       properties:
+        sync_in_unresolved_fields:
+          type: array
+          description: |
+            Updates the sync in unresolved fields of the staged work.
+          items:
+            $ref: '#/components/schemas/works-update-request-staged-info-update-unresolved-field'
+        sync_out_unresolved_fields:
+          type: array
+          description: |
+            Updates the sync out unresolved fields of the staged work.
+          items:
+            $ref: '#/components/schemas/works-update-request-staged-info-update-unresolved-field'
         unresolved_fields:
           type: array
           description: Updates the unresolved fields of the staged work.
           items:
             type: string
-      required:
-        - unresolved_fields
-      title: works-update-request-staged-info-staged-info-update
+      title: works-update-request-staged-info-update
+    works-update-request-staged-info-update-unresolved-field:
+      type: object
+      properties:
+        devrev_field_name:
+          type: string
+          description: DevRev field name of the object's attribute.
+        external_display_name:
+          type: string
+          description: External field name as seen by the end user.
+        external_field_name:
+          type: string
+          description: Api name of the external object's field.
+      title: works-update-request-staged-info-update-unresolved-field
     works-update-request-tags:
       type: object
       properties:
@@ -6443,6 +7393,9 @@ components:
           type: string
           description: Updates the group that the ticket is associated with.
           nullable: true
+        is_archived:
+          type: boolean
+          description: Whether the ticket is archived.
         is_spam:
           type: boolean
           description: Updates whether the ticket is spam.
@@ -6459,6 +7412,14 @@ components:
           type: integer
           description: The enum ID for the sentiment of the ticket.
           format: int64
+        sentiment_modified_date:
+          type: string
+          description: Timestamp at which sentiment was last modified.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        sentiment_summary:
+          type: string
+          description: Summary justifying the current sentiment.
         severity:
           $ref: '#/components/schemas/ticket-severity'
       title: works-update-request-ticket
@@ -6507,13 +7468,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6542,13 +7503,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6667,7 +7628,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6693,13 +7653,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-export-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6736,7 +7696,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6764,13 +7723,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6905,7 +7864,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6933,13 +7891,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -6968,13 +7926,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/accounts-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7021,7 +7979,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7049,13 +8006,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7092,7 +8049,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7120,13 +8076,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7171,7 +8127,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7199,13 +8154,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-locate-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7235,13 +8190,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/artifacts-prepare-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-prepare-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7270,13 +8225,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7307,6 +8262,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-delete-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -7350,7 +8306,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7380,13 +8335,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7444,7 +8399,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7474,13 +8428,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7511,6 +8465,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-self-delete-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -7544,13 +8499,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/auth-tokens-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7585,13 +8540,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7622,6 +8577,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-delete-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -7663,7 +8619,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7692,13 +8647,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7733,7 +8688,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7764,13 +8718,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/empty'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7803,6 +8757,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-toggle-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -7835,13 +8790,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-org-auth-connections-update-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7880,7 +8835,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7908,13 +8862,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8006,7 +8960,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8032,13 +8985,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8066,7 +9019,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8092,13 +9044,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/dev-users-self-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8164,6 +9116,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/keyrings-create-callback-request'
+        required: true
       responses:
         "200":
           description: Success.
@@ -8184,6 +9137,131 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /metric-definitions.list:
+    get:
+      description: Lists metric definitions matching a filter.
+      operationId: metric-definitions-list
+      parameters:
+        - description: The type of objects the metric definition applies to.
+          explode: false
+          in: query
+          name: applies_to_type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/metric-definition-applies-to'
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            Whether to include custom metrics in the response. If not set, then
+            custom metrics are excluded.
+          explode: false
+          in: query
+          name: include_custom_metrics
+          schema:
+            type: boolean
+        - description: |
+            The maximum number of records to return. The default is '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            Fields to sort the records by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The status of the metric definition.
+          explode: false
+          in: query
+          name: status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/metric-definition-status'
+        - description: The type of metric definitions sought.
+          explode: false
+          in: query
+          name: type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/metric-definition-metric-type'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-definitions-list-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: MetricDefinitionsListQuery
+    post:
+      description: Lists metric definitions matching a filter.
+      operationId: metric-definitions-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-definitions-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-definitions-list-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
   /parts.create:
     post:
       description: Creates new [part](https://devrev.ai/docs/product/parts).
@@ -8193,13 +9271,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8226,13 +9304,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8272,7 +9350,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8301,13 +9378,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8420,7 +9497,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8447,13 +9523,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8481,13 +9557,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/parts-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8518,13 +9594,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8553,13 +9629,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8606,7 +9682,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8634,13 +9709,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8770,7 +9845,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8801,13 +9875,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8836,13 +9910,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/rev-orgs-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8882,7 +9956,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8910,13 +9983,492 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/sla-trackers-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
-          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /sla-trackers.list:
+    get:
+      description: Lists SLA trackers matching a filter.
+      operationId: sla-trackers-list
+      parameters:
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: created_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: created_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            The maximum number of SLA trackers to return. The default is '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: modified_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: modified_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Fields to sort the SLA Trackers by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The SLA tracker stages the filter matches.
+          explode: false
+          in: query
+          name: stage
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The SLA tracker statuses the filter matches.
+          explode: false
+          in: query
+          name: status
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sla-trackers-list-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: SlaTrackersListQuery
+    post:
+      description: Lists SLA trackers matching a filter.
+      operationId: sla-trackers-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sla-trackers-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sla-trackers-list-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /slas.assign:
+    post:
+      description: ' Assigns the SLA to a set of Rev organizations.'
+      operationId: slas-assign
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/slas-assign-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-assign-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /slas.create:
+    post:
+      description: Creates an SLA in draft status.
+      operationId: slas-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/slas-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-create-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /slas.get:
+    get:
+      description: Gets an SLA.
+      operationId: slas-get
+      parameters:
+        - description: The ID of the SLA to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-get-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: SlasGetQuery
+    post:
+      description: Gets an SLA.
+      operationId: slas-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/slas-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-get-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /slas.list:
+    get:
+      description: Lists SLAs matching a filter.
+      operationId: slas-list
+      parameters:
+        - description: The object types the SLA applies to.
+          explode: false
+          in: query
+          name: applies_to
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sla-applies-to'
+        - description: |
+            The Filter operator to be applied on the applies to object types
+            filter.
+          explode: false
+          in: query
+          name: applies_to_op
+          schema:
+            $ref: '#/components/schemas/slas-filter-applies-to-operator-type'
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: The maximum number of SLAs to return. The default is '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: The SLA types the filter matches.
+          explode: false
+          in: query
+          name: sla_type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sla-type'
+        - description: Fields to sort the SLAs by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The SLA statuses the filter matches.
+          explode: false
+          in: query
+          name: status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sla-status'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-list-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: SlasListQuery
+    post:
+      description: Lists SLAs matching a filter.
+      operationId: slas-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/slas-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-list-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /slas.transition:
+    post:
+      description: Changes the status of an SLA.
+      operationId: slas-transition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/slas-transition-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-transition-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /slas.update:
+    post:
+      description: Updates a draft SLA.
+      operationId: slas-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/slas-update-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/slas-update-response'
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8947,13 +10499,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8980,13 +10532,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9025,7 +10577,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9053,13 +10604,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9129,7 +10680,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9155,13 +10705,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9188,13 +10738,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tags-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9223,13 +10773,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9258,13 +10808,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9301,7 +10851,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9329,13 +10878,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9410,7 +10959,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9438,13 +10986,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9473,13 +11021,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/timeline-entries-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9508,13 +11056,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9541,13 +11089,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9586,7 +11134,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9614,13 +11161,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9650,7 +11197,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9676,13 +11222,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9709,13 +11255,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/webhooks-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9748,13 +11294,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-create-request'
+        required: true
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-create-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9781,13 +11327,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-delete-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-delete-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10068,7 +11614,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10094,13 +11639,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-export-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10137,7 +11682,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10165,13 +11709,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-get-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10467,7 +12011,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10493,13 +12036,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-list-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10526,13 +12069,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/works-update-request'
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-update-response'
-          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":

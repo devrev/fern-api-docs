@@ -27,3 +27,7 @@
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+.custom-footer {
+	border-top-width: 0;
+}

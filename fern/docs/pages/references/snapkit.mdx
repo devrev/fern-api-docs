@@ -1,21 +1,8 @@
-This section explores how to create a custom user interface using snap-kit and DevRev.
+This reference lists the elements for creating custom user interface using snap-kit.
 
 ## Structure
 
 The snap-kit JSON has a top-level structure with `object`, `body`, `type`, and `snap_kit_body` fields. The `snap_kit_body` field contains information regarding snap-kit's structure.
-
-For example:
-
-```json
-{
-  "object": "<source_id>",
-  "body": "Giphy",
-  "type": "timeline_comment",
-  "snap_kit_body": {}
-}
-```
-
-## Snap-kit body
 
 The `snap_kit_body` field has the following properties:
 
@@ -23,102 +10,66 @@ The `snap_kit_body` field has the following properties:
 - `snap_in_action_name`: The name of the action this snap-kit represents.
 - `body`: An object that holds the actual snap-kit content in the form of `snaps`.
 
-For example:
+Example
 
 ```json
-"snap_kit_body": {
-  "snap_in_id": "<snap_in_id>",
-  "snap_in_action_name": "giphy",
-  "body": { "snaps": [] }
+{
+  "object": "<source_id>",
+  "body": "Giphy",
+  "type": "timeline_comment",
+  "snap_kit_body": {
+    "snap_in_id": "<snap_in_id>",
+    "snap_in_action_name": "giphy",
+    "body": { "snaps": [] }
 }
 ```
 
-### Body
+### Types
 
-The `body` field contains an array of `snaps`. Each snap can have a `type`, and depending on the type, it has different properties.
+The `body` field contains an array of `snaps`. Each snap can have a `type`; and depending on the type, it has different properties.
 
-## Snaps
+The following categories of types are available:
 
-The following snap types are supported:
+- Base types
 
-### Base types
-  - [Snap](#snap)
-  - [Action](#action)
-  - [Focusable](#focusable)
-  - [Placeholder](#placeholder)
-  - [Disabled](#disabled)
-  - [Hideable](#hideable)
-  - [Layout](#layout)
+- User interface elements
 
-### User interface elements
-  - [Button](#button)
-  - [Divider](#divider)
-  - [Image](#image)
-  - [Plain Text](#plain-text)
-  - [Rich Text](#rich-text)
+- Form elements
 
-### Form elements
-  - [Checkboxes](#checkboxes)
-  - [Input](#input)
-    - [Plain Text Input](#plain-text-input)
-    - [Number Input](#number-input)
-    - [Email Input](#email-input)
-    - [Rich Text Input](#rich-text-input)
-  - [List Input](#list-input)
-    - [String List Input](#string-list-input)
-    - [Number List Input](#number-list-input)
-    - [Email List Input](#email-list-input)
-  - [Static Select](#static-select)
-  - [Multi Static Select](#multi-static-select)
-  - [Radio Buttons](#radio-buttons)
-  - [Toggle Button](#toggle-button)
-  - [Upload Input](#upload-input)
-  
-### Layout elements
-  - [Actions](#actions)
-  - [Card](#card)
-  - [Content](#content)
-  - [Form](#form)
-  - [Layout](#layout)
-  - [Input Layout](#input-layout)
-  
-### Data pickers
-  - [Part Picker](#part-picker)
-  - [Tag Picker](#tag-picker)
-  - [User Picker](#user-picker)
-  
-## Action payloads
+- Layout elements
+
+- Data pickers
+
+### Action payloads
 
 Snap-kit generates payloads when a user interacts with an actionable snap. The payload is sent to the backend and can be used to perform actions. The following snaps generate payloads:
 
 - [Button](#button)
 - [Checkboxes](#checkboxes)
-- [Input](#input) and all its types ([Plain Text Input](#plain-text-input), [Number Input](#number-input), [Email Input](#email-input), [Rich Text Input](#rich-text-input))
-- [List Input](#list-input) and all its types ([String List Input](#string-list-input), [Number List Input](#number-list-input), [Email List Input](#email-list-input))
-- [Static Select](#static-select)
-- [Multi Static Select](#multi-static-select)
-- [Radio Buttons](#radio-buttons)
-- [Toggle Button](#toggle-button)
-- [Upload Input](#upload-input)
+- [Input](#input) and all its types ([Plain text input](#plain-text-input), [Number input](#number-input), [Email input](#email-input), [Rich text input](#rich-text-input))
+- [List input](#list-input) and all its types ([String list input](#string-list-input), [Number list input](#number-list-input), [Email list input](#email-list-input))
+- [Static select](#static-select)
+- [Multi static select](#multi-static-select)
+- [Radio buttons](#radio-buttons)
+- [Toggle button](#toggle-button)
+- [Upload input](#upload-input)
 - [Form](#form)
-- [Part Picker](#part-picker)
-- [Tag Picker](#tag-picker)
-- [User Picker](#user-picker)
-
-### Base Payload
+- [Part picker](#part-picker)
+- [Tag picker](#tag-picker)
+- [User picker](#user-picker)
 
 All actionable snaps share the same base payload structure. The base payload has the following structure:
 
 ```json
 {
-  "type": "<type of Snap that generated the payload>",
-  "action_id": "<the action identifier of the Snap that generated the payload>",
-  "action_type": "<the type of the action as defined in the Snap>",
+  "type": "<type of snap that generated the payload>",
+  "action_id": "<the action identifier of the snap that generated the payload>",
+  "action_type": "<the type of the action as defined in the snap>",
   "timestamp": "<timestamp as a string in ISO 8601 format>"
 }
 ```
 
-## Base Types
+## Base types
 
 Many elements share the same base properties. The base types these elements inherit from are described below.
 
@@ -128,7 +79,7 @@ Many elements share the same base properties. The base types these elements inhe
 
   **Properties**
 
-  - `type` (required): Type of snap
+  - `type` (required): Type of snap.
   - `block_id` (optional): A unique identifier for the snap. If not provided, a random ID is generated.
   </Accordion>
 
@@ -147,7 +98,7 @@ Many elements share the same base properties. The base types these elements inhe
   - `action_id` (required): An identifier for the action. It should be unique in the snap.
   - `action_type` (optional): Indicates whether the backend or client handles the action. This is mandatory to pass if you have an action to be performed. Possible values: `"remote"`, `"client"`.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -167,7 +118,7 @@ Many elements share the same base properties. The base types these elements inhe
 
   **Properties**
 
-  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+  - `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
   </Accordion>
   <Accordion title="Disabled">
   Base interface for components that can be disabled.
@@ -298,13 +249,13 @@ Many elements share the same base properties. The base types these elements inhe
 
   **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"button"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"button"`.
 
   ```json
   {
     "type": "button",
     "action_id": "<the action identifier of the button>",
-    "action_type": "<the type of the action as defined in the Snap>",
+    "action_type": "<the type of the action as defined in the snap>",
     "timestamp": "<timestamp as a string in ISO 8601 format>",
     "value": "<the value associated with the button>"
   }
@@ -330,7 +281,7 @@ Many elements share the same base properties. The base types these elements inhe
 
   The divider component does not have any properties of its own.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -407,7 +358,7 @@ Many elements share the same base properties. The base types these elements inhe
               "type": "plain_text_input"
             },
             "label": {
-              "text": "Additional Notes",
+              "text": "Additional notes",
               "type": "plain_text"
             },
             "optional": true,
@@ -442,7 +393,7 @@ Many elements share the same base properties. The base types these elements inhe
   - `alt_text` (required): The alt text to be displayed when the image can't be displayed. This shouldn't contain any markup.
   - `fill_container` (optional): Whether the image should stretch to fill the container while maintaining its aspect ratio.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -512,7 +463,7 @@ Many elements share the same base properties. The base types these elements inhe
 
   - `text` (required): The plain text content.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -541,7 +492,7 @@ Many elements share the same base properties. The base types these elements inhe
 
   - `text` (required): The rich text content.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -567,8 +518,8 @@ A table element used to present JSON structured data.
 
 **Properties**
 
-- `rows` (required): The values to be displayed in the table. The data should be provided as a JSON object, where each cell is a plaintext SnapKit component.
-- `columns` (required): Columns are defined as an array of objects, where each object has two parameters: an optional header and a required field key, which defines which field from rows is shown in the defined column. If a key is not used, it means that the associated data from rows will not be displayed in the table. The order of keys also defines the order in which values from rows are shown in the table.
+- `rows` (required): The values to be displayed in the table. The data should be provided as a JSON object, where each cell is a plaintext snap-kit component.
+- `columns` (required): Columns are defined as an array of objects, where each object has two parameters: an optional header and a required field key, which defines which field from rows is shown in the defined column. If a key is not used, it means that the associated data from rows are not displayed in the table. The order of keys also defines the order in which values from rows are shown in the table.
 
 **Inherited properties**
 
@@ -602,7 +553,7 @@ Inherited from [Snap](#snap):
 				},
 				{
 					"header": {
-						"text": "Project Title",
+						"text": "Project title",
 						"type": "plain_text"
 					},
 					"key": "title"
@@ -637,7 +588,7 @@ Inherited from [Snap](#snap):
 						"type": "plain_text"
 					},
 					"status": {
-						"text": "In Progress",
+						"text": "In progress",
 						"type": "plain_text"
 					},
 					"title": {
@@ -676,20 +627,20 @@ Inherited from [Snap](#snap):
   <Accordion title="Plain text option">
   Plain text options are a commonly shared component of different form elements. It's used to define an option in a form element.
 
-  - `text` (required): A [Plain Text](#plain-text) element representing the option.
+  - `text` (required): A [Plain text](#plain-text) element representing the option.
   - `value` (required): A value assigned to the option.
-  - `description` (optional): An optional [Plain Text](#plain-text) element describing the option.
+  - `description` (optional): An optional [Plain text](#plain-text) element describing the option.
   </Accordion>
 
   <Accordion title="Checkboxes">
-  A component that provides a group of checkboxes that allow a user to choose multiple items from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+  A component that provides a group of checkboxes that allow a user to choose multiple items from a list of options. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
   **Properties**
 
-  - `options` (required): A list of options that appears in a stack of checkboxes, of type [Plain Text Option](#plain-text-option).
+  - `options` (required): A list of options that appears in a stack of checkboxes, of type [Plain text option](#plain-text-option).
   - `initial_options` (optional): The initially selected options.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -756,7 +707,7 @@ Inherited from [Snap](#snap):
               "type": "plain_text"
             },
             "text": {
-              "text": "Disabled Option 1",
+              "text": "Disabled option 1",
               "type": "plain_text"
             },
             "value": "option_1"
@@ -767,7 +718,7 @@ Inherited from [Snap](#snap):
               "type": "plain_text"
             },
             "text": {
-              "text": "Disabled Option 2",
+              "text": "Disabled option 2",
               "type": "plain_text"
             },
             "value": "option_2"
@@ -782,19 +733,19 @@ Inherited from [Snap](#snap):
 
   **Action payload**
 
-  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"checkboxes"`.
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload](#base-payload), `type` is set to `"checkboxes"`.
 
   ```json
   {
     "type": "checkboxes",
     "action_id": "<the action identifier of the checkboxes>",
-    "action_type": "<the type of the action as defined in the Snap>",
+    "action_type": "<the type of the action as defined in the snap>",
     "timestamp": "<timestamp as a string in ISO 8601 format>",
-    "value": ["<array of selected Plain Text Option objects>"]
+    "value": ["<array of selected plain text option objects>"]
   }
   ```
 
-  #**Example payload**
+  **Example payload**
 
   ```json
   {
@@ -820,16 +771,16 @@ Inherited from [Snap](#snap):
   <Accordion title="Input">
   There are 4 supported input types:
 
-  - Plain Text Input
-  - Number Input
-  - Email Input
-  - Rich Text Input
+  - Plain text input
+  - Number input
+  - Email input
+  - Rich text input
 
   **Properties**
 
   The input component does not have any properties of its own. See specific variants below for their properties.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -847,7 +798,7 @@ Inherited from [Snap](#snap):
 
   Inherited from [Placeholder](#placeholder):
 
-  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+  - `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
 
   Inherited from [Disabled](#disabled):
 
@@ -855,15 +806,15 @@ Inherited from [Snap](#snap):
 
   **Plain text input**
 
-  A plain-text input, similar to the HTML `<input>` tag, creates a field where a user can enter freeform data. It can appear as a single-line field. Works with [Input Layout](#input-layout) blocks.
+  A plain-text input, similar to the HTML `<input>` tag, creates a field where a user can enter freeform data. It can appear as a single-line field. Works with [Input layout](#input-layout) blocks.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
   - `type` (required): The type of the input component, should be set to `"plain_text_input"`.
 
-  #**Additional properties**
+  **Additional properties**
 
   - `initial_value` (optional): The initial value in the input when it's loaded.
   - `multiline` (optional): Indicates whether the input should allow multiple lines of text. Defaults to `false`.
@@ -871,7 +822,7 @@ Inherited from [Snap](#snap):
   - `max_length` (optional): The maximum text length, can't be less than `min_length`.
   - `resize` (optional): Indicates whether the input should be resizable. Defaults to `false`.
 
-  #**Example**
+  **Example**
 
   ![plain_text_input](../../img/plain-text-input.png)
 
@@ -892,7 +843,7 @@ Inherited from [Snap](#snap):
       "type": "plain_text"
     },
     "label": {
-      "text": "User Name",
+      "text": "User name",
       "type": "plain_text"
     },
     "optional": true,
@@ -900,9 +851,9 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  #**Action payload**
+  **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"plain_text_input"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"plain_text_input"`.
 
   ```json
   {
@@ -914,7 +865,7 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  ##**Example payload**
+  #**Example payload**
 
   ```json
   {
@@ -928,21 +879,21 @@ Inherited from [Snap](#snap):
 
   **Number input**
 
-  A number input, similar to the HTML `<input>` tag, creates a field where a user can enter numbers. Works with [Input Layout](#input-layout) blocks.
+  A number input, similar to the HTML `<input>` tag, creates a field where a user can enter numbers. Works with [Input layout](#input-layout) blocks.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
   - `type` (required): The type of the input component, should be set to `"number_input"`.
 
-  #**Additional properties**
+  **Additional properties**
 
   - `initial_value` (optional): The initial value in the input when it's loaded.
   - `min_value` (optional): The minimum value, can't be greater than `max_value`.
   - `max_value` (optional): The maximum value, can't be less than `min_value`.
 
-  #**Example**
+  **Example**
 
   ![number_input](../../img/number_input.png)
 
@@ -962,9 +913,9 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  #**Action payload**
+  **Action payload**
 
-  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"number_input"`.
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload](#base-payload), `type` is set to `"number_input"`.
 
   ```json
   {
@@ -976,7 +927,7 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  ##**Example payload**
+  #**Example payload**
 
   ```json
   {
@@ -990,19 +941,19 @@ Inherited from [Snap](#snap):
 
   **Email input**
 
-  An email input, similar to the HTML `<input>` tag, creates a field where a user can enter email. Works with [Input Layout](#input-layout) blocks.
+  An email input, similar to the HTML `<input>` tag, creates a field where a user can enter email. Works with [Input layout](#input-layout) blocks.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
   - `type` (required): The type of the input component, should be set to `"email_text_input"`.
 
-  #**Additional properties**
+  **Additional properties**
 
   - `initial_value` (optional): The initial value in the input when it's loaded.
 
-  #**Example**
+  **Example**
 
   ![email_input](../../img/email-input.png)
 
@@ -1028,9 +979,9 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  #**Action payload**
+  **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"email_text_input"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"email_text_input"`.
 
   ```json
   {
@@ -1042,7 +993,7 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  ##**Example payload**
+  #**Example payload**
 
   ```json
   {
@@ -1056,19 +1007,19 @@ Inherited from [Snap](#snap):
 
   **Rich text input**
 
-  A rich text input shows a rich text editor where the user can enter formatted text (Markdown). Works with [Input Layout](#input-layout) blocks.
+  A rich text input shows a rich text editor where the user can enter formatted text (Markdown). Works with [Input layout](#input-layout) blocks.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
   - `type` (required): The type of the input component, should be set to `"rich_text_input"`.
 
-  #**Additional properties**
+  **Additional properties**
 
   - `initial_value` (optional): The initial value in the input when it's loaded.
 
-  #**Example**
+  **Example**
 
   ![rich_text_input](../../img/rich-text-input.png)
 
@@ -1101,9 +1052,9 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  #**Action payload**
+  **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"rich_text_input"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"rich_text_input"`.
 
   ```json
   {
@@ -1115,7 +1066,7 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  ##**Example payload**
+  #**Example payload**
 
   ```json
   {
@@ -1145,14 +1096,15 @@ Inherited from [Snap](#snap):
   <Accordion title="List input">
   There are 3 supported list input types:
 
-  - String List Input
-  - Number List Input
-  - Email List Input
-
+  - String list input
+  - Number list input
+  - Email list input
+  
   **Properties**
 
   The list input component does not have any properties of its own. See specific variants below for their properties.
-  #**Inherited properties**
+
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -1166,7 +1118,7 @@ Inherited from [Snap](#snap):
 
   Inherited from [Placeholder](#placeholder):
 
-  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+  - `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
 
   Inherited from [Disabled](#disabled):
 
@@ -1174,15 +1126,15 @@ Inherited from [Snap](#snap):
 
   **String list input**
 
-  A string list input allows users to enter a list of text items. Works with [Input Layout](#input-layout) blocks.
+  A string list input allows users to enter a list of text items. Works with [Input layout](#input-layout) blocks.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
   - `type` (required): The type of the input component, should be set to `"string_list"`.
 
-  #**Additional Properties**
+  **Additional properties**
 
   - `min_items` (optional): The minimum number of items that can be added. Defaults to 1.
   - `max_items` (optional): The maximum number of items that can be added.
@@ -1191,7 +1143,7 @@ Inherited from [Snap](#snap):
   - `max_item_length` (optional): The maximum text length of the inputs, can't be less than `min_item_length`.
   - `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
 
-  #**Example**
+  **Example**
 
   Standard string list input with a minimum of 1 item, maximum of 3 items, minimum item length set to 3 and maximum item length set to 15.
 
@@ -1252,9 +1204,9 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  #**Action payload**
+  **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"string_list"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"string_list"`.
 
   ```json
   {
@@ -1266,7 +1218,7 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  ##**Example payload**
+  #**Example payload**
 
   Standard string list input.
 
@@ -1295,17 +1247,17 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  **Number List Input**
+  **Number list input**
 
-  A list of numbers input allows users to enter a list of numeric items. Works with [Input Layout](#input-layout) blocks.
+  A list of numbers input allows users to enter a list of numeric items. Works with [Input layout](#input-layout) blocks.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
   - `type` (required): The type of the input component, should be set to `"number_list"`.
 
-  #**Additional Properties**
+  **Additional properties**
 
   - `min_items` (optional): The minimum number of items that can be added.
   - `max_items` (optional): The maximum number of items that can be added.
@@ -1313,7 +1265,7 @@ Inherited from [Snap](#snap):
   - `max_item_value` (optional): The maximum value of the inputs, can't be less than `min_item_value`.
   - `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
 
-  #**Example**
+  **Example**
 
   ![list_input_number](../../img/list-input-number.png)
 
@@ -1341,9 +1293,9 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  #**Action payload**
+  **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"number_list"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"number_list"`.
 
   ```json
   {
@@ -1355,7 +1307,7 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  ##**Example Payload**
+  #**Example payload**
 
   ```json
   {
@@ -1367,23 +1319,23 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  **Email List Input**
+  **Email list input**
 
-  A list of email input allows users to enter a list of emails. Works with [Input Layout](#input-layout) blocks.
+  A list of email input allows users to enter a list of emails. Works with [Input layout](#input-layout) blocks.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
   - `type` (required): The type of the input component, should be set to `"email_list"`.
 
-  #**Additional Properties**
+  **Additional properties**
 
   - `min_items` (optional): The minimum number of items that can be added.
   - `max_items` (optional): The maximum number of items that can be added.
   - `initial_values` (optional): The initial values in the inputs when they are loaded. This is an array of strings. If `min_items` or `max_items` are set, the length of the array should be within the range.
 
-  #**Example**
+  **Example**
 
   ![list_input_email](../../img/list-input-email.png)
 
@@ -1409,9 +1361,9 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  #**Action payload**
+  **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"email_list"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"email_list"`.
 
   ```json
   {
@@ -1423,7 +1375,7 @@ Inherited from [Snap](#snap):
   }
   ```
 
-  ##**Example Payload**
+  #**Example payload**
 
   ```json
   {
@@ -1436,14 +1388,14 @@ Inherited from [Snap](#snap):
   ```
   </Accordion>
   <Accordion title="Static select">
-  A select menu that allows a user to choose one item from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+  A select menu that allows a user to choose one item from a list of options. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
   **Properties**
 
-  - `options` (required): A list of options that appear in the menu, of type [Plain Text Option](#plain-text-option).
+  - `options` (required): A list of options that appear in the menu, of type [Plain text option](#plain-text-option).
   - `initial_selected_option` (optional): The initial option that's selected when the element is loaded. A single option that exactly matches one of the options within `options`.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -1461,7 +1413,7 @@ Inherited from [Snap](#snap):
 
   Inherited from [Placeholder](#placeholder):
 
-  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+  - `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
 
   Inherited from [Disabled](#disabled):
 
@@ -1520,7 +1472,7 @@ Inherited from [Snap](#snap):
 
   **Action payload**
 
-  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"static_select"`.
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload](#base-payload), `type` is set to `"static_select"`.
 
   ```json
   {
@@ -1528,11 +1480,11 @@ Inherited from [Snap](#snap):
     "action_id": "<the action identifier of the static select>",
     "action_type": "<the type of the action as defined in the Snap>",
     "timestamp": "<timestamp as a string in ISO 8601 format>",
-    "value": "<selected Plain Text Option object>"
+    "value": "<selected plain text option object>"
   }
   ```
 
-  #**Example Payload**
+  **Example payload**
 
   ```json
   {
@@ -1549,15 +1501,15 @@ Inherited from [Snap](#snap):
 
   </Accordion>
   <Accordion title="Multi static select">
-  A select menu that allows a user to choose multiple items from a list of options. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+  A select menu that allows a user to choose multiple items from a list of options. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
   **Properties**
 
-  - `options` (required): A list of options that appear in the menu, of type [Plain Text Option](#plain-text-option).
+  - `options` (required): A list of options that appear in the menu, of type [Plain text option](#plain-text-option).
   - `initial_selected_options` (optional): The initial options that are selected when the element is loaded. Each of them should exactly match one of the options within `options`.
   - `max_selected_items` (optional): The maximum number of items that can be selected.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -1575,7 +1527,7 @@ Inherited from [Snap](#snap):
 
   Inherited from [Placeholder](#placeholder):
 
-  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+  - `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
 
   Inherited from [Disabled](#disabled):
 
@@ -1636,7 +1588,7 @@ Inherited from [Snap](#snap):
 
   **Action payload**
 
-  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"multi_static_select"`.
+  Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload](#base-payload), `type` is set to `"multi_static_select"`.
 
   ```json
   {
@@ -1644,11 +1596,11 @@ Inherited from [Snap](#snap):
     "action_id": "<the action identifier of the multi-static select>",
     "action_type": "<the type of the action as defined in the Snap>",
     "timestamp": "<timestamp as a string in ISO 8601 format>",
-    "value": ["<array of selected Plain Text Option objects>"]
+    "value": ["<array of selected plain text option objects>"]
   }
   ```
 
-  #**Example Payload**
+  **Example payload**
 
   ```json
   {
@@ -1678,7 +1630,7 @@ Inherited from [Snap](#snap):
   - `options` (required): A list of options that appear in a stack of radio inputs, of type [plain text option](#plain-text-option).
   - `initial_selected_option` (optional): The initial option that's selected when the element is loaded. A single option that exactly matches one of the options within `options`.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -1737,7 +1689,7 @@ Inherited from [Snap](#snap):
 
   **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"radio_buttons"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"radio_buttons"`.
 
   ```json
   {
@@ -1745,11 +1697,11 @@ Inherited from [Snap](#snap):
     "action_id": "<the action identifier of the radio buttons>",
     "action_type": "<the type of the action as defined in the Snap>",
     "timestamp": "<timestamp as a string in ISO 8601 format>",
-    "value": "<selected Plain Text Option object>"
+    "value": "<selected plain text option object>"
   }
   ```
 
-  #**Example Payload**
+  **Example payload**
 
   ```json
   {
@@ -1766,14 +1718,14 @@ Inherited from [Snap](#snap):
 
   </Accordion>
   <Accordion title="Toggle button">
-  Toggles allow users to quickly switch between two possible states. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+  Toggles allow users to switch between two possible states. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
   **Properties**
 
   - `initial_value` (optional): The initial value of the toggle (a boolean).
-  - `description` (optional): A [Plain Text](#plain-text) element that defines the description shown below the toggle.
+  - `description` (optional): A [Plain text](#plain-text) element that defines the description shown below the toggle.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -1838,19 +1790,19 @@ Inherited from [Snap](#snap):
 
   **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"toggle"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"toggle"`.
 
   ```json
   {
     "type": "toggle",
     "action_id": "<the action identifier of the toggle>",
-    "action_type": "<the type of the action as defined in the Snap>",
+    "action_type": "<the type of the action as defined in the snap>",
     "timestamp": "<timestamp as a string in ISO 8601 format>",
     "value": "<boolean indicating the state of the toggle>"
   }
   ```
 
-  #**Example Payload**
+  **Example payload**
 
   ```json
   {
@@ -1864,7 +1816,7 @@ Inherited from [Snap](#snap):
 
   </Accordion>
   <Accordion title="Upload input">
-  A component that allows a user to upload a file. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+  A component that allows a user to upload a file. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
   **Properties**
 
@@ -1873,7 +1825,7 @@ Inherited from [Snap](#snap):
   - `max_files` (optional): The maximum number of files that can be uploaded.
   - `initial_artifacts_ids` (optional): The initial artifacts that are selected when the element is loaded. A list of DONv2 IDs.
 
-  #**Inherited properties**
+  **Inherited properties**
 
   Inherited from [Snap](#snap):
 
@@ -1891,7 +1843,7 @@ Inherited from [Snap](#snap):
 
   Inherited from [Placeholder](#placeholder):
 
-  - `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+  - `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
 
   Inherited from [Disabled](#disabled):
 
@@ -1933,19 +1885,19 @@ Inherited from [Snap](#snap):
 
   **Action payload**
 
-  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"upload"`.
+  Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"upload"`.
 
   ```json
   {
     "type": "upload",
     "action_id": "<the action identifier of the upload input>",
-    "action_type": "<the type of the action as defined in the Snap>",
+    "action_type": "<the type of the action as defined in the snap>",
     "timestamp": "<timestamp as a string in ISO 8601 format>",
     "value": ["<an array of artifact IDs as strings>"]
   }
   ```
 
-  #**Example Payload**
+  **Example payload**
 
   ```json
   {
@@ -1963,7 +1915,7 @@ Inherited from [Snap](#snap):
   </Accordion>
 </AccordionGroup>
 
-## Layout Elements
+## Layout elements
 <AccordionGroup>
   <Accordion title="Actions">
 Used when you want the user to interact without filling out a form. Similar to the [Form](#form) block but without a submit button. It contains an array of `elements`.
@@ -1971,9 +1923,9 @@ Used when you want the user to interact without filling out a form. Similar to t
 **Properties**
 
 - `elements` (required): An array of elements. See the list of allowed elements below.
-- `disable_on_action` (optional): A boolean indicating whether all elements in the actions block should be disabled when one of the elements is interacted with. When the action is completed, the elements are re-enabled. Defaults to `false`. A use case for enabling this is if you have multiple actions that shouldn't be executed concurrently or are incompatible with each other. An example of this would be a snap-in for selecting a meal for a company event. When the user selects a meal, the other meal options should be disabled until the order is placed. After that, the Snap-kit can be updated with the information about the selection.
+- `disable_on_action` (optional): A boolean indicating whether all elements in the actions block should be disabled when one of the elements is interacted with. When the action is completed, the elements are re-enabled. Defaults to `false`. A use case for enabling this is if you have multiple actions that shouldn't be executed concurrently or are incompatible with each other. An example of this would be a snap-in for selecting a meal for a company event. When the user selects a meal, the other meal options should be disabled until the order is placed. After that, the snap-kit can be updated with the information about the selection.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -1988,20 +1940,20 @@ Inherited from [Layout](#layout):
 
 **Allowed elements**
 
-The `elements` array can contain the following Snaps:
+The `elements` array can contain the following snaps:
 
 - [Button](#button)
 - [Checkboxes](#checkboxes)
-- [Radio Buttons](#radio-buttons)
+- [Radio buttons](#radio-buttons)
 - [Actions](#actions)
-- [Static Select](#static-select)
-- [Multi Static Select](#multi-static-select)
+- [Static select](#static-select)
+- [Multi static select](#multi-static-select)
 - [Divider](#divider)
-- [Tag Picker](#tag-picker)
-- [User Picker](#user-picker)
-- [Part Picker](#part-picker)
-- [Toggle Button](#toggle-button)
-- [Upload Input](#upload-input)
+- [Tag picker](#tag-picker)
+- [User picker](#user-picker)
+- [Part picker](#part-picker)
+- [Toggle button](#toggle-button)
+- [Upload input](#upload-input)
 
 **Example**
 
@@ -2059,7 +2011,7 @@ The following video shows the behavior of the Actions block with `disable_on_act
     {
       "elements": [
         {
-          "text": "This is an example of an Actions Snap with disable_on_action set to true. When you click one of the buttons, the other buttons are disabled until the action finishes.",
+          "text": "This is an example of an Actions snap with disable_on_action set to true. When you click one of the buttons, the other buttons are disabled until the action finishes.",
           "type": "plain_text"
         }
       ],
@@ -2121,7 +2073,7 @@ The following video shows the behavior of the Actions block with `disable_on_act
 - `is_collapsible` (optional): Whether the card is collapsible or not. Defaults to `false`.
 - `default_collapsed` (optional): Whether the card is collapsed by default or not. Defaults to `false`.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -2180,7 +2132,7 @@ Default and collapsible card example.
     ],
     "is_collapsible": true,
     "title": {
-      "text": "Collapsible Card Example",
+      "text": "Collapsible card example",
       "type": "plain_text"
     },
     "type": "card"
@@ -2197,7 +2149,7 @@ Default and collapsible card example.
 
 - `elements` (required): An array of elements. See the list of allowed elements below.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -2214,8 +2166,8 @@ Inherited from [Layout](#layout):
 
 The `elements` array can contain the following Snaps:
 
-- [Plain Text](#plain-text)
-- [Rich Text](#rich-text)
+- [Plain text](#plain-text)
+- [Rich text](#rich-text)
 - [Image](#image)
 - [Content](#content)
 - [Divider](#divider)
@@ -2249,7 +2201,7 @@ The `elements` array can contain the following Snaps:
 - `elements` (required): An array of elements. See the list of allowed elements below.
 - `submit_action` (required): A button that can be clicked to submit the form.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -2271,7 +2223,7 @@ Inherited from [Layout](#layout):
 
 The `elements` array can contain the following Snaps:
 
-- [Input Layout](#input-layout)
+- [Input layout](#input-layout)
 - [Divider](#divider)
 
 **Example**
@@ -2300,7 +2252,7 @@ A form composed of plain text inputs, number inputs, checkboxes, radio buttons, 
         "type": "plain_text"
       },
       "label": {
-        "text": "User Name",
+        "text": "User name",
         "type": "plain_text"
       },
       "optional": true,
@@ -2360,7 +2312,7 @@ A form composed of plain text inputs, number inputs, checkboxes, radio buttons, 
               "type": "plain_text"
             },
             "text": {
-              "text": "Radio Option 1",
+              "text": "Radio option 1",
               "type": "plain_text"
             },
             "value": "radio_option_1"
@@ -2371,7 +2323,7 @@ A form composed of plain text inputs, number inputs, checkboxes, radio buttons, 
               "type": "plain_text"
             },
             "text": {
-              "text": "RadioOption 2",
+              "text": "Radio option 2",
               "type": "plain_text"
             },
             "value": "radio_option_2"
@@ -2403,7 +2355,7 @@ A form composed of plain text inputs, number inputs, checkboxes, radio buttons, 
         "type": "multi_static_select"
       },
       "label": {
-        "text": "Multi Select",
+        "text": "Multi select",
         "type": "plain_text"
       },
       "type": "input_layout"
@@ -2441,7 +2393,7 @@ A form composed of plain text inputs, number inputs, checkboxes, radio buttons, 
         "type": "static_select"
       },
       "label": {
-        "text": "Single Select",
+        "text": "Single select",
         "type": "plain_text"
       },
       "type": "input_layout"
@@ -2463,7 +2415,7 @@ A form composed of plain text inputs, number inputs, checkboxes, radio buttons, 
 
 **Action payload**
 
-Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](#base-payload), `type` is set to `"form"`.
+Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base payload](#base-payload), `type` is set to `"form"`.
 
 ```json
 {
@@ -2475,7 +2427,7 @@ Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](
 }
 ```
 
-#**Example payload**
+**Example payload**
 
 ```json
 {
@@ -2519,7 +2471,7 @@ Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](
           "text": "Description for option 1",
           "type": "plain_text"
         },
-        "text": { "text": "RadioOption 2", "type": "plain_text" },
+        "text": { "text": "Radio option 2", "type": "plain_text" },
         "value": "radio_option_2"
       }
     },
@@ -2557,13 +2509,13 @@ Inherits `type`, `action_id`, `action_type` and `timestamp` from [Base Payload](
 **Properties**
 
 - `element` (required): The input element. See the list of allowed elements below.
-- `label` (optional): A [Plain Text](#plain-text) element that defines the label shown above the input element.
-- `hint` (optional): A [Plain Text](#plain-text) element that defines the hint shown below the label.
+- `label` (optional): A [Plain text](#plain-text) element that defines the label shown above the input element.
+- `hint` (optional): A [Plain text](#plain-text) element that defines the hint shown below the label.
 - `optional` (optional): A boolean that indicates whether the input element may be empty when a user submits the modal. For toggle, if this value is `false`, then it needs to be always toggled (needs to be true). Defaults to `false`.
 - `disabled` (optional): Disables the input and prevents changes to the value.
 - `disabled_text` (optional): The text that's shown on hover if the component is disabled.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -2578,14 +2530,14 @@ Inherited from [Hideable](#hideable):
 
 - [Input](#input)
 - [Checkboxes](#checkboxes)
-- [Radio Buttons](#radio-buttons)
-- [Static Select](#static-select)
-- [Multi Static Select](#multi-static-select)
-- [User Picker](#user-picker)
-- [Part Picker](#part-picker)
-- [Tag Picker](#tag-picker)
-- [Toggle Button](#toggle-button)
-- [Upload Input](#upload-input)
+- [Radio buttons](#radio-buttons)
+- [Static select](#static-select)
+- [Multi static select](#multi-static-select)
+- [User picker](#user-picker)
+- [Part picker](#part-picker)
+- [Tag picker](#tag-picker)
+- [Toggle button](#toggle-button)
+- [Upload input](#upload-input)
 
 **Example**
 
@@ -2608,7 +2560,7 @@ Inherited from [Hideable](#hideable):
         "type": "plain_text_input"
       },
       "label": {
-        "text": "User Name",
+        "text": "User name",
         "type": "plain_text"
       },
       "optional": true,
@@ -2658,7 +2610,7 @@ Inherited from [Hideable](#hideable):
 
 <AccordionGroup>
   <Accordion title="Part picker">
-    A component that provides a list of parts that allows a user to choose multiple parts from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+    A component that provides a list of parts that allows a user to choose multiple parts from a list. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
 **Properties**
 
@@ -2666,7 +2618,7 @@ Inherited from [Hideable](#hideable):
 - `max_selected_items` (optional): The maximum number of parts that can be selected.
 - `allowed_part_types` (optional): A list of part types that are selectable from the list of parts in the dropdown. Possible values: `"capability"`, `"component"`, `"custom_part"`, `"enhancement"`, `"feature"`, `"linkable"`, `"microservice"`, `"product"`, `"runnable"`.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -2706,7 +2658,7 @@ Part picker snap with 2 selected parts.
 
 **Action payload**
 
-Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"part_picker"`.
+Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload](#base-payload), `type` is set to `"part_picker"`.
 
 ```json
 {
@@ -2718,7 +2670,7 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload]
 }
 ```
 
-#**Example payload**
+**Example payload**
 
 ```json
 {
@@ -2736,14 +2688,14 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload]
   </Accordion>
 
   <Accordion title="Tag picker">
-    A component that provides a list of tags that allow a user to choose multiple tags from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+    A component that provides a list of tags that allow a user to choose multiple tags from a list. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
 **Properties**
 
 - `initial_tags_selected_options` (optional): The initially selected tags, a list of DONv2 IDs.
 - `max_selected_items` (optional): The maximum number of tags that can be selected.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -2761,7 +2713,7 @@ Inherited from [Focusable](#focusable):
 
 Inherited from [Placeholder](#placeholder):
 
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+- `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
 
 Inherited from [Disabled](#disabled):
 
@@ -2791,7 +2743,7 @@ Tag picker snap with 1 selected tag.
 
 **Action payload**
 
-Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"tag_picker"`.
+Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload](#base-payload), `type` is set to `"tag_picker"`.
 
 ```json
 {
@@ -2803,7 +2755,7 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload]
 }
 ```
 
-#**Example payload**
+**Example payload**
 
 ```json
 {
@@ -2819,7 +2771,7 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload]
   
   <Accordion title="User picker">
     
-A component that provides a list of users that allow a user to choose multiple users from a list. Works with [Input Layout](#input-layout) and [Actions](#actions) blocks.
+A component that provides a list of users that allow a user to choose multiple users from a list. Works with [Input layout](#input-layout) and [Actions](#actions) blocks.
 
 **Properties**
 
@@ -2829,7 +2781,7 @@ A component that provides a list of users that allow a user to choose multiple u
 - `initial_sys_users_selected_options` (optional): The initially selected sys users, a list of DONv2 IDs.
 - `max_selected_items` (optional): The maximum number of users that can be selected.
 
-#**Inherited properties**
+**Inherited properties**
 
 Inherited from [Snap](#snap):
 
@@ -2847,7 +2799,7 @@ Inherited from [Focusable](#focusable):
 
 Inherited from [Placeholder](#placeholder):
 
-- `placeholder` (optional): A [Plain Text](#plain-text) element that defines the placeholder text shown on the element.
+- `placeholder` (optional): A [Plain text](#plain-text) element that defines the placeholder text shown on the element.
 
 Inherited from [Disabled](#disabled):
 
@@ -2877,7 +2829,7 @@ User picker snap with 1 selected user.
 
 **Action payload**
 
-Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload](#base-payload), `type` is set to `"user_picker"`.
+Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base payload](#base-payload), `type` is set to `"user_picker"`.
 
 ```json
 {
@@ -2889,7 +2841,7 @@ Inherits `type`, `action_id`, `action_type`, and `timestamp` from [Base Payload]
 }
 ```
 
-#**Example Payload**
+**Example payload**
 
 ```json
 {

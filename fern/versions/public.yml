@@ -95,13 +95,13 @@ navigation:
       - section: Mobile SDK
         slug: mobile
         contents:
-          - page: Integrate PLuG SDKs with your Android app
+          - page: Android integration
             slug: android
             path: ../docs/pages/plug-sdk/sdk-android.mdx
-          - page: Integrate PLuG SDKs with your iOS app
+          - page: iOS integration
             slug: ios
             path: ../docs/pages/plug-sdk/sdk-ios.mdx
-          - page: Setting up push notifications in the DevRev SDK
+          - page: Push notifications
             slug: push-notification
             path: ../docs/pages/plug-sdk/push-notification.mdx
   - section: Snap-in development

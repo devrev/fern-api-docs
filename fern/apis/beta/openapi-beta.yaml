@@ -891,9 +891,7 @@ components:
             type: string
         scope:
           type: array
-          description: |
-            Filter for the scope of the articles. If this is not provided, then
-            only external articles are returned.
+          description: Filter for the scope of the articles.
           items:
             type: integer
             format: int64
@@ -1133,9 +1131,7 @@ components:
             type: string
         scope:
           type: array
-          description: |
-            Filter for the scope of the articles. If this is not provided, then
-            only external articles are returned.
+          description: Filter for the scope of the articles.
           items:
             type: integer
             format: int64
@@ -1597,6 +1593,7 @@ components:
           engagement: '#/components/schemas/engagement-summary'
           enhancement: '#/components/schemas/enhancement-summary'
           feature: '#/components/schemas/feature-summary'
+          incident: '#/components/schemas/incident-summary'
           issue: '#/components/schemas/issue-summary'
           meeting: '#/components/schemas/meeting-summary'
           opportunity: '#/components/schemas/opportunity-summary'
@@ -1624,6 +1621,7 @@ components:
         - $ref: '#/components/schemas/engagement-summary'
         - $ref: '#/components/schemas/enhancement-summary'
         - $ref: '#/components/schemas/feature-summary'
+        - $ref: '#/components/schemas/incident-summary'
         - $ref: '#/components/schemas/issue-summary'
         - $ref: '#/components/schemas/meeting-summary'
         - $ref: '#/components/schemas/opportunity-summary'
@@ -1658,6 +1656,7 @@ components:
         - engagement
         - enhancement
         - feature
+        - incident
         - issue
         - meeting
         - opportunity
@@ -1718,6 +1717,7 @@ components:
       title: auth-connection
     auth-connection-options-azure-ad:
       type: object
+      deprecated: true
       description: |
         Object encapsulating the configuration parameters for an Azure AD
         authentication connection.
@@ -1734,6 +1734,7 @@ components:
       title: auth-connection-options-azure-ad
     auth-connection-options-google-apps:
       type: object
+      deprecated: true
       description: |
         Object encapsulating the configuration parameters for a Google Apps
         authentication connection.
@@ -5071,6 +5072,48 @@ components:
       allOf:
         - $ref: '#/components/schemas/user-base-summary'
       title: dev-user-summary
+    dev-users-activate-request:
+      type: object
+      description: A request to activate the Dev user.
+      properties:
+        groups:
+          type: array
+          description: IDs of the groups assigned to user during activation.
+          items:
+            type: string
+        id:
+          type: string
+          description: The ID for the Dev User.
+      required:
+        - id
+      title: dev-users-activate-request
+    dev-users-activate-response:
+      type: object
+      description: The response to activate the Dev user.
+      properties:
+        invite_sent:
+          type: boolean
+          description: Whether an invitation has been sent to the Dev user.
+      required:
+        - invite_sent
+      title: dev-users-activate-response
+      x-go-name: DevUsersActivateResponseBody
+    dev-users-deactivate-request:
+      type: object
+      description: A request to deactivate the Dev user.
+      properties:
+        id:
+          type: string
+          description: The ID for the Dev User.
+      required:
+        - id
+      title: dev-users-deactivate-request
+    dev-users-deactivate-response:
+      type: object
+      additionalProperties: false
+      description: The response to deactivate the Dev user.
+      title: dev-users-deactivate-response
+      x-go-name: DevUsersDeactivateResponseBody
     dev-users-get-request:
       type: object
       description: A request to get a Dev user's information.
@@ -6079,6 +6122,27 @@ components:
         - label
         - ordinal
       title: enum-value
+    enum-value-summary:
+      type: object
+      description: The properties of an enum value.
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the enum value.
+          format: int64
+        label:
+          type: string
+          description: The display label of the enum value.
+        ordinal:
+          type: integer
+          description: |
+            Used for determining the relative order of the enum value.
+          format: int64
+      required:
+        - id
+        - label
+        - ordinal
+      title: enum-value-summary
     error:
       type: object
       properties:
@@ -6764,6 +6828,35 @@ components:
       required:
         - group
       title: event-group-updated
+    event-incident-created:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - incident
+      title: event-incident-created
+    event-incident-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the incident that was deleted.
+        old_incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - id
+      title: event-incident-deleted
+    event-incident-updated:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/incident'
+        old_incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - incident
+      title: event-incident-updated
     event-link-created:
       type: object
       properties:
@@ -8047,6 +8140,26 @@ components:
           required:
             - title
       title: incident
+    incident-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            owned_by:
+              type: array
+              description: The users that own the incident.
+              items:
+                $ref: '#/components/schemas/user-summary'
+            severity:
+              $ref: '#/components/schemas/enum-value-summary'
+            stage:
+              $ref: '#/components/schemas/stage-summary'
+            title:
+              type: string
+              description: Title of the incident.
+          required:
+            - title
+      title: incident-summary
     incidents-create-request:
       type: object
       properties:
@@ -8763,6 +8876,7 @@ components:
           dev_user: '#/components/schemas/dev-user-summary'
           enhancement: '#/components/schemas/enhancement-summary'
           feature: '#/components/schemas/feature-summary'
+          incident: '#/components/schemas/incident-summary'
           issue: '#/components/schemas/issue-summary'
           opportunity: '#/components/schemas/opportunity-summary'
           product: '#/components/schemas/product-summary'
@@ -8778,6 +8892,7 @@ components:
         - $ref: '#/components/schemas/dev-user-summary'
         - $ref: '#/components/schemas/enhancement-summary'
         - $ref: '#/components/schemas/feature-summary'
+        - $ref: '#/components/schemas/incident-summary'
         - $ref: '#/components/schemas/issue-summary'
         - $ref: '#/components/schemas/opportunity-summary'
         - $ref: '#/components/schemas/product-summary'
@@ -8800,6 +8915,7 @@ components:
         - dev_user
         - enhancement
         - feature
+        - incident
         - issue
         - opportunity
         - product
@@ -10174,6 +10290,8 @@ components:
             - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
           items:
             type: string
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: Description of the part.
@@ -10390,6 +10508,8 @@ components:
             - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
           items:
             type: string
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: The updated description of the part.
@@ -13756,6 +13876,13 @@ components:
           type: string
           description: The name of the stage.
       title: stage-init
+    stage-summary:
+      type: object
+      description: Describes the current stage of a object.
+      properties:
+        stage:
+          $ref: '#/components/schemas/custom-stage-summary'
+      title: stage-summary
     stage-update:
       type: object
       description: Updates an object's stage.
@@ -15398,6 +15525,7 @@ components:
         - engagement
         - enhancement
         - feature
+        - incident
         - issue
         - meeting
         - opportunity
@@ -16343,6 +16471,12 @@ components:
         id:
           type: string
           description: The event's ID.
+        incident_created:
+          $ref: '#/components/schemas/event-incident-created'
+        incident_deleted:
+          $ref: '#/components/schemas/event-incident-deleted'
+        incident_updated:
+          $ref: '#/components/schemas/event-incident-updated'
         link_created:
           $ref: '#/components/schemas/event-link-created'
         link_deleted:
@@ -16459,6 +16593,9 @@ components:
         - group_member_added
         - group_member_removed
         - group_updated
+        - incident_created
+        - incident_deleted
+        - incident_updated
         - link_created
         - link_deleted
         - link_updated
@@ -17529,7 +17666,7 @@ components:
           items:
             $ref: '#/components/schemas/stage-validation-option-for-update'
         staged_info:
-          $ref: '#/components/schemas/works-update-request-staged-info-staged-info-update'
+          $ref: '#/components/schemas/works-update-request-staged-info-update'
         tags:
           $ref: '#/components/schemas/works-update-request-tags'
         target_close_date:
@@ -17680,17 +17817,40 @@ components:
           items:
             type: string
       title: works-update-request-reported-by
-    works-update-request-staged-info-staged-info-update:
+    works-update-request-staged-info-update:
       type: object
       properties:
+        sync_in_unresolved_fields:
+          type: array
+          description: |
+            Updates the sync in unresolved fields of the staged work.
+          items:
+            $ref: '#/components/schemas/works-update-request-staged-info-update-unresolved-field'
+        sync_out_unresolved_fields:
+          type: array
+          description: |
+            Updates the sync out unresolved fields of the staged work.
+          items:
+            $ref: '#/components/schemas/works-update-request-staged-info-update-unresolved-field'
         unresolved_fields:
           type: array
           description: Updates the unresolved fields of the staged work.
           items:
             type: string
-      required:
-        - unresolved_fields
-      title: works-update-request-staged-info-staged-info-update
+      title: works-update-request-staged-info-update
+    works-update-request-staged-info-update-unresolved-field:
+      type: object
+      properties:
+        devrev_field_name:
+          type: string
+          description: DevRev field name of the object's attribute.
+        external_display_name:
+          type: string
+          description: External field name as seen by the end user.
+        external_field_name:
+          type: string
+          description: Api name of the external object's field.
+      title: works-update-request-staged-info-update-unresolved-field
     works-update-request-tags:
       type: object
       properties:
@@ -18463,9 +18623,7 @@ paths:
               - DEVU-12345
             items:
               type: string
-        - description: |
-            Filter for the scope of the articles. If this is not provided, then
-            only external articles are returned.
+        - description: Filter for the scope of the articles.
           explode: false
           in: query
           name: scope
@@ -18776,9 +18934,7 @@ paths:
               - DEVU-12345
             items:
               type: string
-        - description: |
-            Filter for the scope of the articles. If this is not provided, then
-            only external articles are returned.
+        - description: Filter for the scope of the articles.
           explode: false
           in: query
           name: scope
@@ -21347,6 +21503,76 @@ paths:
       tags:
         - auth-connection
         - dev-orgs
+      x-fern-audiences:
+        - docs
+        - sdks
+  /dev-users.activate:
+    post:
+      description: Activates the requested user.
+      operationId: dev-users-activate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-activate-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-activate-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - dev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /dev-users.deactivate:
+    post:
+      description: Deactivates the requested user.
+      operationId: dev-users-deactivate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-deactivate-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-deactivate-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - dev-users
       x-fern-audiences:
         - docs
         - sdks

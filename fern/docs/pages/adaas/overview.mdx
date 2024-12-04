@@ -9,21 +9,7 @@ It enables developers to create external workers (extractors and loaders) to bri
 
 ```mermaid
 flowchart TD
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-        'fontFamily': 'Segoe UI',
-        'lineColor': '#000',
-        'primaryTextColor': 'white',
-        'primaryColor': '#2a33ff',
-        'primaryBorderColor': '#62D65D',
-        'secondaryColor': '#5D0E1C',
-        'tertiaryColor': '#e6e6e6',
-        'clusterBorder': 'white'
-    }
-  }
-}%%
+%%{init: { "fontFamily": "Segoe UI" } }%%
 externalSystem[External system]
 worker([Worker])
 s3interact[s3interact]

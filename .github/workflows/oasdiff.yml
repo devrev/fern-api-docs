@@ -1,0 +1,43 @@
+on: 
+  pull_request:
+    paths:
+      - fern/apis/public/openapi-public.yaml
+      - fern/apis/beta/openapi-beta.yaml
+
+name: generate-changelog
+jobs:
+  get-diff: 
+    runs-on: ubuntu-latest
+    steps: 
+    - name: Check out HEAD rev
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
+        path: head
+    - name: Check out BASE rev
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.base_ref }}
+        path: base   
+    - name: Create dir
+      run: |
+        mkdir changelog
+    - name: Running public OpenAPI Spec diff action
+      uses: oasdiff/oasdiff-action/diff@main
+      with:
+        base: 'base/fern/apis/public/openapi-public.yaml'
+        revision: 'head/fern/apis/public/openapi-public.yaml'
+        format: text
+        output-to-file: 'changelog/public-diff.md'
+    - name: Running beta OpenAPI Spec diff action
+      uses: oasdiff/oasdiff-action/diff@main
+      with:
+        base: 'base/fern/apis/beta/openapi-beta.yaml'
+        revision: 'head/fern/apis/beta/openapi-beta.yaml'  
+        format: text
+        output-to-file: 'changelog/beta-diff.md'
+    - name: Archive changelogs
+      uses: actions/upload-artifact@v4
+      with:
+        name: changelog
+        path: changelog/**

@@ -47,3 +47,11 @@ versions:
     path: ./versions/beta.yml
     availability: beta
     slug: beta
+
+redirects:
+  - source: "/public/sdks/plug/methods"
+    destination: "/public/sdks/web/methods"
+    permanent: true
+  - source: "/sdks/plug/methods"
+    destination: "/sdks/web/methods"
+    permanent: true

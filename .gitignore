@@ -1,4 +1,5 @@
 node_modules
+fern/dist
 fern/*/definition/
 .DS_Store
 .idea

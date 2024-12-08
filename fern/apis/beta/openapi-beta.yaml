@@ -4801,6 +4801,13 @@ components:
       enum:
         - last_n_days
         - next_n_days
+    definedness:
+      type: string
+      description: Indicates whether this evaluation can change in the future.
+      enum:
+        - immutable
+        - mutable
+        - undefined
     delete-rev-users-personal-data-request:
       type: object
       description: Request object to delete a contact's information.
@@ -8701,6 +8708,32 @@ components:
         - incident
       title: incidents-update-response
       x-go-name: IncidentsUpdateResponseBody
+    instant-evaluation:
+      type: object
+      properties:
+        at:
+          type: string
+          description: The time instant evaluated.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        definedness:
+          $ref: '#/components/schemas/definedness'
+        is_active:
+          type: boolean
+          description: |
+            Active state of the organization schedule at the time instant.
+        next_transition:
+          type: string
+          description: |
+            Next instant at which the active state of the organization schedule
+            changes, for example, if the schedule is currently off, the next
+            instant at which it will be on.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      required:
+        - at
+        - definedness
+      title: instant-evaluation
     issue:
       allOf:
         - $ref: '#/components/schemas/work-base'
@@ -9917,6 +9950,38 @@ components:
         - org_schedule
       title: org-schedules-create-response
       x-go-name: OrgSchedulesCreateResponseBody
+    org-schedules-evaluate-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Organization schedule ID.
+        instants:
+          type: array
+          description: Time instants to evaluate the organization schedule for.
+          example:
+            - "2023-01-01T12:00:00.000Z"
+          items:
+            type: string
+            format: date-time
+          minItems: 1
+      required:
+        - id
+        - instants
+      title: org-schedules-evaluate-request
+    org-schedules-evaluate-response:
+      type: object
+      properties:
+        instant_evaluations:
+          type: array
+          description: |
+            The evaluations for the given time instants in the requested order.
+          items:
+            $ref: '#/components/schemas/instant-evaluation'
+      required:
+        - instant_evaluations
+      title: org-schedules-evaluate-response
+      x-go-name: OrgSchedulesEvaluateResponseBody
     org-schedules-get-request:
       type: object
       properties:
@@ -25041,6 +25106,86 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /org-schedules.evaluate:
+    get:
+      description: Evaluates an organization's schedule at specified instants.
+      operationId: org-schedules-evaluate
+      parameters:
+        - description: Organization schedule ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: Time instants to evaluate the organization schedule for.
+          explode: false
+          in: query
+          name: instants
+          required: true
+          schema:
+            type: array
+            example:
+              - "2023-01-01T12:00:00.000Z"
+            items:
+              type: string
+              format: date-time
+            minItems: 1
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/org-schedules-evaluate-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - schedules
+      x-fern-audiences:
+        - docs
+      x-request-name: OrgSchedulesEvaluateQuery
+    post:
+      description: Evaluates an organization's schedule at specified instants.
+      operationId: org-schedules-evaluate-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/org-schedules-evaluate-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/org-schedules-evaluate-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - schedules
+      x-fern-audiences:
+        - docs
+        - sdks
   /org-schedules.get:
     get:
       description: Gets an organization schedule.
@@ -30848,6 +30993,44 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /webhooks.event:
+    post:
+      description: |
+        Describes a webhook invocation for an event from DevRev to a webhook's
+        target URL, where the receiving handler must implement the specified
+        protocol. Note the documented endpoint is for exposition and not
+        provided by DevRev.
+      operationId: webhooks-event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook-event-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook-event-response'
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-webhook: true
   /webhooks.fetch:
     post:
       description: Fetches an object via webhook.

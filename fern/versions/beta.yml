@@ -9,6 +9,12 @@ navigation:
       - docs
     snippets:
       typescript: "@devrev/api"
+  - changelog: ../apis/beta/changelog
+    title: Changelog
+  # - section: Changelog
+  #   contents:
+  #     - page: Nov. 8, 2024
+  #       path: ../docs/pages/changelog/2024-11-08.mdx
   - section: Guides
     contents:
       - page: Object Customization

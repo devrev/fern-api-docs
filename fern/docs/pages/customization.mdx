@@ -290,6 +290,26 @@ scheme preserves the referential integrity.
 
 ![Fragment Versioning](../img/customization-versioning.png)
 
+```mermaid Fragment versioning
+flowchart LR
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI'
+    }
+  }
+}%%
+subgraph Versions
+  v1[Fragment v1]
+  v2[Fragment v2]
+  v1 --> v2
+end
+o1[Object 1] -.-> v1
+o2[Object 2] -.-> v1
+o3[Object 3] -.-> v2
+```
+
 ### Object upgrades
 
 A natural question arises at this point: what happens to the objects referencing the
@@ -453,7 +473,18 @@ instead.
 Stages represent the different phases an object can be in during its lifecycle. For
 example, an issue might go through the following lifecycle:
 
-![Issue Lifecycle](../img/customization-stage-transition.png)
+```mermaid Issue stages
+flowchart LR
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI'
+    }
+  }
+}%%
+Backlog --> dev[In development] --> Completed
+```
 
 Customizing the stages allows you to tailor the object lifecycle to your organization's
 specific requirements.
@@ -491,7 +522,26 @@ For example, _triage_ stage can transition to _backlog_ stage but not vice versa
 
 Let's create a stage diagram for the _bug_ subtype:
 
-![Stage Diagram](../img/customization-stage-diagram.png)
+```mermaid Bug stages
+flowchart LR
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI'
+    }
+  }
+}%%
+backl[**Backlog**
+don:core:dvrv-us-1:devo/11FVC3ScK:stage/1]
+dev[**In development**
+don:core:dvrv-us-1:devo/11FVC3ScK:stage/2]
+rca[**Needs RCA**
+don:core:dvrv-us-1:devo/11FVC3ScK:stage/3]
+compl[**Completed**
+don:core:dvrv-us-1:devo/11FVC3ScK:stage/4]
+backl --> dev --> rca --> compl
+```
 
 ```curl {11}
 curl --location 'https://api.devrev.ai/stage-diagrams.create' \

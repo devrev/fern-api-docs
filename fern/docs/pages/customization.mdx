@@ -290,14 +290,12 @@ scheme preserves the referential integrity.
 
 ```mermaid Fragment versioning
 flowchart LR
-%%{
-  init: {
+%%{init: {
     'theme': 'base',
     'themeVariables': {
-        'fontFamily': 'Segoe UI'
-    }
-  }
-}%%
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
 subgraph Versions
   v1[Fragment v1]
   v2[Fragment v2]
@@ -473,14 +471,12 @@ example, an issue might go through the following lifecycle:
 
 ```mermaid Issue stages
 flowchart LR
-%%{
-  init: {
+%%{init: {
     'theme': 'base',
     'themeVariables': {
-        'fontFamily': 'Segoe UI'
-    }
-  }
-}%%
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
 Backlog --> dev[In development] --> Completed
 ```
 
@@ -522,14 +518,12 @@ Let's create a stage diagram for the _bug_ subtype:
 
 ```mermaid Bug stages
 flowchart LR
-%%{
-  init: {
+%%{init: {
     'theme': 'base',
     'themeVariables': {
-        'fontFamily': 'Segoe UI'
-    }
-  }
-}%%
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
 backl[**Backlog**
 don:core:dvrv-us-1:devo/11FVC3ScK:stage/1]
 dev[**In development**

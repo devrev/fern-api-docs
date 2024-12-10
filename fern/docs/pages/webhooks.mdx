@@ -16,14 +16,13 @@ where object timestamps and versions enable you to determine the order of events
 
 ```mermaid
 sequenceDiagram
-%%{
-  init: {
+%%{init: {
     'theme': 'base',
     'themeVariables': {
-        'fontFamily': 'Segoe UI'
-    }
-  }
-}%%
+        'fontFamily': 'Segoe UI',
+        'signalColor': '#7d7f7c',
+        'signalTextColor': '#7d7f7c'
+}}}%%
 Note over Customer endpoint,DevRev: 1. Register webhook
 Customer endpoint ->> DevRev: Webhook create request
 DevRev -->> Customer endpoint: Webhook create response

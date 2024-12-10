@@ -59,7 +59,7 @@ navigation:
   - section: Guides
     slug: guides
     contents:
-      - page: Getting started with webhooks
+      - page: Webhooks
         slug: webhooks
         path: ../docs/pages/webhooks.mdx
       - page: Restricted messages on a timeline

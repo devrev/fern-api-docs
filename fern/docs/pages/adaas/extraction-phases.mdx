@@ -7,7 +7,13 @@ of the snap-in.
 
 ```mermaid
 sequenceDiagram
-%%{init: { "fontFamily": "Segoe UI" } }%%
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'signalColor': '#7d7f7c',
+        'signalTextColor': '#7d7f7c'
+}}}%%
   actor user as User
   participant gw as REST API Gateway
   participant ad as Airdrop components

@@ -8,7 +8,29 @@ The `rev-users.create` API is used to create [contacts](https://docs.devrev.ai/p
 Just want to get a token and get started? This [tutorial](/about/authentication#generate-a-personal-access-token-pat) teaches you the fastest way to get a token.
 </Callout>
 
-![mermaid-diagram](../img/mermaid.png)
+```mermaid
+flowchart TD
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
+acct-create[accounts.create]
+exist(((Account is existing
+'account ID')))
+list[rev-orgs.list with 
+'account' filter]
+get[rev-orgs.get with
+'account ID']
+display(((Get rev-org 'display_id')))
+rev-user-create[Create a 'rev-user' under 'contact']
+acct-create --> exist -->|Yes|get
+exist -->|No|list
+get --> display
+list --> display
+display --> rev-user-create
+```
 
 ## Create an account
 

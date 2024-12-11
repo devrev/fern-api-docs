@@ -49,9 +49,15 @@ versions:
     slug: beta
 
 redirects:
-  - source: "/public/sdks/plug/methods"
-    destination: "/public/sdks/web/methods"
+  - source: /public/sdks/plug/methods
+    destination: /public/sdks/web/methods
     permanent: true
-  - source: "/sdks/plug/methods"
-    destination: "/sdks/web/methods"
+  - source: /sdks/plug/methods
+    destination: /sdks/web/methods
+    permanent: true
+  - source: /sdks/plug/install-ios
+    destination: /sdks/mobile/ios
+    permanent: true
+  - source: /sdks/plug/install-android
+    destination: /sdks/mobile/android
     permanent: true

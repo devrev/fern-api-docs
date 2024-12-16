@@ -255,7 +255,47 @@ DevRevSDK.unregisterDevice(deviceID: string)
 The method requires the device identifier, which should be the same as the one used when registering the device.
 
 
+### Processing push notifications
 
+#### Android
 
+On Android, notifications are implemented as data messages to offer flexibility. However, this means that automatic click processing isn't available. To handle notification clicks, developers need to intercept the click event, extract the payload, and pass it to a designated method for processing. This custom approach enables tailored notification handling in Android applications.
 
+To process the notification, use the following method:
+
+```typescript
+DevRevSDK.processPushNotification(payload: string)
+```
+
+Here, the `message` object from the notification payload should be passed to this function.
+
+For example:
+
+```typescript
+const notificationPayload = {
+	// message may be nested based on the notification library
+	"message": {
+		// ... (the entire message object)
+	}
+};
+const messageJson = notificationPayload["message"];
+DevRevSDK.processPushNotification(JSON.stringify(messageJson));
+```
+#### iOS
+
+On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions. 
+
+```typescript
+DevRevSDK.processPushNotification(payload: string)
+```
+
+For example:
+
+```typescript
+DevRevSDK.processPushNotification(JSON.stringify(payload));
+```
+
+## License
+
+Apache 2.0
 

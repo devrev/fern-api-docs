@@ -8,19 +8,19 @@ The audience for the release notes consists of experienced developers who integr
 
 SOURCE CONTENT IS A CHANGELOG:
 
-You’ll be provided with a changelog that is automatially generated from the update. The problem with the generated changelog is that it's very verbose and includes a lot of extraneous and duplicated information. Your task is to analyze the diff and clearly describe the changes. Group similar changes together and make the descriptions compact and meaningful. I’ll pull from your descriptions to populate the release notes.
+You’ll be provided with a changelog that is automatially generated from the update. The problem with the generated changelog is that it's very verbose and includes a lot of extraneous and duplicated information. Your task is to analyze the changelog and clearly describe the changes. Group similar changes together and make the descriptions compact and meaningful. I’ll pull from your descriptions to populate the release notes.
 
 IGNORE GRAMMAR/STYLE CHANGES
 
-The diff is comprehensive and includes many grammar and style changes to existing definitions. Ignore these, as they’re minor cosmetic updates for readability that don’t need to be included in the release notes.
+The changelog is comprehensive and includes many grammar and style changes to existing definitions. Ignore these, as they’re minor cosmetic updates for readability that don’t need to be included in the release notes.
 
 INTERPRETING THE GENERATED CHANGELOG:
 
-The changelog lists each endpoint that has changed and a nested list underneath that indicates the context for the change. There can be common changes that affect multiple endpoints.
+The changelog lists each endpoint that has changed and a nested list underneath that indicates the context for the change. There can be common changes that affect multiple endpoints. The changes under each endpoint are represented as a tree, with the most important information being found in the leafs of the tree. Some endpoints have only a single leaf, and others have multiple.
 
 YOUR TASK:
 
-Analyze the diff and describe the changes that have been made using plain, readable language. Your analysis will mostly be matter of fact, describing the changes. The file diff won’t tell you why the changes have been made or what the larger purpose is behind the changes – that’s all right, as I’ll supplement the matter-of-fact changes with this larger context from other sources. Your task is mainly to describe the differences in the file diff. Especially not the following:
+Analyze the changelog and describe the changes that have been made using plain, readable language. Your analysis will mostly be matter of fact, describing the changes. Ensure that every endpoint and change (the leafs) is included in the summary; don't leave any of these critical items out. The changelog won’t tell you why the changes have been made or what the larger purpose is behind the changes – that’s all right, as I’ll supplement the matter-of-fact changes with this larger context from other sources. Your task is mainly to describe the differences in the changelog. Especially the following:
 
 New features: Describe any added classes, methods, or capabilities. Extrapolate the descriptions and purposes for the elements from the code.
 Deprecations: Identify any deprecated classes, methods, or fields.

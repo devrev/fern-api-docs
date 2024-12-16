@@ -89,5 +89,29 @@ You can initiate a new support conversation directly from your app. This method 
 DevRev.createSupportConversation()
 ```
 
+### In-app link handling
+
+TBD
+
+
+### In-app link callback
+
+<Callout intent="note">
+This functionality is for Android only.
+</Callout>
+
+For scenarios where custom handling is needed, links from the support chat can be captured with the following method:
+
+```typescript
+DevRevSDK.setInAppLinkHandler((url) => {
+	// Perform an action here.
+});
+```
+
+If a custom handler is not defined, all external and in-app links from the support chat will open using the system's default browser, such as Chrome.
+
+
+
+
 
 

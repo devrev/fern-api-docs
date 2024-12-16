@@ -7,3 +7,81 @@ To install the DevRev SDK for React Native, run the following command:
 ```sh
 npm install @devrev/sdk-react-native
 ```
+
+## Set up the DevRev SDK
+
+1. In DevRev, go to **Settings** > **PLuG settings** copy the value under **Your unique App ID**.
+2. After obtaining the credentials, you can configure the DevRev SDK in your app. 
+
+<Callout intent="note">
+The DevRev SDK must be configured before you can use any of its features.
+</Callout>
+
+The SDK will be ready for use once you execute the following configuration method.
+
+```typescript
+DevRev.configure(appID: string)
+```
+
+## Identification
+
+To access certain features of the DevRev SDK, user identification is required.
+
+The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID:)` method.
+
+<Callout intent="note">
+If you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
+</Callout>
+
+<Callout intent="note">
+The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
+</Callout>
+
+You can select from the following methods to identify users within your application:
+
+### Anonymous identification
+
+The anonymous identification method allows you to create an anonymous user with an optional user identifier, ensuring that no other data is stored or associated with the user.
+
+```typescript
+DevRev.identifyAnonymousUser(userID: string)
+```
+
+### Unverified identification
+
+The unverified identification method identifies users with a unique identifier, but it does not verify their identity with the DevRev backend.
+
+```typescript
+DevRev.identifyUnverifiedUser(userID: string, organizationID?: string)
+```
+
+### Update the user
+
+You can update the user's information using the following method:
+
+```typescript
+DevRev.updateUser(identity: Identity)
+```
+
+<Callout intent="note">
+The `userID` property cannot be updated.
+</Callout>
+
+## PLuG support chat
+
+The support chat feature can be shown as a modal screen from the top-most screen. 
+
+<Callout intent="note">
+This functionality requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
+</Callout>
+
+To show the support chat screen in your app, you can use the following method:
+
+```typescript
+DevRev.showSupport()
+```
+
+
+
+
+

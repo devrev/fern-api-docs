@@ -218,6 +218,42 @@ The DevRev SDK offers automatic screen tracking to help you understand how users
 DevRev.trackScreen(name: string)
 ```
 
+## Push notifications
+
+You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
+
+The DevRev backend sends push notifications to your app to alert users about new messages in the PLuG support chat.
+
+### Configuration
+
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
+
+### Register for push notifications
+
+<Callout intent="note">
+Push notifications require SDK configuration and user identification, whether unverified or anonymous, to ensure delivery to the correct user.
+</Callout>
+
+The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
+
+```typescript
+DevRevSDK.registerDeviceToken(deviceToken: string, deviceID: string)
+```
+
+On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNS) token.
+
+### Unregister from push notifications
+
+If your app no longer needs to receive push notifications, you can unregister the device. 
+
+Use the following method to unregister the device:
+
+```typescript
+DevRevSDK.unregisterDevice(deviceID: string)
+```
+
+The method requires the device identifier, which should be the same as the one used when registering the device.
+
 
 
 

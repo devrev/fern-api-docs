@@ -10,8 +10,7 @@ npm install @devrev/sdk-react-native
 
 ## Set up the DevRev SDK
 
-1. In DevRev, go to **Settings** > **PLuG settings** copy the value under **Your unique App ID**.
-2. After obtaining the credentials, you can configure the DevRev SDK in your app. 
+In DevRev, go to **Settings** > **PLuG Chat** copy the value under **Your unique App ID**. After obtaining the credentials, you can configure the DevRev SDK in your app. 
 
 <Callout intent="note">
 The DevRev SDK must be configured before you can use any of its features.
@@ -30,7 +29,7 @@ To access certain features of the DevRev SDK, user identification is required.
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID:)` method.
 
 <Callout intent="note">
-If you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
+On iOS, if you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
 </Callout>
 
 <Callout intent="note">

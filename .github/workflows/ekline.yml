@@ -16,5 +16,5 @@ jobs:
           ek_token: ${{ secrets.ek_token }}
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
-          filter_mode: diff_context
+          filter_mode: file
           ignore_rule: "EK00031" # passive voice

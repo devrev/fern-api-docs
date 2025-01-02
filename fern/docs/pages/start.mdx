@@ -1,12 +1,10 @@
 In this tutorial, you'll learn to create and deploy a snap-in. Additionally, you'll learn to create a snap-in version, installing from a version, deploying, deleting and upgrading the snap-in.
 
-## Background context
-
-Snap-ins are collections of objects that extend DevRev's core platform value. These objects include automation, event sources, keyrings, custom types, and vistas. Snap-ins are packaged and installed separately from the DevRev core platform. To create your very own snap-in, create a [dev org](https://app.devrev.ai/) where you will be installing your snap-in.
+Snap-ins are collections of objects that extend DevRev's core platform value. These objects include automation, event sources, keyrings, custom types, and vistas. Snap-ins are packaged and installed separately from the DevRev core platform. To create your own snap-in, create a [dev org](https://app.devrev.ai/) where you will be installing your snap-in.
 
 <Steps>
 
-### Installation guide
+### Before you begin
 
 - Install [DevRev CLI](/snapin-development/references/cli-install)
 - Install [jq](https://stedolan.github.io/jq)
@@ -19,7 +17,7 @@ To authenticate, run the following command:
 devrev profiles authenticate -o <dev-org-slug> -u <youremail@yourdomain.com>
 ```
 
-### Initializing a snap-in template
+### Initialize a snap-in template
 
 To initialize a snap-in template, run the following command:
 
@@ -60,7 +58,7 @@ The command creates a folder `devrev-snaps-typescript-template`. This contains a
 - `manifest` file defines the resources to be created on the DevRev platform. For detailed information on the various components of a manifest file, see [Snap-in Manifest](/snapin-development/references/manifest).
 - `code` folder consists of sample starter code for snap-ins. For detailed information on how to get started, see [starter example repo](https://github.com/devrev/snap-in-examples/tree/main/1-starter/code#readme).
 
-### Creating a snap-in package
+### Create a snap-in package
 
 To create a [snap-in package](/snapin-development/concepts), run the following command:
 
@@ -72,7 +70,7 @@ devrev snap_in_package create-one --slug my-first-snap-in | jq .
 2. On successful creation, the CLI automatically stores the package ID in its context corresponding to the slug. For more information, refer to the [Snap-in Context](/snapin-development/references/cli#snap-in-context).
 </Callout>
 
-### Creating a snap-in version
+### Create a snap-in version
 
 To create a [snap-in version](/snapin-development/references/cli#snap-in-version), run the following command:
 
@@ -115,7 +113,7 @@ To delete the snap-in version, run the following command:
 devrev snap_in_version delete-one
 ```
 
-### Installing a snap-in from a snap-in version
+### Install a snap-in from a snap-in version
 
 To create a snap-in from a snap-in version, run the following command:
 
@@ -133,7 +131,7 @@ To install the snap-in, you must be a member of the **Admins** group in the de
 The CLI automatically stores the snap-in ID in its context. Refer to the [Snap-in Context](/snapin-development/references/cli#snap-in-context) section for more information.
 </Callout>
 
-### Configuring the snap-in
+### Configure the snap-in
 
 The snap-in is installed in draft state. It may require some configuration before it can be deployed.
 
@@ -145,14 +143,14 @@ Follow the configuration steps for the snap-in to setup keyrings and inputs if a
 Private keyrings from other creators aren't listed.
 </Callout>
 
-To make a connection available to other members in your organisation, create it with the **visible to dev org** option set to true while creating the connection in the DevRev app.
+To make a connection available to other members in your organization, create it with the **visible to dev org** option set to true while creating the connection in the DevRev app.
 
-### Deploying the snap-in
+### Deploy the snap-in
 
 Once you have provided the required configuration, the **Deploy snap-in** button is enabled on the UI. Click on it to deploy the snap-in.
 That's it, the snap-in should now be active and ready to use.
 
-### Deleting the snap-in
+### Delete the snap-in
 
 The snap-in can be deleted from the UI or run the following command:
 
@@ -162,7 +160,7 @@ devrev snap_in delete-one [snap-in id]
 
 If any deactivate hook is specified, it's invoked with `is_deletion=true`.
 
-### Upgrading the snap-in
+### Upgrade the snap-in
 
 Once you deploy and test your snap-in, you may want to make changes to it. The changes can be done using a single command.
 

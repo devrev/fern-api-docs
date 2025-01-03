@@ -1,14 +1,34 @@
 import yaml
 import argparse
+import urllib.request
+import xmltodict
+
 
 def main(args):
 
+    with urllib.request.urlopen('http://developer.devrev.ai/sitemap.xml') as f:
+        xml_data = f.read().decode('utf-8')
+
     if args.beta:
-        spec_src = './fern/apis/beta/openapi-beta.yaml'
+        version = 'beta'
+    elif args.public:
+        version = 'public'
 
-    get_specs(spec_src) 
+    data_dict = xmltodict.parse(xml_data)
+    urls = []
+    for i in data_dict['urlset']['url']:
+        loc = i['loc'].replace('https://developer.devrev.ai', '')
+        if '/api-reference' in loc and loc.startswith(f"/{version}"):
+            path = loc.split('/')
+            link = f"- [{path[-2]} > {path[-1]}]({loc})"
+            print(link)
 
-def get_specs(src):
+
+    #get_specs(version) 
+
+def get_specs(version):
+
+    src = f"./fern/apis/{version}/openapi-beta.yaml"
 
     with open(src, 'r') as s:
         spec = yaml.safe_load(s)

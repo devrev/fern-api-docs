@@ -3,17 +3,33 @@ import argparse
 
 def main(vrn):
 
-    src = f"./fern/apis/{vrn}/openapi-beta.yaml"
+    src = f"./fern/apis/{vrn}/openapi-{vrn}.yaml"
 
     with open(src, 'r') as s:
         spec = yaml.safe_load(s)
-        
+    apis = {}
     for endp, defn in spec['paths'].items():
-        for prop, desc in defn.items():
-            tag = desc.get('tags')[0]
-            opId = desc.get('operationId')
-        link = f"- [{tag} > {endp.split('.')[-1]} `{opId}`](https://developer.devrev.ai/{vrn}/api-reference/{tag}/{opId})"
-        print(link)
+        for val in defn.values():
+            tag = val.get('tags')[0]
+            opId = val.get('operationId')
+            api = {'opId' : opId, 'method': endp.split('.')[-1]}
+            api['target'] = f"https://developer.devrev.ai/{vrn}/api-reference/{tag}/{opId.replace(f'{tag}-', '')}"
+            if tag not in apis:
+                apis[tag] = {endp: api}
+            else:
+                apis[tag][endp] = api
+
+    md = f"# {vrn}\n\n"
+    for tag, api in apis.items():
+        md += f"\n## {tag}\n\n"
+        for val in api.values():
+            link_text = f"{tag} > {val['method']} `{val['opId']}`"
+            md += f"- [{link_text}]({val['target']})\n"
+    links = f"temp/{vrn}.md"
+    with open(links, "w", encoding="utf-8") as outfile:
+        outfile.write(md)
+        print(f"Wrote list to {links}.")
+    return
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate release notes")

@@ -9,6 +9,9 @@ jobs:
   get-diff: 
     runs-on: ubuntu-latest
     steps: 
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - name: Check out HEAD rev
       uses: actions/checkout@v2
       with:
@@ -21,21 +24,21 @@ jobs:
         path: base   
     - name: Create dir
       run: |
-        mkdir changelog
+        mkdir -p changelog/beta changelog/public
     - name: Running public OpenAPI Spec diff action
       uses: oasdiff/oasdiff-action/diff@main
       with:
         base: 'base/fern/apis/public/openapi-public.yaml'
         revision: 'head/fern/apis/public/openapi-public.yaml'
         format: text
-        output-to-file: 'changelog/public-diff.md'
+        output-to-file: 'changelog/public/${{ steps.date.outputs.date }}_oasdiff.md'
     - name: Running beta OpenAPI Spec diff action
       uses: oasdiff/oasdiff-action/diff@main
       with:
         base: 'base/fern/apis/beta/openapi-beta.yaml'
         revision: 'head/fern/apis/beta/openapi-beta.yaml'  
         format: text
-        output-to-file: 'changelog/beta-diff.md'
+        output-to-file: 'changelog/beta/${{ steps.date.outputs.date }}_oasdiff.md'
     - name: Archive changelogs
       uses: actions/upload-artifact@v4
       with:

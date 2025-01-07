@@ -5,6 +5,9 @@ navigation:
         path: ../docs/pages/developer-intro.mdx
   - api: API Reference
     api-name: beta
+    alphabetized: true
+    paginated: true
+    display-errors: true
     audiences:
       - docs
     snippets:

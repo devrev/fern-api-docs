@@ -15,6 +15,9 @@ navigation:
         path: ../docs/pages/responses.mdx
   - api: API Reference
     api-name: public
+    alphabetized: true
+    paginated: true
+    display-errors: true
     audiences:
       - docs
     layout:

@@ -61,3 +61,7 @@ redirects:
   - source: /sdks/plug/install-android
     destination: /sdks/mobile/android
     permanent: true
+
+analytics:
+  gtm:
+    container-id: G-XP1LEFVYQ9

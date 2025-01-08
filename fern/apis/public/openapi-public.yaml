@@ -90,7 +90,6 @@ components:
               items:
                 type: string
           required:
-            - external_refs
             - owned_by
       title: account
     account-summary:
@@ -413,6 +412,75 @@ components:
         - account
       title: accounts-update-response
       x-go-name: AccountsUpdateResponseBody
+    ai-agent-event-execute-error:
+      type: object
+      description: |
+        An error object providing the error message for the AI agent event
+        execution.
+      properties:
+        error:
+          type: string
+          description: The error message for the AI agent event execution.
+          maxLength: 512
+      required:
+        - error
+      title: ai-agent-event-execute-error
+    ai-agent-event-execute-progress:
+      type: object
+      description: |
+        A progress object providing the status of the AI agent event execution.
+      properties:
+        progress_state:
+          type: string
+          enum:
+            - skill_executed
+            - skill_triggered
+        skill_executed:
+          $ref: '#/components/schemas/ai-agent-event-execute-progress-skill-executed'
+        skill_triggered:
+          $ref: '#/components/schemas/ai-agent-event-execute-progress-skill-triggered'
+      title: ai-agent-event-execute-progress
+    ai-agent-event-execute-progress-skill-executed:
+      type: object
+      description: |
+        The progress for the AI agent event execution indicating that the skill
+        has been executed.
+      properties:
+        args:
+          type: object
+          description: The arguments for the skill call.
+        output:
+          type: object
+          description: The output of the skill call.
+        skill_name:
+          type: string
+          description: The name of the skill.
+          maxLength: 512
+      required:
+        - output
+        - skill_name
+      title: ai-agent-event-execute-progress-skill-executed
+    ai-agent-event-execute-progress-skill-triggered:
+      type: object
+      description: |
+        The progress for the AI agent event execution indicating that the skill
+        has been triggered.
+      properties:
+        args:
+          type: object
+          description: The arguments for the skill call.
+        skill_name:
+          type: string
+          description: The name of the skill.
+          maxLength: 512
+        workflow:
+          $ref: '#/components/schemas/workflow-summary'
+        workflow_run:
+          $ref: '#/components/schemas/workflow-run-summary'
+      required:
+        - args
+        - skill_name
+      title: ai-agent-event-execute-progress-skill-triggered
     archetype-metric-target:
       type: object
       description: Metric with corresponding target values.
@@ -477,6 +545,34 @@ components:
         - metric_definition
         - stage
       title: archetype-metric-target
+    archetype-sla-summary:
+      type: object
+      description: SLA summary for the object.
+      properties:
+        closest_to_breach_metric:
+          type: string
+          description: The name of the metric which is closest to breach.
+        org_schedule:
+          $ref: '#/components/schemas/org-schedule-summary'
+        remaining_time:
+          type: integer
+          description: |
+            The remaining time (in minutes) for the closest_to_breach_metric if
+            it is paused. A paused metric will only be closest to breach if no
+            metrics are running (running, warning and breached stage).
+          format: int32
+        sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
+        stage:
+          $ref: '#/components/schemas/sla-summary-stage'
+        target_time:
+          type: string
+          description: |
+            The target time to avoid SLA breach. This is the target time of the
+            metric which is closest to breach.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      title: archetype-sla-summary
     artifact:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -1292,6 +1388,8 @@ components:
               description: Owner IDs for the conversation.
               items:
                 $ref: '#/components/schemas/user-summary'
+            sla_summary:
+              $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
               $ref: '#/components/schemas/sla-tracker-summary'
             stage:
@@ -1965,6 +2063,8 @@ components:
           description: |
             Used for determining the relative order of the enum value.
           format: int64
+        value:
+          description: The actual value of the enum value.
       required:
         - id
         - label
@@ -2544,6 +2644,29 @@ components:
       required:
         - account
       title: event-account-updated
+    event-ai-agent-response:
+      type: object
+      properties:
+        agent_response:
+          type: string
+          enum:
+            - error
+            - message
+            - progress
+        client_metadata:
+          type: object
+          description: |
+            The metadata given by client to be passed to the event source.
+        error:
+          $ref: '#/components/schemas/ai-agent-event-execute-error'
+        message:
+          type: string
+          description: |
+            The final response of asynchronous agent events execution.
+        progress:
+          $ref: '#/components/schemas/ai-agent-event-execute-progress'
+      title: event-ai-agent-response
+      x-go-name: EventAiAgentResponseBody
     event-conversation-created:
       type: object
       properties:
@@ -2954,7 +3077,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry that was deleted.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
         old_entry:
           $ref: '#/components/schemas/timeline-entry'
       required:
@@ -2984,7 +3107,7 @@ components:
         id:
           type: string
           description: The ID of the webhook that was deleted.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       required:
         - id
       title: event-webhook-deleted
@@ -3187,6 +3310,8 @@ components:
                 $ref: '#/components/schemas/part-summary'
             priority:
               $ref: '#/components/schemas/issue-priority'
+            sla_summary:
+              $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
               $ref: '#/components/schemas/sla-tracker-summary'
             sprint:
@@ -6117,6 +6242,8 @@ components:
               description: Summary justifying the sentiment.
             severity:
               $ref: '#/components/schemas/ticket-severity'
+            sla_summary:
+              $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
               $ref: '#/components/schemas/sla-tracker-summary'
             source_channel:
@@ -6263,7 +6390,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry to delete.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       required:
         - id
       title: timeline-entries-delete-request
@@ -6280,7 +6407,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry to get.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       required:
         - id
       title: timeline-entries-get-request
@@ -6364,7 +6491,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry to update.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       required:
         - id
         - type
@@ -6676,6 +6803,8 @@ components:
           $ref: '#/components/schemas/event-account-deleted'
         account_updated:
           $ref: '#/components/schemas/event-account-updated'
+        ai_agent_response:
+          $ref: '#/components/schemas/event-ai-agent-response'
         conversation_created:
           $ref: '#/components/schemas/event-conversation-created'
         conversation_deleted:
@@ -6785,7 +6914,7 @@ components:
         webhook_id:
           type: string
           description: ID of the webhook for the event.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
         webhook_updated:
           $ref: '#/components/schemas/event-webhook-updated'
         work_created:
@@ -6928,7 +7057,7 @@ components:
         id:
           type: string
           description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       required:
         - id
       title: webhooks-delete-request
@@ -6945,7 +7074,7 @@ components:
         id:
           type: string
           description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       required:
         - id
       title: webhooks-get-request
@@ -6994,7 +7123,7 @@ components:
         id:
           type: string
           description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
         secret:
           type: string
           description: |
@@ -7135,6 +7264,14 @@ components:
       enum:
         - issue
         - ticket
+    workflow-run-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: workflow-run-summary
+    workflow-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: workflow-summary
     works-create-request:
       type: object
       discriminator:
@@ -7866,6 +8003,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Account
       tags:
         - accounts
       x-fern-audiences:
@@ -7902,6 +8040,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Account
       tags:
         - accounts
       x-fern-audiences:
@@ -8027,6 +8166,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Accounts
       tags:
         - accounts
       x-fern-audiences:
@@ -8060,6 +8200,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Accounts (POST)
       tags:
         - accounts
       x-fern-audiences:
@@ -8099,6 +8240,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Account
       tags:
         - accounts
       x-fern-audiences:
@@ -8134,6 +8276,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Account (POST)
       tags:
         - accounts
       x-fern-audiences:
@@ -8278,6 +8421,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Accounts
       tags:
         - accounts
       x-fern-audiences:
@@ -8314,6 +8458,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Accounts (POST)
       tags:
         - accounts
       x-fern-audiences:
@@ -8352,6 +8497,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Account
       tags:
         - accounts
       x-fern-audiences:
@@ -8397,6 +8543,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Artifact
       tags:
         - artifacts
       x-fern-audiences:
@@ -8432,6 +8579,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Artifact (POST)
       tags:
         - artifacts
       x-fern-audiences:
@@ -8469,6 +8617,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Artifacts
       tags:
         - artifacts
       x-fern-audiences:
@@ -8504,6 +8653,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Artifacts (POST)
       tags:
         - artifacts
       x-fern-audiences:
@@ -8549,6 +8699,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Locate Artifacts
       tags:
         - artifacts
       x-fern-audiences:
@@ -8584,6 +8735,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Locate Artifacts (POST)
       tags:
         - artifacts
       x-fern-audiences:
@@ -8619,6 +8771,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Prepare Artifacts
       tags:
         - artifacts
       x-fern-audiences:
@@ -8659,6 +8812,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8693,6 +8847,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8734,6 +8889,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8771,6 +8927,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Auth Token (POST)
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8829,6 +8986,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Auth Tokens
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8866,6 +9024,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Auth Tokens (POST)
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8900,6 +9059,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Auth Tokens Self
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8938,6 +9098,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8980,6 +9141,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -9016,6 +9178,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -9057,6 +9220,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -9095,6 +9259,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev Orgs Auth Connection (POST)
       tags:
         - auth-connection
         - dev-orgs
@@ -9130,6 +9295,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Orgs Auth Connections
       tags:
         - auth-connection
         - dev-orgs
@@ -9170,6 +9336,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Orgs Auth Connections (POST)
       tags:
         - auth-connection
         - dev-orgs
@@ -9208,6 +9375,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Toggle Dev Orgs Auth Connections
       tags:
         - auth-connection
         - dev-orgs
@@ -9247,6 +9415,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -9286,6 +9455,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev User
       tags:
         - dev-users
       x-fern-audiences:
@@ -9321,6 +9491,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev User (POST)
       tags:
         - dev-users
       x-fern-audiences:
@@ -9411,6 +9582,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Users
       tags:
         - dev-users
       x-fern-audiences:
@@ -9444,6 +9616,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Users (POST)
       tags:
         - dev-users
       x-fern-audiences:
@@ -9473,6 +9646,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Self Dev User
       tags:
         - dev-users
       x-fern-audiences:
@@ -9507,6 +9681,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Self Dev User (POST)
       tags:
         - dev-users
       x-fern-audiences:
@@ -9547,6 +9722,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       security: []
+      summary: Authorize Keyrings
       tags:
         - keyring
       x-fern-audiences:
@@ -9576,6 +9752,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Authorize Keyrings (POST)
       tags:
         - keyring
       x-fern-audiences:
@@ -9670,6 +9847,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Metric Definitions
       tags:
         - slas
       x-fern-audiences:
@@ -9703,6 +9881,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Metric Definitions (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -9737,6 +9916,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Part
       tags:
         - parts
       x-fern-audiences:
@@ -9773,6 +9953,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Part
       tags:
         - parts
       x-fern-audiences:
@@ -9813,6 +9994,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Part
       tags:
         - parts
       x-fern-audiences:
@@ -9849,6 +10031,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Part (POST)
       tags:
         - parts
       x-fern-audiences:
@@ -9960,6 +10143,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Parts
       tags:
         - parts
       x-fern-audiences:
@@ -9994,6 +10178,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Parts (POST)
       tags:
         - parts
       x-fern-audiences:
@@ -10031,6 +10216,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Part
       tags:
         - parts
       x-fern-audiences:
@@ -10070,6 +10256,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -10106,6 +10293,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -10153,6 +10341,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -10188,6 +10377,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Rev Org (POST)
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -10319,6 +10509,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Rev Orgs
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -10358,6 +10549,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Rev Orgs (POST)
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -10396,6 +10588,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -10434,6 +10627,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla Tracker
       tags:
         - slas
       x-fern-audiences:
@@ -10469,6 +10663,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla Tracker (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10585,6 +10780,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Sla Trackers
       tags:
         - slas
       x-fern-audiences:
@@ -10618,6 +10814,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Sla Trackers (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10654,6 +10851,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Assign Slas
       tags:
         - slas
       x-fern-audiences:
@@ -10688,6 +10886,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Sla
       tags:
         - slas
       x-fern-audiences:
@@ -10726,6 +10925,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla
       tags:
         - slas
       x-fern-audiences:
@@ -10761,6 +10961,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10853,6 +11054,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Slas
       tags:
         - slas
       x-fern-audiences:
@@ -10886,6 +11088,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Slas (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10922,6 +11125,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Transition Slas
       tags:
         - slas
       x-fern-audiences:
@@ -10958,6 +11162,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Sla
       tags:
         - slas
       x-fern-audiences:
@@ -10994,6 +11199,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Tag
       tags:
         - tags
       x-fern-audiences:
@@ -11030,6 +11236,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Tag
       tags:
         - tags
       x-fern-audiences:
@@ -11069,6 +11276,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Tag
       tags:
         - tags
       x-fern-audiences:
@@ -11104,6 +11312,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Tag (POST)
       tags:
         - tags
       x-fern-audiences:
@@ -11172,6 +11381,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Tags
       tags:
         - tags
       x-fern-audiences:
@@ -11205,6 +11415,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Tags (POST)
       tags:
         - tags
       x-fern-audiences:
@@ -11241,6 +11452,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Tag
       tags:
         - tags
       x-fern-audiences:
@@ -11277,6 +11489,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11311,6 +11524,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11328,7 +11542,7 @@ paths:
           required: true
           schema:
             type: string
-            example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+            example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       responses:
         "200":
           content:
@@ -11350,6 +11564,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11385,6 +11600,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Timeline Entry (POST)
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11460,6 +11676,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Timeline Entries
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11495,6 +11712,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Timeline Entries (POST)
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11531,6 +11749,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11565,6 +11784,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Webhook
       tags:
         - webhooks
       x-fern-audiences:
@@ -11601,6 +11821,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Webhook
       tags:
         - webhooks
       x-fern-audiences:
@@ -11639,6 +11860,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Event Webhooks
       tags:
         - webhooks
       x-fern-audiences:
@@ -11657,7 +11879,7 @@ paths:
           required: true
           schema:
             type: string
-            example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+            example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       responses:
         "200":
           content:
@@ -11679,6 +11901,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Webhook
       tags:
         - webhooks
       x-fern-audiences:
@@ -11714,6 +11937,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Webhook (POST)
       tags:
         - webhooks
       x-fern-audiences:
@@ -11742,6 +11966,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Webhooks
       tags:
         - webhooks
       x-fern-audiences:
@@ -11775,6 +12000,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Webhooks (POST)
       tags:
         - webhooks
       x-fern-audiences:
@@ -11811,6 +12037,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Webhook
       tags:
         - webhooks
       x-fern-audiences:
@@ -11821,7 +12048,7 @@ paths:
       description: |
         Creates new work ([issue](https://devrev.ai/docs/product/build),
         [ticket](https://devrev.ai/docs/product/support)) item.
-        [task](https://docs.devrev.ai/product/tasks) and opportunity work types
+        [task](https://devrev.ai/docs/product/tasks) and opportunity work types
         are supported in the beta version.
       operationId: works-create
       requestBody:
@@ -11849,6 +12076,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Work
       tags:
         - works
       x-fern-audiences:
@@ -11885,6 +12113,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Work
       tags:
         - works
       x-fern-audiences:
@@ -12164,6 +12393,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Works
       tags:
         - works
       x-fern-audiences:
@@ -12197,6 +12427,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Works (POST)
       tags:
         - works
       x-fern-audiences:
@@ -12236,6 +12467,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Work
       tags:
         - works
       x-fern-audiences:
@@ -12271,6 +12503,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Work (POST)
       tags:
         - works
       x-fern-audiences:
@@ -12565,6 +12798,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Works
       tags:
         - works
       x-fern-audiences:
@@ -12598,6 +12832,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Works (POST)
       tags:
         - works
       x-fern-audiences:
@@ -12634,6 +12869,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Work
       tags:
         - works
       x-fern-audiences:

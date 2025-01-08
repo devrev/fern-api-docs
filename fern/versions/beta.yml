@@ -17,9 +17,9 @@ navigation:
   #       path: ../docs/pages/changelog/2024-11-08.mdx
   - section: Guides
     contents:
-      - page: Object Customization
+      - page: Object customization
         path: ../docs/pages/customization.mdx
-      - page: Custom Objects
+      - page: Custom objects
         path: ../docs/pages/custom-objects.mdx
-      - page: Create accounts and contacts in DevRev
+      - page: Account creation
         path: ../docs/pages/create-accounts.mdx

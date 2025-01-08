@@ -117,6 +117,13 @@ components:
             tier:
               type: string
               description: The Tier of the corresponding Account.
+            websites:
+              type: array
+              description: |
+                Company's website links. Filling in this property will also fill in
+                domain. Example - 'www.devrev.ai'.
+              items:
+                type: string
           required:
             - external_refs
             - owned_by
@@ -295,6 +302,11 @@ components:
           description: List of tags to be filtered.
           items:
             type: string
+        websites:
+          type: array
+          description: Array of websites of accounts to be filtered.
+          items:
+            type: string
       title: accounts-export-request
     accounts-export-response:
       type: object
@@ -352,6 +364,11 @@ components:
         tags:
           type: array
           description: List of tags to be filtered.
+          items:
+            type: string
+        websites:
+          type: array
+          description: Array of websites of accounts to be filtered.
           items:
             type: string
       title: accounts-filters
@@ -439,6 +456,11 @@ components:
         tags:
           type: array
           description: List of tags to be filtered.
+          items:
+            type: string
+        websites:
+          type: array
+          description: Array of websites of accounts to be filtered.
           items:
             type: string
       title: accounts-list-request
@@ -545,6 +567,8 @@ components:
           type: string
           description: Updated tier of the account.
           nullable: true
+        websites:
+          $ref: '#/components/schemas/accounts-update-request-websites'
       required:
         - id
       title: accounts-update-request
@@ -559,6 +583,15 @@ components:
           items:
             type: string
       title: accounts-update-request-artifacts
+    accounts-update-request-websites:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the websites field of the account.
+          items:
+            type: string
+      title: accounts-update-request-websites
     accounts-update-response:
       type: object
       description: Updated account object.
@@ -586,8 +619,13 @@ components:
       title: add-tag-with-value
     aggregated-schema:
       type: object
-      additionalProperties: false
       description: List of custom fields from multiple source fragments.
+      properties:
+        stock_field_overrides:
+          type: array
+          description: The stock field overrides.
+          items:
+            $ref: '#/components/schemas/stock-field-override'
       title: aggregated-schema
     aggregated-schema-get-request:
       type: object
@@ -669,6 +707,97 @@ components:
         - running_total
         - sum
         - unique_count
+    airdrop-sync-units-get-request:
+      type: object
+      description: Request to get a sync unit.
+      properties:
+        id:
+          type: string
+          description: Requested sync unit ID.
+      required:
+        - id
+      title: airdrop-sync-units-get-request
+    airdrop-sync-units-get-response:
+      type: object
+      description: Response containing the requested sync unit.
+      properties:
+        sync_unit:
+          $ref: '#/components/schemas/sync-unit'
+      required:
+        - sync_unit
+      title: airdrop-sync-units-get-response
+      x-go-name: AirdropSyncUnitsGetResponseBody
+    airdrop-sync-units-history-filter:
+      type: object
+      properties:
+        ended_at:
+          $ref: '#/components/schemas/date-filter'
+        has_errors_or_warnings:
+          type: boolean
+          description: Filter for sync runs that have errors.
+        mode:
+          type: array
+          description: Mode of the sync run.
+          items:
+            $ref: '#/components/schemas/sync-run-mode'
+        started_by:
+          type: array
+          description: User who started the sync run.
+          items:
+            $ref: '#/components/schemas/sync-run-started-by'
+        state:
+          type: array
+          description: State of the sync run.
+          items:
+            $ref: '#/components/schemas/sync-run-progress-state'
+      title: airdrop-sync-units-history-filter
+    airdrop-sync-units-history-request:
+      type: object
+      description: Request to list sync unit history.
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        filter:
+          $ref: '#/components/schemas/airdrop-sync-units-history-filter'
+        id:
+          type: string
+          description: Sync unit that will be used for sync history listing.
+        limit:
+          type: integer
+          description: |
+            The maximum number of items to return. The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+      required:
+        - id
+      title: airdrop-sync-units-history-request
+    airdrop-sync-units-history-response:
+      type: object
+      description: List sync history response.
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+        sync_history:
+          type: array
+          description: Historical records of syncs.
+          items:
+            $ref: '#/components/schemas/sync-history'
+      required:
+        - sync_history
+      title: airdrop-sync-units-history-response
+      x-go-name: AirdropSyncUnitsHistoryResponseBody
     app-fragment:
       allOf:
         - $ref: '#/components/schemas/custom-schema-fragment-base'
@@ -918,6 +1047,12 @@ components:
       properties:
         access_level:
           $ref: '#/components/schemas/access-level'
+        aliases:
+          type: array
+          description: The aliases of the article.
+          items:
+            type: string
+          maxItems: 5
         applies_to_parts:
           type: array
           description: The parts that the article applies to.
@@ -1175,6 +1310,8 @@ components:
       properties:
         access_level:
           $ref: '#/components/schemas/access-level'
+        aliases:
+          $ref: '#/components/schemas/articles-update-request-aliases'
         applies_to_parts:
           $ref: '#/components/schemas/articles-update-request-applies-to-parts'
         artifacts:
@@ -1229,6 +1366,18 @@ components:
       required:
         - id
       title: articles-update-request
+    articles-update-request-aliases:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Updates the aliases of the article.
+          items:
+            type: string
+          maxItems: 5
+      required:
+        - set
+      title: articles-update-request-aliases
     articles-update-request-applies-to-parts:
       type: object
       properties:
@@ -1682,6 +1831,7 @@ components:
         mapping:
           google_apps: '#/components/schemas/auth-connection-options-google-apps'
           oidc: '#/components/schemas/auth-connection-options-oidc'
+          okta: '#/components/schemas/auth-connection-options-okta'
           samlp: '#/components/schemas/auth-connection-options-saml'
           social: '#/components/schemas/auth-connection-options-social'
           waad: '#/components/schemas/auth-connection-options-azure-ad'
@@ -1690,6 +1840,7 @@ components:
         - $ref: '#/components/schemas/auth-connection-options-azure-ad'
         - $ref: '#/components/schemas/auth-connection-options-google-apps'
         - $ref: '#/components/schemas/auth-connection-options-oidc'
+        - $ref: '#/components/schemas/auth-connection-options-okta'
         - $ref: '#/components/schemas/auth-connection-options-saml'
         - $ref: '#/components/schemas/auth-connection-options-social'
       properties:
@@ -1712,6 +1863,8 @@ components:
           type: string
           description: ID of the authentication connection.
       required:
+        - display_name
+        - enabled
         - id
         - type
       title: auth-connection
@@ -1725,12 +1878,12 @@ components:
         client_id:
           type: string
           description: Client ID for the Azure authentication connection.
-        client_secret:
-          type: string
-          description: Client secret for the Azure authentication connection.
         domain:
           type: string
           description: Domain URL of the Azure authentication connection.
+      required:
+        - client_id
+        - domain
       title: auth-connection-options-azure-ad
     auth-connection-options-google-apps:
       type: object
@@ -1742,14 +1895,13 @@ components:
         client_id:
           type: string
           description: Client ID for the Google Apps authentication connection.
-        client_secret:
-          type: string
-          description: |
-            Client secret for the Google Apps authentication connection.
         tenant_domain:
           type: string
           description: |
             Tenant domain URL of the Google Apps authentication connection.
+      required:
+        - client_id
+        - tenant_domain
       title: auth-connection-options-google-apps
     auth-connection-options-oidc:
       type: object
@@ -1760,26 +1912,49 @@ components:
         client_id:
           type: string
           description: Client ID for the OIDC authentication connection.
-        client_secret:
-          type: string
-          description: Client secret for the OIDC authentication connection.
         issuer:
           type: string
           description: Issuer URL of the OIDC authentication connection.
+      required:
+        - client_id
+        - issuer
       title: auth-connection-options-oidc
+    auth-connection-options-okta:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Okta
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Okta authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Okta authentication connection.
+      required:
+        - client_id
+        - domain
+      title: auth-connection-options-okta
     auth-connection-options-saml:
       type: object
       description: |
         Object encapsulating the configuration parameters for a SAML
         authentication connection.
       properties:
+        connection_name:
+          type: string
+          description: Connection name for the SAML authentication connection.
+          maxLength: 128
+          minLength: 1
+        fields_map:
+          $ref: '#/components/schemas/saml-connection-fields-map'
         sign_in_endpoint:
           type: string
           description: Sign In endpoint for the SAML authentication connection.
-        signing_cert:
-          type: string
-          description: |
-            Signing certificate for the SAML authentication connection.
+      required:
+        - fields_map
+        - sign_in_endpoint
       title: auth-connection-options-saml
     auth-connection-options-social:
       type: object
@@ -1798,6 +1973,7 @@ components:
       enum:
         - google_apps
         - oidc
+        - okta
         - samlp
         - social
         - waad
@@ -4678,6 +4854,11 @@ components:
           properties:
             stage_diagram:
               $ref: '#/components/schemas/stage-diagram-summary'
+            stock_field_overrides:
+              type: array
+              description: The stock field overrides.
+              items:
+                $ref: '#/components/schemas/stock-field-override'
             subtype:
               type: string
               description: |
@@ -4801,6 +4982,13 @@ components:
       enum:
         - last_n_days
         - next_n_days
+    definedness:
+      type: string
+      description: Indicates whether this evaluation can change in the future.
+      enum:
+        - immutable
+        - mutable
+        - undefined
     delete-rev-users-personal-data-request:
       type: object
       description: Request object to delete a contact's information.
@@ -4826,16 +5014,18 @@ components:
         Request to create a new enterprise authentication connection.
       discriminator:
         mapping:
-          google_apps: '#/components/schemas/auth-connection-options-google-apps'
-          oidc: '#/components/schemas/auth-connection-options-oidc'
-          samlp: '#/components/schemas/auth-connection-options-saml'
-          waad: '#/components/schemas/auth-connection-options-azure-ad'
+          google_apps: '#/components/schemas/dev-org-auth-connections-create-request-google-apps-options'
+          oidc: '#/components/schemas/dev-org-auth-connections-create-request-oidc-options'
+          okta: '#/components/schemas/dev-org-auth-connections-create-request-okta-options'
+          samlp: '#/components/schemas/dev-org-auth-connections-create-request-saml-options'
+          waad: '#/components/schemas/dev-org-auth-connections-create-request-azure-ad-options'
         propertyName: type
       oneOf:
-        - $ref: '#/components/schemas/auth-connection-options-azure-ad'
-        - $ref: '#/components/schemas/auth-connection-options-google-apps'
-        - $ref: '#/components/schemas/auth-connection-options-oidc'
-        - $ref: '#/components/schemas/auth-connection-options-saml'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-azure-ad-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-google-apps-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-oidc-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-okta-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-saml-options'
       properties:
         type:
           $ref: '#/components/schemas/dev-org-auth-connections-create-request-type'
@@ -4846,9 +5036,120 @@ components:
             visible to all the users when they sign in to this Dev
             organization. For example, if the display_name is 'abclogin', then
             it would appear on the login button as 'Log in to abclogin'.
+          maxLength: 128
+          minLength: 1
       required:
         - type
       title: dev-org-auth-connections-create-request
+    dev-org-auth-connections-create-request-azure-ad-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Azure AD
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Azure authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Azure authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Azure authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - domain
+      title: dev-org-auth-connections-create-request-azure-ad-options
+    dev-org-auth-connections-create-request-google-apps-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for a Google Apps
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Google Apps authentication connection.
+        client_secret:
+          type: string
+          description: |
+            Client secret for the Google Apps authentication connection.
+        tenant_domain:
+          type: string
+          description: |
+            Tenant domain URL of the Google Apps authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - tenant_domain
+      title: dev-org-auth-connections-create-request-google-apps-options
+    dev-org-auth-connections-create-request-oidc-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for an OIDC
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the OIDC authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the OIDC authentication connection.
+        issuer:
+          type: string
+          description: Issuer URL of the OIDC authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - issuer
+      title: dev-org-auth-connections-create-request-oidc-options
+    dev-org-auth-connections-create-request-okta-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Okta
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Okta authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Okta authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Okta authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - domain
+      title: dev-org-auth-connections-create-request-okta-options
+    dev-org-auth-connections-create-request-saml-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for a SAML
+        authentication connection.
+      properties:
+        connection_name:
+          type: string
+          description: Connection name for the SAML authentication connection.
+          maxLength: 128
+          minLength: 1
+        fields_map:
+          $ref: '#/components/schemas/saml-connection-fields-map'
+        sign_in_endpoint:
+          type: string
+          description: Sign In endpoint for the SAML authentication connection.
+        signing_cert:
+          type: string
+          description: |
+            Signing certificate for the SAML authentication connection.
+      required:
+        - sign_in_endpoint
+        - signing_cert
+      title: dev-org-auth-connections-create-request-saml-options
     dev-org-auth-connections-create-request-type:
       type: string
       description: |
@@ -4857,6 +5158,7 @@ components:
       enum:
         - google_apps
         - oidc
+        - okta
         - samlp
         - waad
     dev-org-auth-connections-create-response:
@@ -4946,17 +5248,19 @@ components:
         organization.
       discriminator:
         mapping:
-          google_apps: '#/components/schemas/auth-connection-options-google-apps'
+          google_apps: '#/components/schemas/dev-org-auth-connections-update-request-google-apps-options'
           none: '#/components/schemas/empty'
-          oidc: '#/components/schemas/auth-connection-options-oidc'
-          samlp: '#/components/schemas/auth-connection-options-saml'
-          waad: '#/components/schemas/auth-connection-options-azure-ad'
+          oidc: '#/components/schemas/dev-org-auth-connections-update-request-oidc-options'
+          okta: '#/components/schemas/dev-org-auth-connections-update-request-okta-options'
+          samlp: '#/components/schemas/dev-org-auth-connections-update-request-saml-options'
+          waad: '#/components/schemas/dev-org-auth-connections-update-request-azure-ad-options'
         propertyName: type
       oneOf:
-        - $ref: '#/components/schemas/auth-connection-options-azure-ad'
-        - $ref: '#/components/schemas/auth-connection-options-google-apps'
-        - $ref: '#/components/schemas/auth-connection-options-oidc'
-        - $ref: '#/components/schemas/auth-connection-options-saml'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-azure-ad-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-google-apps-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-oidc-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-okta-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-saml-options'
         - $ref: '#/components/schemas/empty'
       properties:
         type:
@@ -4975,6 +5279,90 @@ components:
       required:
         - id
       title: dev-org-auth-connections-update-request
+    dev-org-auth-connections-update-request-azure-ad-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Azure AD
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Azure authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Azure authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Azure authentication connection.
+      title: dev-org-auth-connections-update-request-azure-ad-options
+    dev-org-auth-connections-update-request-google-apps-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for a Google Apps
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Google Apps authentication connection.
+        client_secret:
+          type: string
+          description: |
+            Client secret for the Google Apps authentication connection.
+        tenant_domain:
+          type: string
+          description: |
+            Tenant domain URL of the Google Apps authentication connection.
+      title: dev-org-auth-connections-update-request-google-apps-options
+    dev-org-auth-connections-update-request-oidc-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for an OIDC
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the OIDC authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the OIDC authentication connection.
+        issuer:
+          type: string
+          description: Issuer URL of the OIDC authentication connection.
+      title: dev-org-auth-connections-update-request-oidc-options
+    dev-org-auth-connections-update-request-okta-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for an Okta
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Okta authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Okta authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Okta authentication connection.
+      title: dev-org-auth-connections-update-request-okta-options
+    dev-org-auth-connections-update-request-saml-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for a SAML
+        authentication connection.
+      properties:
+        fields_map:
+          $ref: '#/components/schemas/saml-connection-fields-map'
+        sign_in_endpoint:
+          type: string
+          description: Sign In endpoint for the SAML authentication connection.
+        signing_cert:
+          type: string
+          description: |
+            Signing certificate for the SAML authentication connection.
+      title: dev-org-auth-connections-update-request-saml-options
     dev-org-auth-connections-update-request-type:
       type: string
       description: |
@@ -4985,6 +5373,7 @@ components:
         - google_apps
         - none
         - oidc
+        - okta
         - samlp
         - waad
     dev-org-auth-connections-update-response:
@@ -7175,6 +7564,33 @@ components:
       required:
         - survey
       title: event-survey-updated
+    event-sync-history-created:
+      type: object
+      properties:
+        sync_history:
+          $ref: '#/components/schemas/sync-history'
+      required:
+        - sync_history
+      title: event-sync-history-created
+    event-sync-history-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the sync history that was deleted.
+      required:
+        - id
+      title: event-sync-history-deleted
+    event-sync-history-updated:
+      type: object
+      properties:
+        old_sync_history:
+          $ref: '#/components/schemas/sync-history'
+        sync_history:
+          $ref: '#/components/schemas/sync-history'
+      required:
+        - sync_history
+      title: event-sync-history-updated
     event-tag-created:
       type: object
       properties:
@@ -7291,7 +7707,6 @@ components:
         propertyName: result
       oneOf:
         - $ref: '#/components/schemas/empty'
-        - $ref: '#/components/schemas/empty'
         - $ref: '#/components/schemas/event-work-fetched-ok'
       properties:
         id:
@@ -7363,6 +7778,20 @@ components:
           type: string
           description: Issuer of the external identity of the user.
       title: external-identity
+    external-system-type:
+      type: string
+      enum:
+        - adaas
+        - confluence
+        - github
+        - hubspot
+        - jira
+        - linear
+        - rocketlane
+        - salesforce_sales
+        - salesforce_service
+        - servicenow
+        - zendesk
     feature:
       allOf:
         - $ref: '#/components/schemas/part-base'
@@ -7671,6 +8100,34 @@ components:
         - mention
         - reminder
         - update
+    get-reply-request:
+      type: object
+      description: |
+        The request to get a reply for a query using an organization's
+        knowledge base.
+      properties:
+        query:
+          type: string
+          description: The query string.
+          maxLength: 10000
+          minLength: 1
+      required:
+        - query
+      title: get-reply-request
+    get-reply-response:
+      type: object
+      description: The response for the generated reply.
+      properties:
+        reply:
+          type: string
+          description: The reply generated for the requested query.
+        sources:
+          type: array
+          description: Sources from which the reply is generated.
+          items:
+            $ref: '#/components/schemas/turing-sources'
+      title: get-reply-response
+      x-go-name: GetReplyResponseBody
     get-rev-users-personal-data-request:
       type: object
       description: Request object to get a contact's information.
@@ -8701,6 +9158,32 @@ components:
         - incident
       title: incidents-update-response
       x-go-name: IncidentsUpdateResponseBody
+    instant-evaluation:
+      type: object
+      properties:
+        at:
+          type: string
+          description: The time instant evaluated.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        definedness:
+          $ref: '#/components/schemas/definedness'
+        is_active:
+          type: boolean
+          description: |
+            Active state of the organization schedule at the time instant.
+        next_transition:
+          type: string
+          description: |
+            Next instant at which the active state of the organization schedule
+            changes, for example, if the schedule is currently off, the next
+            instant at which it will be on.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      required:
+        - at
+        - definedness
+      title: instant-evaluation
     issue:
       allOf:
         - $ref: '#/components/schemas/work-base'
@@ -9160,10 +9643,477 @@ components:
       enum:
         - after
         - before
+    meeting:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            artifacts:
+              type: array
+              description: The artifacts attached to the meeting.
+              items:
+                $ref: '#/components/schemas/artifact-summary'
+            channel:
+              $ref: '#/components/schemas/meeting-channel'
+            custom_fields:
+              type: object
+              description: Custom fields.
+            custom_schema_fragments:
+              type: array
+              description: Custom schema fragments.
+              example:
+                - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+              items:
+                type: string
+            description:
+              type: string
+              description: Description of the meeting.
+            ended_date:
+              type: string
+              description: Time at which meeting ended.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            external_ref:
+              type: string
+              description: |
+                External reference of the meeting. This is the identifier from the
+                meeting channel/provider.
+            external_url:
+              type: string
+              description: External URL associated with the meeting.
+            members:
+              type: array
+              description: The members in the meeting.
+              items:
+                $ref: '#/components/schemas/user-summary'
+            organizer:
+              $ref: '#/components/schemas/user-summary'
+            parent:
+              $ref: '#/components/schemas/atom-summary'
+            recording_url:
+              type: string
+              description: Recording URL of the meeting.
+            scheduled_date:
+              type: string
+              description: Time at which meeting was scheduled to start.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            state:
+              $ref: '#/components/schemas/meeting-state'
+            stock_schema_fragment:
+              type: string
+              description: Stock schema fragment.
+              example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+            subtype:
+              type: string
+              description: Subtype corresponding to the custom type fragment.
+            tags:
+              type: array
+              description: Tags associated with the meeting.
+              items:
+                $ref: '#/components/schemas/tag-with-value'
+            title:
+              type: string
+              description: Title of the meeting object.
+          required:
+            - members
+      title: meeting
+    meeting-channel:
+      type: string
+      description: The channel of meeting.
+      enum:
+        - google_meet
+        - offline
+        - other
+        - teams
+        - zoom
+    meeting-state:
+      type: string
+      description: The state of meeting.
+      enum:
+        - canceled
+        - completed
+        - no_show
+        - rescheduled
+        - scheduled
     meeting-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
       title: meeting-summary
+    meetings-count-request:
+      type: object
+      properties:
+        channel:
+          type: array
+          description: Filters for meeting on specified channels.
+          items:
+            $ref: '#/components/schemas/meeting-channel'
+        created_by:
+          type: array
+          description: Filters for meetings created by the specified user(s).
+          items:
+            type: string
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        custom_fields:
+          type: object
+          description: Filters for meeting on custom fields.
+        external_ref:
+          type: array
+          description: Filters for meetings with the provided external_ref(s).
+          items:
+            type: string
+        links:
+          type: array
+          description: Filters for links associated with the meeting.
+          items:
+            $ref: '#/components/schemas/meetings-filter-link-summary-filter'
+        members:
+          type: array
+          description: Filter for meeting on specified Member Ids.
+          items:
+            type: string
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        organizer:
+          type: array
+          description: Filter for meeting on specified organizers.
+          items:
+            type: string
+        parent:
+          type: array
+          description: Filters for meetings with the provided parent.
+          example:
+            - ACC-12345
+          items:
+            type: string
+        state:
+          type: array
+          description: Filters for meeting on specified state or outcomes.
+          items:
+            $ref: '#/components/schemas/meeting-state'
+        tags:
+          type: array
+          description: Filters for meeting by tags.
+          items:
+            type: string
+      title: meetings-count-request
+    meetings-count-response:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of meetings matching the filter.
+          format: int64
+      required:
+        - count
+      title: meetings-count-response
+      x-go-name: MeetingsCountResponseBody
+    meetings-create-request:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/meeting-channel'
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        description:
+          type: string
+          description: The description of the meeting.
+        ended_date:
+          type: string
+          description: Time at which meeting ended.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        external_ref:
+          type: string
+          description: External reference for the meeting.
+        external_url:
+          type: string
+          description: External URL for the meeting.
+        members:
+          type: array
+          description: IDs of the users that were part of the meeting.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+          maxItems: 800
+          minItems: 1
+        organizer:
+          type: string
+          description: |
+            The ID of the user who organized the meeting. If not provided, the
+            creator is set as the organizer.
+          example: DEVU-12345
+        parent:
+          type: string
+          description: The parent object ID in which the meeting was created.
+          example: ACC-12345
+        recording_url:
+          type: string
+          description: The recording URL of the meeting.
+        scheduled_date:
+          type: string
+          description: The date and time when the meeting was scheduled.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        state:
+          $ref: '#/components/schemas/meeting-state'
+        tags:
+          type: array
+          description: Tags associated with the meeting.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+        title:
+          type: string
+          description: The title of the meeting.
+      required:
+        - channel
+        - ended_date
+        - members
+        - scheduled_date
+        - state
+        - title
+      title: meetings-create-request
+    meetings-create-response:
+      type: object
+      properties:
+        meeting:
+          $ref: '#/components/schemas/meeting'
+      required:
+        - meeting
+      title: meetings-create-response
+      x-go-name: MeetingsCreateResponseBody
+    meetings-delete-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The meeting's ID.
+      required:
+        - id
+      title: meetings-delete-request
+    meetings-delete-response:
+      type: object
+      additionalProperties: false
+      title: meetings-delete-response
+      x-go-name: MeetingsDeleteResponseBody
+    meetings-filter-link-summary-filter:
+      type: object
+      description: The filter for the link summary.
+      properties:
+        link_type:
+          type: string
+          description: |
+            Filters for link type in links associated with the meeting.
+        target:
+          type: string
+          description: |
+            Filters for target id in links associated with the meeting.
+        target_object_type:
+          type: string
+          description: |
+            Filters for target object type in links associated with the
+            meeting.
+      title: meetings-filter-link-summary-filter
+    meetings-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The meeting's ID.
+      required:
+        - id
+      title: meetings-get-request
+    meetings-get-response:
+      type: object
+      properties:
+        meeting:
+          $ref: '#/components/schemas/meeting'
+      required:
+        - meeting
+      title: meetings-get-response
+      x-go-name: MeetingsGetResponseBody
+    meetings-list-request:
+      type: object
+      properties:
+        channel:
+          type: array
+          description: Filters for meeting on specified channels.
+          items:
+            $ref: '#/components/schemas/meeting-channel'
+        created_by:
+          type: array
+          description: Filters for meetings created by the specified user(s).
+          items:
+            type: string
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        custom_fields:
+          type: object
+          description: Filters for meeting on custom fields.
+        external_ref:
+          type: array
+          description: Filters for meetings with the provided external_ref(s).
+          items:
+            type: string
+        limit:
+          type: integer
+          description: The maximum number of meetings to return.
+          format: int32
+        links:
+          type: array
+          description: Filters for links associated with the meeting.
+          items:
+            $ref: '#/components/schemas/meetings-filter-link-summary-filter'
+        members:
+          type: array
+          description: Filter for meeting on specified Member Ids.
+          items:
+            type: string
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        organizer:
+          type: array
+          description: Filter for meeting on specified organizers.
+          items:
+            type: string
+        parent:
+          type: array
+          description: Filters for meetings with the provided parent.
+          example:
+            - ACC-12345
+          items:
+            type: string
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the meetings by and the direction to sort them.
+          items:
+            type: string
+        state:
+          type: array
+          description: Filters for meeting on specified state or outcomes.
+          items:
+            $ref: '#/components/schemas/meeting-state'
+        tags:
+          type: array
+          description: Filters for meeting by tags.
+          items:
+            type: string
+      title: meetings-list-request
+    meetings-list-response:
+      type: object
+      properties:
+        meetings:
+          type: array
+          description: The list of meetings.
+          items:
+            $ref: '#/components/schemas/meeting'
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+      required:
+        - meetings
+      title: meetings-list-response
+      x-go-name: MeetingsListResponseBody
+    meetings-update-request:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/meeting-channel'
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        description:
+          type: string
+          description: The description of the meeting.
+        ended_date:
+          type: string
+          description: Updates the date and time when the meeting ended.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          nullable: true
+        external_ref:
+          type: string
+          description: External Reference for the meeting.
+        external_url:
+          type: string
+          description: External URL for the meeting.
+        id:
+          type: string
+          description: The meetings ID.
+        members:
+          $ref: '#/components/schemas/meetings-update-request-members'
+        organizer:
+          type: string
+          description: The ID of the user who organized the meeting.
+          example: DEVU-12345
+        recording_url:
+          type: string
+          description: The recording URL of the meeting.
+        scheduled_date:
+          type: string
+          description: |
+            Updates the date and time when the meeting was scheduled.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          nullable: true
+        state:
+          $ref: '#/components/schemas/meeting-state'
+        tags:
+          $ref: '#/components/schemas/meetings-update-request-tags'
+        title:
+          type: string
+          description: The title of the meeting.
+      required:
+        - id
+      title: meetings-update-request
+    meetings-update-request-members:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Sets the members to the provided user IDs. This must not be empty.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+      title: meetings-update-request-members
+    meetings-update-request-tags:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the provided tags on the meeting item.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+      title: meetings-update-request-tags
+    meetings-update-response:
+      type: object
+      properties:
+        meeting:
+          $ref: '#/components/schemas/meeting'
+      required:
+        - meeting
+      title: meetings-update-response
+      x-go-name: MeetingsUpdateResponseBody
     member-summary:
       type: object
       discriminator:
@@ -9541,6 +10491,17 @@ components:
       required:
         - metrics
       title: metrics-data-ingest-request
+    money:
+      type: object
+      description: Money.
+      properties:
+        amount:
+          type: string
+          description: Amount of the money.
+        currency:
+          type: string
+          description: Currency of the money.
+      title: money
     notifications-send-request:
       type: object
       properties:
@@ -9576,6 +10537,16 @@ components:
     opportunity:
       allOf:
         - $ref: '#/components/schemas/work-base'
+        - type: object
+          properties:
+            account:
+              $ref: '#/components/schemas/account-summary'
+            annual_contract_value:
+              $ref: '#/components/schemas/money'
+            forecast_category_v2:
+              $ref: '#/components/schemas/enum-value'
+            value:
+              $ref: '#/components/schemas/money'
       title: opportunity
     opportunity-forecast-category:
       type: string
@@ -9598,6 +10569,10 @@ components:
     opportunity-summary:
       allOf:
         - $ref: '#/components/schemas/work-base-summary'
+        - type: object
+          properties:
+            account:
+              $ref: '#/components/schemas/account-summary'
       title: opportunity-summary
     org-base:
       allOf:
@@ -9917,6 +10892,38 @@ components:
         - org_schedule
       title: org-schedules-create-response
       x-go-name: OrgSchedulesCreateResponseBody
+    org-schedules-evaluate-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Organization schedule ID.
+        instants:
+          type: array
+          description: Time instants to evaluate the organization schedule for.
+          example:
+            - "2023-01-01T12:00:00.000Z"
+          items:
+            type: string
+            format: date-time
+          minItems: 1
+      required:
+        - id
+        - instants
+      title: org-schedules-evaluate-request
+    org-schedules-evaluate-response:
+      type: object
+      properties:
+        instant_evaluations:
+          type: array
+          description: |
+            The evaluations for the given time instants in the requested order.
+          items:
+            $ref: '#/components/schemas/instant-evaluation'
+      required:
+        - instant_evaluations
+      title: org-schedules-evaluate-response
+      x-go-name: OrgSchedulesEvaluateResponseBody
     org-schedules-get-request:
       type: object
       properties:
@@ -11840,6 +12847,20 @@ components:
         - rev_user
       title: rev-users-update-response
       x-go-name: RevUsersUpdateResponseBody
+    saml-connection-fields-map:
+      type: object
+      properties:
+        email:
+          type: string
+          description: |
+            Claims in the SAML assertion returned by the identity provider that
+            map to the email address of the user.
+        user_id:
+          type: string
+          description: |
+            Claims in the SAML assertion returned by the identity provider that
+            map to the user ID of the user.
+      title: saml-connection-fields-map
     schema-bool-field-descriptor:
       allOf:
         - $ref: '#/components/schemas/schema-field-descriptor-base'
@@ -12169,8 +13190,29 @@ components:
       title: schema-field-summary-view-ui-metadata
     schema-field-uenum-value:
       type: object
-      additionalProperties: false
       description: A unified enum value.
+      properties:
+        id:
+          type: integer
+          description: The immutable id of the enum value.
+          format: int64
+        is_deprecated:
+          type: boolean
+          description: True if this value is deprecated.
+        label:
+          type: string
+          description: The human readable name of the enum value.
+        ordinal:
+          type: integer
+          description: The order value of the enum.
+          format: int64
+        tooltip:
+          type: string
+          description: Tooltip shown in the UI for this value.
+      required:
+        - id
+        - label
+        - ordinal
       title: schema-field-uenum-value
     schema-field-ui-metadata:
       type: object
@@ -12194,6 +13236,9 @@ components:
         is_bulk_action_enabled:
           type: boolean
           description: Whether the field supports bulk action.
+        is_currency_field:
+          type: boolean
+          description: Indicates if the field holds a currency value in USD.
         is_groupable:
           type: boolean
           description: Whether the field is groupable in the UI.
@@ -12217,6 +13262,10 @@ components:
           description: Whether the field is sortable in the UI.
         list_view:
           $ref: '#/components/schemas/schema-field-list-view-ui-metadata'
+        order:
+          type: integer
+          description: Order in which field is shown.
+          format: int32
         placeholder:
           type: string
           description: A placeholder for the field.
@@ -12225,6 +13274,9 @@ components:
         tooltip:
           type: string
           description: Tooltip for the field.
+        unit:
+          type: string
+          description: Unit of measurment.
       title: schema-field-ui-metadata
     schema-id-field-descriptor:
       allOf:
@@ -13917,8 +14969,21 @@ components:
       title: staged-info-filter
     stock-field-override:
       type: object
-      additionalProperties: false
       description: A stock field override.
+      properties:
+        is_required:
+          type: boolean
+          description: Whether the field is required.
+        name:
+          type: string
+          description: Name of the stock field to be overridden.
+        uenum_values:
+          type: array
+          description: Overridden allowed values for a unified enum.
+          items:
+            $ref: '#/components/schemas/schema-field-uenum-value'
+        ui:
+          $ref: '#/components/schemas/schema-field-ui-metadata'
       title: stock-field-override
     stock-schema-fragment:
       allOf:
@@ -14162,26 +15227,31 @@ components:
               type: string
               description: The ID of the survey for which response is taken.
       title: survey-response
-      x-go-name: SurveyResponseBody
     surveys-create-request:
       type: object
       properties:
         description:
           type: string
           description: Description about the survey.
+          maxLength: 1000
         header:
           type: string
           description: Header of the survey.
+          maxLength: 1000
         introductory_text:
           type: string
           description: |
             Text posted when introducing the survey to the responder.
+          maxLength: 1000
         name:
           type: string
           description: The survey's name.
+          maxLength: 100
+          minLength: 1
         response_text:
           type: string
           description: Text posted after the response is collected.
+          maxLength: 1000
         schema:
           type: array
           description: Schema for the survey.
@@ -14195,6 +15265,7 @@ components:
         title:
           type: string
           description: Title of the survey.
+          maxLength: 1000
       required:
         - name
       title: surveys-create-request
@@ -14456,6 +15527,71 @@ components:
       additionalProperties: false
       title: surveys-submit-response
       x-go-name: SurveysSubmitResponseBody
+    surveys-update-request:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The updated description about the survey.
+          maxLength: 1000
+        header:
+          type: string
+          description: Header of the survey.
+          maxLength: 1000
+        id:
+          type: string
+          description: The ID of the survey to update.
+        introductory_text:
+          type: string
+          description: |
+            The updated text posted when introducing the survey to the
+            responder.
+          maxLength: 1000
+        name:
+          type: string
+          description: The survey's updated name.
+          maxLength: 100
+          minLength: 1
+        response_text:
+          type: string
+          description: Text posted after the response is collected.
+          maxLength: 1000
+        schema_with_metadata:
+          type: array
+          description: The updated schema with metadata for the survey.
+          items:
+            $ref: '#/components/schemas/survey-field-with-metadata'
+        survey:
+          type: string
+          deprecated: true
+          description: The ID of the survey to update.
+        title:
+          type: string
+          description: Title of the survey.
+          maxLength: 1000
+      required:
+        - id
+      title: surveys-update-request
+    surveys-update-response:
+      type: object
+      properties:
+        survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - survey
+      title: surveys-update-response
+      x-go-name: SurveysUpdateResponseBody
+    sync-history:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            sync_run:
+              $ref: '#/components/schemas/sync-run'
+            sync_unit:
+              type: string
+              description: SyncUnit ID associated with this historical entry.
+      title: sync-history
     sync-in:
       type: object
       description: Information about the sync to DevRev.
@@ -14579,10 +15715,131 @@ components:
         - failed
         - modified
         - succeeded
+    sync-progress:
+      type: object
+      description: Progress.
+      properties:
+        state:
+          $ref: '#/components/schemas/sync-progress-state'
+      title: sync-progress
+    sync-progress-state:
+      type: string
+      description: The state of a sync progress.
+      enum:
+        - completed
+        - delete_in_progress
+        - deleted
+        - deletion_error
+        - extract_attachments
+        - extract_attachments_error
+        - extraction
+        - extraction_error
+        - loading
+        - loading_attachments
+        - loading_attachments_error
+        - loading_error
+        - recipe_discovery
+        - recipe_discovery_error
+        - recipe_discovery_waiting_for_user_input
+        - starting
+        - transformation
+        - transformation_error
+    sync-progress-summary:
+      type: object
+      description: Progress.
+      properties:
+        state:
+          $ref: '#/components/schemas/sync-progress-state'
+      title: sync-progress-summary
+    sync-run:
+      type: object
+      description: Object for holding run-specific data.
+      properties:
+        ended_at:
+          type: string
+          description: The time when a sync was ended.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        mode:
+          $ref: '#/components/schemas/sync-run-mode'
+        progress:
+          $ref: '#/components/schemas/sync-progress'
+        started_at:
+          type: string
+          description: The time when a sync was started.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      title: sync-run
+    sync-run-mode:
+      type: string
+      description: The direction/mode of a sync run.
+      enum:
+        - initial
+        - sync_from_devrev
+        - sync_to_devrev
+    sync-run-progress-state:
+      type: string
+      description: The state of a sync progress.
+      enum:
+        - completed
+        - failed
+    sync-run-started-by:
+      type: string
+      description: Describes how the sync was initiated.
+      enum:
+        - periodic_sync_scheduler
+        - user
+    sync-run-summary:
+      type: object
+      description: Object for holding run-specific data.
+      properties:
+        mode:
+          $ref: '#/components/schemas/sync-run-mode'
+        progress:
+          $ref: '#/components/schemas/sync-progress-summary'
+      title: sync-run-summary
+    sync-unit:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            external_system_type:
+              $ref: '#/components/schemas/external-system-type'
+            is_archived:
+              type: boolean
+              description: The flag signaling if sync unit is archived.
+            name:
+              type: string
+              description: The name of the sync unit.
+            sync_run:
+              $ref: '#/components/schemas/sync-run'
+            sync_type:
+              $ref: '#/components/schemas/sync-unit-sync-type'
+      title: sync-unit
     sync-unit-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            external_system_type:
+              $ref: '#/components/schemas/external-system-type'
+            is_archived:
+              type: boolean
+              description: The flag signaling if sync unit is archived.
+            name:
+              type: string
+              description: The name of the sync unit.
+            sync_run:
+              $ref: '#/components/schemas/sync-run-summary'
+            sync_type:
+              $ref: '#/components/schemas/sync-unit-sync-type'
       title: sync-unit-summary
+    sync-unit-sync-type:
+      type: string
+      description: Type of sync preferences.
+      enum:
+        - manual
+        - periodic
     sys-user:
       allOf:
         - $ref: '#/components/schemas/user-base'
@@ -14923,6 +16180,13 @@ components:
     tenant-fragment:
       allOf:
         - $ref: '#/components/schemas/custom-schema-fragment-base'
+        - type: object
+          properties:
+            stock_field_overrides:
+              type: array
+              description: The stock field overrides.
+              items:
+                $ref: '#/components/schemas/stock-field-override'
       title: tenant-fragment
     tenant-fragment-summary:
       allOf:
@@ -15643,6 +16907,27 @@ components:
       additionalProperties: false
       title: track-events-publish-response
       x-go-name: TrackEventsPublishResponseBody
+    turing-sources:
+      type: object
+      discriminator:
+        mapping:
+          article: '#/components/schemas/article-summary'
+          question_answer: '#/components/schemas/question-answer-summary'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/article-summary'
+        - $ref: '#/components/schemas/question-answer-summary'
+      properties:
+        type:
+          $ref: '#/components/schemas/turing-sources-type'
+      required:
+        - type
+      title: turing-sources
+    turing-sources-type:
+      type: string
+      enum:
+        - article
+        - question_answer
     unit:
       type: object
       description: |
@@ -16519,6 +17804,12 @@ components:
           $ref: '#/components/schemas/event-survey-response-updated'
         survey_updated:
           $ref: '#/components/schemas/event-survey-updated'
+        sync_history_created:
+          $ref: '#/components/schemas/event-sync-history-created'
+        sync_history_deleted:
+          $ref: '#/components/schemas/event-sync-history-deleted'
+        sync_history_updated:
+          $ref: '#/components/schemas/event-sync-history-updated'
         tag_created:
           $ref: '#/components/schemas/event-tag-created'
         tag_deleted:
@@ -16617,6 +17908,10 @@ components:
         - survey_response_deleted
         - survey_response_updated
         - survey_updated
+        - sync_history_created
+        - sync_history_deleted
+        - sync_history_updated
+        - sync_unit_updated
         - tag_created
         - tag_deleted
         - tag_updated
@@ -17975,6 +19270,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-create-response'
+          description: The response to creating a new account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18010,6 +19306,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-delete-response'
+          description: The response to deleting an account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18152,12 +19449,21 @@ paths:
             type: array
             items:
               type: string
+        - description: Array of websites of accounts to be filtered.
+          explode: false
+          in: query
+          name: websites
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
+          description: The response to exporting a collection of accounts.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18190,6 +19496,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
+          description: The response to exporting a collection of accounts.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18226,6 +19533,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
+          description: The returned account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18260,6 +19568,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
+          description: The returned account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18418,12 +19727,22 @@ paths:
             type: array
             items:
               type: string
+        - description: Array of websites of accounts to be filtered.
+          explode: false
+          in: query
+          name: websites
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
+          description: |
+            The response to listing all accounts matching the filter criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18458,6 +19777,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
+          description: |
+            The response to listing all accounts matching the filter criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18493,6 +19814,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-merge-response'
+          description: The response to merging an account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18528,6 +19850,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-update-response'
+          description: Updated account object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18546,6 +19869,198 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - accounts
+      x-fern-audiences:
+        - docs
+        - sdks
+  /airdrop.sync-units.get:
+    get:
+      description: Gets a single sync unit's information.
+      operationId: airdrop-sync-units-get
+      parameters:
+        - description: Requested sync unit ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/airdrop-sync-units-get-response'
+          description: Response containing the requested sync unit.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - airdrop
+      x-fern-audiences:
+        - docs
+      x-request-name: AirdropSyncUnitsGetQuery
+    post:
+      description: Gets a single sync unit's information.
+      operationId: airdrop-sync-units-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/airdrop-sync-units-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/airdrop-sync-units-get-response'
+          description: Response containing the requested sync unit.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - airdrop
+      x-fern-audiences:
+        - docs
+        - sdks
+  /airdrop.sync-units.history:
+    get:
+      description: Gets a list of sync unit historical records.
+      operationId: airdrop-sync-units-history
+      parameters:
+        - description: Sync unit that will be used for sync history listing.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: Filter for sync runs that have errors.
+          explode: false
+          in: query
+          name: filter.has_errors_or_warnings
+          schema:
+            type: boolean
+        - description: Mode of the sync run.
+          explode: false
+          in: query
+          name: filter.mode
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-run-mode'
+        - description: User who started the sync run.
+          explode: false
+          in: query
+          name: filter.started_by
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-run-started-by'
+        - description: State of the sync run.
+          explode: false
+          in: query
+          name: filter.state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-run-progress-state'
+        - description: |
+            The maximum number of items to return. The default is '50'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/airdrop-sync-units-history-response'
+          description: List sync history response.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - airdrop
+      x-fern-audiences:
+        - docs
+      x-request-name: AirdropSyncUnitsHistoryQuery
+    post:
+      description: Gets a list of sync unit historical records.
+      operationId: airdrop-sync-units-history-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/airdrop-sync-units-history-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/airdrop-sync-units-history-response'
+          description: List sync history response.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - airdrop
       x-fern-audiences:
         - docs
         - sdks
@@ -18650,6 +20165,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18682,6 +20198,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18718,6 +20235,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-create-response'
+          description: Create article response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18751,6 +20269,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18789,6 +20308,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-get-response'
+          description: Get article response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18823,6 +20343,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-get-response'
+          description: Get article response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18961,6 +20482,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-list-response'
+          description: List articles response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -18993,6 +20515,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-list-response'
+          description: List articles response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19026,6 +20549,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/articles-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19070,6 +20594,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
+          description: The response to getting an artifact's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19104,6 +20629,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
+          description: The response to getting an artifact's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19140,6 +20666,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
+          description: The response to list artifacts attached to an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19174,6 +20701,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
+          description: The response to list artifacts attached to an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19218,6 +20746,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
+          description: The response to getting an artifact's download URL.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19252,6 +20781,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
+          description: The response to getting an artifact's download URL.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19288,6 +20818,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-prepare-response'
+          description: The response to preparing a URL to upload a file.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19323,6 +20854,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-versions-prepare-response'
+          description: The response to preparing a new artifact version.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19356,6 +20888,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/export-audit-logs-response'
+          description: |
+            Response for the audit logs export request. Response is empty as the
+            process is asynchronous. Upon completion, the user will be notified.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19393,6 +20928,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-create-response'
+          description: |
+            Response for the request to create a new token corresponding to the
+            requested token type.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19467,6 +21005,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
+          description: The response to get the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19503,6 +21042,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
+          description: The response to get the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19534,6 +21074,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-info-response'
+          description: |
+            The Dev organization, user and token attributes extracted from the auth
+            token.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19570,6 +21113,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-info-response'
+          description: |
+            The Dev organization, user and token attributes extracted from the auth
+            token.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19627,6 +21173,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
+          description: The response to list the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19663,6 +21210,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
+          description: The response to list the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19734,6 +21282,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-update-response'
+          description: Response for the request to update the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19769,6 +21318,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19802,6 +21352,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19837,6 +21388,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19869,6 +21421,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19922,6 +21475,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19954,6 +21508,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -19987,6 +21542,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/code-changes-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20020,6 +21576,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20055,6 +21612,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20087,6 +21645,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20177,6 +21736,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20209,6 +21769,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/content-template-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20242,6 +21803,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-create-response'
+          description: The response to creating a new conversation.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20275,6 +21837,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-delete-response'
+          description: The response for deleting a conversation.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20468,6 +22031,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-export-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20500,6 +22064,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-export-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20535,6 +22100,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-get-response'
+          description: The response to getting a conversation's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20569,6 +22135,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-get-response'
+          description: The response to getting a conversation's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20777,6 +22344,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-list-response'
+          description: The response to listing the conversations.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20809,6 +22377,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-list-response'
+          description: The response to listing the conversations.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20842,6 +22411,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/conversations-update-response'
+          description: The response for updating a conversation.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20886,6 +22456,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20918,6 +22489,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20951,6 +22523,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -20984,6 +22557,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21020,6 +22594,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21054,6 +22629,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21130,6 +22706,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-list-response'
+          description: |
+            The response to listing all custom objects matching the filter
+            criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21162,6 +22741,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-list-response'
+          description: |
+            The response to listing all custom objects matching the filter
+            criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21195,6 +22777,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-objects-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21236,6 +22819,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-create-response'
+          description: |
+            Response for the request to create a new enterprise authentication
+            connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21308,6 +22894,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
+          description: |
+            Response object encapsulating the configuration details of an
+            authentication connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21343,6 +22932,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
+          description: |
+            Response object encapsulating the configuration details of an
+            authentication connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21377,6 +22969,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
+          description: |
+            Response object for the request to list all the social and enterprise
+            authentication connections configured for a Dev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21414,6 +23009,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
+          description: |
+            Response object for the request to list all the social and enterprise
+            authentication connections configured for a Dev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21486,6 +23084,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-update-response'
+          description: |
+            Response for the request to update an enterprise authentication
+            connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21522,6 +23123,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-activate-response'
+          description: The response to activate the Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21557,6 +23159,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-deactivate-response'
+          description: The response to deactivate the Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21594,6 +23197,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
+          description: The response to getting the information for the Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21628,6 +23232,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
+          description: The response to getting the information for the Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21663,6 +23268,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-identities-link-response'
+          description: |
+            Response for the request to link an external identity to a Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21698,6 +23305,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-identities-unlink-response'
+          description: |
+            Response for the request to unlink an external identity from a Dev
+            user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21795,6 +23405,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
+          description: The response to listing the Dev users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21827,6 +23438,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
+          description: The response to listing the Dev users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21854,6 +23466,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
+          description: |
+            The response to getting the information for the authenticated user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21886,6 +23500,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
+          description: |
+            The response to getting the information for the authenticated user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21919,6 +23535,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-update-response'
+          description: The response to update a Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -21952,6 +23569,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-update-response'
+          description: The response to update a Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22002,6 +23620,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22034,6 +23653,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22067,6 +23687,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-create-response'
+          description: Create directory response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22100,6 +23721,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22137,6 +23759,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-get-response'
+          description: Get directory response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22171,6 +23794,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-get-response'
+          description: Get directory response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22247,6 +23871,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-list-response'
+          description: List directory response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22279,6 +23904,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-list-response'
+          description: List directory response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22312,6 +23938,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/directories-update-response'
+          description: Update directory response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22378,6 +24005,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22410,6 +24038,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22443,6 +24072,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22476,6 +24106,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22513,6 +24144,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22547,6 +24179,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22645,6 +24278,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22677,6 +24311,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22710,6 +24345,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/engagements-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22747,6 +24383,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/event-source-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22781,6 +24418,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/event-source-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22817,6 +24455,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/event-sources-schedule-event-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22884,6 +24523,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-create-response'
+          description: The response to group creation.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22919,6 +24559,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-get-response'
+          description: The response to getting the group.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -22953,6 +24594,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-get-response'
+          description: The response to getting the group.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23045,6 +24687,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-list-response'
+          description: The response to listing the groups.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23077,6 +24720,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-list-response'
+          description: The response to listing the groups.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23110,6 +24754,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-add-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23172,6 +24817,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-list-response'
+          description: List of group members.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23204,6 +24850,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-list-response'
+          description: List of group members.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23237,6 +24884,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/group-members-remove-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23272,6 +24920,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/groups-update-response'
+          description: The response to group update.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23307,6 +24956,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23340,6 +24990,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-delete-response'
+          description: The response to deleting the incident.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23377,6 +25028,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23411,6 +25063,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23601,6 +25254,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-group-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23633,6 +25287,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-group-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23804,6 +25459,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23836,6 +25492,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23869,6 +25526,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/incidents-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -23973,6 +25631,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24008,6 +25667,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24042,6 +25702,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24118,6 +25779,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24150,6 +25812,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24183,6 +25846,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-link-type-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24219,6 +25883,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-create-response'
+          description: The response to creating a new link.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24252,6 +25917,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-delete-response'
+          description: The response for deleting a link.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24289,6 +25955,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-get-response'
+          description: The response to getting a link's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24323,6 +25990,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-get-response'
+          description: The response to getting a link's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24424,6 +26092,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-list-response'
+          description: The response to listing the links.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24456,6 +26125,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/links-list-response'
+          description: The response to listing the links.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24470,6 +26140,527 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - links
+      x-fern-audiences:
+        - docs
+        - sdks
+  /meetings.count:
+    get:
+      description: Counts the meeting records.
+      operationId: meetings-count
+      parameters:
+        - description: Filters for meeting on specified channels.
+          explode: false
+          in: query
+          name: channel
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/meeting-channel'
+        - description: Filters for meetings created by the specified user(s).
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for meeting on custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
+        - description: Filters for meetings with the provided external_ref(s).
+          explode: false
+          in: query
+          name: external_ref
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for link type in links associated with the meeting.
+          explode: false
+          in: query
+          name: links.link_type
+          schema:
+            type: string
+        - description: |
+            Filters for target id in links associated with the meeting.
+          explode: false
+          in: query
+          name: links.target
+          schema:
+            type: string
+        - description: |
+            Filters for target object type in links associated with the meeting.
+          explode: false
+          in: query
+          name: links.target_object_type
+          schema:
+            type: string
+        - description: Filter for meeting on specified Member Ids.
+          explode: false
+          in: query
+          name: members
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filter for meeting on specified organizers.
+          explode: false
+          in: query
+          name: organizer
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for meetings with the provided parent.
+          explode: false
+          in: query
+          name: parent
+          schema:
+            type: array
+            example:
+              - ACC-12345
+            items:
+              type: string
+        - description: Filters for meeting on specified state or outcomes.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/meeting-state'
+        - description: Filters for meeting by tags.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+      x-request-name: MeetingsCountQuery
+    post:
+      description: Counts the meeting records.
+      operationId: meetings-count-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meetings-count-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+        - sdks
+  /meetings.create:
+    post:
+      description: Creates a new meeting record.
+      operationId: meetings-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meetings-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+        - sdks
+  /meetings.delete:
+    post:
+      description: Deletes the meeting record.
+      operationId: meetings-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meetings-delete-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+        - sdks
+  /meetings.get:
+    get:
+      description: Gets the meeting record.
+      operationId: meetings-get
+      parameters:
+        - description: The meeting's ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+      x-request-name: MeetingsGetQuery
+    post:
+      description: Gets the meeting record.
+      operationId: meetings-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meetings-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+        - sdks
+  /meetings.list:
+    get:
+      description: Lists the meeting records.
+      operationId: meetings-list
+      parameters:
+        - description: Filters for meeting on specified channels.
+          explode: false
+          in: query
+          name: channel
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/meeting-channel'
+        - description: Filters for meetings created by the specified user(s).
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: Filters for meeting on custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
+        - description: Filters for meetings with the provided external_ref(s).
+          explode: false
+          in: query
+          name: external_ref
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The maximum number of meetings to return.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            Filters for link type in links associated with the meeting.
+          explode: false
+          in: query
+          name: links.link_type
+          schema:
+            type: string
+        - description: |
+            Filters for target id in links associated with the meeting.
+          explode: false
+          in: query
+          name: links.target
+          schema:
+            type: string
+        - description: |
+            Filters for target object type in links associated with the meeting.
+          explode: false
+          in: query
+          name: links.target_object_type
+          schema:
+            type: string
+        - description: Filter for meeting on specified Member Ids.
+          explode: false
+          in: query
+          name: members
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: Filter for meeting on specified organizers.
+          explode: false
+          in: query
+          name: organizer
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for meetings with the provided parent.
+          explode: false
+          in: query
+          name: parent
+          schema:
+            type: array
+            example:
+              - ACC-12345
+            items:
+              type: string
+        - description: |
+            Fields to sort the meetings by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for meeting on specified state or outcomes.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/meeting-state'
+        - description: Filters for meeting by tags.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+      x-request-name: MeetingsListQuery
+    post:
+      description: Lists the meeting records.
+      operationId: meetings-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meetings-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
+      x-fern-audiences:
+        - docs
+        - sdks
+  /meetings.update:
+    post:
+      description: Updates the meeting record.
+      operationId: meetings-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meetings-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meetings-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - meetings
       x-fern-audiences:
         - docs
         - sdks
@@ -24489,6 +26680,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-action-execute-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24524,6 +26716,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24557,6 +26750,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-delete-response'
+          description: The response to deleting a metric definition.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24601,6 +26795,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24633,6 +26828,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24726,6 +26922,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24758,6 +26955,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24791,6 +26989,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24856,6 +27055,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/notifications-send-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24889,6 +27089,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24924,6 +27125,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24956,6 +27158,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -24989,6 +27192,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedule-fragments-transition-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25024,6 +27228,89 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - schedules
+      x-fern-audiences:
+        - docs
+        - sdks
+  /org-schedules.evaluate:
+    get:
+      description: Evaluates an organization's schedule at specified instants.
+      operationId: org-schedules-evaluate
+      parameters:
+        - description: Organization schedule ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: Time instants to evaluate the organization schedule for.
+          explode: false
+          in: query
+          name: instants
+          required: true
+          schema:
+            type: array
+            example:
+              - "2023-01-01T12:00:00.000Z"
+            items:
+              type: string
+              format: date-time
+            minItems: 1
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/org-schedules-evaluate-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - schedules
+      x-fern-audiences:
+        - docs
+      x-request-name: OrgSchedulesEvaluateQuery
+    post:
+      description: Evaluates an organization's schedule at specified instants.
+      operationId: org-schedules-evaluate-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/org-schedules-evaluate-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/org-schedules-evaluate-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25059,6 +27346,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25091,6 +27379,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25160,6 +27449,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25192,6 +27482,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25227,6 +27518,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-set-future-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25260,6 +27552,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-transition-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25293,6 +27586,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/org-schedules-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25328,6 +27622,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25361,6 +27656,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25400,6 +27696,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25435,6 +27732,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25547,6 +27845,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25580,6 +27879,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25614,6 +27914,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25661,6 +27962,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/preferences-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25695,6 +27997,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/preferences-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25730,6 +28033,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-create-response'
+          description: Create question-answer response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25797,6 +28101,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-get-response'
+          description: Get question-answer response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25831,6 +28136,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-get-response'
+          description: Get question-answer response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25931,6 +28237,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-list-response'
+          description: List question-answers response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25963,6 +28270,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-list-response'
+          description: List question-answers response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -25996,6 +28304,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/question-answers-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26012,6 +28321,40 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - question-answers
+      x-fern-audiences:
+        - docs
+        - sdks
+  /recommendations.get-reply:
+    post:
+      description: Gets a reply for a user query.
+      operationId: get-reply
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get-reply-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-reply-response'
+          description: The response for the generated reply.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - recommendations
       x-fern-audiences:
         - docs
         - sdks
@@ -26033,6 +28376,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-create-response'
+          description: |
+            Response object for request to create a new Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26068,6 +28413,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-delete-response'
+          description: The response to deleting a Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26114,6 +28460,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
+          description: The response to getting a Rev organization's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26148,6 +28495,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
+          description: The response to getting a Rev organization's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26311,6 +28659,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
+          description: |
+            The response to getting a list of Rev organizations' information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26348,6 +28698,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
+          description: |
+            The response to getting a list of Rev organizations' information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26383,6 +28735,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-update-response'
+          description: Response object to updating Rev organization's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26422,6 +28775,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-create-response'
+          description: |
+            Response object for creating a new Rev user for Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26457,6 +28812,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-delete-response'
+          description: The response to deleting a Rev user of a Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26492,6 +28848,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/delete-rev-users-personal-data-response'
+          description: |
+            Response for the contacts personal data delete request. Response is
+            empty as the process is asynchronous. Upon completion, the user will be
+            notified.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26529,6 +28889,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-get-response'
+          description: The returned Rev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26563,6 +28924,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-get-response'
+          description: The returned Rev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26598,6 +28960,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/link-rev-user-to-rev-org-response'
+          description: |
+            Response for linking a Rev user to an existing Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26765,6 +29129,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-list-response'
+          description: |
+            The response to listing all Rev users matching the filter criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26801,6 +29167,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-list-response'
+          description: |
+            The response to listing all Rev users matching the filter criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26836,6 +29204,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-merge-response'
+          description: |
+            Acknowledgment response indicating that the merge request has been
+            received for processing asynchronously.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -26871,6 +29242,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/get-rev-users-personal-data-response'
+          description: |
+            Response for the contacts personal data export request. Response is
+            empty as the process is asynchronous. Upon completion, the user will be
+            notified.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27011,6 +29386,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-scan-response'
+          description: The response to scanning Rev users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27045,6 +29421,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-scan-response'
+          description: The response to scanning Rev users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27080,6 +29457,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/unlink-rev-user-from-rev-org-response'
+          description: |
+            Response for unlinking/removing a Rev user from a Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27115,6 +29494,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-users-update-response'
+          description: Updated Rev user object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27171,6 +29551,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/aggregated-schema-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27205,6 +29586,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/aggregated-schema-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27242,6 +29624,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27276,6 +29659,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27392,6 +29776,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27424,6 +29809,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27457,6 +29843,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-set-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27497,6 +29884,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27531,6 +29919,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27619,6 +30008,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27651,6 +30041,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/stock-schema-fragments-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27694,6 +30085,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/subtypes-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27726,6 +30118,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/subtypes-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27801,6 +30194,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-core-response'
+          description: Search response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27833,6 +30227,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-core-response'
+          description: Search response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27899,6 +30294,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-hybrid-response'
+          description: Hybrid search response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27932,6 +30328,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/search-hybrid-response'
+          description: Hybrid search response.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -27967,6 +30364,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/service-accounts-get-response'
+          description: |
+            The response object that carries the service account's information
+            corresponding to the request.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28001,6 +30401,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/service-accounts-get-response'
+          description: |
+            The response object that carries the service account's information
+            corresponding to the request.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28038,6 +30441,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28072,6 +30476,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28189,6 +30594,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28221,6 +30627,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28254,6 +30661,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-assign-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28289,6 +30697,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28324,6 +30733,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28358,6 +30768,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28451,6 +30862,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28483,6 +30895,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28516,6 +30929,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-transition-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28551,6 +30965,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28595,6 +31010,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-ins-resources-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28627,6 +31043,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-ins-resources-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28660,6 +31077,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-ins-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28695,6 +31113,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/snap-widgets-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28728,6 +31147,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28763,6 +31183,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28797,6 +31218,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28868,6 +31290,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28900,6 +31323,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28933,6 +31357,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-stages-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -28968,6 +31393,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29003,6 +31429,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29037,6 +31464,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29114,6 +31542,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29146,6 +31575,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29179,6 +31609,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-states-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29216,6 +31647,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29249,6 +31681,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29331,6 +31764,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29363,6 +31797,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29475,6 +31910,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-responses-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29507,6 +31943,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-responses-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29540,6 +31977,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-send-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29574,6 +32012,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/surveys-submit-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - surveys
+      x-fern-audiences:
+        - docs
+        - sdks
+  /surveys.update:
+    post:
+      description: Updates a survey's metadata.
+      operationId: surveys-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29636,6 +32109,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sys-users-list-response'
+          description: The response to listing the system users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29668,6 +32142,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sys-users-list-response'
+          description: The response to listing the system users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29701,6 +32176,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sys-users-update-response'
+          description: Updated Sys user object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29738,6 +32214,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-create-response'
+          description: The response to creating a new tag.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29771,6 +32248,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-delete-response'
+          description: The response for deleting a tag.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29809,6 +32287,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
+          description: The response to getting a tag's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29843,6 +32322,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
+          description: The response to getting a tag's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29912,6 +32392,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
+          description: The response to listing the tags.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29944,6 +32425,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
+          description: The response to listing the tags.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -29977,6 +32459,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-update-response'
+          description: The response for updating a tag.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30012,6 +32495,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-create-response'
+          description: The response to creating a timeline entry for an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30047,6 +32531,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-delete-response'
+          description: The response to deleting a timeline entry from an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30093,6 +32578,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
+          description: The request to getting a timeline entry.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30127,6 +32613,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
+          description: The request to getting a timeline entry.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30223,6 +32710,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
+          description: The response to listing timeline entries for an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30257,6 +32745,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
+          description: The response to listing timeline entries for an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30292,6 +32781,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-update-response'
+          description: The response to updating a timeline entry.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30327,6 +32817,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/track-events-publish-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30410,6 +32901,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30443,6 +32935,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-count-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30476,6 +32969,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30543,6 +33037,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30577,6 +33072,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30696,6 +33192,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30728,6 +33225,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30761,6 +33259,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/uoms-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30796,6 +33295,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-create-response'
+          description: The response to creating a new webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30829,6 +33329,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-delete-response'
+          description: The response to deleting the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30848,6 +33349,45 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /webhooks.event:
+    post:
+      description: |
+        Describes a webhook invocation for an event from DevRev to a webhook's
+        target URL, where the receiving handler must implement the specified
+        protocol. Note the documented endpoint is for exposition and not
+        provided by DevRev.
+      operationId: webhooks-event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook-event-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook-event-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-webhook: true
   /webhooks.fetch:
     post:
       description: Fetches an object via webhook.
@@ -30864,6 +33404,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-fetch-response'
+          description: The response to fetching an object for a webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30902,6 +33443,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
+          description: The response to getting the information for the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30936,6 +33478,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
+          description: The response to getting the information for the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30965,6 +33508,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
+          description: The response to listing the webhooks.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -30997,6 +33541,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
+          description: The response to listing the webhooks.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31030,6 +33575,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-update-response'
+          description: The response to updating the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31069,6 +33615,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31102,6 +33649,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31452,6 +34000,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31484,6 +34033,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31520,6 +34070,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31554,6 +34105,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31919,6 +34471,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31951,6 +34504,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -31984,6 +34538,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -32018,6 +34573,8 @@ servers:
 tags:
   - description: Accounts management APIs
     name: accounts
+  - description: Airdrop APIs
+    name: airdrop
   - description: Articles management APIs.
     name: articles
   - description: Artifact (file) management APIs.
@@ -32050,6 +34607,8 @@ tags:
     name: keyring
   - description: DevRev link interactions.
     name: links
+  - description: DevRev meetings interaction.
+    name: meetings
   - description: DevRev notifications
     name: notifications
   - description: DevRev incident management interactions.
@@ -32062,6 +34621,8 @@ tags:
     name: product-usage
   - description: Plug Question-Answer APIs
     name: question-answers
+  - description: Recommendations at DevRev.
+    name: recommendations
   - description: Rev organization interactions.
     name: rev-orgs
   - description: Rev user interactions.

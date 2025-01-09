@@ -8,9 +8,15 @@ def main(vrn, d):
 
     print(f"Generating prompt for `{vrn}` API on {d}.")
 
-    links = get_links(vrn)
+    p = gen_prompt(f"temp/{vrn}/{d}_oasdiff.md", get_links(vrn), )
 
-    oasdiff = f"temp/{vrn}/{d}_oasdiff.md"
+    pr_file = f"temp/{vrn}/{d}_prompt.md"
+    with open(pr_file, 'w', encoding="utf-8") as outfile:
+        outfile.write(p)
+        print(f"Wrote prompt to {pr_file}.")
+
+
+def gen_prompt(oasdiff, links):
     with open(oasdiff, 'r') as infile:
         oasdiff = infile.read()
 
@@ -25,10 +31,8 @@ Please provide an API changelog from the following OASDiff of OpenAPI spec chang
 {links}
 </api_links>
 """
-    pr_file = f"temp/{vrn}/{d}_prompt.md"
-    with open(pr_file, 'w', encoding="utf-8") as outfile:
-        outfile.write(prompt)
-        print(f"Wrote prompt to {pr_file}.")
+
+    return prompt
 
 def get_links(version):
 

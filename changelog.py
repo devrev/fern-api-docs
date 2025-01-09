@@ -42,7 +42,7 @@ def get_links(version):
             tag = val.get('tags')[0]
             opId = val.get('operationId')
             api = {'opId' : opId, 'method': endp.split('.')[-1]}
-            api['target'] = f"https://developer.devrev.ai/{version}/api-reference/{tag}/{opId.replace(f'{tag}-', '')}"
+            api['target'] = f"/{version}/api-reference/{tag}/{opId.replace(f'{tag}-', '')}"
             if tag not in apis:
                 apis[tag] = {endp: api}
             else:

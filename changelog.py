@@ -15,7 +15,7 @@ def main(vrn, d):
         oasdiff = infile.read()
 
     prompt = f"""
-Please provide an API changelog from the following OASDiff of OpenAPI spec changes. The output should be in markdown format grouping endpoints by use case/object type. For cases where some schema is modified, please also tell what endpoints it affects. Wherever an API is mentioned, include a link to the API reference from the list of API links in markdown.
+Please provide an API changelog from the following OASDiff of OpenAPI spec changes. The output should be in markdown format grouping endpoints by use case/object type. For cases where some schema is modified, please also tell what endpoints it affects. Wherever an endpoint, property, or enum value is mentioned, surround it with backticks (`). Wherever an API is mentioned, include a link to the API reference from the list of API links in markdown.
 
 <oasdiff>
 {oasdiff}

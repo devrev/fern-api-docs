@@ -1,8 +1,10 @@
 import yaml
 import argparse
-import glob
+import requests
 import os
 import datetime
+import re
+
 
 def main(vrn, d):
 
@@ -14,6 +16,35 @@ def main(vrn, d):
     with open(pr_file, 'w', encoding="utf-8") as outfile:
         outfile.write(p)
         print(f"Wrote prompt to {pr_file}.")
+
+    l = f"# {d}\n\n"
+    l += gen_log(p)
+
+    log_file = f"./fern/apis/{vrn}/{d}.md"
+    with open(log_file, 'w', encoding="utf-8") as outfile:
+        outfile.write(l)
+        print(f"Wrote log to {log_file}.")
+
+
+def gen_log(prompt):
+
+    auth = os.environ.get('LLM_JWT')
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {auth}"}
+    payload = {
+        "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    }
+
+    r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
+                        headers=headers)
+    log = r.json()['choices'][0]['message']['content']
+    log = re.sub(r"^Here's.*\n?", '', log, flags=re.MULTILINE)
+    return log
 
 
 def gen_prompt(oasdiff, links):

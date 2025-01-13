@@ -97,7 +97,7 @@ mandatory fields or custom fields).
     Categories also provide a way how custom record types can be mapped.
 
     If the external system allows records to change the record type within the category, while still preserving identity,
-    this can be defined by the `are_transitions_possible` field in the `record_type_categories` section. For example, if
+    this can be defined by the `are_record_type_conversions_possible` field in the `record_type_categories` section. For example, if
     an issue that can be moved to become a problem in the external system.
 
     ```json
@@ -121,7 +121,7 @@ mandatory fields or custom fields).
       },
       "record_type_categories":{
         "issue":{
-          "are_transitions_possible":true
+          "are_record_type_conversions_possible":true
         }
       }
     }
@@ -197,8 +197,7 @@ mandatory fields or custom fields).
                     "key": "P-1"
                   },
                   {
-                    "key": "P-2",
-                    "is_deprecated": true
+                    "key": "P-2"
                   }
                 ]
               }
@@ -239,7 +238,7 @@ mandatory fields or custom fields).
 
   ### Handle special references
 
-  - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `role` helps Airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
+  - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `reference_type` helps Airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
 
   - Sometimes the external system uses references besides the primary key of records, for example when referring to a case by serial number, or to a user by their email. To correctly resolve such references, they must be marked with 'by_field', which must be a field existing in that record type, marked 'is_identifier'. For example:
   ```json

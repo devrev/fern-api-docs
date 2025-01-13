@@ -9,6 +9,8 @@ navigation:
       - docs
     snippets:
       typescript: "@devrev/api"
+  - changelog: ../apis/beta/changelog
+    title: Changelog
   - section: Guides
     contents:
       - page: Object customization

@@ -17,8 +17,7 @@ def main(vrn, d):
         outfile.write(p)
         print(f"Wrote prompt to {pr_file}.")
 
-    l = f"# {d}\n\n"
-    l += gen_log(p)
+    l = gen_log(p)
 
     log_file = f"./fern/apis/{vrn}/{d}.md"
     with open(log_file, 'w', encoding="utf-8") as outfile:
@@ -84,11 +83,11 @@ def get_links(version):
                 apis[tag][endp] = api
 
     md = f"# {version}\n\n"
-    for tag, api in apis.items():
+    for tag, api in sorted(apis.items()):
         md += f"\n## {tag}\n\n"
-        for val in api.values():
-            link_text = f"{tag} > {val['method']} `{val['opId']}`"
-            md += f"- [{link_text}]({val['target']})\n"
+        for endp, val in api.items():
+            link_text = f"**{tag} > {val['method']}**: `{val['opId']}`"
+            md += f"- [{endp}]({val['target']}) {link_text}\n"
     return md
 
 if __name__ == "__main__":

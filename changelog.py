@@ -19,7 +19,7 @@ def main(vrn, d):
 
     l = gen_log(p)
 
-    log_file = f"./fern/apis/{vrn}/{d}.md"
+    log_file = f"./fern/apis/{vrn}/changelog/{d}.md"
     with open(log_file, 'w', encoding="utf-8") as outfile:
         outfile.write(l)
         print(f"Wrote log to {log_file}.")

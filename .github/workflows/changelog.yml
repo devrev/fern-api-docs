@@ -41,8 +41,7 @@ jobs:
         output-to-file: 'temp/beta/${{ steps.date.outputs.date }}_oasdiff.md'
     - name: Prompt
       run: |
-        git checkout HEAD^
-        python changelog.py --date ${{ steps.date.outputs.date }}
+        python ./changelog.py --date ${{ steps.date.outputs.date }}
         git config user.name github-actions
         git config user.email github-actions@github.com
         git add fern/apis/*/changelog

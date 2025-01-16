@@ -38,7 +38,7 @@ jobs:
         base: 'base/fern/apis/beta/openapi-beta.yaml'
         revision: 'head/fern/apis/beta/openapi-beta.yaml'  
         format: text
-        output-to-file: 'changelog/beta/${{ steps.date.outputs.date }}_oasdiff.md'
+        output-to-file: 'temp/beta/${{ steps.date.outputs.date }}_oasdiff.md'
     - name: Prompt
       run: |
         python changelog.py --date ${{ steps.date.outputs.date }}

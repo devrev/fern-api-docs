@@ -1,16 +1,11 @@
-To test out changes in snap-in locally, developers can create a snap-in version in test mode.
-A snap-in version created in test mode enables developers to specify a public HTTP URL to receive events from DevRev. This makes for
+To test out changes in snap-in locally, you can create a snap-in version in test mode.
+A snap-in version created in test mode enables you to specify a public HTTP URL to receive events from DevRev. This makes for
 quick code changes on the local machine without needing to repeatedly deploy the snap-in again for testing the changes.
 
-To set up the framework, the developer needs to
+To set up the framework, follow these steps.
 
-- Run the server local server present in the template on the mentioned port.
-- Expose this port to a public URL.
-- Create a snap-in version in test mode mentioning this URL.
-
-### Setting up the server
-
-To test out a snap-in version locally, follow the below steps:
+<Steps>
+### Set up the server
 
 1. Run a server locally to ingest events from DevRev. The `port` parameter is optional. If not set, the server starts default on `8000`.
 
@@ -24,59 +19,51 @@ To test out a snap-in version locally, follow the below steps:
   ngrok http 8000
   ```
 
-This returns a public HTTP URL.
+  This returns a public HTTP URL.
 
-3. Create a snap-in version with the `testing-url` flag set
+3. Create a snap-in version with the `testing-url` flag set.
 
   ```
   devrev snap_in_version create-one --manifest <manifest path> --create-package --testing-url <HTTP_URL>
   ```
 
-Here, `HTTP_URL` is the publicly available URL from Step 2. The URL should start with `http` or `https`. Do note that
-the developer cannot use the `path` and `testing-url` flags together.
+  `HTTP_URL` is the publicly available URL from the previous step. The URL should start with `http` or `https`. Do note that
+  the developer cannot use the `path` and `testing-url` flags together.
 
 4. Once the snap-in version is ready, create a snap-in, update, and activate it.
 
   ```
   devrev snap_in draft
-  ```
-
-  Update the snap-in through UI or using the CLI:
-  
-  ```
   devrev snap_in update
-  ```
-  
-  Activate the snap-in through UI or the CLI command:
-  
-  ```
   devrev snap_in activate
   ```
 
-### Receiving events locally
+### Receive events locally
 
 After the snap-in has been activated, it can receive events locally from DevRev as a
-snap-in would. If the snap-in is listening to `work_created` event type, then creating a
-new work-item would send the event to the local server.
+snap-in would. For example, if the snap-in is listening for the `work_created` event type, then creating a
+new work item would send the event to the local server.
 
-If utilizing ngrok, accessing the ngrok UI is possible by opening http://127.0.0.1:4040/ in the browser. This interface offers a neat way to review the list of requests and replay them if necessary.
+If utilizing ngrok, you can access the ngrok UI by opening http://127.0.0.1:4040/ in the browser. This interface offers a neat way to review the list of requests and replay them if necessary.
 
 The service account token included with the request is valid for only 30 minutes. Therefore, attempting to call the DevRev API with that token for events older than this timeframe will result in a '401 Unauthorized' error.
 
-### Updating manifest or the URL
+### Update the URL
 
 The code can be changed without the need to create a snap-in version or redeploy the snap-in. On any change to the
-`src` folder, the server restarts with the updated changes. However, on [patch compatible](/snapin-development/upgrade-snap-ins#version-compatibility) updates to the manifest or the testing URL, we can `upgrade` the snap-in version.
+`src` folder, the server restarts with the updated changes. However, on [patch compatible](/snapin-development/upgrade-snap-ins#version-compatibility) updates to the manifest or the testing URL, you can `upgrade` the snap-in version.
 
 ```
 devrev snap_in_version upgrade --manifest <PATH_TO_MANIFEST> --testing-url <UPDATED_URL>
 ```
 
-In case of non-patch compatible updates, the `force` flag can be used to upgrade the version. However, this will delete any
+In case of non-patch compatible updates, the `force` flag can be used to upgrade the version. However, forcing the update deletes any
 existing snap-ins that have been created from this version.
 
 ```
 devrev snap_in_version upgrade --force --manifest <PATH_TO_MANIFEST> --testing-url <UPDATED_URL>
 ```
 
-Do note that manifest must always be provided when upgrading a snap-in version.
+The manifest must always be provided when upgrading a snap-in version.
+
+</Steps>

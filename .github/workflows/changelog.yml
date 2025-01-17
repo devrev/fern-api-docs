@@ -12,6 +12,8 @@ jobs:
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+    - name: Check out repository content
+      uses: actions/checkout@v2
     - name: Check out HEAD rev
       uses: actions/checkout@v2
       with:
@@ -41,7 +43,7 @@ jobs:
         output-to-file: 'temp/beta/${{ steps.date.outputs.date }}_oasdiff.md'
     - name: Prompt
       run: |
-        python /home/runner/work/fern-api-docs/changelog.py --date ${{ steps.date.outputs.date }}
+        python changelog.py --date ${{ steps.date.outputs.date }}
         git config user.name github-actions
         git config user.email github-actions@github.com
         git add fern/apis/*/changelog

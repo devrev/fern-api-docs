@@ -47,6 +47,8 @@ jobs:
         name: changelog-${{ steps.date.outputs.date }}
         path: temp/**
     - name: Prompt
+      env:
+          LLM_JWT: ${{ secrets.LLM_JWT }} 
       run: |
         python changelog.py --date ${{ steps.date.outputs.date }}
         git config user.name github-actions

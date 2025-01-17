@@ -13,7 +13,7 @@ To set up the framework, follow these steps.
   npm run test:server -- --port=<PORT>
   ```
 
-2. Expose the local port as a publicly available URL. We recommend using [`ngrok`](https://ngrok.com/download) since it is free and easy to set up. The command for running ngrok tunnelling on port `8000`:
+2. Expose the local port as a publicly available URL. We recommend using [`ngrok`](https://ngrok.com/download) since it is free and easy to set up. The command for running ngrok tunneling on port `8000`:
 
   ```
   ngrok http 8000
@@ -46,7 +46,7 @@ new work item would send the event to the local server.
 
 If utilizing ngrok, you can access the ngrok UI by opening http://127.0.0.1:4040/ in the browser. This interface offers a neat way to review the list of requests and replay them if necessary.
 
-The service account token included with the request is valid for only 30 minutes. Therefore, attempting to call the DevRev API with that token for events older than this timeframe results in a '401 Unauthorized' error.
+The service account token included with the request is valid for only 30 minutes. Therefore, attempting to call the DevRev API with that token for events older than this timeframe results in a _401 Unauthorized_ error.
 
 ### Update the URL
 

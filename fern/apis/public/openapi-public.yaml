@@ -493,6 +493,11 @@ components:
             a different policy starting to apply.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+        completed_at:
+          type: string
+          description: The time at which the metric completed at.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
         completed_in:
           type: integer
           description: |
@@ -5239,6 +5244,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            account_filter:
+              type: object
+              description: |
+                A set of account attributes that must be satisfied for the SLA to
+                apply. AND applies between each field.
             compensation:
               $ref: '#/components/schemas/sla-compensation'
             description:
@@ -5392,6 +5402,8 @@ components:
             applies_to_id:
               type: string
               description: Details of the object on which the SLA is being tracked.
+            applies_to_type:
+              $ref: '#/components/schemas/sla-tracker-applies-to-type'
             metric_target_summaries:
               type: array
               description: |
@@ -5422,9 +5434,20 @@ components:
           required:
             - metric_target_summaries
       title: sla-tracker
+    sla-tracker-applies-to-type:
+      type: string
+      description: The type of the object on which the SLA is being tracked.
+      enum:
+        - conversation
+        - issue
+        - ticket
     sla-tracker-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            applies_to_type:
+              $ref: '#/components/schemas/sla-tracker-applies-to-type'
       title: sla-tracker-summary
     sla-trackers-get-request:
       type: object
@@ -7476,6 +7499,11 @@ components:
           $ref: '#/components/schemas/stage-filter'
         staged_info:
           $ref: '#/components/schemas/staged-info-filter'
+        state:
+          type: array
+          description: Filters for work with any of the provided states.
+          items:
+            type: string
         sync_metadata:
           $ref: '#/components/schemas/sync-metadata-filter'
         tags:
@@ -7667,6 +7695,11 @@ components:
           $ref: '#/components/schemas/stage-filter'
         staged_info:
           $ref: '#/components/schemas/staged-info-filter'
+        state:
+          type: array
+          description: Filters for work with any of the provided states.
+          items:
+            type: string
         sync_metadata:
           $ref: '#/components/schemas/sync-metadata-filter'
         tags:
@@ -12242,6 +12275,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for work with any of the provided states.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for issues with this specific external reference.
           explode: false
           in: query
@@ -12647,6 +12688,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for work with any of the provided states.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for issues with this specific external reference.
           explode: false
           in: query

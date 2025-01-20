@@ -27,28 +27,31 @@ def main(vrn, d):
 
 def gen_log(prompt):
 
-    log = None
     auth = os.environ.get('LLM_JWT')
-    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {auth}"}
-    payload = {
-        "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    }
+    if auth:
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {auth}"}
+        payload = {
+            "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        }
 
-    try:
-        r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
-                            headers=headers)
-        log = r.json()['choices'][0]['message']['content']
-        log = re.sub(r"^Here's.*\n?", '', log, flags=re.MULTILINE)
-        log = re.sub(r"^Let me know.*\n?", '', log, flags=re.MULTILINE)
-    except Exception as e:
-        print(
-            f"Failed to generate changelog. Error: {type(e)} {e} {r}")
+        try:
+            r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
+                                headers=headers)
+            log = r.json()['choices'][0]['message']['content']
+            log = re.sub(r"^Here's.*\n?", '', log, flags=re.MULTILINE)
+            log = re.sub(r"^Let me know.*\n?", '', log, flags=re.MULTILINE)
+        except Exception as e:
+            print(
+                f"Failed to generate changelog. Error: {type(e)} {e} {r}")
+    else:
+        log = "No auth token"
+        
     return log
 
 

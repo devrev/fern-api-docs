@@ -18,7 +18,7 @@ During the metadata extraction phase, the ADaaS snap-in must provide an `externa
 
 The transformation can be crafted and finalized further using the `chef-cli` to ensure extracted data is mapped consistently to the DevRev domain model.
 
-## Step-by-step approach to crafting the metadata declaration
+## Craft the metadata declaration
 
 Since crafting metadata declaration in the form of an `external_domain_metadata.json` file can be a tedious process, a step-by-step
 approach is useful for understanding the metadata declarations and as a checklist to declare the metadata for an extraction from a specific external system.
@@ -28,215 +28,216 @@ and DevRev domain system and _dynamic declarations_ that are obtained during a s
 (since they are configurable in the external system and can be changed by the end user at any time, such as
 mandatory fields or custom fields).
 
-1. Declare the extracted record types
+<Steps>
 
-_Record types_ are the types of records that has a well-defined schema you extract from or load to the external system, a domain object in the external system.
+  ### Declare the extracted record types
 
-If the snap-in is extracting issues and comments, a good starting point to declare record types in  `external_domain_metadata.json`  would be:
+    _Record types_ are the types of records that has a well-defined schema you extract from or load to the external system, a domain object in the external system.
 
-```json
-{
-  "record_types": {
-    "issues": {},
-    "comments": {}
-  }
-}
-```
-Although the declaration of record types is arbitrary, they must match the `item_type` field in the artifacts you will upload.
+    If the snap-in is extracting issues and comments, a good starting point to declare record types in  `external_domain_metadata.json`  would be:
 
-2. Declare the custom record types
-
-If the external system supports custom types, or custom variants of some base record type, and you want to airdrop those
-too, you have to declare them in the metadata at runtime. That is, the  extractor will use APIs of the external system to
-dynamically discover what custom record types exist.
-
-The output of this process might look like this:
-
-```json
-{
-"record_types": {
-    "issues_stock_epic": {},
-    "issues_custom2321": {},
-    "issues_custom2322": {},
-    "comments": {}
-  }
-}
-```
-
-3. Provide human-readable names to external record types
-
-Define human-readable names for the record types defined in your metadata file.
-```json
-  {
-  "record_types":{
-    "issues_stock_epic":{
-      "name":"Epic"
-    },
-    "issues_custom2321":{
-      "name":"Incident report"
-    },
-    "issues_custom2322":{
-      "name":"Problem"
-    },
-    "comments":{
-      "name":"Comment"
+    ```json
+    {
+      "record_types": {
+        "issues": {},
+        "comments": {}
+      }
     }
-  }
-}
-```
+    ```
+    Although the declaration of record types is arbitrary, they must match the `item_type` field in the artifacts you will upload.
 
-4. Categorize external record types.
+  ### Declare the custom record types
 
-The metadata allows each external record type to be annotated with one category. The category key can be an arbitrary 
-string, but it must match the categories declared under `record_type_categories`. 
+    If the external system supports custom types, or custom variants of some base record type, and you want to airdrop those
+    too, you have to declare them in the metadata at runtime. That is, the  extractor will use APIs of the external system to
+    dynamically discover what custom record types exist.
 
-Categories of external record types simplify mappings so that a mapping can be applied to a whole category of record types. 
-Categories also provide a way how custom record types can be mapped.
+    The output of this process might look like this:
 
-If the external system allows records to change the record type within the category, while still preserving identity,
-this can be defined by the `are_transitions_possible` field in the `record_type_categories` section. For example, if
-an issue that can be moved to become a problem in the external system.
-
-```json
-{
-  "record_types":{
-    "issues_stock_epic":{
-      "name":"Epic",
-      "category":"issue"
-    },
-    "issues_custom2321":{
-      "name":"Incident report",
-      "category":"issue"
-    },
-    "issues_custom2322":{
-      "name":"Problem",
-      "category":"issue"
-    },
-    "comments":{
-      "name":"Comment"
+    ```json
+    {
+    "record_types": {
+        "issues_stock_epic": {},
+        "issues_custom2321": {},
+        "issues_custom2322": {},
+        "comments": {}
+      }
     }
-  },
-  "record_type_categories":{
-    "issue":{
-      "are_transitions_possible":true
-    }
-  }
-}
-  ```
+    ```
 
-5. Declare fields for each record type:
+  ### Provide human-readable names to external record types
 
-Fields' keys must match what is actually found in the extracted data in the artifacts.
+    Define human-readable names for the record types defined in your metadata file.
 
-The supported types are:
-- `bool`
-- `int`
-- `float`
-- `text`
-- `rich_text`: Formatted text with mentions and images.
-- `reference`: IDs referring to another record. References have to declare what they can refer to,
-which can be one or more record types (`#record:`) or categories (`#category:`).
-- `enum`: A string from a predefined set of values with the optional human-readable names for each value.
-- `date`,
-- `timestamp`,
-- `struct`.
-
-If the external system supports custom fields, the set of custom fields in each record type you wish to extract must be
-declared too.
-
-Enum fields' set of possible values can often be customizable. A good practice is to retrieve the set of possible values
-for all enum fields from the external system's APIs in each sync run.
-
-`ID` (primary key) of the record, `created_date`, and `modified_date` must not be declared.
-
-Example:
-
-```json
-{
-  "record_types": {
-    "issues_stock_epic": {
-      "name": "Epic",
-      "category": "issue",
-      "fields": {
-        "actual_close_date": {
-          "name": "Closed at",
-          "type": "timestamp"
+    ```json
+      {
+      "record_types":{
+        "issues_stock_epic":{
+          "name":"Epic"
         },
-        "owner": {
-          "is_required": true,
-          "type": "reference",
-          "reference": {
-            "refers_to": {
-              "#record:user": {}
-            }
-          }
+        "issues_custom2321":{
+          "name":"Incident report"
         },
-        "creator": {
-          "is_required": true,
-          "type": "reference",
-          "reference": {
-            "refers_to": {
-              "#record:user": {}
-            }
-          }
+        "issues_custom2322":{
+          "name":"Problem"
         },
-        "priority": {
-          "name": "Priority",
-          "is_required": true,
-          "type": "enum",
-          "enum": {
-            "values": [
-              {
-                "key": "P-0",
-                "name": "Super important"
-              },
-              {
-                "key": "P-1"
-              },
-              {
-                "key": "P-2",
-                "is_deprecated": true
-              }
-            ]
-          }
-        },
-        "target_close_date": {
-          "type": "date"
-        },
-        "headline": {
-          "name": "Headline",
-          "is_required": true,
-          "type": "text"
+        "comments":{
+          "name":"Comment"
         }
       }
     }
-  }
-}
-```
+    ```
 
+  ### Categorize external record types
 
-6. Declare arrays
+    The metadata allows each external record type to be annotated with one category. The category key can be an arbitrary 
+    string, but it must match the categories declared under `record_type_categories`. 
 
-If the field is array in the extracted data, it is still typed with the one of the supported types. Lists must be marked as a `collection`.
+    Categories of external record types simplify mappings so that a mapping can be applied to a whole category of record types. 
+    Categories also provide a way how custom record types can be mapped.
 
-``` json
-{
-  "name": "Assignees",
-  "is_required": true,
-  "type": "reference",
-  "reference": {
-    "refers_to": {
-      "#category:agents": {}
+    If the external system allows records to change the record type within the category, while still preserving identity,
+    this can be defined by the `are_transitions_possible` field in the `record_type_categories` section. For example, if
+    an issue that can be moved to become a problem in the external system.
+
+    ```json
+    {
+      "record_types":{
+        "issues_stock_epic":{
+          "name":"Epic",
+          "category":"issue"
+        },
+        "issues_custom2321":{
+          "name":"Incident report",
+          "category":"issue"
+        },
+        "issues_custom2322":{
+          "name":"Problem",
+          "category":"issue"
+        },
+        "comments":{
+          "name":"Comment"
+        }
+      },
+      "record_type_categories":{
+        "issue":{
+          "are_transitions_possible":true
+        }
+      }
     }
-  },
-  "collection": {
-    "max_length": 5
-  }
-}
-```
+    ```
 
+  ### Declare fields for each record type
 
-7. Consider special references:
+    Fields' keys must match what is actually found in the extracted data in the artifacts.
+
+    The supported types are:
+    - `bool`
+    - `int`
+    - `float`
+    - `text`
+    - `rich_text`: Formatted text with mentions and images.
+    - `reference`: IDs referring to another record. References have to declare what they can refer to,
+    which can be one or more record types (`#record:`) or categories (`#category:`).
+    - `enum`: A string from a predefined set of values with the optional human-readable names for each value.
+    - `date`
+    - `timestamp`
+    - `struct`
+
+    If the external system supports custom fields, the set of custom fields in each record type you wish to extract must be
+    declared too.
+
+    Enum fields' set of possible values can often be customizable. A good practice is to retrieve the set of possible values
+    for all enum fields from the external system's APIs in each sync run.
+
+    `ID` (primary key) of the record, `created_date`, and `modified_date` must not be declared.
+
+    Example:
+
+    ```json
+    {
+      "record_types": {
+        "issues_stock_epic": {
+          "name": "Epic",
+          "category": "issue",
+          "fields": {
+            "actual_close_date": {
+              "name": "Closed at",
+              "type": "timestamp"
+            },
+            "owner": {
+              "is_required": true,
+              "type": "reference",
+              "reference": {
+                "refers_to": {
+                  "#record:user": {}
+                }
+              }
+            },
+            "creator": {
+              "is_required": true,
+              "type": "reference",
+              "reference": {
+                "refers_to": {
+                  "#record:user": {}
+                }
+              }
+            },
+            "priority": {
+              "name": "Priority",
+              "is_required": true,
+              "type": "enum",
+              "enum": {
+                "values": [
+                  {
+                    "key": "P-0",
+                    "name": "Super important"
+                  },
+                  {
+                    "key": "P-1"
+                  },
+                  {
+                    "key": "P-2",
+                    "is_deprecated": true
+                  }
+                ]
+              }
+            },
+            "target_close_date": {
+              "type": "date"
+            },
+            "headline": {
+              "name": "Headline",
+              "is_required": true,
+              "type": "text"
+            }
+          }
+        }
+      }
+    }
+    ```
+
+  ### Declare arrays
+
+    If the field is array in the extracted data, it is still typed with the one of the supported types. Lists must be marked as a `collection`.
+
+    ``` json
+    {
+      "name": "Assignees",
+      "is_required": true,
+      "type": "reference",
+      "reference": {
+        "refers_to": {
+          "#category:agents": {}
+        }
+      },
+      "collection": {
+        "max_length": 5
+      }
+    }
+    ```
+
+  ### Handle special references
 
   - Some references have role of parent or child. This means that the child record doesn't make sense without its parent, for example a comment attached to a ticket. Assigning a `role` helps Airdrop correctly handle such fields in case the end-user decides to filter some of the parent records out.
 
@@ -269,3 +270,4 @@ If the field is array in the extracted data, it is still typed with the one of t
   }
 }
   ```
+</Steps>

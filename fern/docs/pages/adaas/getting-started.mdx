@@ -1,41 +1,34 @@
-1. If you have not created a development organization on DevRev before, create a dedicated
-[DevOrg for development purposes](https://app.devrev.ai/) where you will be publishing your ADaaS snap-in.
-2. Install required tools and packages:
-   - [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
-   - [jq](https://stedolan.github.io/jq)
-   - [golang](https://go.dev/doc/install)
-   - [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
-3. Create a new repo from the ADaaS template repo:
-On [https://github.com/devrev/adaas-template](https://github.com/devrev/adaas-template) use the dropdown button `Use this template` and
-then `Create a new repository`
-4. Copy `Makefile.variable.example` to `Makefile.variable` and fill in the required variables.
-5. Configure a keyring for the external system in the `manifest.yaml`.
-See [Keyrings](../references/keyrings/introduction.mdx).
-6. Deploy a draft version of your Snap-In to you DevOrg using `make deploy`.
-7. Install the snap-in in your DevRev DevOrg on the web by navigating to **Settings** > **Snap-ins** **Settings** > **Imports** `Import.` **Install snap-in**.
-8. Define the connection by navigating to **Settings** > **Imports** > `Connections`.
-9. Create an import by navigating to **Settings** > **Imports** > `Import.`
+## Before you begin
 
+- If you have not created a development organization on DevRev before, create a dedicated
+  [DevOrg for development purposes](https://app.devrev.ai/) where you will be publishing your ADaaS snap-in.
+- Install required tools and packages:
+  - [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
+  - [jq](https://stedolan.github.io/jq)
+  - [golang](https://go.dev/doc/install)
+  - [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
 
-## Creating keyrings
+## Setting up the snap-in
 
-_Keyrings_ are a DevRev-specific mechanism for managing authentication to external systems.
-They are called **Connections** in the DevRev app.
-
-Keyrings provide a secure way to store and manage credentials within your DevRev snap-In.
-This eliminates the need to expose sensitive information like passwords
-or access tokens directly within your code or configuration files, enhancing overall security. They also provide a valid
-token by abstracting Oauth token renewal from the end user.
-
-A keyring is used by a worker to authenticate to the external system in API calls. They include the key (for example,
-a PAT or API key), its type, the organization ID for which a key is valid, and in some cases the organization name.
-
-Read more about keyrings in the [developer documentation](/snapin-development/references/keyrings).
-
+1. Create a new repo from the [ADaaS template repo](https://github.com/devrev/adaas-template). Select _Use this template_ and
+   then _Create a new repository_.
+1. Copy `Makefile.variable.example` to `Makefile.variable` and fill in the required variables.
+1. Configure a keyring for the external system in the `manifest.yaml`.
+   Refer to [Keyrings](/snapin-development/references/keyrings) for instructions.
+1. Deploy a draft version of your snap-in to your dev org using `make deploy`.
+1. Install the snap-in in your DevRev at **Settings** > **Snap-ins** > **Install snap-in**.
+1. Define the connection at **Settings** > **Imports** > **Connections**.
+1. Create an import at **Settings** > **Imports** > **Import**.
 
 ## Observability
 
-To observe logs from your snap-in in your development environment use `devrev snap_in_package logs | jq`.
-To open logs in your favorite editor use `devrev snap_in_package logs | code -`
+- To observe logs from your snap-in in your development environment:
+   ```
+   devrev snap_in_package logs | jq
+   ```
+- To open logs in your favorite editor:
+  ```
+  devrev snap_in_package logs | code -
+  ```
 
-See also [debugging snap-in](/snapin-development/debugging).
+For more information, refer to [Debugging](/snapin-development/debugging).

@@ -14,7 +14,24 @@ The types of events that can be received through webhooks are object mutation ev
 Events are delivered concurrently in a semi-ordered (but not guaranteed) manner,
 where object timestamps and versions enable you to determine the order of events for a particular object.
 
-![diagram_4](../img/diagram_4.png)
+```mermaid
+sequenceDiagram
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'signalColor': '#7d7f7c',
+        'signalTextColor': '#7d7f7c'
+}}}%%
+Note over Customer endpoint,DevRev: 1. Register webhook
+Customer endpoint ->> DevRev: Webhook create request
+DevRev -->> Customer endpoint: Webhook create response
+Note over Customer endpoint,DevRev: 2. Verify webhook registration
+DevRev ->> Customer endpoint: Verify request
+Customer endpoint -->> DevRev: Echo challenge
+Note over Customer endpoint,DevRev: 3. Receive webhook event
+DevRev ->> Customer endpoint: Event POST
+```
 
 ## Webhook event handling
 

@@ -82,8 +82,14 @@ components:
             tier:
               type: string
               description: The Tier of the corresponding Account.
+            websites:
+              type: array
+              description: |
+                Company's website links. Filling in this property will also fill in
+                domain. Example - 'www.devrev.ai'.
+              items:
+                type: string
           required:
-            - external_refs
             - owned_by
       title: account
     account-summary:
@@ -198,6 +204,11 @@ components:
           description: Filters for accounts on specified stages.
           items:
             type: string
+        websites:
+          type: array
+          description: Array of websites of accounts to be filtered.
+          items:
+            type: string
       title: accounts-export-request
     accounts-export-response:
       type: object
@@ -237,6 +248,11 @@ components:
         stage:
           type: array
           description: Filters for accounts on specified stages.
+          items:
+            type: string
+        websites:
+          type: array
+          description: Array of websites of accounts to be filtered.
           items:
             type: string
       title: accounts-filters
@@ -308,6 +324,11 @@ components:
           description: Filters for accounts on specified stages.
           items:
             type: string
+        websites:
+          type: array
+          description: Array of websites of accounts to be filtered.
+          items:
+            type: string
       title: accounts-list-request
     accounts-list-response:
       type: object
@@ -367,9 +388,20 @@ components:
           type: string
           description: Updated tier of the account.
           nullable: true
+        websites:
+          $ref: '#/components/schemas/accounts-update-request-websites'
       required:
         - id
       title: accounts-update-request
+    accounts-update-request-websites:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the websites field of the account.
+          items:
+            type: string
+      title: accounts-update-request-websites
     accounts-update-response:
       type: object
       description: Updated account object.
@@ -380,6 +412,75 @@ components:
         - account
       title: accounts-update-response
       x-go-name: AccountsUpdateResponseBody
+    ai-agent-event-execute-error:
+      type: object
+      description: |
+        An error object providing the error message for the AI agent event
+        execution.
+      properties:
+        error:
+          type: string
+          description: The error message for the AI agent event execution.
+          maxLength: 512
+      required:
+        - error
+      title: ai-agent-event-execute-error
+    ai-agent-event-execute-progress:
+      type: object
+      description: |
+        A progress object providing the status of the AI agent event execution.
+      properties:
+        progress_state:
+          type: string
+          enum:
+            - skill_executed
+            - skill_triggered
+        skill_executed:
+          $ref: '#/components/schemas/ai-agent-event-execute-progress-skill-executed'
+        skill_triggered:
+          $ref: '#/components/schemas/ai-agent-event-execute-progress-skill-triggered'
+      title: ai-agent-event-execute-progress
+    ai-agent-event-execute-progress-skill-executed:
+      type: object
+      description: |
+        The progress for the AI agent event execution indicating that the skill
+        has been executed.
+      properties:
+        args:
+          type: object
+          description: The arguments for the skill call.
+        output:
+          type: object
+          description: The output of the skill call.
+        skill_name:
+          type: string
+          description: The name of the skill.
+          maxLength: 512
+      required:
+        - output
+        - skill_name
+      title: ai-agent-event-execute-progress-skill-executed
+    ai-agent-event-execute-progress-skill-triggered:
+      type: object
+      description: |
+        The progress for the AI agent event execution indicating that the skill
+        has been triggered.
+      properties:
+        args:
+          type: object
+          description: The arguments for the skill call.
+        skill_name:
+          type: string
+          description: The name of the skill.
+          maxLength: 512
+        workflow:
+          $ref: '#/components/schemas/workflow-summary'
+        workflow_run:
+          $ref: '#/components/schemas/workflow-run-summary'
+      required:
+        - args
+        - skill_name
+      title: ai-agent-event-execute-progress-skill-triggered
     archetype-metric-target:
       type: object
       description: Metric with corresponding target values.
@@ -390,6 +491,11 @@ components:
             For breached metrics the time they entered into breach. This is the
             same as what the target date was, unless the breach happened due to
             a different policy starting to apply.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        completed_at:
+          type: string
+          description: The time at which the metric completed at.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
         completed_in:
@@ -444,6 +550,34 @@ components:
         - metric_definition
         - stage
       title: archetype-metric-target
+    archetype-sla-summary:
+      type: object
+      description: SLA summary for the object.
+      properties:
+        closest_to_breach_metric:
+          type: string
+          description: The name of the metric which is closest to breach.
+        org_schedule:
+          $ref: '#/components/schemas/org-schedule-summary'
+        remaining_time:
+          type: integer
+          description: |
+            The remaining time (in minutes) for the closest_to_breach_metric if
+            it is paused. A paused metric will only be closest to breach if no
+            metrics are running (running, warning and breached stage).
+          format: int32
+        sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
+        stage:
+          $ref: '#/components/schemas/sla-summary-stage'
+        target_time:
+          type: string
+          description: |
+            The target time to avoid SLA breach. This is the target time of the
+            metric which is closest to breach.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      title: archetype-sla-summary
     artifact:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -643,6 +777,7 @@ components:
         mapping:
           google_apps: '#/components/schemas/auth-connection-options-google-apps'
           oidc: '#/components/schemas/auth-connection-options-oidc'
+          okta: '#/components/schemas/auth-connection-options-okta'
           samlp: '#/components/schemas/auth-connection-options-saml'
           social: '#/components/schemas/auth-connection-options-social'
           waad: '#/components/schemas/auth-connection-options-azure-ad'
@@ -651,6 +786,7 @@ components:
         - $ref: '#/components/schemas/auth-connection-options-azure-ad'
         - $ref: '#/components/schemas/auth-connection-options-google-apps'
         - $ref: '#/components/schemas/auth-connection-options-oidc'
+        - $ref: '#/components/schemas/auth-connection-options-okta'
         - $ref: '#/components/schemas/auth-connection-options-saml'
         - $ref: '#/components/schemas/auth-connection-options-social'
       properties:
@@ -673,6 +809,8 @@ components:
           type: string
           description: ID of the authentication connection.
       required:
+        - display_name
+        - enabled
         - id
         - type
       title: auth-connection
@@ -686,12 +824,12 @@ components:
         client_id:
           type: string
           description: Client ID for the Azure authentication connection.
-        client_secret:
-          type: string
-          description: Client secret for the Azure authentication connection.
         domain:
           type: string
           description: Domain URL of the Azure authentication connection.
+      required:
+        - client_id
+        - domain
       title: auth-connection-options-azure-ad
     auth-connection-options-google-apps:
       type: object
@@ -703,14 +841,13 @@ components:
         client_id:
           type: string
           description: Client ID for the Google Apps authentication connection.
-        client_secret:
-          type: string
-          description: |
-            Client secret for the Google Apps authentication connection.
         tenant_domain:
           type: string
           description: |
             Tenant domain URL of the Google Apps authentication connection.
+      required:
+        - client_id
+        - tenant_domain
       title: auth-connection-options-google-apps
     auth-connection-options-oidc:
       type: object
@@ -721,26 +858,49 @@ components:
         client_id:
           type: string
           description: Client ID for the OIDC authentication connection.
-        client_secret:
-          type: string
-          description: Client secret for the OIDC authentication connection.
         issuer:
           type: string
           description: Issuer URL of the OIDC authentication connection.
+      required:
+        - client_id
+        - issuer
       title: auth-connection-options-oidc
+    auth-connection-options-okta:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Okta
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Okta authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Okta authentication connection.
+      required:
+        - client_id
+        - domain
+      title: auth-connection-options-okta
     auth-connection-options-saml:
       type: object
       description: |
         Object encapsulating the configuration parameters for a SAML
         authentication connection.
       properties:
+        connection_name:
+          type: string
+          description: Connection name for the SAML authentication connection.
+          maxLength: 128
+          minLength: 1
+        fields_map:
+          $ref: '#/components/schemas/saml-connection-fields-map'
         sign_in_endpoint:
           type: string
           description: Sign In endpoint for the SAML authentication connection.
-        signing_cert:
-          type: string
-          description: |
-            Signing certificate for the SAML authentication connection.
+      required:
+        - fields_map
+        - sign_in_endpoint
       title: auth-connection-options-saml
     auth-connection-options-social:
       type: object
@@ -759,6 +919,7 @@ components:
       enum:
         - google_apps
         - oidc
+        - okta
         - samlp
         - social
         - waad
@@ -1232,6 +1393,8 @@ components:
               description: Owner IDs for the conversation.
               items:
                 $ref: '#/components/schemas/user-summary'
+            sla_summary:
+              $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
               $ref: '#/components/schemas/sla-tracker-summary'
             stage:
@@ -1362,16 +1525,18 @@ components:
         Request to create a new enterprise authentication connection.
       discriminator:
         mapping:
-          google_apps: '#/components/schemas/auth-connection-options-google-apps'
-          oidc: '#/components/schemas/auth-connection-options-oidc'
-          samlp: '#/components/schemas/auth-connection-options-saml'
-          waad: '#/components/schemas/auth-connection-options-azure-ad'
+          google_apps: '#/components/schemas/dev-org-auth-connections-create-request-google-apps-options'
+          oidc: '#/components/schemas/dev-org-auth-connections-create-request-oidc-options'
+          okta: '#/components/schemas/dev-org-auth-connections-create-request-okta-options'
+          samlp: '#/components/schemas/dev-org-auth-connections-create-request-saml-options'
+          waad: '#/components/schemas/dev-org-auth-connections-create-request-azure-ad-options'
         propertyName: type
       oneOf:
-        - $ref: '#/components/schemas/auth-connection-options-azure-ad'
-        - $ref: '#/components/schemas/auth-connection-options-google-apps'
-        - $ref: '#/components/schemas/auth-connection-options-oidc'
-        - $ref: '#/components/schemas/auth-connection-options-saml'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-azure-ad-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-google-apps-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-oidc-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-okta-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-create-request-saml-options'
       properties:
         type:
           $ref: '#/components/schemas/dev-org-auth-connections-create-request-type'
@@ -1382,9 +1547,120 @@ components:
             visible to all the users when they sign in to this Dev
             organization. For example, if the display_name is 'abclogin', then
             it would appear on the login button as 'Log in to abclogin'.
+          maxLength: 128
+          minLength: 1
       required:
         - type
       title: dev-org-auth-connections-create-request
+    dev-org-auth-connections-create-request-azure-ad-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Azure AD
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Azure authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Azure authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Azure authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - domain
+      title: dev-org-auth-connections-create-request-azure-ad-options
+    dev-org-auth-connections-create-request-google-apps-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for a Google Apps
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Google Apps authentication connection.
+        client_secret:
+          type: string
+          description: |
+            Client secret for the Google Apps authentication connection.
+        tenant_domain:
+          type: string
+          description: |
+            Tenant domain URL of the Google Apps authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - tenant_domain
+      title: dev-org-auth-connections-create-request-google-apps-options
+    dev-org-auth-connections-create-request-oidc-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for an OIDC
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the OIDC authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the OIDC authentication connection.
+        issuer:
+          type: string
+          description: Issuer URL of the OIDC authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - issuer
+      title: dev-org-auth-connections-create-request-oidc-options
+    dev-org-auth-connections-create-request-okta-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Okta
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Okta authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Okta authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Okta authentication connection.
+      required:
+        - client_id
+        - client_secret
+        - domain
+      title: dev-org-auth-connections-create-request-okta-options
+    dev-org-auth-connections-create-request-saml-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for a SAML
+        authentication connection.
+      properties:
+        connection_name:
+          type: string
+          description: Connection name for the SAML authentication connection.
+          maxLength: 128
+          minLength: 1
+        fields_map:
+          $ref: '#/components/schemas/saml-connection-fields-map'
+        sign_in_endpoint:
+          type: string
+          description: Sign In endpoint for the SAML authentication connection.
+        signing_cert:
+          type: string
+          description: |
+            Signing certificate for the SAML authentication connection.
+      required:
+        - sign_in_endpoint
+        - signing_cert
+      title: dev-org-auth-connections-create-request-saml-options
     dev-org-auth-connections-create-request-type:
       type: string
       description: |
@@ -1393,6 +1669,7 @@ components:
       enum:
         - google_apps
         - oidc
+        - okta
         - samlp
         - waad
     dev-org-auth-connections-create-response:
@@ -1482,17 +1759,19 @@ components:
         organization.
       discriminator:
         mapping:
-          google_apps: '#/components/schemas/auth-connection-options-google-apps'
+          google_apps: '#/components/schemas/dev-org-auth-connections-update-request-google-apps-options'
           none: '#/components/schemas/empty'
-          oidc: '#/components/schemas/auth-connection-options-oidc'
-          samlp: '#/components/schemas/auth-connection-options-saml'
-          waad: '#/components/schemas/auth-connection-options-azure-ad'
+          oidc: '#/components/schemas/dev-org-auth-connections-update-request-oidc-options'
+          okta: '#/components/schemas/dev-org-auth-connections-update-request-okta-options'
+          samlp: '#/components/schemas/dev-org-auth-connections-update-request-saml-options'
+          waad: '#/components/schemas/dev-org-auth-connections-update-request-azure-ad-options'
         propertyName: type
       oneOf:
-        - $ref: '#/components/schemas/auth-connection-options-azure-ad'
-        - $ref: '#/components/schemas/auth-connection-options-google-apps'
-        - $ref: '#/components/schemas/auth-connection-options-oidc'
-        - $ref: '#/components/schemas/auth-connection-options-saml'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-azure-ad-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-google-apps-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-oidc-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-okta-options'
+        - $ref: '#/components/schemas/dev-org-auth-connections-update-request-saml-options'
         - $ref: '#/components/schemas/empty'
       properties:
         type:
@@ -1511,6 +1790,90 @@ components:
       required:
         - id
       title: dev-org-auth-connections-update-request
+    dev-org-auth-connections-update-request-azure-ad-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for an Azure AD
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Azure authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Azure authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Azure authentication connection.
+      title: dev-org-auth-connections-update-request-azure-ad-options
+    dev-org-auth-connections-update-request-google-apps-options:
+      type: object
+      deprecated: true
+      description: |
+        Object encapsulating the configuration parameters for a Google Apps
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Google Apps authentication connection.
+        client_secret:
+          type: string
+          description: |
+            Client secret for the Google Apps authentication connection.
+        tenant_domain:
+          type: string
+          description: |
+            Tenant domain URL of the Google Apps authentication connection.
+      title: dev-org-auth-connections-update-request-google-apps-options
+    dev-org-auth-connections-update-request-oidc-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for an OIDC
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the OIDC authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the OIDC authentication connection.
+        issuer:
+          type: string
+          description: Issuer URL of the OIDC authentication connection.
+      title: dev-org-auth-connections-update-request-oidc-options
+    dev-org-auth-connections-update-request-okta-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for an Okta
+        authentication connection.
+      properties:
+        client_id:
+          type: string
+          description: Client ID for the Okta authentication connection.
+        client_secret:
+          type: string
+          description: Client secret for the Okta authentication connection.
+        domain:
+          type: string
+          description: Domain URL of the Okta authentication connection.
+      title: dev-org-auth-connections-update-request-okta-options
+    dev-org-auth-connections-update-request-saml-options:
+      type: object
+      description: |
+        Object encapsulating the configuration parameters for a SAML
+        authentication connection.
+      properties:
+        fields_map:
+          $ref: '#/components/schemas/saml-connection-fields-map'
+        sign_in_endpoint:
+          type: string
+          description: Sign In endpoint for the SAML authentication connection.
+        signing_cert:
+          type: string
+          description: |
+            Signing certificate for the SAML authentication connection.
+      title: dev-org-auth-connections-update-request-saml-options
     dev-org-auth-connections-update-request-type:
       type: string
       description: |
@@ -1521,6 +1884,7 @@ components:
         - google_apps
         - none
         - oidc
+        - okta
         - samlp
         - waad
     dev-org-auth-connections-update-response:
@@ -1704,6 +2068,8 @@ components:
           description: |
             Used for determining the relative order of the enum value.
           format: int64
+        value:
+          description: The actual value of the enum value.
       required:
         - id
         - label
@@ -2283,6 +2649,29 @@ components:
       required:
         - account
       title: event-account-updated
+    event-ai-agent-response:
+      type: object
+      properties:
+        agent_response:
+          type: string
+          enum:
+            - error
+            - message
+            - progress
+        client_metadata:
+          type: object
+          description: |
+            The metadata given by client to be passed to the event source.
+        error:
+          $ref: '#/components/schemas/ai-agent-event-execute-error'
+        message:
+          type: string
+          description: |
+            The final response of asynchronous agent events execution.
+        progress:
+          $ref: '#/components/schemas/ai-agent-event-execute-progress'
+      title: event-ai-agent-response
+      x-go-name: EventAiAgentResponseBody
     event-conversation-created:
       type: object
       properties:
@@ -2622,6 +3011,33 @@ components:
       required:
         - survey
       title: event-survey-updated
+    event-sync-history-created:
+      type: object
+      properties:
+        sync_history:
+          $ref: '#/components/schemas/sync-history'
+      required:
+        - sync_history
+      title: event-sync-history-created
+    event-sync-history-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the sync history that was deleted.
+      required:
+        - id
+      title: event-sync-history-deleted
+    event-sync-history-updated:
+      type: object
+      properties:
+        old_sync_history:
+          $ref: '#/components/schemas/sync-history'
+        sync_history:
+          $ref: '#/components/schemas/sync-history'
+      required:
+        - sync_history
+      title: event-sync-history-updated
     event-tag-created:
       type: object
       properties:
@@ -2666,7 +3082,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry that was deleted.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
         old_entry:
           $ref: '#/components/schemas/timeline-entry'
       required:
@@ -2696,7 +3112,7 @@ components:
         id:
           type: string
           description: The ID of the webhook that was deleted.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       required:
         - id
       title: event-webhook-deleted
@@ -2737,7 +3153,6 @@ components:
           ok: '#/components/schemas/event-work-fetched-ok'
         propertyName: result
       oneOf:
-        - $ref: '#/components/schemas/empty'
         - $ref: '#/components/schemas/empty'
         - $ref: '#/components/schemas/event-work-fetched-ok'
       properties:
@@ -2900,6 +3315,8 @@ components:
                 $ref: '#/components/schemas/part-summary'
             priority:
               $ref: '#/components/schemas/issue-priority'
+            sla_summary:
+              $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
               $ref: '#/components/schemas/sla-tracker-summary'
             sprint:
@@ -3954,6 +4371,20 @@ components:
             rev_org:
               $ref: '#/components/schemas/org-summary'
       title: rev-user-summary
+    saml-connection-fields-map:
+      type: object
+      properties:
+        email:
+          type: string
+          description: |
+            Claims in the SAML assertion returned by the identity provider that
+            map to the email address of the user.
+        user_id:
+          type: string
+          description: |
+            Claims in the SAML assertion returned by the identity provider that
+            map to the user ID of the user.
+      title: saml-connection-fields-map
     schema-bool-field-descriptor:
       allOf:
         - $ref: '#/components/schemas/schema-field-descriptor-base'
@@ -4813,6 +5244,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            account_filter:
+              type: object
+              description: |
+                A set of account attributes that must be satisfied for the SLA to
+                apply. AND applies between each field.
             compensation:
               $ref: '#/components/schemas/sla-compensation'
             description:
@@ -4966,6 +5402,8 @@ components:
             applies_to_id:
               type: string
               description: Details of the object on which the SLA is being tracked.
+            applies_to_type:
+              $ref: '#/components/schemas/sla-tracker-applies-to-type'
             metric_target_summaries:
               type: array
               description: |
@@ -4996,9 +5434,20 @@ components:
           required:
             - metric_target_summaries
       title: sla-tracker
+    sla-tracker-applies-to-type:
+      type: string
+      description: The type of the object on which the SLA is being tracked.
+      enum:
+        - conversation
+        - issue
+        - ticket
     sla-tracker-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            applies_to_type:
+              $ref: '#/components/schemas/sla-tracker-applies-to-type'
       title: sla-tracker-summary
     sla-trackers-get-request:
       type: object
@@ -5440,7 +5889,17 @@ components:
               type: string
               description: The ID of the survey for which response is taken.
       title: survey-response
-      x-go-name: SurveyResponseBody
+    sync-history:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            sync_run:
+              $ref: '#/components/schemas/sync-run'
+            sync_unit:
+              type: string
+              description: SyncUnit ID associated with this historical entry.
+      title: sync-history
     sync-metadata-filter:
       type: object
       properties:
@@ -5506,6 +5965,61 @@ components:
         - failed
         - modified
         - succeeded
+    sync-progress:
+      type: object
+      description: Progress.
+      properties:
+        state:
+          $ref: '#/components/schemas/sync-progress-state'
+      title: sync-progress
+    sync-progress-state:
+      type: string
+      description: The state of a sync progress.
+      enum:
+        - completed
+        - delete_in_progress
+        - deleted
+        - deletion_error
+        - extract_attachments
+        - extract_attachments_error
+        - extraction
+        - extraction_error
+        - loading
+        - loading_attachments
+        - loading_attachments_error
+        - loading_error
+        - recipe_discovery
+        - recipe_discovery_error
+        - recipe_discovery_waiting_for_user_input
+        - starting
+        - transformation
+        - transformation_error
+    sync-run:
+      type: object
+      description: Object for holding run-specific data.
+      properties:
+        ended_at:
+          type: string
+          description: The time when a sync was ended.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        mode:
+          $ref: '#/components/schemas/sync-run-mode'
+        progress:
+          $ref: '#/components/schemas/sync-progress'
+        started_at:
+          type: string
+          description: The time when a sync was started.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      title: sync-run
+    sync-run-mode:
+      type: string
+      description: The direction/mode of a sync run.
+      enum:
+        - initial
+        - sync_from_devrev
+        - sync_to_devrev
     sys-user-summary:
       allOf:
         - $ref: '#/components/schemas/user-base-summary'
@@ -5751,6 +6265,8 @@ components:
               description: Summary justifying the sentiment.
             severity:
               $ref: '#/components/schemas/ticket-severity'
+            sla_summary:
+              $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
               $ref: '#/components/schemas/sla-tracker-summary'
             source_channel:
@@ -5897,7 +6413,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry to delete.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       required:
         - id
       title: timeline-entries-delete-request
@@ -5914,7 +6430,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry to get.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       required:
         - id
       title: timeline-entries-get-request
@@ -5998,7 +6514,7 @@ components:
         id:
           type: string
           description: The ID of the timeline entry to update.
-          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       required:
         - id
         - type
@@ -6310,6 +6826,8 @@ components:
           $ref: '#/components/schemas/event-account-deleted'
         account_updated:
           $ref: '#/components/schemas/event-account-updated'
+        ai_agent_response:
+          $ref: '#/components/schemas/event-ai-agent-response'
         conversation_created:
           $ref: '#/components/schemas/event-conversation-created'
         conversation_deleted:
@@ -6383,6 +6901,12 @@ components:
           $ref: '#/components/schemas/event-survey-response-updated'
         survey_updated:
           $ref: '#/components/schemas/event-survey-updated'
+        sync_history_created:
+          $ref: '#/components/schemas/event-sync-history-created'
+        sync_history_deleted:
+          $ref: '#/components/schemas/event-sync-history-deleted'
+        sync_history_updated:
+          $ref: '#/components/schemas/event-sync-history-updated'
         tag_created:
           $ref: '#/components/schemas/event-tag-created'
         tag_deleted:
@@ -6413,7 +6937,7 @@ components:
         webhook_id:
           type: string
           description: ID of the webhook for the event.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
         webhook_updated:
           $ref: '#/components/schemas/event-webhook-updated'
         work_created:
@@ -6481,6 +7005,10 @@ components:
         - survey_response_deleted
         - survey_response_updated
         - survey_updated
+        - sync_history_created
+        - sync_history_deleted
+        - sync_history_updated
+        - sync_unit_updated
         - tag_created
         - tag_deleted
         - tag_updated
@@ -6552,7 +7080,7 @@ components:
         id:
           type: string
           description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       required:
         - id
       title: webhooks-delete-request
@@ -6569,7 +7097,7 @@ components:
         id:
           type: string
           description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       required:
         - id
       title: webhooks-get-request
@@ -6618,7 +7146,7 @@ components:
         id:
           type: string
           description: ID for the webhook.
-          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
         secret:
           type: string
           description: |
@@ -6759,6 +7287,14 @@ components:
       enum:
         - issue
         - ticket
+    workflow-run-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: workflow-run-summary
+    workflow-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: workflow-summary
     works-create-request:
       type: object
       discriminator:
@@ -6963,6 +7499,11 @@ components:
           $ref: '#/components/schemas/stage-filter'
         staged_info:
           $ref: '#/components/schemas/staged-info-filter'
+        state:
+          type: array
+          description: Filters for work with any of the provided states.
+          items:
+            type: string
         sync_metadata:
           $ref: '#/components/schemas/sync-metadata-filter'
         tags:
@@ -7154,6 +7695,11 @@ components:
           $ref: '#/components/schemas/stage-filter'
         staged_info:
           $ref: '#/components/schemas/staged-info-filter'
+        state:
+          type: array
+          description: Filters for work with any of the provided states.
+          items:
+            type: string
         sync_metadata:
           $ref: '#/components/schemas/sync-metadata-filter'
         tags:
@@ -7475,6 +8021,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-create-response'
+          description: The response to creating a new account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7489,6 +8036,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Account
       tags:
         - accounts
       x-fern-audiences:
@@ -7510,6 +8058,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-delete-response'
+          description: The response to deleting an account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7524,6 +8073,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Account
       tags:
         - accounts
       x-fern-audiences:
@@ -7622,12 +8172,21 @@ paths:
             type: array
             items:
               type: string
+        - description: Array of websites of accounts to be filtered.
+          explode: false
+          in: query
+          name: websites
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
+          description: The response to exporting a collection of accounts.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7640,6 +8199,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Accounts
       tags:
         - accounts
       x-fern-audiences:
@@ -7660,6 +8220,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-export-response'
+          description: The response to exporting a collection of accounts.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7672,6 +8233,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Accounts (POST)
       tags:
         - accounts
       x-fern-audiences:
@@ -7696,6 +8258,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
+          description: The returned account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7710,6 +8273,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Account
       tags:
         - accounts
       x-fern-audiences:
@@ -7730,6 +8294,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-get-response'
+          description: The returned account.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7744,6 +8309,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Account (POST)
       tags:
         - accounts
       x-fern-audiences:
@@ -7858,12 +8424,22 @@ paths:
             type: array
             items:
               type: string
+        - description: Array of websites of accounts to be filtered.
+          explode: false
+          in: query
+          name: websites
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
+          description: |
+            The response to listing all accounts matching the filter criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7878,6 +8454,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Accounts
       tags:
         - accounts
       x-fern-audiences:
@@ -7898,6 +8475,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-list-response'
+          description: |
+            The response to listing all accounts matching the filter criteria.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7912,6 +8491,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Accounts (POST)
       tags:
         - accounts
       x-fern-audiences:
@@ -7933,6 +8513,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/accounts-update-response'
+          description: Updated account object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7949,6 +8530,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Account
       tags:
         - accounts
       x-fern-audiences:
@@ -7979,6 +8561,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
+          description: The response to getting an artifact's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -7993,6 +8576,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Artifact
       tags:
         - artifacts
       x-fern-audiences:
@@ -8013,6 +8597,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-get-response'
+          description: The response to getting an artifact's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8027,6 +8612,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Artifact (POST)
       tags:
         - artifacts
       x-fern-audiences:
@@ -8049,6 +8635,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
+          description: The response to list artifacts attached to an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8063,6 +8650,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Artifacts
       tags:
         - artifacts
       x-fern-audiences:
@@ -8083,6 +8671,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-list-response'
+          description: The response to list artifacts attached to an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8097,6 +8686,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Artifacts (POST)
       tags:
         - artifacts
       x-fern-audiences:
@@ -8127,6 +8717,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
+          description: The response to getting an artifact's download URL.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8141,6 +8732,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Locate Artifacts
       tags:
         - artifacts
       x-fern-audiences:
@@ -8161,6 +8753,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-locate-response'
+          description: The response to getting an artifact's download URL.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8175,6 +8768,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Locate Artifacts (POST)
       tags:
         - artifacts
       x-fern-audiences:
@@ -8197,6 +8791,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/artifacts-prepare-response'
+          description: The response to preparing a URL to upload a file.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8209,6 +8804,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Prepare Artifacts
       tags:
         - artifacts
       x-fern-audiences:
@@ -8232,6 +8828,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-create-response'
+          description: |
+            Response for the request to create a new token corresponding to the
+            requested token type.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8246,6 +8845,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8280,6 +8880,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8306,6 +8907,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
+          description: The response to get the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8320,6 +8922,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8342,6 +8945,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-get-response'
+          description: The response to get the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8356,6 +8960,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Auth Token (POST)
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8399,6 +9004,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
+          description: The response to list the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8413,6 +9019,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Auth Tokens
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8435,6 +9042,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-list-response'
+          description: The response to list the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8449,6 +9057,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Auth Tokens (POST)
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8483,6 +9092,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Auth Tokens Self
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8506,6 +9116,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/auth-tokens-update-response'
+          description: Response for the request to update the token metadata.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8520,6 +9131,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Auth Token
       tags:
         - auth-tokens
       x-fern-audiences:
@@ -8547,6 +9159,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-create-response'
+          description: |
+            Response for the request to create a new enterprise authentication
+            connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8559,6 +9174,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -8595,6 +9211,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -8619,6 +9236,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
+          description: |
+            Response object encapsulating the configuration details of an
+            authentication connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8633,6 +9253,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -8654,6 +9275,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-get-response'
+          description: |
+            Response object encapsulating the configuration details of an
+            authentication connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8668,6 +9292,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev Orgs Auth Connection (POST)
       tags:
         - auth-connection
         - dev-orgs
@@ -8688,6 +9313,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
+          description: |
+            Response object for the request to list all the social and enterprise
+            authentication connections configured for a Dev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8700,6 +9328,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Orgs Auth Connections
       tags:
         - auth-connection
         - dev-orgs
@@ -8725,6 +9354,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-list-response'
+          description: |
+            Response object for the request to list all the social and enterprise
+            authentication connections configured for a Dev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8737,6 +9369,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Orgs Auth Connections (POST)
       tags:
         - auth-connection
         - dev-orgs
@@ -8775,6 +9408,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Toggle Dev Orgs Auth Connections
       tags:
         - auth-connection
         - dev-orgs
@@ -8797,6 +9431,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-org-auth-connections-update-response'
+          description: |
+            Response for the request to update an enterprise authentication
+            connection.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8811,6 +9448,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Dev Orgs Auth Connection
       tags:
         - auth-connection
         - dev-orgs
@@ -8835,6 +9473,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
+          description: The response to getting the information for the Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8849,6 +9488,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev User
       tags:
         - dev-users
       x-fern-audiences:
@@ -8869,6 +9509,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-get-response'
+          description: The response to getting the information for the Dev user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8883,6 +9524,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Dev User (POST)
       tags:
         - dev-users
       x-fern-audiences:
@@ -8960,6 +9602,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
+          description: The response to listing the Dev users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -8972,6 +9615,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Users
       tags:
         - dev-users
       x-fern-audiences:
@@ -8992,6 +9636,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-list-response'
+          description: The response to listing the Dev users.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9004,6 +9649,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Dev Users (POST)
       tags:
         - dev-users
       x-fern-audiences:
@@ -9019,6 +9665,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
+          description: |
+            The response to getting the information for the authenticated user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9031,6 +9679,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Self Dev User
       tags:
         - dev-users
       x-fern-audiences:
@@ -9051,6 +9700,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
+          description: |
+            The response to getting the information for the authenticated user.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9063,6 +9714,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Self Dev User (POST)
       tags:
         - dev-users
       x-fern-audiences:
@@ -9103,6 +9755,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       security: []
+      summary: Authorize Keyrings
       tags:
         - keyring
       x-fern-audiences:
@@ -9132,6 +9785,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Authorize Keyrings (POST)
       tags:
         - keyring
       x-fern-audiences:
@@ -9213,6 +9867,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9225,6 +9880,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Metric Definitions
       tags:
         - slas
       x-fern-audiences:
@@ -9245,6 +9901,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/metric-definitions-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9257,6 +9914,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Metric Definitions (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -9278,6 +9936,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9290,6 +9949,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Part
       tags:
         - parts
       x-fern-audiences:
@@ -9311,6 +9971,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9325,6 +9986,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Part
       tags:
         - parts
       x-fern-audiences:
@@ -9350,6 +10012,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9364,6 +10027,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Part
       tags:
         - parts
       x-fern-audiences:
@@ -9385,6 +10049,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9399,6 +10064,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Part (POST)
       tags:
         - parts
       x-fern-audiences:
@@ -9497,6 +10163,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9509,6 +10176,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Parts
       tags:
         - parts
       x-fern-audiences:
@@ -9530,6 +10198,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9542,6 +10211,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Parts (POST)
       tags:
         - parts
       x-fern-audiences:
@@ -9564,6 +10234,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/parts-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9578,6 +10249,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Part
       tags:
         - parts
       x-fern-audiences:
@@ -9601,6 +10273,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-create-response'
+          description: |
+            Response object for request to create a new Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9615,6 +10289,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -9636,6 +10311,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-delete-response'
+          description: The response to deleting a Rev organization.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9650,6 +10326,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -9682,6 +10359,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
+          description: The response to getting a Rev organization's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9696,6 +10374,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -9716,6 +10395,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-get-response'
+          description: The response to getting a Rev organization's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9730,6 +10410,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Rev Org (POST)
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -9845,6 +10526,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
+          description: |
+            The response to getting a list of Rev organizations' information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9859,6 +10542,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Rev Orgs
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -9882,6 +10566,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-list-response'
+          description: |
+            The response to getting a list of Rev organizations' information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9896,6 +10582,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Rev Orgs (POST)
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -9917,6 +10604,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/rev-orgs-update-response'
+          description: Response object to updating Rev organization's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9933,6 +10621,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Rev Org
       tags:
         - rev-orgs
       x-fern-audiences:
@@ -9956,6 +10645,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -9970,6 +10660,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla Tracker
       tags:
         - slas
       x-fern-audiences:
@@ -9990,6 +10681,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10004,6 +10696,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla Tracker (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10107,6 +10800,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10119,6 +10813,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Sla Trackers
       tags:
         - slas
       x-fern-audiences:
@@ -10139,6 +10834,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/sla-trackers-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10151,6 +10847,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Sla Trackers (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10172,6 +10869,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-assign-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10186,6 +10884,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Assign Slas
       tags:
         - slas
       x-fern-audiences:
@@ -10207,6 +10906,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10219,6 +10919,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Sla
       tags:
         - slas
       x-fern-audiences:
@@ -10242,6 +10943,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10256,6 +10958,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla
       tags:
         - slas
       x-fern-audiences:
@@ -10276,6 +10979,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10290,6 +10994,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Sla (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10369,6 +11074,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10381,6 +11087,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Slas
       tags:
         - slas
       x-fern-audiences:
@@ -10401,6 +11108,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10413,6 +11121,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Slas (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -10434,6 +11143,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-transition-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10448,6 +11158,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Transition Slas
       tags:
         - slas
       x-fern-audiences:
@@ -10469,6 +11180,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/slas-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10483,6 +11195,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Sla
       tags:
         - slas
       x-fern-audiences:
@@ -10506,6 +11219,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-create-response'
+          description: The response to creating a new tag.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10518,6 +11232,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Tag
       tags:
         - tags
       x-fern-audiences:
@@ -10539,6 +11254,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-delete-response'
+          description: The response for deleting a tag.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10553,6 +11269,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Tag
       tags:
         - tags
       x-fern-audiences:
@@ -10577,6 +11294,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
+          description: The response to getting a tag's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10591,6 +11309,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Tag
       tags:
         - tags
       x-fern-audiences:
@@ -10611,6 +11330,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-get-response'
+          description: The response to getting a tag's information.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10625,6 +11345,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Tag (POST)
       tags:
         - tags
       x-fern-audiences:
@@ -10680,6 +11401,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
+          description: The response to listing the tags.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10692,6 +11414,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Tags
       tags:
         - tags
       x-fern-audiences:
@@ -10712,6 +11435,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-list-response'
+          description: The response to listing the tags.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10724,6 +11448,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Tags (POST)
       tags:
         - tags
       x-fern-audiences:
@@ -10745,6 +11470,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/tags-update-response'
+          description: The response for updating a tag.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10759,6 +11485,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Tag
       tags:
         - tags
       x-fern-audiences:
@@ -10780,6 +11507,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-create-response'
+          description: The response to creating a timeline entry for an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10794,6 +11522,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -10815,6 +11544,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-delete-response'
+          description: The response to deleting a timeline entry from an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10827,6 +11557,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -10844,13 +11575,14 @@ paths:
           required: true
           schema:
             type: string
-            example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+            example: don:core:dvrv-us-1:devo/example:ticket/123:comment/comment-id
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
+          description: The request to getting a timeline entry.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10865,6 +11597,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -10885,6 +11618,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-get-response'
+          description: The request to getting a timeline entry.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10899,6 +11633,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Timeline Entry (POST)
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -10959,6 +11694,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
+          description: The response to listing timeline entries for an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -10973,6 +11709,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Timeline Entries
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -10993,6 +11730,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-list-response'
+          description: The response to listing timeline entries for an object.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11007,6 +11745,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Timeline Entries (POST)
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11028,6 +11767,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/timeline-entries-update-response'
+          description: The response to updating a timeline entry.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11042,6 +11782,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Timeline Entry
       tags:
         - timeline-entries
       x-fern-audiences:
@@ -11063,6 +11804,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-create-response'
+          description: The response to creating a new webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11075,6 +11817,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Webhook
       tags:
         - webhooks
       x-fern-audiences:
@@ -11096,6 +11839,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-delete-response'
+          description: The response to deleting the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11110,11 +11854,52 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Webhook
       tags:
         - webhooks
       x-fern-audiences:
         - docs
         - sdks
+  /webhooks.event:
+    post:
+      description: |
+        Describes a webhook invocation for an event from DevRev to a webhook's
+        target URL, where the receiving handler must implement the specified
+        protocol. Note the documented endpoint is for exposition and not
+        provided by DevRev.
+      operationId: webhooks-event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhook-event-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhook-event-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Event Webhooks
+      tags:
+        - webhooks
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-webhook: true
   /webhooks.get:
     get:
       description: Gets the requested webhook's information.
@@ -11127,13 +11912,14 @@ paths:
           required: true
           schema:
             type: string
-            example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+            example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
+          description: The response to getting the information for the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11148,6 +11934,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Webhook
       tags:
         - webhooks
       x-fern-audiences:
@@ -11168,6 +11955,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-get-response'
+          description: The response to getting the information for the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11182,6 +11970,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Webhook (POST)
       tags:
         - webhooks
       x-fern-audiences:
@@ -11197,6 +11986,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
+          description: The response to listing the webhooks.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11209,6 +11999,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Webhooks
       tags:
         - webhooks
       x-fern-audiences:
@@ -11229,6 +12020,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-list-response'
+          description: The response to listing the webhooks.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11241,6 +12033,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Webhooks (POST)
       tags:
         - webhooks
       x-fern-audiences:
@@ -11262,6 +12055,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks-update-response'
+          description: The response to updating the webhook.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11276,6 +12070,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Webhook
       tags:
         - webhooks
       x-fern-audiences:
@@ -11286,7 +12081,7 @@ paths:
       description: |
         Creates new work ([issue](https://devrev.ai/docs/product/build),
         [ticket](https://devrev.ai/docs/product/support)) item.
-        [task](https://docs.devrev.ai/product/tasks) and opportunity work types
+        [task](https://devrev.ai/docs/product/tasks) and opportunity work types
         are supported in the beta version.
       operationId: works-create
       requestBody:
@@ -11301,6 +12096,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-create-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11313,6 +12109,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Create Work
       tags:
         - works
       x-fern-audiences:
@@ -11334,6 +12131,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-delete-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11348,6 +12146,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Delete Work
       tags:
         - works
       x-fern-audiences:
@@ -11476,6 +12275,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for work with any of the provided states.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for issues with this specific external reference.
           explode: false
           in: query
@@ -11614,6 +12421,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11626,6 +12434,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Works
       tags:
         - works
       x-fern-audiences:
@@ -11646,6 +12455,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-export-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11658,6 +12468,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Export Works (POST)
       tags:
         - works
       x-fern-audiences:
@@ -11682,6 +12493,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11696,6 +12508,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Work
       tags:
         - works
       x-fern-audiences:
@@ -11716,6 +12529,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-get-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -11730,6 +12544,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Get Work (POST)
       tags:
         - works
       x-fern-audiences:
@@ -11873,6 +12688,14 @@ paths:
           name: staged_info.is_staged
           schema:
             type: boolean
+        - description: Filters for work with any of the provided states.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              type: string
         - description: Filters for issues with this specific external reference.
           explode: false
           in: query
@@ -12011,6 +12834,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -12023,6 +12847,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Works
       tags:
         - works
       x-fern-audiences:
@@ -12043,6 +12868,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-list-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -12055,6 +12881,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: List Works (POST)
       tags:
         - works
       x-fern-audiences:
@@ -12076,6 +12903,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/works-update-response'
+          description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
         "401":
@@ -12090,6 +12918,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
+      summary: Update Work
       tags:
         - works
       x-fern-audiences:

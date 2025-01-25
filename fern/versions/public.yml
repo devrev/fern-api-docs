@@ -56,6 +56,7 @@ navigation:
       - slas:
         - page: Service level agreement
           path: ../docs/pages/entities/sla.mdx
+    paginated: true
   - changelog: ../apis/public/changelog
     title: Changelog
   - section: Guides

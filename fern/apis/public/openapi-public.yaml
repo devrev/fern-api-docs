@@ -730,6 +730,46 @@ components:
         - key
         - value
       title: artifacts-prepare-response-form-data
+    atom:
+      type: object
+      discriminator:
+        mapping:
+          capability: '#/components/schemas/capability'
+          conversation: '#/components/schemas/conversation'
+          dev_user: '#/components/schemas/dev-user'
+          enhancement: '#/components/schemas/enhancement'
+          feature: '#/components/schemas/feature'
+          issue: '#/components/schemas/issue'
+          product: '#/components/schemas/product'
+          rev_org: '#/components/schemas/rev-org'
+          rev_user: '#/components/schemas/rev-user'
+          sys_user: '#/components/schemas/sys-user'
+          tag: '#/components/schemas/tag'
+          ticket: '#/components/schemas/ticket'
+          timeline_comment: '#/components/schemas/timeline-comment'
+          webhook: '#/components/schemas/webhook'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/capability'
+        - $ref: '#/components/schemas/conversation'
+        - $ref: '#/components/schemas/dev-user'
+        - $ref: '#/components/schemas/enhancement'
+        - $ref: '#/components/schemas/feature'
+        - $ref: '#/components/schemas/issue'
+        - $ref: '#/components/schemas/product'
+        - $ref: '#/components/schemas/rev-org'
+        - $ref: '#/components/schemas/rev-user'
+        - $ref: '#/components/schemas/sys-user'
+        - $ref: '#/components/schemas/tag'
+        - $ref: '#/components/schemas/ticket'
+        - $ref: '#/components/schemas/timeline-comment'
+        - $ref: '#/components/schemas/webhook'
+      properties:
+        type:
+          $ref: '#/components/schemas/atom-type'
+      required:
+        - type
+      title: atom
     atom-base:
       type: object
       properties:
@@ -768,6 +808,41 @@ components:
       required:
         - id
       title: atom-base-summary
+    atom-type:
+      type: string
+      enum:
+        - capability
+        - conversation
+        - dev_user
+        - enhancement
+        - feature
+        - issue
+        - product
+        - rev_org
+        - rev_user
+        - sys_user
+        - tag
+        - ticket
+        - timeline_comment
+        - webhook
+    atoms-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the object to get.
+      required:
+        - id
+      title: atoms-get-request
+    atoms-get-response:
+      type: object
+      properties:
+        atom:
+          $ref: '#/components/schemas/atom'
+      required:
+        - atom
+      title: atoms-get-response
+      x-go-name: AtomsGetResponseBody
     auth-connection:
       type: object
       description: |
@@ -890,7 +965,10 @@ components:
       properties:
         connection_name:
           type: string
-          description: Connection name for the SAML authentication connection.
+          description: |
+            Connection name for the SAML authentication connection. Must match
+            the `connection` query parameter specified in the sign on URL
+            during SAML configuration in your identity provider.
           maxLength: 128
           minLength: 1
         fields_map:
@@ -1645,7 +1723,10 @@ components:
       properties:
         connection_name:
           type: string
-          description: Connection name for the SAML authentication connection.
+          description: |
+            Connection name for the SAML authentication connection. Must match
+            the `connection` query parameter specified in the sign on URL
+            during SAML configuration in your identity provider.
           maxLength: 128
           minLength: 1
         fields_map:
@@ -2686,6 +2767,8 @@ components:
         id:
           type: string
           description: The ID of the conversation that was deleted.
+        old_conversation:
+          $ref: '#/components/schemas/conversation'
       required:
         - id
       title: event-conversation-deleted
@@ -2693,6 +2776,8 @@ components:
       type: object
       properties:
         conversation:
+          $ref: '#/components/schemas/conversation'
+        old_conversation:
           $ref: '#/components/schemas/conversation'
       required:
         - conversation
@@ -2948,6 +3033,8 @@ components:
     event-sla-tracker-updated:
       type: object
       properties:
+        old_sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
         sla_tracker:
           $ref: '#/components/schemas/sla-tracker'
       required:
@@ -4478,6 +4565,11 @@ components:
             default_value:
               type: string
               description: Default value.
+            translated_values:
+              type: object
+              additionalProperties:
+                type: string
+              description: Translations for allowed_values field.
           required:
             - allowed_values
       title: schema-enum-field-descriptor
@@ -4496,6 +4588,11 @@ components:
               description: Default value.
               items:
                 type: string
+            translated_values:
+              type: object
+              additionalProperties:
+                type: string
+              description: Translations for allowed_values field.
           required:
             - allowed_values
       title: schema-enum-list-field-descriptor
@@ -6020,6 +6117,10 @@ components:
         - initial
         - sync_from_devrev
         - sync_to_devrev
+    sys-user:
+      allOf:
+        - $ref: '#/components/schemas/user-base'
+      title: sys-user
     sys-user-summary:
       allOf:
         - $ref: '#/components/schemas/user-base-summary'
@@ -7361,6 +7462,8 @@ components:
         title:
           type: string
           description: Title of the work object.
+          maxLength: 256
+          minLength: 1
       required:
         - applies_to_part
         - owned_by
@@ -7793,6 +7896,8 @@ components:
           type: string
           description: |
             Updated title of the work object, or unchanged if not provided.
+          maxLength: 256
+          minLength: 1
       required:
         - id
       title: works-update-request
@@ -8807,6 +8912,77 @@ paths:
       summary: Prepare Artifacts
       tags:
         - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
+  /atoms.get:
+    get:
+      description: Gets the specified object.
+      operationId: atoms-get
+      parameters:
+        - description: The ID of the object to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/atoms-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Atom
+      tags:
+        - atoms
+      x-fern-audiences:
+        - docs
+      x-request-name: AtomsGetQuery
+    post:
+      description: Gets the specified object.
+      operationId: atoms-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/atoms-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/atoms-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Atom (POST)
+      tags:
+        - atoms
       x-fern-audiences:
         - docs
         - sdks
@@ -12941,6 +13117,8 @@ tags:
     name: accounts
   - description: Artifact (file) management APIs.
     name: artifacts
+  - description: Common object ("atom") APIs.
+    name: atoms
   - description: Auth Connections of DevOrg.
     name: auth-connection
   - description: Security token interactions.

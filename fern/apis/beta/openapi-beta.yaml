@@ -1813,6 +1813,70 @@ components:
       enum:
         - account
         - rev_org
+    atom:
+      type: object
+      discriminator:
+        mapping:
+          account: '#/components/schemas/account'
+          app_fragment: '#/components/schemas/app-fragment'
+          capability: '#/components/schemas/capability'
+          conversation: '#/components/schemas/conversation'
+          custom_type_fragment: '#/components/schemas/custom-type-fragment'
+          dev_user: '#/components/schemas/dev-user'
+          engagement: '#/components/schemas/engagement'
+          enhancement: '#/components/schemas/enhancement'
+          feature: '#/components/schemas/feature'
+          incident: '#/components/schemas/incident'
+          issue: '#/components/schemas/issue'
+          meeting: '#/components/schemas/meeting'
+          opportunity: '#/components/schemas/opportunity'
+          product: '#/components/schemas/product'
+          rev_org: '#/components/schemas/rev-org'
+          rev_user: '#/components/schemas/rev-user'
+          service_account: '#/components/schemas/service-account'
+          sys_user: '#/components/schemas/sys-user'
+          tag: '#/components/schemas/tag'
+          task: '#/components/schemas/task'
+          tenant_fragment: '#/components/schemas/tenant-fragment'
+          ticket: '#/components/schemas/ticket'
+          timeline_change_event: '#/components/schemas/timeline-change-event'
+          timeline_comment: '#/components/schemas/timeline-comment'
+          user_preferences: '#/components/schemas/user-preferences'
+          webhook: '#/components/schemas/webhook'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/account'
+        - $ref: '#/components/schemas/app-fragment'
+        - $ref: '#/components/schemas/capability'
+        - $ref: '#/components/schemas/conversation'
+        - $ref: '#/components/schemas/custom-type-fragment'
+        - $ref: '#/components/schemas/dev-user'
+        - $ref: '#/components/schemas/engagement'
+        - $ref: '#/components/schemas/enhancement'
+        - $ref: '#/components/schemas/feature'
+        - $ref: '#/components/schemas/incident'
+        - $ref: '#/components/schemas/issue'
+        - $ref: '#/components/schemas/meeting'
+        - $ref: '#/components/schemas/opportunity'
+        - $ref: '#/components/schemas/product'
+        - $ref: '#/components/schemas/rev-org'
+        - $ref: '#/components/schemas/rev-user'
+        - $ref: '#/components/schemas/service-account'
+        - $ref: '#/components/schemas/sys-user'
+        - $ref: '#/components/schemas/tag'
+        - $ref: '#/components/schemas/task'
+        - $ref: '#/components/schemas/tenant-fragment'
+        - $ref: '#/components/schemas/ticket'
+        - $ref: '#/components/schemas/timeline-change-event'
+        - $ref: '#/components/schemas/timeline-comment'
+        - $ref: '#/components/schemas/user-preferences'
+        - $ref: '#/components/schemas/webhook'
+      properties:
+        type:
+          $ref: '#/components/schemas/atom-type'
+      required:
+        - type
+      title: atom
     atom-base:
       type: object
       properties:
@@ -1944,6 +2008,24 @@ components:
         - timeline_comment
         - user_preferences
         - webhook
+    atoms-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the object to get.
+      required:
+        - id
+      title: atoms-get-request
+    atoms-get-response:
+      type: object
+      properties:
+        atom:
+          $ref: '#/components/schemas/atom'
+      required:
+        - atom
+      title: atoms-get-response
+      x-go-name: AtomsGetResponseBody
     auth-connection:
       type: object
       description: |
@@ -2066,7 +2148,10 @@ components:
       properties:
         connection_name:
           type: string
-          description: Connection name for the SAML authentication connection.
+          description: |
+            Connection name for the SAML authentication connection. Must match
+            the `connection` query parameter specified in the sign on URL
+            during SAML configuration in your identity provider.
           maxLength: 128
           minLength: 1
         fields_map:
@@ -3535,6 +3620,16 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            custom_fields:
+              type: object
+              description: Custom fields.
+            custom_schema_fragments:
+              type: array
+              description: Custom schema fragments.
+              example:
+                - don:core:dvrv-us-1:devo/example:custom_type_fragment/custom-type-fragment-id
+              items:
+                type: string
             description:
               type: string
               description: Description of the conversation object.
@@ -3563,6 +3658,13 @@ components:
               $ref: '#/components/schemas/sla-tracker-summary'
             stage:
               $ref: '#/components/schemas/legacy-stage'
+            stock_schema_fragment:
+              type: string
+              description: Stock schema fragment.
+              example: don:core:dvrv-us-1:devo/example:custom_type_fragment/custom-type-fragment-id
+            subtype:
+              type: string
+              description: Subtype corresponding to the custom type fragment.
             tags:
               type: array
               description: Tags associated with the object.
@@ -3761,6 +3863,8 @@ components:
             - DEVU-12345
           items:
             type: string
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
         owned_by:
           type: array
           description: Filters for conversations owned by any of these users.
@@ -3906,6 +4010,8 @@ components:
             type: string
         mode:
           $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
         owned_by:
           type: array
           description: Filters for conversations owned by any of these users.
@@ -4016,6 +4122,8 @@ components:
         is_spam:
           type: boolean
           description: Whether the conversation is spam.
+        members:
+          $ref: '#/components/schemas/conversations-update-request-members'
         metadata:
           $ref: '#/components/schemas/conversations-update-request-metadata'
         owned_by:
@@ -4046,6 +4154,17 @@ components:
           items:
             type: string
       title: conversations-update-request-applies-to-parts
+    conversations-update-request-members:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the member IDs to the provided user IDs.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+      title: conversations-update-request-members
     conversations-update-request-metadata:
       type: object
       properties:
@@ -4314,6 +4433,35 @@ components:
       required:
         - stage
       title: create-stage
+    create-stage-node:
+      type: object
+      properties:
+        is_deprecated:
+          type: boolean
+          description: Whether this stage is deprecated.
+        is_start:
+          type: boolean
+          description: Whether this is the start stage.
+        stage_id:
+          type: string
+          description: The ID of the stage.
+        transitions:
+          type: array
+          description: List of transitions from this stage.
+          items:
+            $ref: '#/components/schemas/create-stage-transition'
+      required:
+        - stage_id
+      title: create-stage-node
+    create-stage-transition:
+      type: object
+      properties:
+        target_stage_id:
+          type: string
+          description: The ID of the target stage.
+      required:
+        - target_stage_id
+      title: create-stage-transition
     create-tag-with-value:
       type: object
       description: Create object for tag_summary.
@@ -5674,7 +5822,10 @@ components:
       properties:
         connection_name:
           type: string
-          description: Connection name for the SAML authentication connection.
+          description: |
+            Connection name for the SAML authentication connection. Must match
+            the `connection` query parameter specified in the sign on URL
+            during SAML configuration in your identity provider.
           maxLength: 128
           minLength: 1
         fields_map:
@@ -7685,6 +7836,8 @@ components:
         id:
           type: string
           description: The ID of the conversation that was deleted.
+        old_conversation:
+          $ref: '#/components/schemas/conversation'
       required:
         - id
       title: event-conversation-deleted
@@ -7692,6 +7845,8 @@ components:
       type: object
       properties:
         conversation:
+          $ref: '#/components/schemas/conversation'
+        old_conversation:
           $ref: '#/components/schemas/conversation'
       required:
         - conversation
@@ -7947,6 +8102,8 @@ components:
     event-sla-tracker-updated:
       type: object
       properties:
+        old_sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
         sla_tracker:
           $ref: '#/components/schemas/sla-tracker'
       required:
@@ -9384,6 +9541,9 @@ components:
           description: |
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
+        custom_fields:
+          type: object
+          description: Filters for custom fields.
         group_by:
           type: string
           description: The field to group the incidents by.
@@ -9531,6 +9691,9 @@ components:
           description: |
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
+        custom_fields:
+          type: object
+          description: Filters for custom fields.
         identified_date:
           $ref: '#/components/schemas/date-filter'
         limit:
@@ -13706,6 +13869,11 @@ components:
             default_value:
               type: string
               description: Default value.
+            translated_values:
+              type: object
+              additionalProperties:
+                type: string
+              description: Translations for allowed_values field.
           required:
             - allowed_values
       title: schema-enum-field-descriptor
@@ -13724,6 +13892,11 @@ components:
               description: Default value.
               items:
                 type: string
+            translated_values:
+              type: object
+              additionalProperties:
+                type: string
+              description: Translations for allowed_values field.
           required:
             - allowed_values
       title: schema-enum-list-field-descriptor
@@ -15573,12 +15746,16 @@ components:
         id:
           type: string
           description: The ID of the keyring.
+        is_expired:
+          type: boolean
+          description: Whether the keyring token is expired.
         secret:
           type: string
           description: |
             The secret value of the keyring. This must be handled with caution.
       required:
         - id
+        - is_expired
         - secret
       title: snap-ins-resources-response-keyring-data
     snap-ins-update-request:
@@ -15695,10 +15872,179 @@ components:
         state:
           $ref: '#/components/schemas/custom-state-summary'
       title: stage
+    stage-diagram:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            is_custom_leaf_type:
+              type: boolean
+              description: True if this diagram corresponds to a custom leaf type.
+            is_default:
+              type: boolean
+              description: True if this diagram is the default for the leaf type.
+            leaf_type:
+              type: string
+              description: The leaf type this stage diagram applies to.
+            name:
+              type: string
+              description: The human readable name of the diagram.
+            stages:
+              type: array
+              description: Stage node.
+              items:
+                $ref: '#/components/schemas/stage-node'
+          required:
+            - stages
+      title: stage-diagram
     stage-diagram-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the diagram.
       title: stage-diagram-summary
+    stage-diagrams-create-request:
+      type: object
+      properties:
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object.
+        is_default:
+          type: boolean
+          description: Whether this is a default stage diagram.
+        leaf_type:
+          type: string
+          description: The leaf type this stage diagram applies to.
+        name:
+          type: string
+          description: |
+            The name of the stage diagram. Stage diagram is used for defining
+            stage transitions.
+        stages:
+          type: array
+          description: List of stages in the diagram.
+          items:
+            $ref: '#/components/schemas/create-stage-node'
+      required:
+        - leaf_type
+        - name
+        - stages
+      title: stage-diagrams-create-request
+    stage-diagrams-create-response:
+      type: object
+      properties:
+        stage_diagram:
+          $ref: '#/components/schemas/stage-diagram'
+      required:
+        - stage_diagram
+      title: stage-diagrams-create-response
+      x-go-name: StageDiagramsCreateResponseBody
+    stage-diagrams-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the stage diagram to get.
+        is_custom_leaf_type:
+          type: boolean
+          description: |
+            Whether the leaf type corresponds to a custom object. Specify this
+            along with leaf_type to get the default custom object stage
+            diagram.
+        leaf_type:
+          type: string
+          description: |
+            The leaf type. Should be specified to retrieve the default stage
+            diagram for the leaf type. If not provided, then id is used.
+      title: stage-diagrams-get-request
+    stage-diagrams-get-response:
+      type: object
+      properties:
+        stage_diagram:
+          $ref: '#/components/schemas/stage-diagram'
+      required:
+        - stage_diagram
+      title: stage-diagrams-get-response
+      x-go-name: StageDiagramsGetResponseBody
+    stage-diagrams-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+        is_custom_leaf_type:
+          type: boolean
+          description: |
+            Whether only custom object stage diagrams should be filtered.
+        leaf_type:
+          type: array
+          description: The list of leaf types.
+          items:
+            type: string
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        name:
+          type: array
+          description: The list of stage diagram names.
+          items:
+            type: string
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+      title: stage-diagrams-list-request
+    stage-diagrams-list-response:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+        result:
+          type: array
+          description: The stage diagram.
+          items:
+            $ref: '#/components/schemas/stage-diagram'
+      required:
+        - result
+      title: stage-diagrams-list-response
+      x-go-name: StageDiagramsListResponseBody
+    stage-diagrams-update-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the stage diagram to update.
+        name:
+          type: string
+          description: The updated name of the stage diagram.
+        stages:
+          type: array
+          description: List of stages in the stage diagram.
+          items:
+            $ref: '#/components/schemas/update-stage-node'
+      required:
+        - id
+      title: stage-diagrams-update-request
+    stage-diagrams-update-response:
+      type: object
+      properties:
+        stage_diagram:
+          $ref: '#/components/schemas/stage-diagram'
+      required:
+        - stage_diagram
+      title: stage-diagrams-update-response
+      x-go-name: StageDiagramsUpdateResponseBody
     stage-filter:
       type: object
       description: The filter for stages.
@@ -15722,6 +16068,25 @@ components:
           type: string
           description: The name of the stage.
       title: stage-init
+    stage-node:
+      type: object
+      description: Diagram stage.
+      properties:
+        is_deprecated:
+          type: boolean
+          description: True if this stage has been deprecated.
+        is_start:
+          type: boolean
+          description: |
+            True if this stage is the starting stage of the stage diagram.
+        stage:
+          $ref: '#/components/schemas/custom-stage-summary'
+        transitions:
+          type: array
+          description: The list of stages that can be reached.
+          items:
+            $ref: '#/components/schemas/stage-transition'
+      title: stage-node
     stage-summary:
       type: object
       description: Describes the current stage of a object.
@@ -15729,6 +16094,13 @@ components:
         stage:
           $ref: '#/components/schemas/custom-stage-summary'
       title: stage-summary
+    stage-transition:
+      type: object
+      description: Stage transition.
+      properties:
+        target_stage:
+          $ref: '#/components/schemas/custom-stage-summary'
+      title: stage-transition
     stage-update:
       type: object
       description: Updates an object's stage.
@@ -18339,6 +18711,35 @@ components:
           type: string
           description: DON of the stage.
       title: update-stage
+    update-stage-node:
+      type: object
+      properties:
+        is_deprecated:
+          type: boolean
+          description: Whether this stage is deprecated.
+        is_start:
+          type: boolean
+          description: Whether this is the start stage.
+        stage_id:
+          type: string
+          description: The ID of the stage.
+        transitions:
+          type: array
+          description: List of transitions from this stage.
+          items:
+            $ref: '#/components/schemas/update-stage-transition'
+      required:
+        - stage_id
+      title: update-stage-node
+    update-stage-transition:
+      type: object
+      properties:
+        target_stage_id:
+          type: string
+          description: The ID of the target stage.
+      required:
+        - target_stage_id
+      title: update-stage-transition
     update-tag-with-value:
       type: object
       description: Update object for TagWithValue.
@@ -19305,6 +19706,8 @@ components:
         title:
           type: string
           description: Title of the work object.
+          maxLength: 256
+          minLength: 1
       required:
         - applies_to_part
         - owned_by
@@ -19873,6 +20276,8 @@ components:
           type: string
           description: |
             Updated title of the work object, or unchanged if not provided.
+          maxLength: 256
+          minLength: 1
       required:
         - id
       title: works-update-request
@@ -21805,6 +22210,77 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /atoms.get:
+    get:
+      description: Gets the specified object.
+      operationId: atoms-get
+      parameters:
+        - description: The ID of the object to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/atoms-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Atom
+      tags:
+        - atoms
+      x-fern-audiences:
+        - docs
+      x-request-name: AtomsGetQuery
+    post:
+      description: Gets the specified object.
+      operationId: atoms-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/atoms-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/atoms-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Atom (POST)
+      tags:
+        - atoms
+      x-fern-audiences:
+        - docs
+        - sdks
   /audit-logs.fetch:
     post:
       description: Retrieves audit logs.
@@ -23156,6 +23632,25 @@ paths:
               - DEVU-12345
             items:
               type: string
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: modified_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: modified_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
         - description: Filters for conversations owned by any of these users.
           explode: false
           in: query
@@ -23473,6 +23968,25 @@ paths:
           name: mode
           schema:
             $ref: '#/components/schemas/list-mode'
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: modified_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: modified_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
         - description: Filters for conversations owned by any of these users.
           explode: false
           in: query
@@ -26431,6 +26945,12 @@ paths:
           name: cursor
           schema:
             type: string
+        - description: Filters for custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
         - description: |
             The maximum number of groups to return. If not set, then the default
             is '10'.
@@ -26648,6 +27168,12 @@ paths:
           name: cursor
           schema:
             type: string
+        - description: Filters for custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
         - description: The maximum number of items.
           explode: false
           in: query
@@ -32892,6 +33418,279 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /stage-diagrams.create:
+    post:
+      description: Creates a stage diagram.
+      operationId: stage-diagrams-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Stage Diagram
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /stage-diagrams.get:
+    get:
+      description: Gets a stage diagram.
+      operationId: stage-diagrams-get
+      parameters:
+        - description: The ID of the stage diagram to get.
+          explode: false
+          in: query
+          name: id
+          schema:
+            type: string
+        - description: |
+            Whether the leaf type corresponds to a custom object. Specify this
+            along with leaf_type to get the default custom object stage diagram.
+          explode: false
+          in: query
+          name: is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: |
+            The leaf type. Should be specified to retrieve the default stage
+            diagram for the leaf type. If not provided, then id is used.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Stage Diagram
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-request-name: StageDiagramsGetQuery
+    post:
+      description: Gets a stage diagram.
+      operationId: stage-diagrams-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Stage Diagram (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /stage-diagrams.list:
+    get:
+      description: Lists stage diagrams.
+      operationId: stage-diagrams-list
+      parameters:
+        - description: |
+            The cursor to resume iteration from, otherwise if not provided, then
+            iteration starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            Whether only custom object stage diagrams should be filtered.
+          explode: false
+          in: query
+          name: is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: The list of leaf types.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: array
+            items:
+              type: string
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: The list of stage diagram names.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Stage Diagrams
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-request-name: StageDiagramsListQuery
+    post:
+      description: Lists stage diagrams.
+      operationId: stage-diagrams-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Stage Diagrams (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+  /stage-diagrams.update:
+    post:
+      description: Updates a stage diagram.
+      operationId: stage-diagrams-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Stage Diagram
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
   /stages.custom.create:
     post:
       description: Creates a custom stage.
@@ -36422,6 +37221,8 @@ tags:
     name: articles
   - description: Artifact (file) management APIs.
     name: artifacts
+  - description: Common object ("atom") APIs.
+    name: atoms
   - description: Auth Connections of DevOrg.
     name: auth-connection
   - description: Security token interactions.

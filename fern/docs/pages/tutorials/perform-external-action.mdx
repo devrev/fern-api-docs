@@ -1,6 +1,6 @@
 ## Introduction
 
-In this tutorial, you'll lean how to develop a snap-in that mirrors an issue from
+In this tutorial, you'll learn how to develop a snap-in that mirrors an issue from
 DevRev to GitHub. This requires addition of a command that can be run from
 the **Discussions** tab of an issue in DevRev, which creates an issue in GitHub.
 
@@ -101,7 +101,7 @@ functions:
 ```
 
 The command clearly states where you can use it. For example, in the
-**Discussions** tab of issues. 
+**Discussions** tab of issues.
 
 It also explains the different situations and
 ways in which you can make use of this command.
@@ -126,7 +126,7 @@ name (`RepoName`) before proceeding with the issue creation.
 
 ### Function logic
 
-After creating the manifest and establishing the snap-in's logic, the next step is to define the function logic that handles business logic. Once you understand the payload structure of a command, you can proceed with its implementation.
+After creating the manifest and establishing the snap-in's logic, the next step is to define the function logic that handles the business logic. Once you understand the payload structure of a command, you can proceed with its implementation.
 
 To proceed, define the handler function for command events.
 
@@ -291,11 +291,11 @@ Once the code has been validated, the next steps involve creating the snap-in
 version and subsequently creating the snap-in itself. Before installing the
 snap-in, it's essential to set up a GitHub Personal Access Token (PAT) and add
 it to the connections in DevRev as a snap-in secret. Ensure that the secret is
-shared within the organization so that the snap-in can utilize it. 
+shared within the organization so that the snap-in can utilize it.
 
 Follow these steps to install the snap-in in your organization:
 
-#### Step 1: Create a GitHub personal access token 
+#### Step 1: Create a GitHub personal access token
 
 Generate a GitHub Personal Access Token (PAT) by following the steps outlined in the
 [GitHub documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).

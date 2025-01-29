@@ -1,7 +1,7 @@
 ## Before you begin
 
 - If you have not created a development organization on DevRev before, create a dedicated
-  [DevOrg for development purposes](https://app.devrev.ai/) where you will be publishing your ADaaS snap-in.
+  [DevRev organization for development purposes](https://app.devrev.ai/) where you will be publishing your ADaaS snap-in.
 - Install required tools and packages:
   - [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
   - [jq](https://stedolan.github.io/jq)
@@ -12,9 +12,9 @@
 
 1. Create a new repo from the [ADaaS template repo](https://github.com/devrev/adaas-template). Select _Use this template_ and
    then _Create a new repository_.
-1. Copy `Makefile.variable.example` to `Makefile.variable` and fill in the required variables.
+1. Copy `.env.example` to `.env` and fill in the required variables.
 1. Configure a keyring for the external system in the `manifest.yaml`.
-   Refer to [Keyrings](/snapin-development/references/keyrings) for instructions.
+   Refer to [Keyrings](/snapin-development/references/manifest#developer-keyrings) for instructions.
 1. Deploy a draft version of your snap-in to your dev org using `make deploy`.
 1. Install the snap-in in your DevRev at **Settings** > **Snap-ins** > **Install snap-in**.
 1. Define the connection at **Settings** > **Imports** > **Connections**.

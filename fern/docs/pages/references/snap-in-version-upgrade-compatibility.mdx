@@ -1,136 +1,136 @@
-This document outlines the compatibility rules when upgrading snap-in versions. These rules determine what changes are allowed in a patch upgrade.
+This section outlines the compatibility rules when upgrading snap-in versions. These rules determine what changes are allowed in a patch upgrade.
 
 ## Connections
-- New optional connections can be added
-- New required connections cannot be added
-- Existing connections can be removed
+- New optional connections can be added.
+- New required connections cannot be added.
+- Existing connections can be removed.
 - For existing connections:
-  - Description can be changed
-  - Display name can be changed
-  - New keyring types can be added
-  - Existing keyring types cannot be removed
-  - Optional connections cannot be made required
-  - Required connections can be made optional
+  - Description can be changed.
+  - Display name can be changed.
+  - New keyring types can be added.
+  - Existing keyring types cannot be removed.
+  - Optional connections cannot be made required.
+  - Required connections can be made optional.
 
 ## Event Sources
-- New event sources cannot be added
-- Existing event sources cannot be removed
+- New event sources cannot be added.
+- Existing event sources cannot be removed.
 - For existing event sources:
-  - Description can be changed
-  - Display name can be changed
-  - Type cannot be changed
-  - Connection can be removed but cannot be changed
-  - Source config can be changed (test changes thoroughly)
-  - Setup instructions can be changed
-  - Function can be changed
+  - Description can be changed.
+  - Display name can be changed.
+  - Type cannot be changed.
+  - Connection can be removed but cannot be changed.
+  - Source config can be changed (test changes thoroughly).
+  - Setup instructions can be changed.
+  - Function can be changed.
 
 ## Tags
-- New tags can be added
-- Existing tags cannot be removed
+- New tags can be added.
+- Existing tags cannot be removed.
 - For existing tags:
-  - Description can be changed
+  - Description can be changed.
 
 ## Automations
-- Full flexibility - can be added, removed, or modified
-- Description can be changed
-- Source can be changed
-- Allowed event types can be changed
-- Function to execute can be changed
+- Full flexibility - can be added, removed, or modified.
+- Description can be changed.
+- Source can be changed.
+- Allowed event types can be changed.
+- Function to execute can be changed.
 
 ## Hooks
-- New hook types can be added
-- Existing hook types can be removed
-- Function to execute can be changed
+- New hook types can be added.
+- Existing hook types can be removed.
+- Function to execute can be changed.
 
 ## Functions
-- Full flexibility - can be added, removed, or modified
-- All properties can be changed
+- Full flexibility - can be added, removed, or modified.
+- All properties can be changed.
 
 ## Commands
-- Full flexibility - can be added, removed, or modified
-- All properties can be changed
+- Full flexibility - can be added, removed, or modified.
+- All properties can be changed.
 
 ## Snap Kit Actions
 - Can be removed
 - For existing snap kit actions:
-  - Description can be changed
-  - Function can be changed
+  - Description can be changed.
+  - Function can be changed.
 
 ## Snap Components
 - Can be removed
 - For existing snap components:
-  - Display name can be changed
-  - Description can be changed
-  - Surface cannot be changed
-  - Snap kit action name can be changed
-  - Snap kit body can be changed
-  - Initializer can be changed
+  - Display name can be changed.
+  - Description can be changed.
+  - Surface cannot be changed.
+  - Snap kit action name can be changed.
+  - Snap kit body can be changed.
+  - Initializer can be changed.
 
 ## Service Account
-- Display name can be changed
-- Description can be changed
+- Display name can be changed.
+- Description can be changed.
 
 ## Inputs (Global Variables)
-- Can be added or removed
+- Can be added or removed.
 - For existing inputs:
-  - Type cannot be changed
-  - All other properties can be modified
+  - Type cannot be changed.
+  - All other properties can be modified.
 
 ## Imports
-- New imports can be added
-- Existing imports cannot be removed
+- New imports can be added.
+- Existing imports cannot be removed.
 - For existing imports:
-  - Display name can be changed
-  - Description can be changed
-  - Function cannot be changed
-  - New allowed keyring types can be added
-  - Existing allowed keyring types cannot be removed
-  - Function name can be changed
-  - Loader function cannot be removed once set
+  - Display name can be changed.
+  - Description can be changed.
+  - Function cannot be changed.
+  - New allowed keyring types can be added.
+  - Existing allowed keyring types cannot be removed.
+  - Function name can be changed.
+  - Loader function cannot be removed once set.
 
 ## User Level Keyrings
-- New keyrings can be added
-- Existing keyrings can be removed
+- New keyrings can be added.
+- Existing keyrings can be removed.
 - For existing keyrings:
-  - Description can be changed
-  - Display name can be changed
-  - New allowed types can be added
-  - Existing allowed types cannot be removed
-  - Required keyrings can be made optional
+  - Description can be changed.
+  - Display name can be changed.
+  - New allowed types can be added.
+  - Existing allowed types cannot be removed.
+  - Required keyrings can be made optional.
 
 ## User Level Inputs
-- Can be added or removed
+- Can be added or removed.
 - For existing inputs:
-  - Type cannot be changed
-  - All other properties can be modified
+  - Type cannot be changed.
+  - All other properties can be modified.
 
 ## Keyring Types
-- Can be added or removed
+- Can be added or removed.
 - For existing keyring types:
-  - Name can be changed
-  - Description can be changed
-  - Scopes can be changed
-  - Scope delimiter can be changed
-  - Authorize, refresh, and revoke functions can be changed
-  - Organization data can be changed
-  - External service name can be changed
-  - Kind cannot be changed
-  - Keyring type template cannot be changed
-  - OAuth secret ID cannot be changed
+  - Name can be changed.
+  - Description can be changed.
+  - Scopes can be changed.
+  - Scope delimiter can be changed.
+  - Authorize, refresh, and revoke functions can be changed.
+  - Organization data can be changed.
+  - External service name can be changed.
+  - Kind cannot be changed.
+  - Keyring type template cannot be changed.
+  - OAuth secret ID cannot be changed.
 
 ## Functions Build Config
-- Full flexibility - can be added, removed, or modified
-- All properties can be changed
+- Full flexibility - can be added, removed, or modified.
+- All properties can be changed.
 
 ## Configuration Handler
-- Full flexibility - can be added, removed, or modified
-- All properties can be changed
+- Full flexibility - can be added, removed, or modified.
+- All properties can be changed.
 
 ## Operations
-- New operations can be added
-- Existing operations cannot be removed
+- New operations can be added.
+- Existing operations cannot be removed.
 - For existing operations:
-  - Operation type cannot be changed
-  - Input ports cannot be changed (including type and schema)
-  - Output ports cannot be changed (including type and schema)
-  - Keyring types follow the same rules as Connections
+  - Operation type cannot be changed.
+  - Input ports cannot be changed (including type and schema).
+  - Output ports cannot be changed (including type and schema).
+  - Keyring types follow the same rules as Connections.

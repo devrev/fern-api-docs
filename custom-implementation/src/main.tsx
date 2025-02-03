@@ -34,10 +34,10 @@ const render = async () => {
   }
 
   const headerContainer = document.getElementById(FERN_HEADER_ID)
-  if (headerContainer) {
+  
+  if (headerContainer && !document.getElementById(DEVREV_HEADER_ID)) {
     const headerWrapper = document.createElement('div')
     headerWrapper.setAttribute('id', DEVREV_HEADER_ID)
-
     headerContainer.appendChild(headerWrapper)
     ReactDOM.render(
       React.createElement(Header, {
@@ -45,10 +45,6 @@ const render = async () => {
         version: theme == 'dark' ? 'light' : 'dark',
       }),
       headerWrapper,
-      () => {
-        // Once the header component is loaded, make it visible
-        if (window.innerWidth > 1024) headerContainer.style.display = 'block'
-      },
     )
   }
 

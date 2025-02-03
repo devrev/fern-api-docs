@@ -34,8 +34,7 @@ const render = async () => {
   }
 
   const headerContainer = document.getElementById(FERN_HEADER_ID)
-  
-  if (headerContainer && !document.getElementById(DEVREV_HEADER_ID)) {
+  if (headerContainer) {
     const headerWrapper = document.createElement('div')
     headerWrapper.setAttribute('id', DEVREV_HEADER_ID)
     headerContainer.appendChild(headerWrapper)

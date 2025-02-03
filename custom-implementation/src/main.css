@@ -1,4 +1,4 @@
-#fern-header {
+#fern-header-content-wrapper {
   display: block; /* Make the elements visible by default */
   
   @media (min-width: 1024px) {
@@ -10,7 +10,7 @@
   display: none;
 }
 
-#devrev-header {
+#devrev-header-content-wrapper {
   display: none; /* Hide the wrapper by default */
   
   @media (min-width: 1024px) {

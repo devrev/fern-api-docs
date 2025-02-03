@@ -57,10 +57,10 @@ const render = async () => {
       while (mainHeaderWrapper.firstChild) {
         fernContentWrapper.appendChild(mainHeaderWrapper.firstChild)
       }
-
-      mainHeaderWrapper.appendChild(fernContentWrapper)
-      mainHeaderWrapper.appendChild(devrevContentWrapper)
     }
+
+    fernHeaderContainer.appendChild(fernContentWrapper)
+    fernHeaderContainer.appendChild(devrevContentWrapper)
 
     // Insert the new container where the original fern-header was
     if (mainHeaderWrapper) {

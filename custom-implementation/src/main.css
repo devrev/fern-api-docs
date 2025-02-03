@@ -1,4 +1,8 @@
 #fern-header,
 #fern-footer {
-  display: none; /* Hide the elements by default */
+  display: block; /* Make the elements visible by default */
+  
+  @media (min-width: 1024px) {
+    display: none; /* Hide the elements on screens larger than 1024px */
+  }
 }

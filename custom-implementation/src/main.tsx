@@ -38,7 +38,7 @@ const render = async () => {
     () => {
       // Once the header component is loaded, make it visible
       const header = document.getElementById('fern-header')
-      if (header) header.style.display = 'block'
+      if (header && window.innerWidth > 1024) header.style.display = 'block'
     },
   )
   ReactDOM.render(

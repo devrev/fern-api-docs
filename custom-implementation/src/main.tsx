@@ -11,10 +11,10 @@ import { ThemeSwitch } from './components/theme-switch'
 
 import { getPageData } from './modules/sanity/utils'
 
-const FERN_HEADER_CONTAINER_ID = 'fern-header'
+const FERN_CONTENT_WRAPPER_ID = 'fern-header-content-wrapper'
+const DEVREV_CONTENT_WRAPPER_ID = 'devrev-header-content-wrapper'
 
-const FERN_HEADER_ID = 'fern-header-inner'
-const DEVREV_HEADER_ID = 'devrev-header'
+const FERN_HEADER_CONTAINER_ID = 'fern-header'
 
 const render = async () => {
   /*
@@ -34,8 +34,8 @@ const render = async () => {
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
 
-  const fernHeaderId = document.getElementById(FERN_HEADER_ID)
-  const devrevHeaderId = document.getElementById(DEVREV_HEADER_ID)
+  const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
+  const devrevHeaderId = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
 
   if (!fernHeaderId && !devrevHeaderId) {
     //  Main Container
@@ -43,35 +43,28 @@ const render = async () => {
     fernHeaderContainer.setAttribute('id', FERN_HEADER_CONTAINER_ID)
 
     //  Fern Header
-    const fernHeader = document.createElement('div')
-    fernHeader.setAttribute('id', FERN_HEADER_ID)
+    const fernContentWrapper = document.createElement('div')
+    fernContentWrapper.setAttribute('id', FERN_CONTENT_WRAPPER_ID)
+
+    const devrevContentWrapper = document.createElement('div')
+    devrevContentWrapper.setAttribute('id', DEVREV_CONTENT_WRAPPER_ID)
 
     // Get existing fern-header element and its children
-    const existingFernHeader = document.querySelector('.fern-header')
-    if (existingFernHeader) {
-      // Create wrapper for existing content
-      const fernHeaderWrapper = document.createElement('div')
-      fernHeaderWrapper.setAttribute('id', 'fern-header-content-wrapper')
+    const mainHeaderWrapper = document.getElementById(FERN_HEADER_CONTAINER_ID)
 
+    if (mainHeaderWrapper) {
       // Move all children to the wrapper
-      while (existingFernHeader.firstChild) {
-        fernHeaderWrapper.appendChild(existingFernHeader.firstChild)
+      while (mainHeaderWrapper.firstChild) {
+        fernContentWrapper.appendChild(mainHeaderWrapper.firstChild)
       }
 
-      // Add wrapper to fernHeader
-      fernHeader.appendChild(fernHeaderWrapper)
+      mainHeaderWrapper.appendChild(fernContentWrapper)
+      mainHeaderWrapper.appendChild(devrevContentWrapper)
     }
 
-    fernHeaderContainer.appendChild(fernHeader)
-
-    //  Devrev Header
-    const devrevHeader = document.createElement('div')
-    devrevHeader.setAttribute('id', DEVREV_HEADER_ID)
-    fernHeaderContainer.appendChild(devrevHeader)
-
     // Insert the new container where the original fern-header was
-    if (existingFernHeader) {
-      existingFernHeader.replaceWith(fernHeaderContainer)
+    if (mainHeaderWrapper) {
+      mainHeaderWrapper.replaceWith(fernHeaderContainer)
     } else {
       document.body.appendChild(fernHeaderContainer)
     }
@@ -81,7 +74,7 @@ const render = async () => {
         ...data.header,
         version: theme == 'dark' ? 'light' : 'dark',
       }),
-      devrevHeader,
+      devrevContentWrapper,
     )
   }
 

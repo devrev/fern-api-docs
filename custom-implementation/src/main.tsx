@@ -11,6 +11,10 @@ import { ThemeSwitch } from './components/theme-switch'
 
 import { getPageData } from './modules/sanity/utils'
 
+
+const FERN_HEADER_ID = 'fern-header'
+const DEVREV_HEADER_ID = 'devrev-header'
+
 const render = async () => {
   /*
    * This is a where we try to make async data call.
@@ -29,18 +33,25 @@ const render = async () => {
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
 
-  ReactDOM.render(
-    React.createElement(Header, {
-      ...data.header,
-      version: theme == 'dark' ? 'light' : 'dark',
-    }),
-    document.getElementById('fern-header'),
-    () => {
-      // Once the header component is loaded, make it visible
-      const header = document.getElementById('fern-header')
-      if (header && window.innerWidth > 1024) header.style.display = 'block'
-    },
-  )
+  const headerContainer = document.getElementById(FERN_HEADER_ID)
+  if (headerContainer) {
+    const headerWrapper = document.createElement('div')
+    headerWrapper.setAttribute('id', DEVREV_HEADER_ID)
+
+    headerContainer.appendChild(headerWrapper)
+    ReactDOM.render(
+      React.createElement(Header, {
+        ...data.header,
+        version: theme == 'dark' ? 'light' : 'dark',
+      }),
+      headerWrapper,
+      () => {
+        // Once the header component is loaded, make it visible
+        if (window.innerWidth > 1024) headerContainer.style.display = 'block'
+      },
+    )
+  }
+
   ReactDOM.render(
     React.createElement(Footer, { ...data.footer }),
     document.getElementById('fern-footer'),

@@ -75,6 +75,11 @@ const render = async () => {
         version: theme == 'dark' ? 'light' : 'dark',
       }),
       devrevContentWrapper,
+      () => {
+        // Once the header component is loaded, make it visible
+        const header = document.getElementById(FERN_HEADER_CONTAINER_ID)
+        if (header) header.style.display = 'block'
+      }
     )
   }
 

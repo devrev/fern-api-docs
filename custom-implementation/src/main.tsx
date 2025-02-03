@@ -11,8 +11,9 @@ import { ThemeSwitch } from './components/theme-switch'
 
 import { getPageData } from './modules/sanity/utils'
 
+const FERN_HEADER_CONTAINER_ID = 'fern-header'
 
-const FERN_HEADER_ID = 'fern-header'
+const FERN_HEADER_ID = 'fern-header-inner'
 const DEVREV_HEADER_ID = 'devrev-header'
 
 const render = async () => {
@@ -33,17 +34,54 @@ const render = async () => {
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
 
-  const headerContainer = document.getElementById(FERN_HEADER_ID)
-  if (headerContainer) {
-    const headerWrapper = document.createElement('div')
-    headerWrapper.setAttribute('id', DEVREV_HEADER_ID)
-    headerContainer.appendChild(headerWrapper)
+  const fernHeaderId = document.getElementById(FERN_HEADER_ID)
+  const devrevHeaderId = document.getElementById(DEVREV_HEADER_ID)
+
+  if (!fernHeaderId && !devrevHeaderId) {
+    //  Main Container
+    const fernHeaderContainer = document.createElement('div')
+    fernHeaderContainer.setAttribute('id', FERN_HEADER_CONTAINER_ID)
+
+    //  Fern Header
+    const fernHeader = document.createElement('div')
+    fernHeader.setAttribute('id', FERN_HEADER_ID)
+
+    // Get existing fern-header element and its children
+    const existingFernHeader = document.querySelector('.fern-header')
+    if (existingFernHeader) {
+      // Create wrapper for existing content
+      const fernHeaderWrapper = document.createElement('div')
+      fernHeaderWrapper.setAttribute('id', 'fern-header-content-wrapper')
+
+      // Move all children to the wrapper
+      while (existingFernHeader.firstChild) {
+        fernHeaderWrapper.appendChild(existingFernHeader.firstChild)
+      }
+
+      // Add wrapper to fernHeader
+      fernHeader.appendChild(fernHeaderWrapper)
+    }
+
+    fernHeaderContainer.appendChild(fernHeader)
+
+    //  Devrev Header
+    const devrevHeader = document.createElement('div')
+    devrevHeader.setAttribute('id', DEVREV_HEADER_ID)
+    fernHeaderContainer.appendChild(devrevHeader)
+
+    // Insert the new container where the original fern-header was
+    if (existingFernHeader) {
+      existingFernHeader.replaceWith(fernHeaderContainer)
+    } else {
+      document.body.appendChild(fernHeaderContainer)
+    }
+
     ReactDOM.render(
       React.createElement(Header, {
         ...data.header,
         version: theme == 'dark' ? 'light' : 'dark',
       }),
-      headerWrapper,
+      devrevHeader,
     )
   }
 

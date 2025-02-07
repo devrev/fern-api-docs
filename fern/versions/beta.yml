@@ -7,8 +7,11 @@ navigation:
     api-name: beta
     audiences:
       - docs
+    paginated: true
     snippets:
       typescript: "@devrev/api"
+  - changelog: ../apis/beta/changelog
+    title: Changelog
   - section: Guides
     contents:
       - page: Object customization

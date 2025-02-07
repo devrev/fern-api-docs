@@ -56,6 +56,9 @@ navigation:
       - slas:
         - page: Service level agreement
           path: ../docs/pages/entities/sla.mdx
+    paginated: true
+  - changelog: ../apis/public/changelog
+    title: Changelog
   - section: Guides
     slug: guides
     contents:
@@ -101,6 +104,9 @@ navigation:
           - page: iOS integration
             slug: ios
             path: ../docs/pages/plug-sdk/sdk-ios.mdx
+          - page: React Native integration
+            slug: react-native
+            path: ../docs/pages/plug-sdk/sdk-react-native.mdx
           - page: Push notifications
             slug: push-notification
             path: ../docs/pages/plug-sdk/push-notification.mdx

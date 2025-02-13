@@ -767,6 +767,9 @@ components:
           type: string
           description: The name of the skill.
           maxLength: 512
+        thought:
+          type: string
+          description: The thought explaining why the skill was called.
         workflow:
           $ref: '#/components/schemas/workflow-summary'
         workflow_run:
@@ -874,6 +877,9 @@ components:
             app:
               type: string
               description: App this fragment applies to.
+            app_display_name:
+              type: string
+              description: The display name of the app.
       title: app-fragment
     app-fragment-summary:
       allOf:
@@ -1592,7 +1598,33 @@ components:
     artifact:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            file:
+              $ref: '#/components/schemas/artifact-file'
       title: artifact
+    artifact-file:
+      type: object
+      description: Defines a file object.
+      properties:
+        type:
+          type: string
+          description: Type of the file.
+        name:
+          type: string
+          description: Name of the file.
+      title: artifact-file
+    artifact-file-summary:
+      type: object
+      description: Defines a file object.
+      properties:
+        type:
+          type: string
+          description: Type of the file.
+        name:
+          type: string
+          description: Name of the file.
+      title: artifact-file-summary
     artifact-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'
@@ -1606,6 +1638,10 @@ components:
     artifact-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            file:
+              $ref: '#/components/schemas/artifact-file-summary'
       title: artifact-summary
     artifact-version:
       type: object
@@ -1831,6 +1867,7 @@ components:
           meeting: '#/components/schemas/meeting'
           opportunity: '#/components/schemas/opportunity'
           product: '#/components/schemas/product'
+          question_answer: '#/components/schemas/question-answer'
           rev_org: '#/components/schemas/rev-org'
           rev_user: '#/components/schemas/rev-user'
           service_account: '#/components/schemas/service-account'
@@ -1859,6 +1896,7 @@ components:
         - $ref: '#/components/schemas/meeting'
         - $ref: '#/components/schemas/opportunity'
         - $ref: '#/components/schemas/product'
+        - $ref: '#/components/schemas/question-answer'
         - $ref: '#/components/schemas/rev-org'
         - $ref: '#/components/schemas/rev-user'
         - $ref: '#/components/schemas/service-account'
@@ -1933,6 +1971,7 @@ components:
           meeting: '#/components/schemas/meeting-summary'
           opportunity: '#/components/schemas/opportunity-summary'
           product: '#/components/schemas/product-summary'
+          question_answer: '#/components/schemas/question-answer-summary'
           rev_org: '#/components/schemas/rev-org-summary'
           rev_user: '#/components/schemas/rev-user-summary'
           service_account: '#/components/schemas/service-account-summary'
@@ -1961,6 +2000,7 @@ components:
         - $ref: '#/components/schemas/meeting-summary'
         - $ref: '#/components/schemas/opportunity-summary'
         - $ref: '#/components/schemas/product-summary'
+        - $ref: '#/components/schemas/question-answer-summary'
         - $ref: '#/components/schemas/rev-org-summary'
         - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/service-account-summary'
@@ -1996,6 +2036,7 @@ components:
         - meeting
         - opportunity
         - product
+        - question_answer
         - rev_org
         - rev_user
         - service_account
@@ -5134,6 +5175,9 @@ components:
         app:
           type: string
           description: The app this fragment applies to.
+        app_display_name:
+          type: string
+          description: The display name of the app.
       required:
         - app
       title: custom-schema-fragments-set-request-app-fragment
@@ -6163,7 +6207,7 @@ components:
             type: string
         id:
           type: string
-          description: The ID for the Dev User.
+          description: The ID for the Dev user.
       required:
         - id
       title: dev-users-activate-request
@@ -6184,7 +6228,7 @@ components:
       properties:
         id:
           type: string
-          description: The ID for the Dev User.
+          description: The ID for the Dev user.
       required:
         - id
       title: dev-users-deactivate-request
@@ -6648,8 +6692,9 @@ components:
           $ref: '#/components/schemas/directories-update-request-tags'
         thumbnail:
           type: string
-          description: ID of the thumbnail artifact.
+          description: The updated thumbnail for the directory.
           example: ARTIFACT-12345
+          nullable: true
         title:
           type: string
           description: The updated title for the directory.
@@ -7176,6 +7221,28 @@ components:
     enhancement:
       allOf:
         - $ref: '#/components/schemas/part-base'
+        - type: object
+          properties:
+            actual_close_date:
+              type: string
+              description: Actual close date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            actual_start_date:
+              type: string
+              description: Actual start date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            target_close_date:
+              type: string
+              description: Target close date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            target_start_date:
+              type: string
+              description: Target start date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
       title: enhancement
     enhancement-summary:
       allOf:
@@ -8023,6 +8090,35 @@ components:
       required:
         - part
       title: event-part-updated
+    event-question-answer-created:
+      type: object
+      properties:
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - question_answer
+      title: event-question-answer-created
+    event-question-answer-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the question-answer that was deleted.
+        old_question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - id
+      title: event-question-answer-deleted
+    event-question-answer-updated:
+      type: object
+      properties:
+        old_question_answer:
+          $ref: '#/components/schemas/question-answer'
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - question_answer
+      title: event-question-answer-updated
     event-rev-org-created:
       type: object
       properties:
@@ -9254,11 +9350,6 @@ components:
               format: date-time
             impact:
               $ref: '#/components/schemas/impacted-customer-details'
-            impacted_customers:
-              type: array
-              description: List of customers impacted due to the incident.
-              items:
-                $ref: '#/components/schemas/account-summary'
             mitigated_date:
               type: string
               description: Timestamp when the incident was mitigated.
@@ -9289,13 +9380,6 @@ components:
               $ref: '#/components/schemas/enum-value'
             stage:
               $ref: '#/components/schemas/stage'
-            stakeholders:
-              type: array
-              description: |
-                Users, along with the incident commander, involved in resolving
-                incidents and handling communication.
-              items:
-                $ref: '#/components/schemas/user-summary'
             stock_schema_fragment:
               type: string
               description: Stock schema fragment.
@@ -9374,11 +9458,6 @@ components:
           format: date-time
         impact:
           $ref: '#/components/schemas/create-impacted-customer-details'
-        impacted_customers:
-          type: array
-          description: List of customers impacted due to the incident.
-          items:
-            type: string
         mitigated_date:
           type: string
           description: Timestamp when the incident was mitigated.
@@ -9423,13 +9502,12 @@ components:
           format: int64
         stage:
           $ref: '#/components/schemas/create-stage'
-        stakeholders:
+        stage_validation_options:
           type: array
           description: |
-            Users, along with the incident commander, involved in resolving
-            incidents and handling communication.
+            The type of stage validations options when creating an incident.
           items:
-            type: string
+            $ref: '#/components/schemas/stage-validation-option-for-create'
         tags:
           type: array
           description: Tags associated with the object.
@@ -9831,8 +9909,6 @@ components:
           format: date-time
         impact:
           $ref: '#/components/schemas/update-impacted-customer-details'
-        impacted_customers:
-          $ref: '#/components/schemas/update-incident-impacted-customers'
         mitigated_date:
           type: string
           description: Timestamp when the incident was mitigated.
@@ -9862,8 +9938,13 @@ components:
           format: int64
         stage:
           $ref: '#/components/schemas/update-stage'
-        stakeholders:
-          $ref: '#/components/schemas/update-incident-stakeholders'
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when updating the stage of an
+            incident.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-update'
         tags:
           $ref: '#/components/schemas/update-incident-tags'
         target_close_date:
@@ -9929,6 +10010,8 @@ components:
                 $ref: '#/components/schemas/part-summary'
             priority:
               $ref: '#/components/schemas/issue-priority'
+            priority_v2:
+              $ref: '#/components/schemas/enum-value'
             sla_summary:
               $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
@@ -9956,6 +10039,8 @@ components:
           properties:
             priority:
               $ref: '#/components/schemas/issue-priority'
+            priority_v2:
+              $ref: '#/components/schemas/enum-value-summary'
             sprint:
               $ref: '#/components/schemas/vista-group-item-summary'
       title: issue-summary
@@ -10455,6 +10540,7 @@ components:
       type: string
       description: The channel of meeting.
       enum:
+        - amazon_connect
         - google_meet
         - offline
         - other
@@ -10467,8 +10553,11 @@ components:
         - canceled
         - completed
         - no_show
+        - ongoing
+        - rejected
         - rescheduled
         - scheduled
+        - waiting
     meeting-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -10554,6 +10643,8 @@ components:
         custom_fields:
           type: object
           description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: The description of the meeting.
@@ -10607,7 +10698,6 @@ components:
           description: The title of the meeting.
       required:
         - channel
-        - ended_date
         - members
         - scheduled_date
         - state
@@ -10781,6 +10871,8 @@ components:
         custom_fields:
           type: object
           description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: The description of the meeting.
@@ -10805,6 +10897,11 @@ components:
           type: string
           description: The ID of the user who organized the meeting.
           example: DEVU-12345
+        recording:
+          type: string
+          description: The ID of the meeting's recording artifact.
+          example: ARTIFACT-12345
+          nullable: true
         recording_url:
           type: string
           description: The recording URL of the meeting.
@@ -10822,6 +10919,11 @@ components:
         title:
           type: string
           description: The title of the meeting.
+        transcript:
+          type: string
+          description: |
+            The ID of the artifact for the transcript of the meeting.
+          example: ARTIFACT-12345
       required:
         - id
       title: meetings-update-request
@@ -13407,6 +13509,10 @@ components:
           type: string
           description: |
             The user's display name. The name is non-unique and mutable.
+        display_picture:
+          type: string
+          description: Artifact ID of a Rev user's display picture.
+          example: ARTIFACT-12345
         email:
           type: string
           description: Email address of the Rev user.
@@ -13486,7 +13592,7 @@ components:
       type: object
       description: |
         Gets the list of Rev users belonging to the authenticated user's Dev
-        Organization which the user is also authorized to access.
+        organization which the user is also authorized to access.
       properties:
         associations:
           type: array
@@ -13704,6 +13810,11 @@ components:
         display_name:
           type: string
           description: Updated display name of the Rev user.
+        display_picture:
+          type: string
+          description: Artifact ID of a Rev user's updated display picture.
+          example: ARTIFACT-12345
+          nullable: true
         email:
           type: string
           description: Updated email address of the Rev user.
@@ -14571,6 +14682,85 @@ components:
       allOf:
         - $ref: '#/components/schemas/schema-field-descriptor-base'
       title: schema-unknown-field-descriptor
+    schemas-subtype-prepare-update-get-request:
+      type: object
+      properties:
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object.
+        leaf_type:
+          type: string
+          description: Leaf type of the object.
+        new_subtype:
+          type: string
+          description: Name of the new subtype for the object.
+        object:
+          type: string
+          description: |
+            ID of the object of which subtype is to be changed. Used to fetch
+            the object's custom schema fragments and custom fields
+      required:
+        - leaf_type
+      title: schemas-subtype-prepare-update-get-request
+    schemas-subtype-prepare-update-get-response:
+      type: object
+      properties:
+        added_fields:
+          type: array
+          description: |
+            List of fields that have a default value and need to be set.
+          items:
+            $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-added-field'
+        dropped_fields:
+          type: array
+          description: List of fields that will be dropped from the object.
+          items:
+            $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-dropped-field'
+        new_custom_schema_fragments:
+          type: array
+          description: List of new custom schema fragment IDs of the object.
+          items:
+            type: string
+        new_start_stage:
+          type: string
+          description: |
+            ID of the start stage of the new diagram if the subtype change
+            results in a change in the stage diagram.
+      title: schemas-subtype-prepare-update-get-response
+      x-go-name: SchemasSubtypePrepareUpdateGetResponseBody
+    schemas-subtype-prepare-update-get-response-added-field:
+      type: object
+      properties:
+        default_value:
+          description: Default value of the added field.
+        name:
+          type: string
+          description: API-compliant qualified name of the added field.
+      required:
+        - name
+      title: schemas-subtype-prepare-update-get-response-added-field
+    schemas-subtype-prepare-update-get-response-conflict-type:
+      type: string
+      enum:
+        - absent_in_new
+        - absent_in_old
+        - incompatible_type
+    schemas-subtype-prepare-update-get-response-dropped-field:
+      type: object
+      properties:
+        conflict_type:
+          $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-conflict-type'
+        message:
+          type: string
+          description: Conflict message for the field being dropped.
+        name:
+          type: string
+          description: API-compliant qualified name of the dropped field.
+      required:
+        - conflict_type
+        - message
+        - name
+      title: schemas-subtype-prepare-update-get-response-dropped-field
     search-core-request:
       type: object
       description: Search request.
@@ -14578,14 +14768,16 @@ components:
         cursor:
           type: string
           description: |
-            The cursor from where to begin iteration. Start from beginning if
-            not provided.
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
         limit:
           type: integer
           description: |
             The maximum number of items to return in a page. The default is
             '10'.
           format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
         namespaces:
           type: array
           description: The namespaces to search in.
@@ -14612,6 +14804,16 @@ components:
           description: |
             The cursor from where to begin iteration. Start from beginning if
             not provided.
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
         results:
           type: array
           description: The search results.
@@ -14625,14 +14827,39 @@ components:
       type: string
       description: The namespaces for hybrid search.
       enum:
+        - account
         - article
+        - capability
+        - component
         - conversation
+        - custom_object
+        - custom_part
+        - custom_work
+        - dashboard
         - dataset
+        - dev_user
+        - enhancement
+        - feature
+        - group
         - incident
         - issue
+        - linkable
+        - microservice
+        - object_member
+        - opportunity
         - part
+        - product
+        - project
         - question_answer
+        - rev_org
+        - rev_user
+        - runnable
+        - service_account
+        - sys_user
+        - tag
+        - task
         - ticket
+        - vista
         - widget
         - work
     search-hybrid-request:
@@ -15779,6 +16006,13 @@ components:
         - snap_in
       title: snap-ins-update-response
       x-go-name: SnapInsUpdateResponseBody
+    snap-kit-base-widget:
+      type: object
+      description: A SnapKit based widget.
+      properties:
+        snap_kit_execution:
+          type: string
+      title: snap-kit-base-widget
     snap-widget:
       type: object
       discriminator:
@@ -15798,6 +16032,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            interactions:
+              type: array
+              description: A list of interactions supported by the widget.
+              items:
+                $ref: '#/components/schemas/snap-widget-interaction'
             name:
               type: string
               description: A human readable name for the snap widget.
@@ -15809,6 +16048,58 @@ components:
             - name
             - status
       title: snap-widget-base
+    snap-widget-click-interaction:
+      type: object
+      description: An interaction supported by a widget.
+      discriminator:
+        mapping:
+          open_plug_widget: '#/components/schemas/snap-widget-open-plug-widget-action'
+          open_url: '#/components/schemas/snap-widget-open-url-action'
+          start_conversation: '#/components/schemas/snap-widget-start-conversation-action'
+        propertyName: click_action
+      oneOf:
+        - $ref: '#/components/schemas/snap-widget-open-plug-widget-action'
+        - $ref: '#/components/schemas/snap-widget-open-url-action'
+        - $ref: '#/components/schemas/snap-widget-start-conversation-action'
+      properties:
+        click_action:
+          $ref: '#/components/schemas/snap-widget-click-interaction-click-action'
+      required:
+        - click_action
+      title: snap-widget-click-interaction
+    snap-widget-click-interaction-click-action:
+      type: string
+      enum:
+        - open_plug_widget
+        - open_url
+        - start_conversation
+    snap-widget-email-input-interaction:
+      type: object
+      additionalProperties: false
+      description: An interaction supported by a widget.
+      title: snap-widget-email-input-interaction
+    snap-widget-interaction:
+      type: object
+      description: An interaction supported by a widget.
+      discriminator:
+        mapping:
+          click: '#/components/schemas/snap-widget-click-interaction'
+          email_input: '#/components/schemas/snap-widget-email-input-interaction'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/snap-widget-click-interaction'
+        - $ref: '#/components/schemas/snap-widget-email-input-interaction'
+      properties:
+        type:
+          $ref: '#/components/schemas/snap-widget-interaction-type'
+      required:
+        - type
+      title: snap-widget-interaction
+    snap-widget-interaction-type:
+      type: string
+      enum:
+        - click
+        - email_input
     snap-widget-namespace:
       type: string
       description: Logical grouping of snap widgets. Useful for filtering.
@@ -15817,7 +16108,35 @@ components:
         - comment_suggestion_replies
         - email_preview
         - link_preview
+        - meeting_preview
         - plug_nudge
+    snap-widget-open-plug-widget-action:
+      type: object
+      additionalProperties: false
+      description: Details of open plug widget action.
+      title: snap-widget-open-plug-widget-action
+    snap-widget-open-url-action:
+      type: object
+      description: Details of open url widget action.
+      properties:
+        url:
+          type: string
+          description: The url to open when the widget is clicked.
+      required:
+        - url
+      title: snap-widget-open-url-action
+    snap-widget-start-conversation-action:
+      type: object
+      description: Details of start conversation action.
+      properties:
+        rte_enabled:
+          type: boolean
+          description: |
+            Whether the rich text editor is enabled on the object. Default is
+            false.
+        starter_message:
+          $ref: '#/components/schemas/snap-kit-base-widget'
+      title: snap-widget-start-conversation-action
     snap-widget-status:
       type: string
       description: The status of the snap widget.
@@ -16537,6 +16856,12 @@ components:
           description: |
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
+        dispatch_ids:
+          type: array
+          description: |
+            Filters for survey responses associated with these unique IDs.
+          items:
+            type: string
         limit:
           type: integer
           description: |
@@ -17394,6 +17719,8 @@ components:
             source_channel:
               type: string
               description: Source channel of the ticket.
+            visibility:
+              $ref: '#/components/schemas/enum-value'
       title: ticket
     ticket-channels:
       type: string
@@ -18618,15 +18945,6 @@ components:
           items:
             type: string
       title: update-incident-artifacts
-    update-incident-impacted-customers:
-      type: object
-      properties:
-        set:
-          type: array
-          description: Sets the list of customers impacted due to the incident.
-          items:
-            type: string
-      title: update-incident-impacted-customers
     update-incident-owned-by:
       type: object
       properties:
@@ -18669,17 +18987,6 @@ components:
           items:
             type: string
       title: update-incident-related-docs
-    update-incident-stakeholders:
-      type: object
-      properties:
-        set:
-          type: array
-          description: |
-            Sets the users, along with the incident commander, involved in
-            resolving incidents and handling communication.
-          items:
-            type: string
-      title: update-incident-stakeholders
     update-incident-tags:
       type: object
       properties:
@@ -19051,6 +19358,12 @@ components:
           $ref: '#/components/schemas/event-part-deleted'
         part_updated:
           $ref: '#/components/schemas/event-part-updated'
+        question_answer_created:
+          $ref: '#/components/schemas/event-question-answer-created'
+        question_answer_deleted:
+          $ref: '#/components/schemas/event-question-answer-deleted'
+        question_answer_updated:
+          $ref: '#/components/schemas/event-question-answer-updated'
         rev_org_created:
           $ref: '#/components/schemas/event-rev-org-created'
         rev_org_deleted:
@@ -19170,6 +19483,9 @@ components:
         - part_created
         - part_deleted
         - part_updated
+        - question_answer_created
+        - question_answer_deleted
+        - question_answer_updated
         - rev_org_created
         - rev_org_deleted
         - rev_org_updated
@@ -19659,6 +19975,7 @@ components:
         body:
           type: string
           description: Body of the work object.
+          maxLength: 65536
         custom_fields:
           type: object
           description: Custom fields.
@@ -20036,6 +20353,9 @@ components:
           description: Filters for tickets belonging to specific groups.
           items:
             type: string
+        is_frozen:
+          type: boolean
+          description: Filters for frozen tickets.
         is_spam:
           type: boolean
           description: Filters for tickets that are spam.
@@ -20232,6 +20552,7 @@ components:
           type: string
           description: |
             Updated body of the work object, or unchanged if not provided.
+          maxLength: 65536
         custom_fields:
           type: object
           description: Custom fields.
@@ -20498,6 +20819,9 @@ components:
         is_archived:
           type: boolean
           description: Whether the ticket is archived.
+        is_frozen:
+          type: boolean
+          description: Whether the ticket is frozen.
         is_spam:
           type: boolean
           description: Updates whether the ticket is spam.
@@ -23020,7 +23344,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Create Command
       tags:
-        - command
+        - commands
       x-fern-audiences:
         - docs
         - sdks
@@ -23059,7 +23383,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Command
       tags:
-        - command
+        - commands
       x-fern-audiences:
         - docs
       x-request-name: CommandsGetQuery
@@ -23095,7 +23419,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Command (POST)
       tags:
-        - command
+        - commands
       x-fern-audiences:
         - docs
         - sdks
@@ -23190,7 +23514,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: List Commands
       tags:
-        - command
+        - commands
       x-fern-audiences:
         - docs
       x-request-name: CommandsListQuery
@@ -23224,7 +23548,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: List Commands (POST)
       tags:
-        - command
+        - commands
       x-fern-audiences:
         - docs
         - sdks
@@ -23261,7 +23585,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Update Command
       tags:
-        - command
+        - commands
       x-fern-audiences:
         - docs
         - sdks
@@ -24602,7 +24926,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Create Dev Orgs Auth Connection
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -24639,7 +24963,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Delete Dev Orgs Auth Connection
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -24681,7 +25005,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Dev Orgs Auth Connection
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -24720,7 +25044,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Dev Orgs Auth Connection (POST)
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -24756,7 +25080,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: List Dev Orgs Auth Connections
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -24797,7 +25121,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: List Dev Orgs Auth Connections (POST)
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -24836,7 +25160,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Toggle Dev Orgs Auth Connections
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -24876,7 +25200,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Update Dev Orgs Auth Connection
       tags:
-        - auth-connection
+        - auth-connections
         - dev-orgs
       x-fern-audiences:
         - docs
@@ -26204,7 +26528,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Event Source
       tags:
-        - event-source
+        - event-sources
       x-fern-audiences:
         - docs
       x-request-name: EventSourcesGetQuery
@@ -26240,7 +26564,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Event Source (POST)
       tags:
-        - event-source
+        - event-sources
       x-fern-audiences:
         - docs
         - sdks
@@ -26278,7 +26602,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Schedule Event Sources
       tags:
-        - event-source
+        - event-sources
       x-fern-audiences:
         - docs
         - sdks
@@ -26311,7 +26635,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Unschedule Event Sources
       tags:
-        - event-source
+        - event-sources
       x-fern-audiences:
         - docs
         - sdks
@@ -26789,7 +27113,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Create Incident
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
         - sdks
@@ -26826,7 +27150,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Delete Incident
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
         - sdks
@@ -26865,7 +27189,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Incident
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
       x-request-name: IncidentsGetQuery
@@ -26901,7 +27225,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Get Incident (POST)
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
         - sdks
@@ -27097,7 +27421,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Group Incidents
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
       x-request-name: IncidentsGroupQuery
@@ -27131,7 +27455,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Group Incidents (POST)
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
         - sdks
@@ -27310,7 +27634,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: List Incidents
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
       x-request-name: IncidentsListQuery
@@ -27344,7 +27668,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: List Incidents (POST)
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
         - sdks
@@ -27381,7 +27705,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Update Incident
       tags:
-        - operate
+        - incidents
       x-fern-audiences:
         - docs
         - sdks
@@ -27422,7 +27746,7 @@ paths:
       security: []
       summary: Authorize Keyrings
       tags:
-        - keyring
+        - keyrings
       x-fern-audiences:
         - docs
       x-request-name: KeyringsCreateCallbackQuery
@@ -27452,7 +27776,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Authorize Keyrings (POST)
       tags:
-        - keyring
+        - keyrings
       x-fern-audiences:
         - docs
         - sdks
@@ -28906,7 +29230,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Ingest Metrics Devrev
       tags:
-        - product-usage
+        - metrics
       x-fern-audiences:
         - docs
         - sdks
@@ -31209,7 +31533,7 @@ paths:
     get:
       description: |
         Returns a list of all Rev Users belonging to the authenticated user's
-        Dev Organization.
+        Dev organization.
       operationId: rev-users-list
       parameters:
         - description: |
@@ -31388,7 +31712,7 @@ paths:
     post:
       description: |
         Returns a list of all Rev Users belonging to the authenticated user's
-        Dev Organization.
+        Dev organization.
       operationId: rev-users-list-post
       requestBody:
         content:
@@ -31765,6 +32089,41 @@ paths:
       summary: Update Rev User
       tags:
         - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /roles.create:
+    post:
+      description: Creates a new role.
+      operationId: roles-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/roles-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/roles-create-response'
+          description: A response to a request to create a new role.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Role
+      tags:
+        - roles
       x-fern-audiences:
         - docs
         - sdks
@@ -32416,8 +32775,8 @@ paths:
           schema:
             type: string
         - description: |
-            The cursor from where to begin iteration. Start from beginning if not
-            provided.
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
           explode: false
           in: query
           name: cursor
@@ -32431,6 +32790,14 @@ paths:
           schema:
             type: integer
             format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
         - description: The namespaces to search in.
           explode: false
           in: query
@@ -34416,6 +34783,15 @@ paths:
           schema:
             type: string
         - description: |
+            Filters for survey responses associated with these unique IDs.
+          explode: false
+          in: query
+          name: dispatch_ids
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
             The maximum number of survey responses to return. If not set, then
             the default is '50'.
           explode: false
@@ -35430,7 +35806,7 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       summary: Publish Track Events
       tags:
-        - event-source
+        - event-sources
       x-fern-audiences:
         - docs
         - sdks
@@ -35513,9 +35889,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Count Uoms
+      summary: Count UOMs
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
       x-request-name: UomsCountQuery
@@ -35548,9 +35924,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Count Uoms (POST)
+      summary: Count UOMs (POST)
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
         - sdks
@@ -35583,9 +35959,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Create Uom
+      summary: Create UOM
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
         - sdks
@@ -35616,9 +35992,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Delete Uom
+      summary: Delete UOM
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
         - sdks
@@ -35655,9 +36031,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Uom
+      summary: Get UOM
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
       x-request-name: UomsGetQuery
@@ -35691,9 +36067,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Uom (POST)
+      summary: Get UOM (POST)
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
         - sdks
@@ -35810,9 +36186,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Uoms
+      summary: List UOMs
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
       x-request-name: UomsListQuery
@@ -35844,9 +36220,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Uoms (POST)
+      summary: List UOMs (POST)
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
         - sdks
@@ -35881,9 +36257,9 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Update Uom
+      summary: Update UOM
       tags:
-        - product-usage
+        - uoms
       x-fern-audiences:
         - docs
         - sdks
@@ -35998,7 +36374,6 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
-      x-fern-webhook: true
   /webhooks.fetch:
     post:
       description: Fetches an object via webhook.
@@ -36556,6 +36931,12 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for frozen tickets.
+          explode: false
+          in: query
+          name: ticket.is_frozen
+          schema:
+            type: boolean
         - description: Filters for tickets that are spam.
           explode: false
           in: query
@@ -37039,6 +37420,12 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for frozen tickets.
+          explode: false
+          in: query
+          name: ticket.is_frozen
+          schema:
+            type: boolean
         - description: Filters for tickets that are spam.
           explode: false
           in: query
@@ -37213,9 +37600,9 @@ servers:
         default: https
         description: API protocol.
 tags:
-  - description: Accounts management APIs
+  - description: Accounts management APIs.
     name: accounts
-  - description: Airdrop APIs
+  - description: Airdrop APIs.
     name: airdrop
   - description: Articles management APIs.
     name: articles
@@ -37224,14 +37611,14 @@ tags:
   - description: Common object ("atom") APIs.
     name: atoms
   - description: Auth Connections of DevOrg.
-    name: auth-connection
+    name: auth-connections
   - description: Security token interactions.
     name: auth-tokens
   - description: Code change interactions.
     name: code-changes
   - description: DevRev command interactions.
-    name: command
-  - description: Compliance APIs
+    name: commands
+  - description: Compliance APIs.
     name: compliance
   - description: DevRev conversation interaction.
     name: conversations
@@ -37241,31 +37628,31 @@ tags:
     name: dev-orgs
   - description: Dev user interactions.
     name: dev-users
-  - description: Directory APIs
+  - description: Directory APIs.
     name: directory
   - description: DevRev engagements.
     name: engagements
   - description: Event source interactions.
-    name: event-source
+    name: event-sources
   - description: Manages groups in a Dev organization.
     name: groups
+  - description: DevRev incident management interactions.
+    name: incidents
   - description: DevRev secrets interactions.
-    name: keyring
+    name: keyrings
   - description: DevRev link interactions.
     name: links
   - description: DevRev meetings interaction.
     name: meetings
-  - description: DevRev notifications
+  - description: Metrics APIs.
+    name: metrics
+  - description: DevRev notifications.
     name: notifications
-  - description: DevRev incident management interactions.
-    name: operate
   - description: DevRev part interactions.
     name: parts
   - description: DevRev preferences APIs.
     name: preferences
-  - description: Product Usage APIs
-    name: product-usage
-  - description: Plug Question-Answer APIs
+  - description: Plug Question-Answer APIs.
     name: question-answers
   - description: Recommendations at DevRev.
     name: recommendations
@@ -37273,26 +37660,30 @@ tags:
     name: rev-orgs
   - description: Rev user interactions.
     name: rev-users
+  - description: APIs for managing roles.
+    name: roles
   - description: Management APIs for availability schedules.
     name: schedules
   - description: DevRev search.
     name: search
-  - description: Service account interactions
+  - description: Service account interactions.
     name: service-accounts
   - description: Management APIs for Service Level Agreements.
     name: slas
   - description: DevRev snap-ins interactions.
     name: snap-ins
-  - description: SnapWidget APIs
+  - description: SnapWidget APIs.
     name: snap-widgets
-  - description: Surveys
+  - description: Surveys APIs.
     name: surveys
-  - description: System user interactions
+  - description: System user interactions.
     name: sys-users
   - description: DevRev tag interactions.
     name: tags
   - description: APIs to manage timeline entries for objects.
     name: timeline-entries
+  - description: Unit of measurement (UOM) APIs.
+    name: uoms
   - description: Webhook event APIs.
     name: webhooks
   - description: DevRev work interactions.

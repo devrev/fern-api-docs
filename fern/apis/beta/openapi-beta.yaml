@@ -1606,10 +1606,6 @@ components:
     artifact-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
-        - type: object
-          properties:
-            file:
-              $ref: '#/components/schemas/artifact-file-summary'
       title: artifact-summary
     artifact-version:
       type: object

@@ -44,7 +44,8 @@ def gen_log(prompt):
             r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
                                 headers=headers)
             log = r.json()['choices'][0]['message']['content']
-            log = re.sub(r"^Here's.*\n?", '', log, flags=re.MULTILINE)
+            log = re.sub(r"^# .*\n?", '', log, flags=re.MULTILINE)
+            log = re.sub(r"^Here.*\n?", '', log, flags=re.MULTILINE)
             log = re.sub(r"^Let me know.*\n?", '', log, flags=re.MULTILINE)
         except Exception as e:
             print(

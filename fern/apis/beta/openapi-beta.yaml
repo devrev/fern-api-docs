@@ -1831,7 +1831,6 @@ components:
           meeting: '#/components/schemas/meeting'
           opportunity: '#/components/schemas/opportunity'
           product: '#/components/schemas/product'
-          question_answer: '#/components/schemas/question-answer'
           rev_org: '#/components/schemas/rev-org'
           rev_user: '#/components/schemas/rev-user'
           service_account: '#/components/schemas/service-account'
@@ -1860,7 +1859,6 @@ components:
         - $ref: '#/components/schemas/meeting'
         - $ref: '#/components/schemas/opportunity'
         - $ref: '#/components/schemas/product'
-        - $ref: '#/components/schemas/question-answer'
         - $ref: '#/components/schemas/rev-org'
         - $ref: '#/components/schemas/rev-user'
         - $ref: '#/components/schemas/service-account'
@@ -1935,7 +1933,6 @@ components:
           meeting: '#/components/schemas/meeting-summary'
           opportunity: '#/components/schemas/opportunity-summary'
           product: '#/components/schemas/product-summary'
-          question_answer: '#/components/schemas/question-answer-summary'
           rev_org: '#/components/schemas/rev-org-summary'
           rev_user: '#/components/schemas/rev-user-summary'
           service_account: '#/components/schemas/service-account-summary'
@@ -1964,7 +1961,6 @@ components:
         - $ref: '#/components/schemas/meeting-summary'
         - $ref: '#/components/schemas/opportunity-summary'
         - $ref: '#/components/schemas/product-summary'
-        - $ref: '#/components/schemas/question-answer-summary'
         - $ref: '#/components/schemas/rev-org-summary'
         - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/service-account-summary'
@@ -2000,7 +1996,6 @@ components:
         - meeting
         - opportunity
         - product
-        - question_answer
         - rev_org
         - rev_user
         - service_account
@@ -8028,35 +8023,6 @@ components:
       required:
         - part
       title: event-part-updated
-    event-question-answer-created:
-      type: object
-      properties:
-        question_answer:
-          $ref: '#/components/schemas/question-answer'
-      required:
-        - question_answer
-      title: event-question-answer-created
-    event-question-answer-deleted:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the question-answer that was deleted.
-        old_question_answer:
-          $ref: '#/components/schemas/question-answer'
-      required:
-        - id
-      title: event-question-answer-deleted
-    event-question-answer-updated:
-      type: object
-      properties:
-        old_question_answer:
-          $ref: '#/components/schemas/question-answer'
-        question_answer:
-          $ref: '#/components/schemas/question-answer'
-      required:
-        - question_answer
-      title: event-question-answer-updated
     event-rev-org-created:
       type: object
       properties:
@@ -19171,12 +19137,6 @@ components:
           $ref: '#/components/schemas/event-part-deleted'
         part_updated:
           $ref: '#/components/schemas/event-part-updated'
-        question_answer_created:
-          $ref: '#/components/schemas/event-question-answer-created'
-        question_answer_deleted:
-          $ref: '#/components/schemas/event-question-answer-deleted'
-        question_answer_updated:
-          $ref: '#/components/schemas/event-question-answer-updated'
         rev_org_created:
           $ref: '#/components/schemas/event-rev-org-created'
         rev_org_deleted:
@@ -19296,9 +19256,6 @@ components:
         - part_created
         - part_deleted
         - part_updated
-        - question_answer_created
-        - question_answer_deleted
-        - question_answer_updated
         - rev_org_created
         - rev_org_deleted
         - rev_org_updated

@@ -8054,35 +8054,6 @@ components:
       required:
         - part
       title: event-part-updated
-    event-question-answer-created:
-      type: object
-      properties:
-        question_answer:
-          $ref: '#/components/schemas/question-answer'
-      required:
-        - question_answer
-      title: event-question-answer-created
-    event-question-answer-deleted:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the question-answer that was deleted.
-        old_question_answer:
-          $ref: '#/components/schemas/question-answer'
-      required:
-        - id
-      title: event-question-answer-deleted
-    event-question-answer-updated:
-      type: object
-      properties:
-        old_question_answer:
-          $ref: '#/components/schemas/question-answer'
-        question_answer:
-          $ref: '#/components/schemas/question-answer'
-      required:
-        - question_answer
-      title: event-question-answer-updated
     event-rev-org-created:
       type: object
       properties:
@@ -14646,85 +14617,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/schema-field-descriptor-base'
       title: schema-unknown-field-descriptor
-    schemas-subtype-prepare-update-get-request:
-      type: object
-      properties:
-        is_custom_leaf_type:
-          type: boolean
-          description: Whether the leaf type corresponds to a custom object.
-        leaf_type:
-          type: string
-          description: Leaf type of the object.
-        new_subtype:
-          type: string
-          description: Name of the new subtype for the object.
-        object:
-          type: string
-          description: |
-            ID of the object of which subtype is to be changed. Used to fetch
-            the object's custom schema fragments and custom fields
-      required:
-        - leaf_type
-      title: schemas-subtype-prepare-update-get-request
-    schemas-subtype-prepare-update-get-response:
-      type: object
-      properties:
-        added_fields:
-          type: array
-          description: |
-            List of fields that have a default value and need to be set.
-          items:
-            $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-added-field'
-        dropped_fields:
-          type: array
-          description: List of fields that will be dropped from the object.
-          items:
-            $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-dropped-field'
-        new_custom_schema_fragments:
-          type: array
-          description: List of new custom schema fragment IDs of the object.
-          items:
-            type: string
-        new_start_stage:
-          type: string
-          description: |
-            ID of the start stage of the new diagram if the subtype change
-            results in a change in the stage diagram.
-      title: schemas-subtype-prepare-update-get-response
-      x-go-name: SchemasSubtypePrepareUpdateGetResponseBody
-    schemas-subtype-prepare-update-get-response-added-field:
-      type: object
-      properties:
-        default_value:
-          description: Default value of the added field.
-        name:
-          type: string
-          description: API-compliant qualified name of the added field.
-      required:
-        - name
-      title: schemas-subtype-prepare-update-get-response-added-field
-    schemas-subtype-prepare-update-get-response-conflict-type:
-      type: string
-      enum:
-        - absent_in_new
-        - absent_in_old
-        - incompatible_type
-    schemas-subtype-prepare-update-get-response-dropped-field:
-      type: object
-      properties:
-        conflict_type:
-          $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-conflict-type'
-        message:
-          type: string
-          description: Conflict message for the field being dropped.
-        name:
-          type: string
-          description: API-compliant qualified name of the dropped field.
-      required:
-        - conflict_type
-        - message
-        - name
-      title: schemas-subtype-prepare-update-get-response-dropped-field
     search-core-request:
       type: object
       description: Search request.
@@ -19322,12 +19214,6 @@ components:
           $ref: '#/components/schemas/event-part-deleted'
         part_updated:
           $ref: '#/components/schemas/event-part-updated'
-        question_answer_created:
-          $ref: '#/components/schemas/event-question-answer-created'
-        question_answer_deleted:
-          $ref: '#/components/schemas/event-question-answer-deleted'
-        question_answer_updated:
-          $ref: '#/components/schemas/event-question-answer-updated'
         rev_org_created:
           $ref: '#/components/schemas/event-rev-org-created'
         rev_org_deleted:

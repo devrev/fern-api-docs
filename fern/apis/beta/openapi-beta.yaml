@@ -9929,8 +9929,6 @@ components:
                 $ref: '#/components/schemas/part-summary'
             priority:
               $ref: '#/components/schemas/issue-priority'
-            priority_v2:
-              $ref: '#/components/schemas/enum-value'
             sla_summary:
               $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
@@ -9958,8 +9956,6 @@ components:
           properties:
             priority:
               $ref: '#/components/schemas/issue-priority'
-            priority_v2:
-              $ref: '#/components/schemas/enum-value-summary'
             sprint:
               $ref: '#/components/schemas/vista-group-item-summary'
       title: issue-summary

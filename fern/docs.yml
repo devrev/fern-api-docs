@@ -63,5 +63,5 @@ redirects:
     permanent: true
 
 analytics:
-  gtm:
-    container-id: G-XP1LEFVYQ9
+  ga4:
+    measurement-id: G-XP1LEFVYQ9

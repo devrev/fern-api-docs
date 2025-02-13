@@ -1592,6 +1592,10 @@ components:
     artifact:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            file:
+              $ref: '#/components/schemas/file'
       title: artifact
     artifact-search-summary:
       allOf:
@@ -1606,6 +1610,10 @@ components:
     artifact-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            file:
+              $ref: '#/components/schemas/file-summary'
       title: artifact-summary
     artifact-version:
       type: object
@@ -1831,6 +1839,7 @@ components:
           meeting: '#/components/schemas/meeting'
           opportunity: '#/components/schemas/opportunity'
           product: '#/components/schemas/product'
+          question_answer: '#/components/schemas/question-answer'
           rev_org: '#/components/schemas/rev-org'
           rev_user: '#/components/schemas/rev-user'
           service_account: '#/components/schemas/service-account'
@@ -1859,6 +1868,7 @@ components:
         - $ref: '#/components/schemas/meeting'
         - $ref: '#/components/schemas/opportunity'
         - $ref: '#/components/schemas/product'
+        - $ref: '#/components/schemas/question-answer'
         - $ref: '#/components/schemas/rev-org'
         - $ref: '#/components/schemas/rev-user'
         - $ref: '#/components/schemas/service-account'
@@ -1933,6 +1943,7 @@ components:
           meeting: '#/components/schemas/meeting-summary'
           opportunity: '#/components/schemas/opportunity-summary'
           product: '#/components/schemas/product-summary'
+          question_answer: '#/components/schemas/question-answer-summary'
           rev_org: '#/components/schemas/rev-org-summary'
           rev_user: '#/components/schemas/rev-user-summary'
           service_account: '#/components/schemas/service-account-summary'
@@ -1961,6 +1972,7 @@ components:
         - $ref: '#/components/schemas/meeting-summary'
         - $ref: '#/components/schemas/opportunity-summary'
         - $ref: '#/components/schemas/product-summary'
+        - $ref: '#/components/schemas/question-answer-summary'
         - $ref: '#/components/schemas/rev-org-summary'
         - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/service-account-summary'
@@ -1996,6 +2008,7 @@ components:
         - meeting
         - opportunity
         - product
+        - question_answer
         - rev_org
         - rev_user
         - service_account
@@ -6163,7 +6176,7 @@ components:
             type: string
         id:
           type: string
-          description: The ID for the Dev User.
+          description: The ID for the Dev user.
       required:
         - id
       title: dev-users-activate-request
@@ -6178,13 +6191,54 @@ components:
         - invite_sent
       title: dev-users-activate-response
       x-go-name: DevUsersActivateResponseBody
+    dev-users-create-request:
+      type: object
+      description: |
+        Request object to create a new Dev user for a Dev organization.
+      properties:
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
+        email:
+          type: string
+          description: Email of the Dev user.
+        full_name:
+          type: string
+          description: Full name of the Dev user.
+        reports_to:
+          type: string
+          description: The ID of the user that the user reports to.
+        state:
+          $ref: '#/components/schemas/dev-users-create-request-state-enum-value'
+      required:
+        - email
+        - state
+      title: dev-users-create-request
+    dev-users-create-request-state-enum-value:
+      type: string
+      enum:
+        - shadow
+    dev-users-create-response:
+      type: object
+      description: |
+        Response object for request to create a new Dev user for a Dev
+        organization.
+      properties:
+        dev_user:
+          $ref: '#/components/schemas/dev-user'
+      required:
+        - dev_user
+      title: dev-users-create-response
+      x-go-name: DevUsersCreateResponseBody
     dev-users-deactivate-request:
       type: object
       description: A request to deactivate the Dev user.
       properties:
         id:
           type: string
-          description: The ID for the Dev User.
+          description: The ID for the Dev user.
       required:
         - id
       title: dev-users-deactivate-request
@@ -7176,6 +7230,28 @@ components:
     enhancement:
       allOf:
         - $ref: '#/components/schemas/part-base'
+        - type: object
+          properties:
+            actual_close_date:
+              type: string
+              description: Actual close date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            actual_start_date:
+              type: string
+              description: Actual start date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            target_close_date:
+              type: string
+              description: Target close date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            target_start_date:
+              type: string
+              description: Target start date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
       title: enhancement
     enhancement-summary:
       allOf:
@@ -8023,6 +8099,35 @@ components:
       required:
         - part
       title: event-part-updated
+    event-question-answer-created:
+      type: object
+      properties:
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - question_answer
+      title: event-question-answer-created
+    event-question-answer-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the question-answer that was deleted.
+        old_question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - id
+      title: event-question-answer-deleted
+    event-question-answer-updated:
+      type: object
+      properties:
+        old_question_answer:
+          $ref: '#/components/schemas/question-answer'
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - question_answer
+      title: event-question-answer-updated
     event-rev-org-created:
       type: object
       properties:
@@ -8803,6 +8908,28 @@ components:
         - string_list
         - tag_summary
         - tag_summary_list
+    file:
+      type: object
+      description: Defines a file object.
+      properties:
+        type:
+          type: string
+          description: Type of the file.
+        name:
+          type: string
+          description: Name of the file.
+      title: file
+    file-summary:
+      type: object
+      description: Defines a file object.
+      properties:
+        type:
+          type: string
+          description: Type of the file.
+        name:
+          type: string
+          description: Name of the file.
+      title: file-summary
     general-preferences-group:
       type: object
       description: Preferences group for General settings.
@@ -10562,6 +10689,8 @@ components:
         custom_fields:
           type: object
           description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: The description of the meeting.
@@ -10788,6 +10917,8 @@ components:
         custom_fields:
           type: object
           description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
         description:
           type: string
           description: The description of the meeting.
@@ -10812,6 +10943,11 @@ components:
           type: string
           description: The ID of the user who organized the meeting.
           example: DEVU-12345
+        recording:
+          type: string
+          description: The ID of the meeting's recording artifact.
+          example: ARTIFACT-12345
+          nullable: true
         recording_url:
           type: string
           description: The recording URL of the meeting.
@@ -10829,6 +10965,11 @@ components:
         title:
           type: string
           description: The title of the meeting.
+        transcript:
+          type: string
+          description: |
+            The ID of the artifact for the transcript of the meeting.
+          example: ARTIFACT-12345
       required:
         - id
       title: meetings-update-request
@@ -13493,7 +13634,7 @@ components:
       type: object
       description: |
         Gets the list of Rev users belonging to the authenticated user's Dev
-        Organization which the user is also authorized to access.
+        organization which the user is also authorized to access.
       properties:
         associations:
           type: array
@@ -13765,10 +13906,103 @@ components:
         - rev_user
       title: rev-users-update-response
       x-go-name: RevUsersUpdateResponseBody
+    role:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+      title: role
+    role-privileges:
+      type: string
+      description: Privileges the role provides.
+      enum:
+        - create
+        - delete
+        - execute
+        - read
+        - update
     role-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
       title: role-summary
+    role-target:
+      type: string
+      description: Target object type of the role.
+      enum:
+        - article
+        - artifact
+        - capability
+        - conversation
+        - dev_user
+        - feature
+        - group
+        - issue
+        - linkable
+        - meeting
+        - opportunity
+        - product
+        - rev_user
+        - runnable
+        - ticket
+    roles-apply-request:
+      type: object
+      description: A request to apply (assign or revoke) roles of a principal.
+      properties:
+        assign:
+          type: array
+          description: Roles to be additionally assigned to principal.
+          items:
+            type: string
+        principal:
+          type: string
+          description: The ID of the principal.
+          example: DEV-AbCdEfGh
+      required:
+        - principal
+      title: roles-apply-request
+    roles-apply-response:
+      type: object
+      additionalProperties: false
+      description: The response to roles apply.
+      title: roles-apply-response
+      x-go-name: RolesApplyResponseBody
+    roles-create-request:
+      type: object
+      description: A request to create a new role.
+      properties:
+        description:
+          type: string
+          description: The description of the role.
+        include_all_subtypes:
+          type: boolean
+          description: |
+            Whether to include all subtypes of the leaf type as target of the
+            role.
+        name:
+          type: string
+          description: The name of the role.
+        privileges:
+          type: array
+          description: The privileges the role provides on target.
+          items:
+            $ref: '#/components/schemas/role-privileges'
+          minItems: 1
+        target:
+          $ref: '#/components/schemas/role-target'
+        target_subtype:
+          type: string
+          description: The subtype of the target.
+      required:
+        - target
+      title: roles-create-request
+    roles-create-response:
+      type: object
+      description: A response to a request to create a new role.
+      properties:
+        role:
+          $ref: '#/components/schemas/role'
+      required:
+        - role
+      title: roles-create-response
+      x-go-name: RolesCreateResponseBody
     saml-connection-fields-map:
       type: object
       properties:
@@ -14664,14 +14898,16 @@ components:
         cursor:
           type: string
           description: |
-            The cursor from where to begin iteration. Start from beginning if
-            not provided.
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
         limit:
           type: integer
           description: |
             The maximum number of items to return in a page. The default is
             '10'.
           format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
         namespaces:
           type: array
           description: The namespaces to search in.
@@ -14698,6 +14934,16 @@ components:
           description: |
             The cursor from where to begin iteration. Start from beginning if
             not provided.
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
         results:
           type: array
           description: The search results.
@@ -15903,6 +16149,7 @@ components:
         - comment_suggestion_replies
         - email_preview
         - link_preview
+        - meeting_preview
         - plug_nudge
     snap-widget-status:
       type: string
@@ -16623,6 +16870,12 @@ components:
           description: |
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
+        dispatch_ids:
+          type: array
+          description: |
+            Filters for survey responses associated with these unique IDs.
+          items:
+            type: string
         limit:
           type: integer
           description: |
@@ -19137,6 +19390,12 @@ components:
           $ref: '#/components/schemas/event-part-deleted'
         part_updated:
           $ref: '#/components/schemas/event-part-updated'
+        question_answer_created:
+          $ref: '#/components/schemas/event-question-answer-created'
+        question_answer_deleted:
+          $ref: '#/components/schemas/event-question-answer-deleted'
+        question_answer_updated:
+          $ref: '#/components/schemas/event-question-answer-updated'
         rev_org_created:
           $ref: '#/components/schemas/event-rev-org-created'
         rev_org_deleted:
@@ -19256,6 +19515,9 @@ components:
         - part_created
         - part_deleted
         - part_updated
+        - question_answer_created
+        - question_answer_deleted
+        - question_answer_updated
         - rev_org_created
         - rev_org_deleted
         - rev_org_updated
@@ -20122,6 +20384,9 @@ components:
           description: Filters for tickets belonging to specific groups.
           items:
             type: string
+        is_frozen:
+          type: boolean
+          description: Filters for frozen tickets.
         is_spam:
           type: boolean
           description: Filters for tickets that are spam.
@@ -20584,6 +20849,9 @@ components:
         is_archived:
           type: boolean
           description: Whether the ticket is archived.
+        is_frozen:
+          type: boolean
+          description: Whether the ticket is frozen.
         is_spam:
           type: boolean
           description: Updates whether the ticket is spam.
@@ -24999,6 +25267,43 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       summary: Activate Dev Users
+      tags:
+        - dev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /dev-users.create:
+    post:
+      description: Creates a Dev user for a Dev organization.
+      operationId: dev-users-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-create-response'
+          description: |
+            Response object for request to create a new Dev user for a Dev
+            organization.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Dev User
       tags:
         - dev-users
       x-fern-audiences:
@@ -31295,7 +31600,7 @@ paths:
     get:
       description: |
         Returns a list of all Rev Users belonging to the authenticated user's
-        Dev Organization.
+        Dev organization.
       operationId: rev-users-list
       parameters:
         - description: |
@@ -31474,7 +31779,7 @@ paths:
     post:
       description: |
         Returns a list of all Rev Users belonging to the authenticated user's
-        Dev Organization.
+        Dev organization.
       operationId: rev-users-list-post
       requestBody:
         content:
@@ -31851,6 +32156,78 @@ paths:
       summary: Update Rev User
       tags:
         - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /roles.apply:
+    post:
+      description: Assigns or revokes roles of a principal.
+      operationId: roles-apply
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/roles-apply-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/roles-apply-response'
+          description: The response to roles apply.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Apply Roles
+      tags:
+        - roles
+      x-fern-audiences:
+        - docs
+        - sdks
+  /roles.create:
+    post:
+      description: Creates a new role.
+      operationId: roles-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/roles-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/roles-create-response'
+          description: A response to a request to create a new role.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Role
+      tags:
+        - roles
       x-fern-audiences:
         - docs
         - sdks
@@ -32540,8 +32917,8 @@ paths:
           schema:
             type: string
         - description: |
-            The cursor from where to begin iteration. Start from beginning if not
-            provided.
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
           explode: false
           in: query
           name: cursor
@@ -32555,6 +32932,14 @@ paths:
           schema:
             type: integer
             format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
         - description: The namespaces to search in.
           explode: false
           in: query
@@ -34539,6 +34924,15 @@ paths:
           name: cursor
           schema:
             type: string
+        - description: |
+            Filters for survey responses associated with these unique IDs.
+          explode: false
+          in: query
+          name: dispatch_ids
+          schema:
+            type: array
+            items:
+              type: string
         - description: |
             The maximum number of survey responses to return. If not set, then
             the default is '50'.
@@ -36680,6 +37074,12 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for frozen tickets.
+          explode: false
+          in: query
+          name: ticket.is_frozen
+          schema:
+            type: boolean
         - description: Filters for tickets that are spam.
           explode: false
           in: query
@@ -37163,6 +37563,12 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for frozen tickets.
+          explode: false
+          in: query
+          name: ticket.is_frozen
+          schema:
+            type: boolean
         - description: Filters for tickets that are spam.
           explode: false
           in: query
@@ -37397,6 +37803,8 @@ tags:
     name: rev-orgs
   - description: Rev user interactions.
     name: rev-users
+  - description: APIs for managing roles.
+    name: roles
   - description: Management APIs for availability schedules.
     name: schedules
   - description: DevRev search.

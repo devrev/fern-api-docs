@@ -581,10 +581,18 @@ components:
     artifact:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            file:
+              $ref: '#/components/schemas/file'
       title: artifact
     artifact-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            file:
+              $ref: '#/components/schemas/file-summary'
       title: artifact-summary
     artifact-version:
       type: object
@@ -2128,6 +2136,28 @@ components:
     enhancement:
       allOf:
         - $ref: '#/components/schemas/part-base'
+        - type: object
+          properties:
+            actual_close_date:
+              type: string
+              description: Actual close date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            actual_start_date:
+              type: string
+              description: Actual start date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            target_close_date:
+              type: string
+              description: Target close date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            target_start_date:
+              type: string
+              description: Target start date for the object.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
       title: enhancement
     enhancement-summary:
       allOf:
@@ -2156,6 +2186,27 @@ components:
         - label
         - ordinal
       title: enum-value
+    enum-value-summary:
+      type: object
+      description: The properties of an enum value.
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the enum value.
+          format: int64
+        label:
+          type: string
+          description: The display label of the enum value.
+        ordinal:
+          type: integer
+          description: |
+            Used for determining the relative order of the enum value.
+          format: int64
+      required:
+        - id
+        - label
+        - ordinal
+      title: enum-value-summary
     error:
       type: object
       properties:
@@ -2954,6 +3005,35 @@ components:
       required:
         - part
       title: event-part-updated
+    event-question-answer-created:
+      type: object
+      properties:
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - question_answer
+      title: event-question-answer-created
+    event-question-answer-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the question-answer that was deleted.
+        old_question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - id
+      title: event-question-answer-deleted
+    event-question-answer-updated:
+      type: object
+      properties:
+        old_question_answer:
+          $ref: '#/components/schemas/question-answer'
+        question_answer:
+          $ref: '#/components/schemas/question-answer'
+      required:
+        - question_answer
+      title: event-question-answer-updated
     event-rev-org-created:
       type: object
       properties:
@@ -3294,6 +3374,28 @@ components:
       allOf:
         - $ref: '#/components/schemas/part-base-summary'
       title: feature-summary
+    file:
+      type: object
+      description: Defines a file object.
+      properties:
+        type:
+          type: string
+          description: Type of the file.
+        name:
+          type: string
+          description: Name of the file.
+      title: file
+    file-summary:
+      type: object
+      description: Defines a file object.
+      properties:
+        type:
+          type: string
+          description: Type of the file.
+        name:
+          type: string
+          description: Name of the file.
+      title: file-summary
     group:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -3402,6 +3504,8 @@ components:
                 $ref: '#/components/schemas/part-summary'
             priority:
               $ref: '#/components/schemas/issue-priority'
+            priority_v2:
+              $ref: '#/components/schemas/enum-value'
             sla_summary:
               $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
@@ -3429,6 +3533,8 @@ components:
           properties:
             priority:
               $ref: '#/components/schemas/issue-priority'
+            priority_v2:
+              $ref: '#/components/schemas/enum-value-summary'
             sprint:
               $ref: '#/components/schemas/vista-group-item-summary'
       title: issue-summary
@@ -4200,6 +4306,33 @@ components:
       allOf:
         - $ref: '#/components/schemas/part-base-summary'
       title: product-summary
+    question-answer:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            answer:
+              type: string
+              description: The Answer.
+            question:
+              type: string
+              description: The Question.
+            suggested_answer:
+              type: string
+              description: |
+                An alternative answer suggested by the Q/A generation algorithm.
+            suggested_for_deletion:
+              type: boolean
+              description: |
+                Whether the Q/A was marked for deletion by the Q/A generation
+                algorithm.
+            topic:
+              type: string
+              description: The topic to which the QA belongs.
+            verified:
+              type: boolean
+              description: Whether the Q/A was verified.
+      title: question-answer
     removed-sla-metric-history:
       type: object
       additionalProperties: false
@@ -6972,6 +7105,12 @@ components:
           $ref: '#/components/schemas/event-part-deleted'
         part_updated:
           $ref: '#/components/schemas/event-part-updated'
+        question_answer_created:
+          $ref: '#/components/schemas/event-question-answer-created'
+        question_answer_deleted:
+          $ref: '#/components/schemas/event-question-answer-deleted'
+        question_answer_updated:
+          $ref: '#/components/schemas/event-question-answer-updated'
         rev_org_created:
           $ref: '#/components/schemas/event-rev-org-created'
         rev_org_deleted:
@@ -7091,6 +7230,9 @@ components:
         - part_created
         - part_deleted
         - part_updated
+        - question_answer_created
+        - question_answer_deleted
+        - question_answer_updated
         - rev_org_created
         - rev_org_deleted
         - rev_org_updated
@@ -7688,6 +7830,9 @@ components:
           description: Filters for tickets belonging to specific groups.
           items:
             type: string
+        is_frozen:
+          type: boolean
+          description: Filters for frozen tickets.
         is_spam:
           type: boolean
           description: Filters for tickets that are spam.
@@ -8047,6 +8192,9 @@ components:
         is_archived:
           type: boolean
           description: Whether the ticket is archived.
+        is_frozen:
+          type: boolean
+          description: Whether the ticket is frozen.
         is_spam:
           type: boolean
           description: Updates whether the ticket is spam.
@@ -12534,6 +12682,12 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for frozen tickets.
+          explode: false
+          in: query
+          name: ticket.is_frozen
+          schema:
+            type: boolean
         - description: Filters for tickets that are spam.
           explode: false
           in: query
@@ -12947,6 +13101,12 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for frozen tickets.
+          explode: false
+          in: query
+          name: ticket.is_frozen
+          schema:
+            type: boolean
         - description: Filters for tickets that are spam.
           explode: false
           in: query

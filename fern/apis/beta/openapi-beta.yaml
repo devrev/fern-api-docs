@@ -10459,7 +10459,6 @@ components:
       type: string
       description: The channel of meeting.
       enum:
-        - amazon_connect
         - google_meet
         - offline
         - other
@@ -10472,11 +10471,8 @@ components:
         - canceled
         - completed
         - no_show
-        - ongoing
-        - rejected
         - rescheduled
         - scheduled
-        - waiting
     meeting-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -10615,6 +10611,7 @@ components:
           description: The title of the meeting.
       required:
         - channel
+        - ended_date
         - members
         - scheduled_date
         - state

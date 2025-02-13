@@ -767,9 +767,6 @@ components:
           type: string
           description: The name of the skill.
           maxLength: 512
-        thought:
-          type: string
-          description: The thought explaining why the skill was called.
         workflow:
           $ref: '#/components/schemas/workflow-summary'
         workflow_run:
@@ -877,9 +874,6 @@ components:
             app:
               type: string
               description: App this fragment applies to.
-            app_display_name:
-              type: string
-              description: The display name of the app.
       title: app-fragment
     app-fragment-summary:
       allOf:
@@ -1598,33 +1592,7 @@ components:
     artifact:
       allOf:
         - $ref: '#/components/schemas/atom-base'
-        - type: object
-          properties:
-            file:
-              $ref: '#/components/schemas/artifact-file'
       title: artifact
-    artifact-file:
-      type: object
-      description: Defines a file object.
-      properties:
-        type:
-          type: string
-          description: Type of the file.
-        name:
-          type: string
-          description: Name of the file.
-      title: artifact-file
-    artifact-file-summary:
-      type: object
-      description: Defines a file object.
-      properties:
-        type:
-          type: string
-          description: Type of the file.
-        name:
-          type: string
-          description: Name of the file.
-      title: artifact-file-summary
     artifact-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'

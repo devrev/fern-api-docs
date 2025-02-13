@@ -15862,13 +15862,6 @@ components:
         - snap_in
       title: snap-ins-update-response
       x-go-name: SnapInsUpdateResponseBody
-    snap-kit-base-widget:
-      type: object
-      description: A SnapKit based widget.
-      properties:
-        snap_kit_execution:
-          type: string
-      title: snap-kit-base-widget
     snap-widget:
       type: object
       discriminator:
@@ -15904,58 +15897,6 @@ components:
             - name
             - status
       title: snap-widget-base
-    snap-widget-click-interaction:
-      type: object
-      description: An interaction supported by a widget.
-      discriminator:
-        mapping:
-          open_plug_widget: '#/components/schemas/snap-widget-open-plug-widget-action'
-          open_url: '#/components/schemas/snap-widget-open-url-action'
-          start_conversation: '#/components/schemas/snap-widget-start-conversation-action'
-        propertyName: click_action
-      oneOf:
-        - $ref: '#/components/schemas/snap-widget-open-plug-widget-action'
-        - $ref: '#/components/schemas/snap-widget-open-url-action'
-        - $ref: '#/components/schemas/snap-widget-start-conversation-action'
-      properties:
-        click_action:
-          $ref: '#/components/schemas/snap-widget-click-interaction-click-action'
-      required:
-        - click_action
-      title: snap-widget-click-interaction
-    snap-widget-click-interaction-click-action:
-      type: string
-      enum:
-        - open_plug_widget
-        - open_url
-        - start_conversation
-    snap-widget-email-input-interaction:
-      type: object
-      additionalProperties: false
-      description: An interaction supported by a widget.
-      title: snap-widget-email-input-interaction
-    snap-widget-interaction:
-      type: object
-      description: An interaction supported by a widget.
-      discriminator:
-        mapping:
-          click: '#/components/schemas/snap-widget-click-interaction'
-          email_input: '#/components/schemas/snap-widget-email-input-interaction'
-        propertyName: type
-      oneOf:
-        - $ref: '#/components/schemas/snap-widget-click-interaction'
-        - $ref: '#/components/schemas/snap-widget-email-input-interaction'
-      properties:
-        type:
-          $ref: '#/components/schemas/snap-widget-interaction-type'
-      required:
-        - type
-      title: snap-widget-interaction
-    snap-widget-interaction-type:
-      type: string
-      enum:
-        - click
-        - email_input
     snap-widget-namespace:
       type: string
       description: Logical grouping of snap widgets. Useful for filtering.
@@ -15966,33 +15907,6 @@ components:
         - link_preview
         - meeting_preview
         - plug_nudge
-    snap-widget-open-plug-widget-action:
-      type: object
-      additionalProperties: false
-      description: Details of open plug widget action.
-      title: snap-widget-open-plug-widget-action
-    snap-widget-open-url-action:
-      type: object
-      description: Details of open url widget action.
-      properties:
-        url:
-          type: string
-          description: The url to open when the widget is clicked.
-      required:
-        - url
-      title: snap-widget-open-url-action
-    snap-widget-start-conversation-action:
-      type: object
-      description: Details of start conversation action.
-      properties:
-        rte_enabled:
-          type: boolean
-          description: |
-            Whether the rich text editor is enabled on the object. Default is
-            false.
-        starter_message:
-          $ref: '#/components/schemas/snap-kit-base-widget'
-      title: snap-widget-start-conversation-action
     snap-widget-status:
       type: string
       description: The status of the snap widget.

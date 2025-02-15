@@ -125,6 +125,10 @@ devrev snap_in draft
 To install the snap-in, you must be a member of the **Admins** group in the dev org.
 </Callout>
 
+<Callout intent="info">
+If you get a `snap-in version is not ready` error, check the version state with `devrev snap_in_version show`. The state should be `ready` for installation. If `build_failed`, check the logs for errors.
+</Callout>
+
 <br />
 
 <Callout intent="info">
@@ -149,6 +153,14 @@ To make a connection available to other members in your organization, create it 
 
 Once you have provided the required configuration, the **Deploy snap-in** button is enabled on the UI. Click on it to deploy the snap-in.
 That's it, the snap-in should now be active and ready to use.
+
+### Check snap-in logs
+
+To check the logs for the snap-in, run the following command:
+
+```bash
+devrev snap_in_package logs | jq
+```
 
 ### Delete the snap-in
 

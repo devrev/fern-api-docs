@@ -75,8 +75,10 @@ import { FunctionExecutionError } from '@devrev/typescript-sdk/dist/snap-ins/typ
 export const run = async (events: any[]) => {
   /*
   Put your code here to handle the event.
+  Note: Do not log the event payload here as it may contain sensitive information.
+        Instead, explicitly log the fields you need.
   */
-  console.log('Events: ', JSON.stringify(events));
+  console.log('Received an event');
 
   try {
     // Your event processing logic here

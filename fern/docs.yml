@@ -61,7 +61,13 @@ redirects:
   - source: /sdks/plug/install-android
     destination: /sdks/mobile/android
     permanent: true
-
+  - source: /snap-in-development/:slug
+    destination: /snapin-development/:slug
+    permanent: true
+  - source: /public/snap-in-development/:slug
+    destination: /public/snapin-development/:slug
+    permanent: true
+    
 analytics:
   ga4:
     measurement-id: G-XP1LEFVYQ9

@@ -61,11 +61,11 @@ redirects:
   - source: /sdks/plug/install-android
     destination: /sdks/mobile/android
     permanent: true
-  - source: /snap-in-development/:slug
-    destination: /snapin-development/:slug
+  - source: /snap-in-development/:slug*
+    destination: /snapin-development/:slug*
     permanent: true
-  - source: /public/snap-in-development/:slug
-    destination: /public/snapin-development/:slug
+  - source: /public/snap-in-development/:slug*
+    destination: /public/snapin-development/:slug*
     permanent: true
     
 analytics:

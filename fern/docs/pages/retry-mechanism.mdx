@@ -4,10 +4,10 @@ The DevRev snap-ins platform offers event reliability features to ensure smooth 
 
 ## Getting started
 
-To start using the event reliability features in your Snap-ins, follow these steps:
+To start using the event reliability features in your snap-ins, follow these steps:
 
 1. Update your DevRev SDK to the latest version.
-2. Define retryable errors using the `FunctionExecutionError` interface in your Snap-in code.
+2. Define retryable errors using the `FunctionExecutionError` interface in your snap-in code.
 3. Configure the retry behavior in your snap-in manifest.
 4. Handle errors appropriately in your snap-in function.
 
@@ -67,7 +67,7 @@ class FunctionExecutionError extends Error {
 
 ## Example usage
 
-Here's an example of how to use the `FunctionExecutionError` in your Snap-in code:
+Here's an example of how to use the `FunctionExecutionError` in your snap-in code:
 
 ```typescript
 import { FunctionExecutionError } from '@devrev/typescript-sdk/dist/snap-ins/types';
@@ -75,8 +75,10 @@ import { FunctionExecutionError } from '@devrev/typescript-sdk/dist/snap-ins/typ
 export const run = async (events: any[]) => {
   /*
   Put your code here to handle the event.
+  Note: Do not log the event payload here as it may contain sensitive information.
+        Instead, explicitly log the fields you need.
   */
-  console.log('Events: ', JSON.stringify(events));
+  console.log('Received an event');
 
   try {
     // Your event processing logic here
@@ -104,4 +106,4 @@ export const run = async (events: any[]) => {
 export default run;
 ```
 
-In this example, the Snap-in function's `run` method processes the events and can throw a `FunctionExecutionError` to indicate whether the error is retryable or not. The Snap-in platform handles the error based on the `retry` and `refresh` properties set in the error object.
+In this example, the snap-in function's `run` method processes the events and can throw a `FunctionExecutionError` to indicate whether the error is retryable or not. The snap-in platform handles the error based on the `retry` and `refresh` properties set in the error object.

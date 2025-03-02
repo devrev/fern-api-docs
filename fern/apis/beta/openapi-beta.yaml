@@ -5627,14 +5627,14 @@ components:
     date-filter:
       type: object
       description: Provides ways to specify date ranges on objects.
-      discriminator:
-        mapping:
-          preset: '#/components/schemas/date-time-preset'
-          range: '#/components/schemas/date-time-filter'
-        propertyName: type
-      oneOf:
-        - $ref: '#/components/schemas/date-time-filter'
-        - $ref: '#/components/schemas/date-time-preset'
+      # discriminator:
+      #   mapping:
+      #     preset: '#/components/schemas/date-time-preset'
+      #     range: '#/components/schemas/date-time-filter'
+      #   propertyName: type
+      # oneOf:
+      #   - $ref: '#/components/schemas/date-time-filter'
+      #   - $ref: '#/components/schemas/date-time-preset'
       properties:
         type:
           $ref: '#/components/schemas/date-filter-type'

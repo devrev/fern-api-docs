@@ -23,25 +23,25 @@ navigation:
       - artifacts:
         - page: Attachments
           path: ../docs/pages/entities/artifacts.mdx
-      - authConnection:
+      - auth-connections:
         - page: Identity provider
           path: ../docs/pages/entities/identity.mdx
-      - authTokens:
+      - auth-tokens:
         - page: Security tokens
           path: ../docs/pages/entities/security-token.mdx
-      - devUsers:
+      - dev-users:
         - page: Product builders and service providers
           path: ../docs/pages/entities/dev-users.mdx
       - parts:
         - page: Product components
           path: ../docs/pages/entities/parts.mdx
-      - revOrgs:
+      - rev-orgs:
         - page: Workspaces
           path: ../docs/pages/entities/revorgs.mdx
       - tags:
         - page: Concepts
           path: ../docs/pages/entities/tags.mdx
-      - timelineEntries:
+      - timeline-entries:
         - page: Discussions and events
           path: ../docs/pages/entities/timeline.mdx
       - webhooks:

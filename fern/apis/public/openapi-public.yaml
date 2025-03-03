@@ -906,6 +906,13 @@ components:
           description: Filter for articles based on intended audience.
           items:
             $ref: '#/components/schemas/shared-with-membership-filter'
+        tags:
+          type: array
+          description: Filters for article with any of the provided tags.
+          example:
+            - TAG-12345
+          items:
+            type: string
       title: articles-list-request
     articles-list-response:
       type: object
@@ -2084,6 +2091,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            channels:
+              type: array
+              description: Channel IDs of the conversation.
+              items:
+                $ref: '#/components/schemas/external-communication-channel-summary'
             description:
               type: string
               description: Description of the conversation object.
@@ -2301,6 +2313,9 @@ components:
           type: boolean
           description: |
             Filters for conversations that are created by verified users.
+        is_frozen:
+          type: boolean
+          description: Filters for conversations that are frozen.
         is_spam:
           type: boolean
           description: Filters for conversations that are spam.
@@ -2422,6 +2437,9 @@ components:
         id:
           type: string
           description: The ID of the conversation to update.
+        is_frozen:
+          type: boolean
+          description: Whether the conversation is frozen.
         is_spam:
           type: boolean
           description: Whether the conversation is spam.
@@ -2554,14 +2572,14 @@ components:
     date-filter:
       type: object
       description: Provides ways to specify date ranges on objects.
-      # discriminator:
-      #   mapping:
-      #     preset: '#/components/schemas/date-time-preset'
-      #     range: '#/components/schemas/date-time-filter'
-      #   propertyName: type
-      # oneOf:
-      #   - $ref: '#/components/schemas/date-time-filter'
-      #   - $ref: '#/components/schemas/date-time-preset'
+      discriminator:
+        mapping:
+          preset: '#/components/schemas/date-time-preset'
+          range: '#/components/schemas/date-time-filter'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/date-time-filter'
+        - $ref: '#/components/schemas/date-time-preset'
       properties:
         type:
           $ref: '#/components/schemas/date-filter-type'
@@ -3947,6 +3965,9 @@ components:
     event-ai-agent-response:
       type: object
       properties:
+        agent:
+          type: string
+          description: The ID of the AI agent that consumed the event.
         agent_response:
           type: string
           enum:
@@ -3965,6 +3986,18 @@ components:
             The final response of asynchronous agent events execution.
         progress:
           $ref: '#/components/schemas/ai-agent-event-execute-progress'
+        session:
+          type: string
+          description: |
+            The agent session ID to track the asynchronous execution of this
+            session.
+        session_object:
+          type: string
+          description: An identifier of the session with the AI agent.
+      required:
+        - agent
+        - session
+        - session_object
       title: event-ai-agent-response
       x-go-name: EventAiAgentResponseBody
     event-conversation-created:
@@ -4425,9 +4458,34 @@ components:
           $ref: '#/components/schemas/timeline-entry'
         old_entry:
           $ref: '#/components/schemas/timeline-entry'
+        reactions:
+          type: array
+          description: The reactions that were performed.
+          items:
+            $ref: '#/components/schemas/event-timeline-entry-updated-reaction'
+          maxItems: 16
       required:
         - entry
       title: event-timeline-entry-updated
+    event-timeline-entry-updated-reaction:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/event-timeline-entry-updated-reaction-action'
+        emoji:
+          type: string
+          description: The emoji for the reaction.
+        reactor:
+          $ref: '#/components/schemas/user-summary'
+      required:
+        - action
+        - emoji
+      title: event-timeline-entry-updated-reaction
+    event-timeline-entry-updated-reaction-action:
+      type: string
+      enum:
+        - added
+        - removed
     event-webhook-created:
       type: object
       properties:
@@ -4512,6 +4570,10 @@ components:
       required:
         - work
       title: event-work-updated
+    external-communication-channel-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: external-communication-channel-summary
     external-identity:
       type: object
       description: External identity of a user.
@@ -5590,6 +5652,11 @@ components:
             - DEVU-12345
           items:
             type: string
+        tags:
+          type: array
+          description: Tags associated with the part.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
       required:
         - name
         - owned_by
@@ -5739,6 +5806,13 @@ components:
             type: string
         parent_part:
           $ref: '#/components/schemas/parent-part-filter'
+        tags:
+          type: array
+          description: Filters for part with any of the provided tags.
+          example:
+            - TAG-12345
+          items:
+            type: string
       title: parts-list-request
     parts-list-response:
       type: object
@@ -5795,6 +5869,8 @@ components:
           description: The updated name of the part.
         owned_by:
           $ref: '#/components/schemas/parts-update-request-owned-by'
+        tags:
+          $ref: '#/components/schemas/parts-update-request-tags'
       required:
         - id
       title: parts-update-request
@@ -5852,6 +5928,15 @@ components:
       type: object
       additionalProperties: false
       title: parts-update-request-product
+    parts-update-request-tags:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the tags to the provided tags.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+      title: parts-update-request-tags
     parts-update-response:
       type: object
       properties:
@@ -5877,9 +5962,16 @@ components:
             answer:
               type: string
               description: The Answer.
+            applies_to_parts:
+              type: array
+              description: Details of the parts relevant to the question_answer.
+              items:
+                $ref: '#/components/schemas/part-summary'
             question:
               type: string
               description: The Question.
+            status:
+              $ref: '#/components/schemas/question-answer-status'
             suggested_answer:
               type: string
               description: |
@@ -5896,6 +5988,15 @@ components:
               type: boolean
               description: Whether the Q/A was verified.
       title: question-answer
+    question-answer-status:
+      type: string
+      description: Status of the question answer.
+      enum:
+        - archived
+        - discarded
+        - draft
+        - published
+        - review_needed
     remove-tag-with-value:
       type: object
       properties:
@@ -8477,11 +8578,18 @@ components:
         - $ref: '#/components/schemas/work-base'
         - type: object
           properties:
+            account:
+              $ref: '#/components/schemas/account-summary'
             channels:
               type: array
               description: Channels of the ticket.
               items:
                 $ref: '#/components/schemas/ticket-channels'
+            channels_v2:
+              type: array
+              description: Channel IDs of the ticket.
+              items:
+                $ref: '#/components/schemas/external-communication-channel-summary'
             group:
               $ref: '#/components/schemas/group-summary'
             needs_response:
@@ -8508,6 +8616,8 @@ components:
             source_channel:
               type: string
               description: Source channel of the ticket.
+            source_channel_v2:
+              $ref: '#/components/schemas/external-communication-channel-summary'
             visibility:
               $ref: '#/components/schemas/enum-value'
       title: ticket
@@ -8533,6 +8643,8 @@ components:
         - $ref: '#/components/schemas/work-base-summary'
         - type: object
           properties:
+            account:
+              $ref: '#/components/schemas/account-summary'
             rev_org:
               $ref: '#/components/schemas/org-summary'
             severity:
@@ -9647,6 +9759,10 @@ components:
     works-create-request-ticket:
       type: object
       properties:
+        account:
+          type: string
+          description: The account that the ticket is associated with.
+          example: ACC-12345
         channels:
           type: array
           description: Channels of the ticket.
@@ -9785,7 +9901,7 @@ components:
       properties:
         accounts:
           type: array
-          description: Filters for issues with any of the provided Accounts.
+          description: Filters for issues with any of the provided accounts.
           example:
             - ACC-12345
           items:
@@ -10028,8 +10144,8 @@ components:
         stage_validation_options:
           type: array
           description: |
-            The type of stage validations options when updating the stage of an
-            object.
+            The type of stage validations options when updating the stage or
+            the stage diagram of an object.
           items:
             $ref: '#/components/schemas/stage-validation-option-for-update'
         staged_info:
@@ -10189,6 +10305,11 @@ components:
     works-update-request-ticket:
       type: object
       properties:
+        account:
+          type: string
+          description: Updates the account that the ticket is associated with.
+          example: ACC-12345
+          nullable: true
         channels:
           $ref: '#/components/schemas/works-update-request-ticket-channels'
         group:
@@ -11059,6 +11180,16 @@ paths:
           name: shared_with.role
           schema:
             type: string
+        - description: Filters for article with any of the provided tags.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            example:
+              - TAG-12345
+            items:
+              type: string
       responses:
         "200":
           content:
@@ -12011,6 +12142,12 @@ paths:
           explode: false
           in: query
           name: is_creator_verified
+          schema:
+            type: boolean
+        - description: Filters for conversations that are frozen.
+          explode: false
+          in: query
+          name: is_frozen
           schema:
             type: boolean
         - description: Filters for conversations that are spam.
@@ -14065,6 +14202,16 @@ paths:
             items:
               type: string
             minItems: 1
+        - description: Filters for part with any of the provided tags.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            example:
+              - TAG-12345
+            items:
+              type: string
         - description: Filters for parts of the provided type(s).
           explode: false
           in: query
@@ -16711,7 +16858,7 @@ paths:
           schema:
             type: integer
             format: int32
-        - description: Filters for issues with any of the provided Accounts.
+        - description: Filters for issues with any of the provided accounts.
           explode: false
           in: query
           name: issue.accounts
@@ -17114,7 +17261,7 @@ paths:
           name: cursor
           schema:
             type: string
-        - description: Filters for issues with any of the provided Accounts.
+        - description: Filters for issues with any of the provided accounts.
           explode: false
           in: query
           name: issue.accounts

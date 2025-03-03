@@ -620,6 +620,11 @@ components:
       type: object
       description: List of custom fields from multiple source fragments.
       properties:
+        conditions:
+          type: array
+          description: The conditions associated with the fields.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragment-condition'
         stock_field_overrides:
           type: array
           description: The stock field overrides.
@@ -635,6 +640,9 @@ components:
             The list of custom schema fragment DONs which are to be aggregated.
           items:
             type: string
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object.
         leaf_type:
           type: string
           description: |
@@ -706,6 +714,33 @@ components:
         - running_total
         - sum
         - unique_count
+    ai-agent-event:
+      type: object
+      description: An event to be processed by an AI agent.
+      properties:
+        input_message:
+          $ref: '#/components/schemas/ai-agent-event-input-message'
+      required:
+        - input_message
+      title: ai-agent-event
+    ai-agent-event-context:
+      type: object
+      description: |
+        Additional metadata to be used by the AI agent for the event.
+      properties:
+        additional:
+          type: string
+          description: |
+            The additional context for the AI agent event. This will be used on
+            per event basis.
+          maxLength: 1024
+        initial:
+          type: string
+          description: |
+            The initial context for the AI agent event. This will be used at
+            the start of Agent Session
+          maxLength: 4096
+      title: ai-agent-event-context
     ai-agent-event-execute-error:
       type: object
       description: |
@@ -778,6 +813,94 @@ components:
         - args
         - skill_name
       title: ai-agent-event-execute-progress-skill-triggered
+    ai-agent-event-input-message:
+      type: object
+      description: |
+        Text input message for the AI agent event. Could be human or agent
+        message.
+      properties:
+        message:
+          type: string
+          description: The text message of the AI agent event.
+          maxLength: 8192
+      required:
+        - message
+      title: ai-agent-event-input-message
+    ai-agent-event-source-target:
+      type: object
+      description: |
+        The source of the event to send notifications to, of asynchronous
+        execution progress.
+      properties:
+        event_source:
+          type: string
+          description: The ID of the target to send the events to.
+      required:
+        - event_source
+      title: ai-agent-event-source-target
+    ai-agent-events-execute-async-request:
+      type: object
+      description: |
+        Request object to consume an input event and execute asynchronously.
+      properties:
+        agent:
+          type: string
+          description: The ID of the AI agent that will consume the event.
+        client_metadata:
+          type: object
+          description: |
+            The metadata to be sent to the client with the notifications of
+            execution progress.
+        context:
+          $ref: '#/components/schemas/ai-agent-event-context'
+        event:
+          $ref: '#/components/schemas/ai-agent-event'
+        event_source_target:
+          $ref: '#/components/schemas/ai-agent-event-source-target'
+        session_object:
+          type: string
+          description: An identifier of a session with an AI agent.
+        target:
+          type: string
+          enum:
+            - event_source_target
+            - webhook_target
+        webhook_target:
+          $ref: '#/components/schemas/ai-agent-webhook-target'
+      required:
+        - agent
+        - event
+        - session_object
+      title: ai-agent-events-execute-async-request
+    ai-agent-events-execute-async-response:
+      type: object
+      description: |
+        Response object to provide final response after asynchronous execution
+        of input event to AI agent.
+      properties:
+        session:
+          $ref: '#/components/schemas/ai-agent-session-summary'
+      required:
+        - session
+      title: ai-agent-events-execute-async-response
+      x-go-name: AiAgentEventsExecuteAsyncResponseBody
+    ai-agent-session-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: ai-agent-session-summary
+    ai-agent-webhook-target:
+      type: object
+      description: |
+        The source of the event to send notifications to, of asynchronous
+        execution progress.
+      properties:
+        webhook:
+          type: string
+          description: The ID of the webhook to send the events to.
+          example: don:integration:dvrv-us-1:devo/example:webhook/webhook-id
+      required:
+        - webhook
+      title: ai-agent-webhook-target
     airdrop-sync-units-get-request:
       type: object
       description: Request to get a sync unit.
@@ -1136,6 +1259,13 @@ components:
           description: Filter for articles based on intended audience.
           items:
             $ref: '#/components/schemas/shared-with-membership-filter'
+        tags:
+          type: array
+          description: Filters for article with any of the provided tags.
+          example:
+            - TAG-12345
+          items:
+            type: string
       title: articles-count-request
     articles-count-response:
       type: object
@@ -1382,6 +1512,13 @@ components:
           description: Filter for articles based on intended audience.
           items:
             $ref: '#/components/schemas/shared-with-membership-filter'
+        tags:
+          type: array
+          description: Filters for article with any of the provided tags.
+          example:
+            - TAG-12345
+          items:
+            type: string
       title: articles-list-request
     articles-list-response:
       type: object
@@ -3017,6 +3154,34 @@ components:
           type: string
           description: 'Page URL, example: https://devrev.ai/pricing'
       title: client-context-page
+    client-override:
+      type: object
+      description: UI hint overrides for a client.
+      properties:
+        client_name:
+          type: string
+          description: The name of the client.
+        display_name:
+          type: string
+          description: The display name of the field.
+        is_hidden:
+          type: boolean
+          description: Whether the field is hidden in the UI.
+        is_required:
+          type: boolean
+          description: Whether the field is mandatory.
+        placeholder:
+          type: string
+          description: A placeholder for the field.
+        tooltip:
+          type: string
+          description: Tooltip for the field.
+        view_overrides:
+          type: array
+          description: The view overrides for the client.
+          items:
+            $ref: '#/components/schemas/view-override'
+      title: client-override
     code-change:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -3329,6 +3494,7 @@ components:
         - account
         - article
         - conversation
+        - custom_object
         - engagement
         - flow
         - incident
@@ -3509,9 +3675,11 @@ components:
       discriminator:
         mapping:
           notification_content_template: '#/components/schemas/content-template-create-request-notification-content-template'
+          notification_content_template_translation: '#/components/schemas/content-template-create-request-notification-content-template-translation'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/content-template-create-request-notification-content-template'
+        - $ref: '#/components/schemas/content-template-create-request-notification-content-template-translation'
       properties:
         type:
           $ref: '#/components/schemas/content-template-type'
@@ -3563,6 +3731,27 @@ components:
         - body
         - title
       title: content-template-create-request-notification-content-template-default-notification-content-template
+    content-template-create-request-notification-content-template-translation:
+      type: object
+      properties:
+        body_translations:
+          type: object
+          additionalProperties:
+            type: string
+          description: |
+            Content data for the notification. The key is the language code and
+            the value is the content.
+        title_translations:
+          type: object
+          additionalProperties:
+            type: string
+          description: |
+            Content data for the notification. The key is the language code and
+            the value is the content.
+      required:
+        - body_translations
+        - title_translations
+      title: content-template-create-request-notification-content-template-translation
     content-template-create-response:
       type: object
       properties:
@@ -3661,6 +3850,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            channels:
+              type: array
+              description: Channel IDs of the conversation.
+              items:
+                $ref: '#/components/schemas/external-communication-channel-summary'
             custom_fields:
               type: object
               description: Custom fields.
@@ -3893,6 +4087,9 @@ components:
           type: boolean
           description: |
             Filters for conversations that are created by verified users.
+        is_frozen:
+          type: boolean
+          description: Filters for conversations that are frozen.
         is_spam:
           type: boolean
           description: Filters for conversations that are spam.
@@ -4033,6 +4230,9 @@ components:
           type: boolean
           description: |
             Filters for conversations that are created by verified users.
+        is_frozen:
+          type: boolean
+          description: Filters for conversations that are frozen.
         is_spam:
           type: boolean
           description: Filters for conversations that are spam.
@@ -4160,6 +4360,9 @@ components:
         id:
           type: string
           description: The ID of the conversation to update.
+        is_frozen:
+          type: boolean
+          description: Whether the conversation is frozen.
         is_spam:
           type: boolean
           description: Whether the conversation is spam.
@@ -4265,6 +4468,19 @@ components:
         - conversation
       title: conversations-update-response
       x-go-name: ConversationsUpdateResponseBody
+    create-association:
+      type: object
+      description: |
+        Association of Rev users with Rev orgs or accounts. A Rev user can be
+        associated with 0 or more accounts and Rev orgs. A Rev org association
+        automatically adds an account association.
+      properties:
+        associated_to:
+          type: string
+          description: |
+            ID of the Rev org or account to which Rev user is to be associated.
+          example: REV-AbCdEfGh
+      title: create-association
     create-command-action:
       type: object
       properties:
@@ -4500,9 +4716,31 @@ components:
         target_stage_id:
           type: string
           description: The ID of the target stage.
+        ui:
+          $ref: '#/components/schemas/create-stage-ui-metadata'
       required:
         - target_stage_id
       title: create-stage-transition
+    create-stage-ui-metadata:
+      type: object
+      properties:
+        is_hidden:
+          type: boolean
+          description: Whether the stage is hidden.
+      title: create-stage-ui-metadata
+    create-starter-message-nudge-widget:
+      type: object
+      description: A starter message nudge widget.
+      discriminator:
+        propertyName: starter_message_nudge_type
+      properties:
+        starter_message_nudge_type:
+          $ref: '#/components/schemas/create-starter-message-nudge-widget-starter-message-nudge-type'
+      required:
+        - starter_message_nudge_type
+      title: create-starter-message-nudge-widget
+    create-starter-message-nudge-widget-starter-message-nudge-type:
+      type: string
     create-tag-with-value:
       type: object
       description: Create object for tag_summary.
@@ -4722,6 +4960,8 @@ components:
             subtype:
               type: string
               description: Subtype corresponding to the custom type fragment.
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata'
       title: custom-object
     custom-object-search-summary:
       allOf:
@@ -4906,8 +5146,8 @@ components:
         stage_validation_options:
           type: array
           description: |
-            The type of stage validations options when updating the stage of a
-            custom object.
+            The type of stage validations options when updating the stage or
+            the stage diagram of a custom object.
           items:
             $ref: '#/components/schemas/stage-validation-option-for-update'
         title:
@@ -4984,9 +5224,55 @@ components:
       title: custom-schema-fragment-base-summary
     custom-schema-fragment-condition:
       type: object
-      additionalProperties: false
       description: The condition associated with a field.
+      properties:
+        effects:
+          type: array
+          description: |
+            The linked effects when the expression evaluates to true.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragment-effect'
+        expression:
+          type: string
+          description: The expression to evaluate.
       title: custom-schema-fragment-condition
+    custom-schema-fragment-effect:
+      type: object
+      description: An effect associated with a condition.
+      properties:
+        allowed_values:
+          type: array
+          description: |
+            Allowed values for the fields based on the condition. This takes
+            precedence over allowed_values in field_descriptor.
+          items:
+            type: string
+        fields:
+          type: array
+          description: The fields which are affected by the condition.
+          items:
+            type: string
+        immutable:
+          type: boolean
+          description: |
+            Whether the fields should be made immutable or not based on the
+            condition.
+        invalid:
+          type: boolean
+          description: |
+            Whether the field values are invalid based on the condition.
+        require:
+          type: boolean
+          description: |
+            Whether the fields are required or not based on the condition. This
+            takes precedence over is_required in field_descriptor.
+        show:
+          type: boolean
+          description: |
+            Whether the fields are shown or not based on the condition.
+      required:
+        - fields
+      title: custom-schema-fragment-effect
     custom-schema-fragment-fragment-type:
       type: string
       description: Type of the custom schema fragment.
@@ -5285,7 +5571,7 @@ components:
           properties:
             name:
               type: string
-              description: The human readable name of the state.
+              description: The human readable name of the stage.
             ordinal:
               type: integer
               description: Ordinal used to sort/group stages.
@@ -5300,7 +5586,7 @@ components:
           properties:
             name:
               type: string
-              description: The human readable name of the state.
+              description: The human readable name of the stage.
       title: custom-stage-summary
     custom-stages-create-request:
       type: object
@@ -5627,14 +5913,14 @@ components:
     date-filter:
       type: object
       description: Provides ways to specify date ranges on objects.
-      # discriminator:
-      #   mapping:
-      #     preset: '#/components/schemas/date-time-preset'
-      #     range: '#/components/schemas/date-time-filter'
-      #   propertyName: type
-      # oneOf:
-      #   - $ref: '#/components/schemas/date-time-filter'
-      #   - $ref: '#/components/schemas/date-time-preset'
+      discriminator:
+        mapping:
+          preset: '#/components/schemas/date-time-preset'
+          range: '#/components/schemas/date-time-filter'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/date-time-filter'
+        - $ref: '#/components/schemas/date-time-preset'
       properties:
         type:
           $ref: '#/components/schemas/date-filter-type'
@@ -7936,6 +8222,9 @@ components:
     event-ai-agent-response:
       type: object
       properties:
+        agent:
+          type: string
+          description: The ID of the AI agent that consumed the event.
         agent_response:
           type: string
           enum:
@@ -7954,6 +8243,18 @@ components:
             The final response of asynchronous agent events execution.
         progress:
           $ref: '#/components/schemas/ai-agent-event-execute-progress'
+        session:
+          type: string
+          description: |
+            The agent session ID to track the asynchronous execution of this
+            session.
+        session_object:
+          type: string
+          description: An identifier of the session with the AI agent.
+      required:
+        - agent
+        - session
+        - session_object
       title: event-ai-agent-response
       x-go-name: EventAiAgentResponseBody
     event-conversation-created:
@@ -8533,9 +8834,34 @@ components:
           $ref: '#/components/schemas/timeline-entry'
         old_entry:
           $ref: '#/components/schemas/timeline-entry'
+        reactions:
+          type: array
+          description: The reactions that were performed.
+          items:
+            $ref: '#/components/schemas/event-timeline-entry-updated-reaction'
+          maxItems: 16
       required:
         - entry
       title: event-timeline-entry-updated
+    event-timeline-entry-updated-reaction:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/event-timeline-entry-updated-reaction-action'
+        emoji:
+          type: string
+          description: The emoji for the reaction.
+        reactor:
+          $ref: '#/components/schemas/user-summary'
+      required:
+        - action
+        - emoji
+      title: event-timeline-entry-updated-reaction
+    event-timeline-entry-updated-reaction-action:
+      type: string
+      enum:
+        - added
+        - removed
     event-webhook-created:
       type: object
       properties:
@@ -8646,6 +8972,10 @@ components:
         process is asynchronous. Upon completion, the user will be notified.
       title: export-audit-logs-response
       x-go-name: ExportAuditLogsResponseBody
+    external-communication-channel-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: external-communication-channel-summary
     external-identity:
       type: object
       description: External identity of a user.
@@ -9725,7 +10055,7 @@ components:
             - ARTICLE-12345
           items:
             type: string
-        playbook:
+        playbooks:
           type: array
           description: |
             Filters for incidents with any of the provided playbooks.
@@ -9864,7 +10194,7 @@ components:
             - ARTICLE-12345
           items:
             type: string
-        playbook:
+        playbooks:
           type: array
           description: |
             Filters for incidents with any of the provided playbooks.
@@ -10008,8 +10338,8 @@ components:
         stage_validation_options:
           type: array
           description: |
-            The type of stage validations options when updating the stage of an
-            incident.
+            The type of stage validations options when updating the stage or
+            the stage diagram of an incident.
           items:
             $ref: '#/components/schemas/stage-validation-option-for-update'
         tags:
@@ -10575,6 +10905,8 @@ components:
               $ref: '#/components/schemas/user-summary'
             parent:
               $ref: '#/components/schemas/atom-summary'
+            recording:
+              $ref: '#/components/schemas/artifact-summary'
             recording_url:
               type: string
               description: Recording URL of the meeting.
@@ -10600,6 +10932,8 @@ components:
             title:
               type: string
               description: Title of the meeting object.
+            transcript:
+              $ref: '#/components/schemas/artifact-summary'
           required:
             - members
       title: meeting
@@ -10745,6 +11079,10 @@ components:
           type: string
           description: The parent object ID in which the meeting was created.
           example: ACC-12345
+        recording:
+          type: string
+          description: The ID of the meeting's recording artifact.
+          example: ARTIFACT-12345
         recording_url:
           type: string
           description: The recording URL of the meeting.
@@ -10763,6 +11101,11 @@ components:
         title:
           type: string
           description: The title of the meeting.
+        transcript:
+          type: string
+          description: |
+            The ID of the artifact for the transcript of the meeting.
+          example: ARTIFACT-12345
       required:
         - channel
         - members
@@ -12222,6 +12565,11 @@ components:
             - DEVU-12345
           items:
             type: string
+        tags:
+          type: array
+          description: Tags associated with the part.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
       required:
         - name
         - owned_by
@@ -12371,6 +12719,13 @@ components:
             type: string
         parent_part:
           $ref: '#/components/schemas/parent-part-filter'
+        tags:
+          type: array
+          description: Filters for part with any of the provided tags.
+          example:
+            - TAG-12345
+          items:
+            type: string
       title: parts-list-request
     parts-list-response:
       type: object
@@ -12439,6 +12794,8 @@ components:
           description: The updated name of the part.
         owned_by:
           $ref: '#/components/schemas/parts-update-request-owned-by'
+        tags:
+          $ref: '#/components/schemas/parts-update-request-tags'
       required:
         - id
       title: parts-update-request
@@ -12496,6 +12853,15 @@ components:
       type: object
       additionalProperties: false
       title: parts-update-request-product
+    parts-update-request-tags:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the tags to the provided tags.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+      title: parts-update-request-tags
     parts-update-response:
       type: object
       properties:
@@ -12600,9 +12966,16 @@ components:
             answer:
               type: string
               description: The Answer.
+            applies_to_parts:
+              type: array
+              description: Details of the parts relevant to the question_answer.
+              items:
+                $ref: '#/components/schemas/part-summary'
             question:
               type: string
               description: The Question.
+            status:
+              $ref: '#/components/schemas/question-answer-status'
             suggested_answer:
               type: string
               description: |
@@ -13449,6 +13822,21 @@ components:
                 available, a good alternative is the email address/phone number
                 which could uniquely identify the user. If none is specified, a
                 system-generated identifier will be assigned to the user.
+            external_refs:
+              type: array
+              description: |
+                External refs are mutable unique identifiers for a contact record.
+                If none are available, a good alternative is the email
+                address(es)/phone number(s) which could uniquely identify the
+                contact. If no identifier is specified, a system-generated
+                identifier will be assigned to the contact. For organizations with
+                multi-association contacts support enabled, this field accepts
+                multiple identifiers, where each identifier must be unique across
+                your DevOrg. For organizations without multi-association contacts
+                support, this field accepts a single identifier, maintaining
+                functionality consistent with the existing external_uid field.
+              items:
+                type: string
             is_verified:
               type: boolean
               description: Whether the Rev user is verified or not.
@@ -13493,6 +13881,30 @@ components:
             rev_org:
               $ref: '#/components/schemas/org-summary'
       title: rev-user-summary
+    rev-users-associations-add-request:
+      type: object
+      description: |
+        Request to add associations of Rev users to Rev orgs or accounts. Rev
+        org association automatically adds an account association.
+      properties:
+        associations:
+          type: array
+          description: Associations of the Rev user to Rev orgs/accounts.
+          items:
+            $ref: '#/components/schemas/create-association'
+        rev_user_id:
+          type: string
+          description: ID of the Rev user to associate to.
+      required:
+        - associations
+        - rev_user_id
+      title: rev-users-associations-add-request
+    rev-users-associations-add-response:
+      type: object
+      additionalProperties: false
+      description: Response for adding associations to a Rev user.
+      title: rev-users-associations-add-response
+      x-go-name: RevUsersAssociationsAddResponseBody
     rev-users-associations-list-request:
       type: object
       description: Gets the list of Rev user associations.
@@ -13539,6 +13951,30 @@ components:
         - associations
       title: rev-users-associations-list-response
       x-go-name: RevUsersAssociationsListResponseBody
+    rev-users-associations-remove-request:
+      type: object
+      description: Request to remove associations of a Rev user.
+      properties:
+        associations:
+          type: array
+          description: Associations of the Rev user to remove.
+          example:
+            - REV-AbCdEfGh
+          items:
+            type: string
+        rev_user_id:
+          type: string
+          description: ID of the Rev user whose associations are to be removed.
+      required:
+        - associations
+        - rev_user_id
+      title: rev-users-associations-remove-request
+    rev-users-associations-remove-response:
+      type: object
+      additionalProperties: false
+      description: Response for removing associations from a Rev user.
+      title: rev-users-associations-remove-response
+      x-go-name: RevUsersAssociationsRemoveResponseBody
     rev-users-create-request:
       type: object
       description: |
@@ -13591,6 +14027,21 @@ components:
             available, a good alternative is the email address/phone number
             which could uniquely identify the user. If none is specified, a
             system-generated identifier will be assigned to the user.
+        external_refs:
+          type: array
+          description: |
+            External refs are mutable unique identifiers for a contact record.
+            If none are available, a good alternative is the email
+            address(es)/phone number(s) which could uniquely identify the
+            contact. If no identifier is specified, a system-generated
+            identifier will be assigned to the contact. For organizations with
+            multi-association contacts support enabled, this field accepts
+            multiple identifiers, where each identifier must be unique across
+            your DevOrg. For organizations without multi-association contacts
+            support, this field accepts a single identifier, maintaining
+            functionality consistent with the existing external_uid field.
+          items:
+            type: string
         phone_numbers:
           type: array
           description: Phone numbers, in E.164 format, of the Rev user.
@@ -13692,6 +14143,11 @@ components:
         external_ref:
           type: array
           description: List of external refs to filter Rev users for.
+          items:
+            type: string
+        external_refs:
+          type: array
+          description: Filters for Rev users with the provided external_refs.
           items:
             type: string
         is_verified:
@@ -13816,6 +14272,11 @@ components:
           description: List of external refs to filter Rev users for.
           items:
             type: string
+        external_refs:
+          type: array
+          description: Filters for Rev users with the provided external_refs.
+          items:
+            type: string
         is_verified:
           type: boolean
           description: Value of is_verified field to filter the Rev users.
@@ -13888,6 +14349,21 @@ components:
         external_ref:
           type: string
           description: Updated external ref value of the Rev user.
+        external_refs:
+          type: array
+          description: |
+            External refs are mutable unique identifiers for a contact record.
+            If none are available, a good alternative is the email
+            address(es)/phone number(s) which could uniquely identify the
+            contact. If no identifier is specified, a system-generated
+            identifier will be assigned to the contact. For organizations with
+            multi-association contacts support enabled, this field accepts
+            multiple identifiers, where each identifier must be unique across
+            your DevOrg. For organizations without multi-association contacts
+            support, this field accepts a single identifier, maintaining
+            functionality consistent with the existing external_uid field.
+          items:
+            type: string
         id:
           type: string
           description: The ID of Rev user to update.
@@ -14420,6 +14896,11 @@ components:
       type: object
       description: The schema of ui specific fields.
       properties:
+        client_overrides:
+          type: array
+          description: The client overrides for the field.
+          items:
+            $ref: '#/components/schemas/client-override'
         create_view:
           $ref: '#/components/schemas/schema-field-create-view-ui-metadata'
         detail_view:
@@ -16202,9 +16683,11 @@ components:
       discriminator:
         mapping:
           email_preview: '#/components/schemas/email-preview-widget'
+          starter_message_nudge: '#/components/schemas/starter-message-nudge-widget'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/email-preview-widget'
+        - $ref: '#/components/schemas/starter-message-nudge-widget'
       properties:
         type:
           $ref: '#/components/schemas/snap-widget-type'
@@ -16331,17 +16814,25 @@ components:
       type: string
       enum:
         - email_preview
+        - starter_message_nudge
     snap-widgets-create-request:
       type: object
       discriminator:
         mapping:
           email_preview: '#/components/schemas/create-email-preview-widget'
+          starter_message_nudge: '#/components/schemas/create-starter-message-nudge-widget'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/create-email-preview-widget'
+        - $ref: '#/components/schemas/create-starter-message-nudge-widget'
       properties:
         type:
           $ref: '#/components/schemas/snap-widgets-create-request-type'
+        interactions:
+          type: array
+          description: The list of interactions supported by the widget.
+          items:
+            $ref: '#/components/schemas/snap-widget-interaction'
         name:
           type: string
           description: A human readable name for the snap widget.
@@ -16357,6 +16848,7 @@ components:
       type: string
       enum:
         - email_preview
+        - starter_message_nudge
     snap-widgets-create-response:
       type: object
       properties:
@@ -16636,6 +17128,18 @@ components:
           type: boolean
           description: Filters for issues that are staged.
       title: staged-info-filter
+    starter-message-nudge-widget:
+      type: object
+      discriminator:
+        propertyName: starter_message_nudge_type
+      properties:
+        starter_message_nudge_type:
+          $ref: '#/components/schemas/starter-message-nudge-widget-starter-message-nudge-type'
+      required:
+        - starter_message_nudge_type
+      title: starter-message-nudge-widget
+    starter-message-nudge-widget-starter-message-nudge-type:
+      type: string
     stock-field-override:
       type: object
       description: A stock field override.
@@ -17625,6 +18129,8 @@ components:
                 The name of the tag, which denotes the logical concept by which all
                 tagged objects will be associated. The name is guaranteed to be
                 unique.
+            style_new:
+              $ref: '#/components/schemas/tag-style'
           required:
             - name
       title: tag
@@ -17638,6 +18144,20 @@ components:
           required:
             - tag
       title: tag-search-summary
+    tag-style:
+      type: object
+      properties:
+        color:
+          type: string
+          description: The hex color code in "#RRGGBB" format.
+      title: tag-style
+    tag-style-summary:
+      type: object
+      properties:
+        color:
+          type: string
+          description: The hex color code in "#RRGGBB" format.
+      title: tag-style-summary
     tag-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -17649,6 +18169,8 @@ components:
                 The name of the tag, which denotes the logical concept by which all
                 tagged objects will be associated. The name is guaranteed to be
                 unique.
+            style_new:
+              $ref: '#/components/schemas/tag-style-summary'
           required:
             - name
       title: tag-summary
@@ -17694,6 +18216,8 @@ components:
           type: string
           description: |
             The name for the tag, which must be unique across all tags.
+        style_new:
+          $ref: '#/components/schemas/tag-style'
       required:
         - name
       title: tags-create-request
@@ -17823,6 +18347,8 @@ components:
           description: |
             The updated name of the tag. The name must be unique across all
             tags.
+        style_new:
+          $ref: '#/components/schemas/tag-style'
       required:
         - id
       title: tags-update-request
@@ -17872,11 +18398,18 @@ components:
         - $ref: '#/components/schemas/work-base'
         - type: object
           properties:
+            account:
+              $ref: '#/components/schemas/account-summary'
             channels:
               type: array
               description: Channels of the ticket.
               items:
                 $ref: '#/components/schemas/ticket-channels'
+            channels_v2:
+              type: array
+              description: Channel IDs of the ticket.
+              items:
+                $ref: '#/components/schemas/external-communication-channel-summary'
             group:
               $ref: '#/components/schemas/group-summary'
             needs_response:
@@ -17903,6 +18436,8 @@ components:
             source_channel:
               type: string
               description: Source channel of the ticket.
+            source_channel_v2:
+              $ref: '#/components/schemas/external-communication-channel-summary'
             visibility:
               $ref: '#/components/schemas/enum-value'
       title: ticket
@@ -17928,6 +18463,8 @@ components:
         - $ref: '#/components/schemas/work-base-summary'
         - type: object
           properties:
+            account:
+              $ref: '#/components/schemas/account-summary'
             rev_org:
               $ref: '#/components/schemas/org-summary'
             severity:
@@ -18446,6 +18983,8 @@ components:
               description: The reactions to the entry.
               items:
                 $ref: '#/components/schemas/timeline-reaction'
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata'
             thread:
               $ref: '#/components/schemas/timeline-thread'
             visibility:
@@ -19228,9 +19767,18 @@ components:
         target_stage_id:
           type: string
           description: The ID of the target stage.
+        ui:
+          $ref: '#/components/schemas/update-stage-ui-metadata'
       required:
         - target_stage_id
       title: update-stage-transition
+    update-stage-ui-metadata:
+      type: object
+      properties:
+        is_hidden:
+          type: boolean
+          description: Whether the stage is hidden.
+      title: update-stage-ui-metadata
     update-tag-with-value:
       type: object
       description: Update object for TagWithValue.
@@ -19368,6 +19916,29 @@ components:
         - rev_user
         - service_account
         - sys_user
+    view-override:
+      type: object
+      description: UI hint overrides for a view.
+      properties:
+        display_name:
+          type: string
+          description: The display name of the field.
+        is_hidden:
+          type: boolean
+          description: Whether the field is hidden in the UI.
+        is_required:
+          type: boolean
+          description: Whether the field is mandatory.
+        placeholder:
+          type: string
+          description: A placeholder for the field.
+        tooltip:
+          type: string
+          description: Tooltip for the field.
+        view_name:
+          type: string
+          description: The name of the view.
+      title: view-override
     vista-base-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -20300,6 +20871,10 @@ components:
     works-create-request-ticket:
       type: object
       properties:
+        account:
+          type: string
+          description: The account that the ticket is associated with.
+          example: ACC-12345
         channels:
           type: array
           description: Channels of the ticket.
@@ -20449,7 +21024,7 @@ components:
       properties:
         accounts:
           type: array
-          description: Filters for issues with any of the provided Accounts.
+          description: Filters for issues with any of the provided accounts.
           example:
             - ACC-12345
           items:
@@ -20762,8 +21337,8 @@ components:
         stage_validation_options:
           type: array
           description: |
-            The type of stage validations options when updating the stage of an
-            object.
+            The type of stage validations options when updating the stage or
+            the stage diagram of an object.
           items:
             $ref: '#/components/schemas/stage-validation-option-for-update'
         staged_info:
@@ -20994,6 +21569,11 @@ components:
     works-update-request-ticket:
       type: object
       properties:
+        account:
+          type: string
+          description: Updates the account that the ticket is associated with.
+          example: ACC-12345
+          nullable: true
         channels:
           $ref: '#/components/schemas/works-update-request-ticket-channels'
         group:
@@ -21697,6 +22277,43 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /ai-agents.events.execute-async:
+    post:
+      description: Execute an AI agent input event asynchronously.
+      operationId: ai-agent-events-execute-async
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ai-agent-events-execute-async-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ai-agent-events-execute-async-response'
+          description: |
+            Response object to provide final response after asynchronous execution
+            of input event to AI agent.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Execute-Async Ai Agents Events
+      tags:
+        - ai-agents
+      x-fern-audiences:
+        - docs
+        - sdks
   /airdrop.sync-units.get:
     get:
       description: Gets a single sync unit's information.
@@ -21988,6 +22605,16 @@ paths:
           name: shared_with.role
           schema:
             type: string
+        - description: Filters for article with any of the provided tags.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            example:
+              - TAG-12345
+            items:
+              type: string
       responses:
         "200":
           content:
@@ -22311,6 +22938,16 @@ paths:
           name: shared_with.role
           schema:
             type: string
+        - description: Filters for article with any of the provided tags.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            example:
+              - TAG-12345
+            items:
+              type: string
       responses:
         "200":
           content:
@@ -24123,6 +24760,12 @@ paths:
           name: is_creator_verified
           schema:
             type: boolean
+        - description: Filters for conversations that are frozen.
+          explode: false
+          in: query
+          name: is_frozen
+          schema:
+            type: boolean
         - description: Filters for conversations that are spam.
           explode: false
           in: query
@@ -24441,6 +25084,12 @@ paths:
           explode: false
           in: query
           name: is_creator_verified
+          schema:
+            type: boolean
+        - description: Filters for conversations that are frozen.
+          explode: false
+          in: query
+          name: is_frozen
           schema:
             type: boolean
         - description: Filters for conversations that are spam.
@@ -27612,7 +28261,7 @@ paths:
         - description: Filters for incidents with any of the provided playbooks.
           explode: false
           in: query
-          name: playbook
+          name: playbooks
           schema:
             type: array
             example:
@@ -27824,7 +28473,7 @@ paths:
         - description: Filters for incidents with any of the provided playbooks.
           explode: false
           in: query
-          name: playbook
+          name: playbooks
           schema:
             type: array
             example:
@@ -30335,6 +30984,16 @@ paths:
             items:
               type: string
             minItems: 1
+        - description: Filters for part with any of the provided tags.
+          explode: false
+          in: query
+          name: tags
+          schema:
+            type: array
+            example:
+              - TAG-12345
+            items:
+              type: string
         - description: Filters for parts of the provided type(s).
           explode: false
           in: query
@@ -31489,6 +32148,45 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /rev-users.associations.add:
+    post:
+      description: |
+        Adds an association to a Rev user. This API is only available when the
+        multi-association contact feature is enabled.
+      operationId: rev-users-associations-add
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rev-users-associations-add-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rev-users-associations-add-response'
+          description: Response for adding associations to a Rev user.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Add Rev Users Associations
+      tags:
+        - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
   /rev-users.associations.list:
     get:
       description: Returns a list of associations on a Rev user.
@@ -31584,6 +32282,45 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       summary: List Rev Users Associations (POST)
+      tags:
+        - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /rev-users.associations.remove:
+    post:
+      description: |
+        Removes an association from a Rev user. This API is only available when
+        the multi-association contact feature is enabled.
+      operationId: rev-users-associations-remove
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rev-users-associations-remove-request'
+        required: true
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rev-users-associations-remove-response'
+          description: Response for removing associations from a Rev user.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Remove Rev Users Associations
       tags:
         - rev-users
       x-fern-audiences:
@@ -31894,6 +32631,14 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for Rev users with the provided external_refs.
+          explode: false
+          in: query
+          name: external_refs
+          schema:
+            type: array
+            items:
+              type: string
         - description: Value of is_verified field to filter the Rev users.
           explode: false
           in: query
@@ -32190,6 +32935,14 @@ paths:
             type: array
             items:
               type: string
+        - description: Filters for Rev users with the provided external_refs.
+          explode: false
+          in: query
+          name: external_refs
+          schema:
+            type: array
+            items:
+              type: string
         - description: Value of is_verified field to filter the Rev users.
           explode: false
           in: query
@@ -32469,6 +33222,12 @@ paths:
             type: array
             items:
               type: string
+        - description: Whether the leaf type corresponds to a custom object.
+          explode: false
+          in: query
+          name: is_custom_leaf_type
+          schema:
+            type: boolean
         - description: |
             The leaf type. Used for inferring the default stage diagram and
             tenant fragment ID.
@@ -37068,7 +37827,7 @@ paths:
           schema:
             type: integer
             format: int32
-        - description: Filters for issues with any of the provided Accounts.
+        - description: Filters for issues with any of the provided accounts.
           explode: false
           in: query
           name: issue.accounts
@@ -37541,7 +38300,7 @@ paths:
           name: custom_fields
           schema:
             type: object
-        - description: Filters for issues with any of the provided Accounts.
+        - description: Filters for issues with any of the provided accounts.
           explode: false
           in: query
           name: issue.accounts
@@ -37967,6 +38726,8 @@ servers:
 tags:
   - description: Accounts management APIs.
     name: accounts
+  - description: AI Agent APIs.
+    name: ai-agents
   - description: Airdrop APIs.
     name: airdrop
   - description: Articles management APIs.

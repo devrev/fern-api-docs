@@ -6,6 +6,9 @@ title: DevRev | Docs
 
 navbar-links: []
 
+experimental: 
+  openapi-parser-v3: true
+
 colors:
   accentPrimary: 
     dark: "#5D65EE1A"

@@ -1,0 +1,19 @@
+Here are a few commonly asked questions about ADaaS snap-in development.
+
+## ADaaS template repository
+
+#### Q: I'm getting a `Conflict` error after the `Creating snap-in package...` message when running `make deploy`
+
+A: A snap-in package with the same slug already exists.
+Override the `SNAP_IN_SLUG` variable by explicitly updating the variable in `scripts/vars.sh`.
+
+#### Q: Snap-in version `build/deployment failed` after the `Waiting for snap-in version to be ready...` message
+
+A: The snap-in version could not be built.
+Check the logs by running the DevRev CLI command `devrev snap_in_package logs`.
+For prettier UI, pipe the output to `jq`.
+
+### Q: `Token is expired` when deploying or cleaning up
+
+A: Authentication token to the `DEV_ORG` has expired.
+Run `make auth` to reconnect to the organization.

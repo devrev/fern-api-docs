@@ -24,7 +24,7 @@ For security reasons, this call should be made from the server side so that your
 Using the `rev_info` method, you can generate and recognize a user within the DevRev system by providing relevant user details. This method enables you to convey information systematically, ensuring alignment between your DevRev CRM and the structured data model. For information regarding terminologies, click [here](https://devrev.ai/docs/product/grow).
 
 ```bash
- curl --location 'https://api.devrev.ai/auth-tokens.create' \
+  curl --location 'https://api.devrev.ai/auth-tokens.create' \
 --header 'accept: application/json, text/plain, */*' \
 --header 'authorization: <AAT>' \
 --header 'content-type: application/json' \
@@ -50,14 +50,12 @@ Using the `rev_info` method, you can generate and recognize a user within the De
             "domains": [
                 "devrev.ai"
             ],
-            "phone_numbers": ["+919988998833"],
             "custom_fields": {
                 "tnt__<field2_name>": "value x"
             }
         }
     }
 }'
-
  ```
 
 <Callout intent="note">

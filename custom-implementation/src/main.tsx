@@ -2,7 +2,6 @@ import './main.css'
 import '@devrev/marketing-shared-components/dist/cjs/index.css'
 
 import ReactDOM from 'react-dom/client'
-
 import React from 'react'
 
 import Header from './components/header'
@@ -13,20 +12,23 @@ import { getPageData } from './modules/sanity/utils'
 
 const FERN_CONTENT_WRAPPER_ID = 'fern-header-content-wrapper'
 const DEVREV_CONTENT_WRAPPER_ID = 'devrev-header-content-wrapper'
-
 const FERN_HEADER_CONTAINER_ID = 'fern-header'
 
 const render = async () => {
   /*
    * This is a where we try to make async data call.
    */
-
   const data = await getPageData()
+  
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined') return
+  
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
 
-  const theme = document.getElementsByTagName('html')[0].getAttribute('class')
+  const theme = document.documentElement.getAttribute('class')
 
+  // Add theme switch to sidenav
   if (!document.getElementById('theme-switch') && sidenav) {
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
@@ -35,6 +37,7 @@ const render = async () => {
     root.render(React.createElement(ThemeSwitch))
   }
 
+  // Handle header rendering
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
   const devrevHeaderId = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
 
@@ -67,51 +70,83 @@ const render = async () => {
     if (mainHeaderWrapper) {
       mainHeaderWrapper.replaceWith(fernHeaderContainer)
     } else {
-      document.body.appendChild(fernHeaderContainer)
+      document.body.insertAdjacentElement('afterbegin', fernHeaderContainer)
     }
 
+    // Use createRoot for React 18 concurrent mode
     const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
     headerRoot.render(
       React.createElement(Header, {
         ...data.header,
-        version: theme == 'dark' ? 'light' : 'dark',
+        version: theme === 'dark' ? 'light' : 'dark',
       })
     )
     
     // Once the header component is loaded, make it visible
-    const header = document.getElementById(FERN_HEADER_CONTAINER_ID)
-    if (header) header.style.display = 'block'
+    fernHeaderContainer.style.display = 'block'
   }
 
+  // Handle footer rendering
   const footerElement = document.getElementById('fern-footer')
   if (footerElement) {
-    const footerRoot = ReactDOM.createRoot(footerElement)
-    footerRoot.render(React.createElement(Footer, { ...data.footer }))
+    // Check if footer is already rendered
+    if (!footerElement.hasChildNodes()) {
+      const footerRoot = ReactDOM.createRoot(footerElement)
+      footerRoot.render(React.createElement(Footer, { ...data.footer }))
+      
+      // Once the footer component is loaded, make it visible
+      footerElement.style.display = 'block'
+    }
+  } else {
+    // Create footer if it doesn't exist
+    const newFooter = document.createElement('div')
+    newFooter.setAttribute('id', 'fern-footer')
+    document.body.appendChild(newFooter)
     
-    // Once the footer component is loaded, make it visible
-    footerElement.style.display = 'block'
+    const footerRoot = ReactDOM.createRoot(newFooter)
+    footerRoot.render(React.createElement(Footer, { ...data.footer }))
+    newFooter.style.display = 'block'
   }
 }
 
-let observations = 0
-document.addEventListener('DOMContentLoaded', async () => {
-  console.log('DOMContentLoaded')
-  await render()
-  new MutationObserver(async (e, o) => {
+// For Next.js App Router compatibility
+const initApp = () => {
+  if (typeof window !== 'undefined') {
+    // Check if the DOM is already loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', async () => {
+        console.log('DOMContentLoaded')
+        await render()
+        setupMutationObserver()
+      })
+    } else {
+      // DOM already loaded, render immediately
+      console.log('DOM already loaded')
+      render().then(() => setupMutationObserver())
+    }
+  }
+}
+
+const setupMutationObserver = () => {
+  let observations = 0
+  new MutationObserver(async (mutations, observer) => {
     await render()
-    for (const item of e) {
-      if (item.target instanceof HTMLElement) {
-        const target = item.target
+    for (const mutation of mutations) {
+      if (mutation.target instanceof HTMLElement) {
+        const target = mutation.target
         if (target.id === 'fern-header' || target.id === 'fern-footer') {
           if (observations < 3) {
             // react hydration will trigger a mutation event
             observations++
           } else {
-            o.disconnect()
+            observer.disconnect()
           }
           break
         }
       }
     }
   }).observe(document.body, { childList: true, subtree: true })
-})
+}
+
+// Initialize the app
+initApp()

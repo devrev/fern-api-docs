@@ -27,6 +27,10 @@ js:
     strategy: beforeInteractive
 
 
+layout:
+  searchbar-placement: sidebar
+  tabs-placement: sidebar
+
 typography:
   bodyFont:
     name: SF Pro

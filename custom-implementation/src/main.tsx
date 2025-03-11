@@ -8,8 +8,6 @@ import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
 
-import { getPageData } from './modules/sanity/utils'
-
 const FERN_CONTENT_WRAPPER_ID = 'fern-header-content-wrapper'
 const DEVREV_CONTENT_WRAPPER_ID = 'devrev-header-content-wrapper'
 const FERN_HEADER_CONTAINER_ID = 'fern-header'
@@ -19,8 +17,7 @@ const render = async () => {
   /*
    * This is a where we try to make async data call.
    */
-  console.log('Fetching page data from Sanity')
-  const data = await getPageData()
+  const data = { header: {}, footer: {} } // Default empty data object
   console.log('Page data fetched:', data ? 'success' : 'failed')
   
   // Check if we're in a browser environment

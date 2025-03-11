@@ -1,7 +1,7 @@
 import './main.css'
 import '@devrev/marketing-shared-components/dist/cjs/index.css'
 
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 
 import React from 'react'
 
@@ -27,11 +27,12 @@ const render = async () => {
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
-  if (!document.getElementById('theme-switch')) {
+  if (!document.getElementById('theme-switch') && sidenav) {
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
     sidenav.appendChild(wrapper)
-    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+    const root = ReactDOM.createRoot(wrapper)
+    root.render(React.createElement(ThemeSwitch))
   }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
@@ -69,29 +70,27 @@ const render = async () => {
       document.body.appendChild(fernHeaderContainer)
     }
 
-    ReactDOM.render(
+    const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
+    headerRoot.render(
       React.createElement(Header, {
         ...data.header,
         version: theme == 'dark' ? 'light' : 'dark',
-      }),
-      devrevContentWrapper,
-      () => {
-        // Once the header component is loaded, make it visible
-        const header = document.getElementById(FERN_HEADER_CONTAINER_ID)
-        if (header) header.style.display = 'block'
-      }
+      })
     )
+    
+    // Once the header component is loaded, make it visible
+    const header = document.getElementById(FERN_HEADER_CONTAINER_ID)
+    if (header) header.style.display = 'block'
   }
 
-  ReactDOM.render(
-    React.createElement(Footer, { ...data.footer }),
-    document.getElementById('fern-footer'),
-    () => {
-      // Once the footer component is loaded, make it visible
-      const footer = document.getElementById('fern-footer')
-      if (footer) footer.style.display = 'block'
-    },
-  )
+  const footerElement = document.getElementById('fern-footer')
+  if (footerElement) {
+    const footerRoot = ReactDOM.createRoot(footerElement)
+    footerRoot.render(React.createElement(Footer, { ...data.footer }))
+    
+    // Once the footer component is loaded, make it visible
+    footerElement.style.display = 'block'
+  }
 }
 
 let observations = 0

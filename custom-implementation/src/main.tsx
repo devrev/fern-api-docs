@@ -86,13 +86,21 @@ const render = async () => {
       // Render our custom header in the DevRev wrapper
       console.log('Rendering custom header in DevRev wrapper')
       const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
+      
+      // Force both wrappers to be visible for debugging
+      fernContentWrapper.style.display = 'block'
+      devrevContentWrapper.style.display = 'block'
+      
+      // Pass empty props to ensure rendering
       headerRoot.render(
         React.createElement(Header, {
-          ...data.header,
           version: theme === 'dark' ? 'light' : 'dark',
         })
       )
       console.log('Custom header rendered')
+    } else {
+      // Ensure the wrapper is visible even if it already exists
+      devrevContentWrapper.style.display = 'block'
     }
     
     // Make sure the header is visible

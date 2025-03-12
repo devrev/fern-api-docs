@@ -30,6 +30,7 @@ js:
 layout:
   searchbar-placement: sidebar
   tabs-placement: sidebar
+  disable-header: true
 
 typography:
   bodyFont:

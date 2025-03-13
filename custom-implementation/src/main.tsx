@@ -7,6 +7,7 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
+import { getPageData } from './modules/sanity/utils'
 
 const FERN_CONTENT_WRAPPER_ID = 'fern-header-content-wrapper'
 const DEVREV_CONTENT_WRAPPER_ID = 'devrev-header-content-wrapper'
@@ -17,7 +18,7 @@ const render = async () => {
   /*
    * This is a where we try to make async data call.
    */
-  const data = { header: {}, footer: {} } // Default empty data object
+  const data = await getPageData()
   console.log('Page data fetched:', data ? 'success' : 'failed')
   
   // Check if we're in a browser environment
@@ -91,10 +92,11 @@ const render = async () => {
       // fernContentWrapper.style.display = 'block'
       // devrevContentWrapper.style.display = 'block'
       
-      // Pass empty props to ensure rendering
+      // Pass header data to the component
       headerRoot.render(
         React.createElement(Header, {
           version: theme === 'dark' ? 'light' : 'dark',
+          ...data.header
         })
       )
       console.log('Custom header rendered')
@@ -105,6 +107,7 @@ const render = async () => {
       headerRoot.render(
         React.createElement(Header, {
           version: theme === 'dark' ? 'light' : 'dark',
+          ...data.header
         })
       )
     }
@@ -130,6 +133,7 @@ const render = async () => {
     headerRoot.render(
       React.createElement(Header, {
         version: theme === 'dark' ? 'light' : 'dark',
+        ...data.header
       })
     )
     console.log('Custom header created and rendered')

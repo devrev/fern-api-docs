@@ -148,20 +148,29 @@ navigation:
           - page: "Extraction phases"
             slug: extraction-phases
             path: ../docs/pages/adaas/extraction-phases.mdx
+          - page: "Loading phases"
+            slug: loading-phases
+            hidden: true
+            path: ../docs/pages/adaas/loading-phases.mdx
           - page: "External sync units extraction"
             slug: external-sync-units-extraction
+            hidden: true
             path: ../docs/pages/adaas/external-sync-units-extraction.mdx
           - page: "Metadata extraction"
+            hidden: true
             slug: metadata-extraction
             path: ../docs/pages/adaas/metadata-extraction.mdx
           - page: "Data extraction"
+            hidden: true
             slug: data-extraction
             path: ../docs/pages/adaas/data-extraction.mdx
           - page: "Attachments extraction"
+            hidden: true
             slug: extract-attachments
             path: ../docs/pages/adaas/attachments-extraction.mdx
           - page: "Data and attachments deletion"
             slug: data-attachments-deletion
+            hidden: true
             path: ../docs/pages/adaas/data-attachments-deletion.mdx
           - page: "Common issues - FAQ"
             slug: faq

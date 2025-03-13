@@ -68,6 +68,10 @@ navigation:
       - page: Restricted messages on a timeline
         slug: timeline-entries
         path: ../docs/pages/timeline-entries.mdx
+      - page: DevRev Agents Async API Cookbook
+        slug: agents-async-api
+        path: ../docs/pages/interact_agent.mdx
+      
   - section: SDKs
     slug: sdks
     contents:

@@ -10,8 +10,10 @@ Override the `SNAP_IN_SLUG` variable by explicitly updating the variable in `scr
 #### Q: Snap-in version `build/deployment failed` after the `Waiting for snap-in version to be ready...` message
 
 A: The snap-in version could not be built.
-Check the logs by running the DevRev CLI command `devrev snap_in_package logs`.
-For prettier UI, pipe the output to `jq`.
+Check the logs by running the DevRev CLI command, for prettier UI, pipe the output to `jq`.
+```
+devrev snap_in_package logs | jq
+```
 
 ### Token handling
 

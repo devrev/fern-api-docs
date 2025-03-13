@@ -163,6 +163,9 @@ navigation:
           - page: "Data and attachments deletion"
             slug: data-attachments-deletion
             path: ../docs/pages/adaas/data-attachments-deletion.mdx
+          - page: "Common issues - FAQ"
+            slug: faq
+            path: ../docs/pages/adaas/faq.mdx
       - section: References
         slug: references
         contents:

@@ -136,10 +136,10 @@ navigation:
           - page: Snap-in triggered by an external source
             slug: triggered-external-source
             path: ../docs/pages/tutorials/triggered-external-source.mdx
-      - section: ADaaS
-        slug: adaas
+      - section: Airdrop
+        slug: airdrop
         contents:
-          - page: "Airdrop-as-a-Service (ADaaS)"
+          - page: "Overview"
             slug: overview
             path: ../docs/pages/adaas/overview.mdx
           - page: "Getting started"

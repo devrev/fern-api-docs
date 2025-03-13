@@ -2,10 +2,10 @@ _Airdrop_ is DevRev’s solution to migrate data. It allows our customers to bri
 export data back to external systems, and keep data in sync between DevRev and the external systems.
 You can read more about Airdrop in the [general documentation](https://docs.devrev.ai/import#airdrop-features).
 
-_Airdrop-as-a-Service (ADaaS)_ gives snap-in developers the ability to integrate with DevRev’s Airdrop functionality.
+DevRev is extending airdrop's capabilities to give snap-in developers the ability to integrate with DevRev’s Airdrop functionality.
 It enables developers to create external workers (extractors and loaders) to bring data from various external systems.
 
-<Tip>DevRev offers a repository template to help you create ADaaS snap-ins. Refer to [Getting started](getting-started) for instructions.</Tip>
+<Tip>DevRev offers a repository template to help you create Airdrop snap-ins. Refer to [Getting started](getting-started) for instructions.</Tip>
 
 ```mermaid
 flowchart TD
@@ -25,7 +25,7 @@ s3[(AWS S3)]
 	
 	worker <-- Exchange artifact upload/download URLs --> s3interact
 	worker <-- Upload/download artifacts --> s3
-	worker <-- ADaaS messages and REST API --> airdrop
+	worker <-- Airdrop messages and REST API --> airdrop
 
 	
 	subgraph DevRev
@@ -35,14 +35,14 @@ s3[(AWS S3)]
 
 ```
 
-An _extractor_ is a function in an ADaaS-capable snap-in responsible for extracting data from an _external system_, such as Jira, Zendesk,
+An _extractor_ is a function in an Airdrop-capable snap-in responsible for extracting data from an _external system_, such as Jira, Zendesk,
 or HubSpot. It uses a standardized communication protocol for talking to Airdrop and a standardized
 data structure for all the files it extracts and processes, so that they can be seamlessly imported into DevRev.
 
 ## Sync runs
 
 Airdrop functions are executed in the context of _sync runs_, which is a directed operation that spans over many invocations
-of an ADaaS snap-in to bring the data to DevRev or load the data to the external system.
+of an Airdrop snap-in to bring the data to DevRev or load the data to the external system.
 
 A _forward sync_ is a sync run from an external system to DevRev. An extractor function in the snap-in is responsible for extracting data from the
 external system.

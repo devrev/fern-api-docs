@@ -16,7 +16,7 @@ prepares batches of data and uploads them in the form of artifacts to DevRev.
 
 The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_DATA_PROGRESS`,
 together with an optional progress estimate and relevant artifacts
-when it extracts some data and the maximum ADaaS snap-in runtime (12 minutes) has been reached.
+when it extracts some data and the maximum Airdrop snap-in runtime (12 minutes) has been reached.
 
 If the extraction has been rate-limited by the external system and back-off is required, the snap-in must respond to
 Airdrop with a message with event of type `EXTRACTION_DATA_DELAY` and specifying back-off time with `delay` attribute.

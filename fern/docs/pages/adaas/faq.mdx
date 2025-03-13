@@ -1,17 +1,17 @@
 ## Airdrop template repository
 
-##### Q: I'm getting a `Conflict` error after the `Creating snap-in package...` message when running `make deploy`
+> #### Q: I'm getting a `Conflict` error after the `Creating snap-in package...` message when running `make deploy`
 
 A: A snap-in package with the same slug already exists.
 Override the ``SNAP_IN_SLUG`` variable by explicitly updating the variable in `scripts/vars.sh`.
 
-##### Q: Snap-in version `build/deployment failed` after the `Waiting for snap-in version to be ready...` message
-
-A: The snap-in version could not be built.
-Check the logs by running the DevRev CLI command. For prettier UI, pipe the output to `jq`.
-```
-devrev snap_in_package logs | jq
-```
+> #### Q: Snap-in version `build/deployment failed` after the `Waiting for snap-in version to be ready...` message
+>
+> A: The snap-in version could not be built.
+> Check the logs by running the DevRev CLI command. For prettier UI, pipe the output to `jq`.
+> ```
+> devrev snap_in_package logs | jq
+> ```
 
 ## Token handling
 

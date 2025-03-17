@@ -5,7 +5,7 @@ attachment to DevRev's S3 using the `S3Interact` API.
 
 Airdrop initiates the attachment extraction by starting the snap-in with a message with an event of
 type `EXTRACTION_ATTACHMENTS_START`.
-This is done after the data extraction, transformation and loading into DevRev are completed.
+This is done after the data extraction, transformation, and loading into DevRev are completed.
 
 During the attachment extraction phase,
 the snap-in extracts attachments from the external system and uploads them as artifacts to DevRev.
@@ -29,7 +29,7 @@ with an event of type `EXTRACTION_ATTACHMENTS_DONE`.
 If attachment extraction fails the snap-in must respond to Airdrop with a message with an event of
 type `EXTRACTION_ATTACHMENTS_ERROR`.
 
-## Snap-in response
+## Response from the snap-in
 
 After uploading an attachment or a batch of attachments, the extractor also has to prepare and
 upload a file specifying the extracted and uploaded attachments.

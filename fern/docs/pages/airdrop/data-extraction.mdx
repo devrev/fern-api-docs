@@ -5,7 +5,7 @@ If there was no previous extraction (the current run is an initial import),
 then all the items should be extracted.
 
 The extractor must store at what time it started each extraction in its state,
-so that it can extract only items created and/or updated since this date in the next sync run.
+so that it can extract only items created or updated since this date in the next sync run.
 
 ## Triggering event
 
@@ -33,7 +33,7 @@ type  `EXTRACTION_DATA_DONE`.
 If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a
 message with event of type `EXTRACTION_DATA_ERROR`.
 
-## Snap-in response
+## Response from the snap-in
 
 During the data extraction phase, the snap-in uploads batches of extracted items (the recommended
 batch size is 2000 items) formatted in JSONL (JSON Lines format), gzipped, and submitted as an
@@ -51,8 +51,8 @@ those must be set to null.
 - Timestamps: Full-precision timestamps should be formatted as RFC3999 (`1972-03-29T22:04:47+01:00`),
 and dates should be just `2020-12-31`.
 - References: references must be strings, not numbers or objects.
-- Number fields must be valid JSON numbers (not strings)
-- Multiselect fields must be provided as an array (not CSV)
+- Number fields must be valid JSON numbers (not strings).
+- Multiselect fields must be provided as an array (not CSV).
 
 Each line of the file contains an `id` and the optional `created_date` and `modified_date` fields
 in the beginning of the record.

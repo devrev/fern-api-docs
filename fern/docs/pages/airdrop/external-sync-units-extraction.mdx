@@ -1,7 +1,7 @@
 In the external sync unit extraction phase, the extractor is expected to obtain a list of external
 sync units that it can extract with the provided credentials and send it to Airdrop in its response.
 
-An _external sync unit_ refers to a single unit in the external system that we are airdropping to DevRev.
+An _external sync unit_ refers to a single unit in the external system that is being airdropped to DevRev.
 In some systems, this is a project; in some it is a repository; in support systems it could be
 called a brand or an organization.
 What a unit of data is called and what it represents depends on the external system's domain model.
@@ -10,7 +10,7 @@ It usually combines contacts, users, work-like items, and comments into a unit o
 Some external systems may offer a single unit in their free plans,
 while their enterprise plans may offer their clients to operate many separate units.
 
-The external sync unit ID is the identifier of the sync unit (project, repository or similar)
+The external sync unit ID is the identifier of the sync unit (project, repository, or similar)
 in the external system.
 For GitHub, this would be the repository, for example `cli` in `github.com/devrev/cli`.
 
@@ -27,7 +27,7 @@ The snap-in must respond to Airdrop with a message with an event of type
 `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE`, which contains a list of external sync units as a payload,
 or `EXTRACTION_EXTERNAL_SYNC_UNITS_ERROR` in case of an error.
 
-## Snap-in response
+## Response from the snap-in
 
 The snap-in provides the list of external sync units in the provided event message
 `event_data.external_sync_units` containing the following fields:
@@ -35,8 +35,7 @@ The snap-in provides the list of external sync units in the provided event messa
 - `name`: The human-readable name in the external system.
 - `description`: The short description if the external system provides it.
 - `item_count`: The number of items (issues, tickets, comments or others) in the external system.
-Item count should be provided if it can be obtained in a very lightweight manner,
-such as by calling an API endpoint.
+Item count should be provided if it can be obtained in a lightweight manner, such as by calling an API endpoint.
 If there is no such way to get it (for example, if the items would need to be extracted to count them),
 then the item count should be `-1` to avoid blocking the import with long-running queries.
 

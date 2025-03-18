@@ -1,9 +1,11 @@
-Airdrop extractions are done in _sync runs_. A sync run is one execution of an import or sync. If you do an initial import from
-the external system to DevRev, that import will be one sync run. If you then decide to do a reverse sync from DevRev to
-the external system, that would be another sync run.
+Airdrop extractions are done in _sync runs_.
+A sync run is one execution of an import or sync.
+If you do an initial import from the external system to DevRev, that import will be one sync run.
+If you then decide to do a reverse sync from DevRev to the external system, that would be another
+sync run.
 
-Each sync run is comprised out of phases. Phases follow sequentially, and each can consist of one or more invocations
-of the snap-in.
+Each sync run is comprised out of phases.
+Phases follow sequentially, and each can consist of one or more invocations of the snap-in.
 
 ```mermaid
 sequenceDiagram
@@ -82,12 +84,13 @@ An _initial import_ consists of the following phases:
 ### 1-way sync
 
 A _1-way sync_ refers to any extraction after the initial import has been successfully completed.
-An extractor extracts data that was created and/or updated in the external system
-after the start of the latest successful forward sync, including any changes that occurred during the
-forward sync, but were not picked up by it.
+An extractor extracts data that was created or updated in the external system after the start
+of the latest successful forward sync, including any changes that occurred during the forward sync,
+but were not picked up by it.
 
-A snap-in must consult its state to get information on when the last successful forward sync started. ADaaS snap-ins
-must maintain their own states that persists between phases in a sync run, as well as between sync runs.
+A snap-in must consult its state to get information on when the last successful forward sync started.
+Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
+as well as between sync runs.
 
 A 1-way sync consists of the following phases:
 1. Metadata extraction
@@ -102,4 +105,3 @@ A 1-way sync extracts only the domain objects updated or created since the previ
 A _deletion_ consists of the following phases:
 1. Data deletion
 2. Attachments deletion
-

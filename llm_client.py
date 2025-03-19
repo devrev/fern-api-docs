@@ -29,3 +29,7 @@ def get_response(prompt):
             print(f"Failed to generate changelog. Error: {type(e)} {e} {r}")
             return None
         
+def get_lines_between_tags(text, tag):
+  pattern = r'<' + tag + r'>(.*?)<\/' + tag + r'>'
+  matches = re.findall(pattern, text, re.DOTALL)
+  return "".join([match.strip() for match in matches])

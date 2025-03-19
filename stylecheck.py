@@ -18,13 +18,21 @@ def main(args):
         outfile.write(prompt)
         print(f"Wrote prompt to {prompt_file}.")
 
-    revised = llm_client.get_response(prompt)
+    response = llm_client.get_response(prompt)
+    response_file = "/".join(['temp', 'full_' + os.path.basename(args.doc)])
+    if (response):
+        with open(response_file, 'w', encoding="utf-8") as outfile:
+            outfile.write(response)
+            print(f"Wrote response to {response_file}.")
+    else:
+        print(f"Failed to generate {response_file}.")
 
+    revision = llm_client.get_lines_between_tags(response, 'document')
     revision_file = "/".join(['temp', os.path.basename(args.doc)])
-    if (revised):
+    if (revision):
         with open(revision_file, 'w', encoding="utf-8") as outfile:
-            outfile.write(revised)
-            print(f"Wrote log to {revision_file}.")
+            outfile.write(revision)
+            print(f"Wrote revision to {revision_file}.")
     else:
         print(f"Failed to generate {revision_file}.")
 

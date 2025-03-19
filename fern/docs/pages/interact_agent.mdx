@@ -3,21 +3,22 @@ title: "DevRev Agents Async API Cookbook"
 description: "A step-by-step guide for using DevRev's asynchronous API for agent execution"
 ---
 
-# DevRev Agents Async API Cookbook
+# DevRev agents async API cookbook
 
 This cookbook provides a step-by-step guide to use the asynchronous API for DevRev agents. It assumes you've already created an agent using the DevRev agent builder platform.
 
-## Table of Contents
+## Table of contents
 
-- [Introduction](#introduction)
-- [Setting Up Your Webhook](#setting-up-your-webhook)
-- [Making Async API Calls](#making-async-api-calls)
-- [Handling Webhook Events](#handling-webhook-events)
+- [Introduction](#introduction).
+- [Setting Up Your Webhook](#setting-up-your-webhook).
+- [Making Async API Calls](#making-async-api-calls).
+- [Handling Webhook Events](#handling-webhook-events).
 - [Implementation Patterns](#implementation-patterns)
   - [Custom Applications](#custom-applications)
-  - [Talk To Agent Node in Workflows](#talk-to-agent-node-in-workflows)
-  - [Snap-ins](#snap-ins)
+  - [Talk To Agent Node in Workflows](#talk-to-agent-node-in-workflows).
 - [Troubleshooting](#troubleshooting)
+- [Troubleshooting](#troubleshooting).
+
 
 ## Introduction
 
@@ -28,13 +29,13 @@ This cookbook provides a step-by-step guide to use the asynchronous API for DevR
 
 This DevRev async API enables you to execute agents without any execution timeout concerns. The execution occurs as an asynchronous workflow that sends events to you via webhooks. This approach ensures:
 
-- Agent complexity does not bring timeout concerns with it
-- Complete execution tracking via progress events
-- Ability to handle long-running agent tasks
+- Agent complexity does not bring timeout concerns with it.
+- Complete execution tracking via progress events.
+- Ability to handle long-running agent tasks.
 
-Disclaimer: In any unlikely and unforeseen circumstances, if an individual operation of the workflow times out, you will not receive an error event right now to notify that you should not to wait for any more messages. Its better to have a client side timeout for now while we brainstorm and fix this issue for you.
+**Disclaimer:** In any unlikely and unforeseen circumstances, if an individual operation of the workflow times out, you do not receive an error event right now to notify that you should not wait for any more messages. It is better to have a client side timeout for now while the issue is brainstormed and fixed for you. 
 
-## Setting Up Your Webhook
+## Setting up your webhook
 
 Before using the async API, you need to create a webhook to receive agent execution events:
 
@@ -84,9 +85,9 @@ Before using the async API, you need to create a webhook to receive agent execut
   </TabItem>
 </Tabs>
 
-Save the webhook ID from the response (format: `don:integration:dvrv-us-1:devo/0:webhook/auCJ7By8`). You'll need this when making async API calls.
+Save the webhook ID from the response (format: `don:integration:dvrv-us-1:devo/0:webhook/auCJ7By8`). You need this when making async API calls.
 
-Make sure that your webhook endpoint can appropriately respond to the verify events sent by DevRev to verify your webhook. This verify event will have a challenge string which you need to return in response. You should return the response like this:
+Make sure that your webhook endpoint can appropriately respond to the verify events sent by DevRev to verify your webhook. This verify event has a challenge string which you need to return in response. You return the response like this:
 
 <Tabs>
   <TabItem value="curl" label="cURL">
@@ -102,15 +103,14 @@ Make sure that your webhook endpoint can appropriately respond to the verify eve
 
 You should follow the documentation provided for webhooks [here](https://developer.devrev.ai/public/guides/webhooks)
 
-## Making Async API Calls
+## Making async API calls
 
 **Key parameters:**
 
-- `agent`: Your agent's ID
-- `event.input_message.message`: The query for your agent
-- `session_object`: A unique identifier for the conversation session (maintains agent memory)
-- `webhook_target.webhook`: The webhook ID created earlier
-- `client_metadata`: Optional JSON data that will be returned verbatim in webhook events. This can be used to send metadata that will be required while processing the response events from the agent.
+- `agent`: Your agent's ID.
+- `event.input_message.message`: The query for your agent.
+- `session_object`: A unique identifier for the conversation session (maintains agent memory).
+- `webhook_target.webhook`: The webhook ID created earlier.
 
 **To execute an agent asynchronously:**
 
@@ -178,11 +178,11 @@ You should follow the documentation provided for webhooks [here](https://develop
   across multiple calls.
 </Callout>
 
-## Handling Webhook Events
+## Handling webhook events
 
-Your webhook endpoint will receive three types of events:
+Your webhook endpoint receives three types of events:
 
-### 1. Progress Messages
+### 1. Progress messages
 
 These show which skills are being triggered and executed.
 
@@ -239,7 +239,7 @@ These show which skills are being triggered and executed.
   </TabItem>
 </Tabs>
 
-### 2. Final Message
+### 2. Final message
 
 This event contains the agent's final response after all skills are executed.
 
@@ -285,7 +285,7 @@ This event indicates an error occurred during execution.
 }
 ```
 
-## Implementation Patterns
+## Implementation patterns
 
 ### Custom Applications
 
@@ -296,13 +296,13 @@ For building custom applications with the async API:
   application that needs to interact with DevRev agents.
 </Callout>
 
-1. Create a webhook endpoint in your application that can receive POST requests
-2. Register this endpoint with DevRev using the webhooks.create API
-3. Make async API calls with your agent ID and webhook ID
+1. Create a webhook endpoint in your application that can receive POST requests.
+2. Register this endpoint with DevRev using the webhooks.create API.
+3. Make async API calls with your agent ID and webhook ID.
 4. Process incoming webhook events to:
-   - Track progress (optional)
-   - Display the final agent response to the user
-   - Handle any errors
+   - Track progress (optional).
+   - Display the final agent response to the user.
+   - Handle any errors.
 
 Example flow for a chat application:
 

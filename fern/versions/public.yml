@@ -21,41 +21,41 @@ navigation:
       - page: Getting started
         path: ../docs/pages/welcome.mdx
       - artifacts:
-          - page: Attachments
-            path: ../docs/pages/entities/artifacts.mdx
+        - page: Attachments
+          path: ../docs/pages/entities/artifacts.mdx
       - auth-connections:
-          - page: Identity provider
-            path: ../docs/pages/entities/identity.mdx
+        - page: Identity provider
+          path: ../docs/pages/entities/identity.mdx
       - auth-tokens:
-          - page: Security tokens
-            path: ../docs/pages/entities/security-token.mdx
+        - page: Security tokens
+          path: ../docs/pages/entities/security-token.mdx
       - dev-users:
-          - page: Product builders and service providers
-            path: ../docs/pages/entities/dev-users.mdx
+        - page: Product builders and service providers
+          path: ../docs/pages/entities/dev-users.mdx
       - parts:
-          - page: Product components
-            path: ../docs/pages/entities/parts.mdx
+        - page: Product components
+          path: ../docs/pages/entities/parts.mdx
       - rev-orgs:
-          - page: Workspaces
-            path: ../docs/pages/entities/revorgs.mdx
+        - page: Workspaces
+          path: ../docs/pages/entities/revorgs.mdx
       - tags:
-          - page: Concepts
-            path: ../docs/pages/entities/tags.mdx
+        - page: Concepts
+          path: ../docs/pages/entities/tags.mdx
       - timeline-entries:
-          - page: Discussions and events
-            path: ../docs/pages/entities/timeline.mdx
+        - page: Discussions and events
+          path: ../docs/pages/entities/timeline.mdx
       - webhooks:
-          - page: Event responses
-            path: ../docs/pages/entities/webhooks.mdx
+        - page: Event responses
+          path: ../docs/pages/entities/webhooks.mdx
       - works:
-          - page: Tickets and issues
-            path: ../docs/pages/entities/works.mdx
+        - page: Tickets and issues
+          path: ../docs/pages/entities/works.mdx
       - accounts:
-          - page: Accounts
-            path: ../docs/pages/entities/accounts.mdx
+        - page: Accounts
+          path: ../docs/pages/entities/accounts.mdx
       - slas:
-          - page: Service level agreement
-            path: ../docs/pages/entities/sla.mdx
+        - page: Service level agreement
+          path: ../docs/pages/entities/sla.mdx
     paginated: true
   - changelog: ../apis/public/changelog
     title: Changelog
@@ -136,45 +136,33 @@ navigation:
           - page: Snap-in triggered by an external source
             slug: triggered-external-source
             path: ../docs/pages/tutorials/triggered-external-source.mdx
-      - section: Airdrop
-        slug: airdrop
+      - section: ADaaS
+        slug: adaas
         contents:
-          - page: "Overview"
+          - page: "Airdrop-as-a-Service (ADaaS)"
             slug: overview
-            path: ../docs/pages/airdrop/overview.mdx
+            path: ../docs/pages/adaas/overview.mdx
           - page: "Getting started"
             slug: getting-started
-            path: ../docs/pages/airdrop/getting-started.mdx
+            path: ../docs/pages/adaas/getting-started.mdx
           - page: "Extraction phases"
             slug: extraction-phases
-            path: ../docs/pages/airdrop/extraction-phases.mdx
-          - page: "Loading phases"
-            slug: loading-phases
-            hidden: true
-            path: ../docs/pages/airdrop/loading-phases.mdx
+            path: ../docs/pages/adaas/extraction-phases.mdx
           - page: "External sync units extraction"
             slug: external-sync-units-extraction
-            hidden: true
-            path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
+            path: ../docs/pages/adaas/external-sync-units-extraction.mdx
           - page: "Metadata extraction"
-            hidden: true
             slug: metadata-extraction
-            path: ../docs/pages/airdrop/metadata-extraction.mdx
+            path: ../docs/pages/adaas/metadata-extraction.mdx
           - page: "Data extraction"
-            hidden: true
             slug: data-extraction
-            path: ../docs/pages/airdrop/data-extraction.mdx
+            path: ../docs/pages/adaas/data-extraction.mdx
           - page: "Attachments extraction"
-            hidden: true
             slug: extract-attachments
-            path: ../docs/pages/airdrop/attachments-extraction.mdx
+            path: ../docs/pages/adaas/attachments-extraction.mdx
           - page: "Data and attachments deletion"
             slug: data-attachments-deletion
-            hidden: true
-            path: ../docs/pages/airdrop/data-attachments-deletion.mdx
-          - page: "Common issues - FAQ"
-            slug: faq
-            path: ../docs/pages/airdrop/faq.mdx
+            path: ../docs/pages/adaas/data-attachments-deletion.mdx
       - section: References
         slug: references
         contents:

@@ -1,17 +1,14 @@
-import yaml
 import argparse
-import requests
 import os
 import pathlib
-import re
-
+import llm_client
 
 def main(args):
     print(f"Checking style for {args.doc}")
     with open(args.doc, 'r', encoding="utf-8") as infile:
         content = infile.read()
     
-    style = 'stylecheck/style-devrev.md'
+    style = 'stylecheck/style-common.md'
     with open(style, 'r', encoding="utf-8") as infile:
         style = infile.read()
 
@@ -20,6 +17,16 @@ def main(args):
     with open(prompt_file, 'w', encoding="utf-8") as outfile:
         outfile.write(prompt)
         print(f"Wrote prompt to {prompt_file}.")
+
+    revised = llm_client.get_response(prompt)
+
+    revision_file = "/".join(['temp', os.path.basename(args.doc)])
+    if (revised):
+        with open(revision_file, 'w', encoding="utf-8") as outfile:
+            outfile.write(revised)
+            print(f"Wrote log to {revision_file}.")
+    else:
+        print(f"Failed to generate {revision_file}.")
 
 
 def gen_prompt(content, style):

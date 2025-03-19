@@ -137,7 +137,7 @@ navigation:
             slug: triggered-external-source
             path: ../docs/pages/tutorials/triggered-external-source.mdx
       - section: Airdrop
-        slug: airdrop
+        slug: adaas
         contents:
           - page: "Overview"
             slug: overview
@@ -154,23 +154,23 @@ navigation:
             path: ../docs/pages/airdrop/loading-phases.mdx
           - page: "External sync units extraction"
             slug: external-sync-units-extraction
-            hidden: true
+            hidden: false
             path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
           - page: "Metadata extraction"
-            hidden: true
+            hidden: false
             slug: metadata-extraction
             path: ../docs/pages/airdrop/metadata-extraction.mdx
           - page: "Data extraction"
-            hidden: true
+            hidden: false
             slug: data-extraction
             path: ../docs/pages/airdrop/data-extraction.mdx
           - page: "Attachments extraction"
-            hidden: true
+            hidden: false
             slug: extract-attachments
             path: ../docs/pages/airdrop/attachments-extraction.mdx
           - page: "Data and attachments deletion"
             slug: data-attachments-deletion
-            hidden: true
+            hidden: false
             path: ../docs/pages/airdrop/data-attachments-deletion.mdx
           - page: "Common issues - FAQ"
             slug: faq

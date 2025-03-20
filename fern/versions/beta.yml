@@ -20,6 +20,6 @@ navigation:
         path: ../docs/pages/custom-objects.mdx
       - page: Account creation
         path: ../docs/pages/create-accounts.mdx
-      - page: DevRev Agents Async API Cookbook
+      - page: Agents async API
         slug: agents-async-api
-        path: ../docs/pages/interact_agent.mdx
+        path: ../docs/pages/interact-agent.mdx

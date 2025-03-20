@@ -8,7 +8,7 @@ def main(args):
     with open(args.doc, 'r', encoding="utf-8") as infile:
         content = infile.read()
     
-    style = 'stylecheck/style-common.md'
+    style = 'style/style-common.md'
     with open(style, 'r', encoding="utf-8") as infile:
         style = infile.read()
 
@@ -44,7 +44,7 @@ def main(args):
 
 
 def gen_prompt(content, style):
-    prompt = 'stylecheck/prompt.md'
+    prompt = 'style/prompt.md'
     with open(prompt, 'r') as infile:
         prompt = infile.read()
     prompt += "\n\n"

@@ -18,6 +18,16 @@ def main(args):
             style += infile.read()
             style += "\n\n"
 
+    term = 'style/term-common.csv'
+    with open(term, 'r', encoding="utf-8") as infile:
+            style += "\n\n<terminology format='csv'>\n"
+            style += infile.read()
+    
+    if args.term and os.path.exists(args.term):
+        with open(args.style, 'r', encoding="utf-8") as infile:
+            style += infile.read()
+    style += "\n</terminology>\n\n"
+
     prompt = gen_prompt(content, style)
     prompt_file = f"temp/prompt.md"
     with open(prompt_file, 'w', encoding="utf-8") as outfile:
@@ -49,7 +59,7 @@ def gen_prompt(content, style):
         prompt = infile.read()
     prompt += "\n\n"
     prompt += style
-    prompt += "\n\n<document>\n\n"
+    prompt += "\n\n<document format='md'>\n\n"
     prompt += content
     prompt += "\n\n</document>\n\n"
     return prompt
@@ -59,6 +69,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check writing style of markdown file")
     parser.add_argument('--doc', type=pathlib.Path, required=True)
     parser.add_argument('--style', type=pathlib.Path)
+    parser.add_argument('--term', type=pathlib.Path)
 
     args = parser.parse_args()
     main(args)

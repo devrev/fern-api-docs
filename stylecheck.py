@@ -12,6 +12,12 @@ def main(args):
     with open(style, 'r', encoding="utf-8") as infile:
         style = infile.read()
 
+    if args.style and os.path.exists(args.style):
+        with open(args.style, 'r', encoding="utf-8") as infile:
+            style += "\n\n"
+            style += infile.read()
+            style += "\n\n"
+
     prompt = gen_prompt(content, style)
     prompt_file = f"temp/prompt.md"
     with open(prompt_file, 'w', encoding="utf-8") as outfile:
@@ -52,5 +58,7 @@ def gen_prompt(content, style):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check writing style of markdown file")
     parser.add_argument('--doc', type=pathlib.Path, required=True)
+    parser.add_argument('--style', type=pathlib.Path)
+
     args = parser.parse_args()
     main(args)

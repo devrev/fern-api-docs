@@ -5,37 +5,42 @@ import llm_client
 
 def main(args):
     print(f"Checking style for {args.doc}")
-    with open(args.doc, 'r', encoding="utf-8") as infile:
-        content = infile.read()
-    
-    style = 'style/style-common.md'
-    with open(style, 'r', encoding="utf-8") as infile:
-        style = infile.read()
+    doc_name, ext = os.path.splitext(os.path.basename(args.doc))
+
+    with open('style/prompt.md', 'r') as infile:
+        prompt = infile.read()
+    prompt += "\n\n"
+
+    with open('style/style-common.md', 'r', encoding="utf-8") as infile:
+        prompt += infile.read()
 
     if args.style and os.path.exists(args.style):
         with open(args.style, 'r', encoding="utf-8") as infile:
-            style += "\n\n"
-            style += infile.read()
-            style += "\n\n"
+            prompt += "\n\n"
+            prompt += infile.read()
+            prompt += "\n\n"
 
-    term = 'style/term-common.csv'
-    with open(term, 'r', encoding="utf-8") as infile:
-            style += "\n\n<terminology format='csv'>\n"
-            style += infile.read()
+    with open('style/term-common.csv', 'r', encoding="utf-8") as infile:
+            prompt += "\n\n<terminology>\n"
+            prompt += infile.read()
     
     if args.term and os.path.exists(args.term):
         with open(args.style, 'r', encoding="utf-8") as infile:
-            style += infile.read()
-    style += "\n</terminology>\n\n"
+            prompt += infile.read()
+    prompt += "\n</terminology>\n\n"
 
-    prompt = gen_prompt(content, style)
-    prompt_file = f"temp/prompt.md"
+    with open(args.doc, 'r', encoding="utf-8") as infile:
+        prompt += "\n\n<document>\n\n"
+        prompt += infile.read()
+        prompt += "\n\n</document>\n\n"
+    
+    prompt_file = f"temp/{doc_name}_prompt.md"
     with open(prompt_file, 'w', encoding="utf-8") as outfile:
         outfile.write(prompt)
         print(f"Wrote prompt to {prompt_file}.")
 
     response = llm_client.get_response(prompt)
-    response_file = "/".join(['temp', 'full_' + os.path.basename(args.doc)])
+    response_file = f"temp/{doc_name}_response.md"
     if (response):
         with open(response_file, 'w', encoding="utf-8") as outfile:
             outfile.write(response)
@@ -44,25 +49,13 @@ def main(args):
         print(f"Failed to generate {response_file}.")
 
     revision = llm_client.get_lines_between_tags(response, 'document')
-    revision_file = "/".join(['temp', os.path.basename(args.doc)])
+    revision_file = f"temp/{doc_name}_revision.md"
     if (revision):
         with open(revision_file, 'w', encoding="utf-8") as outfile:
             outfile.write(revision)
             print(f"Wrote revision to {revision_file}.")
     else:
         print(f"Failed to generate {revision_file}.")
-
-
-def gen_prompt(content, style):
-    prompt = 'style/prompt.md'
-    with open(prompt, 'r') as infile:
-        prompt = infile.read()
-    prompt += "\n\n"
-    prompt += style
-    prompt += "\n\n<document format='md'>\n\n"
-    prompt += content
-    prompt += "\n\n</document>\n\n"
-    return prompt
 
 
 if __name__ == "__main__":

@@ -3,9 +3,37 @@ import os
 import pathlib
 import llm_client
 
+
+import difflib
+
+def generate_git_diff(before, after, filename="file.txt"):
+
+    before_lines = before.splitlines(keepends=True)
+    after_lines = after.splitlines(keepends=True)
+
+    diff = difflib.unified_diff(
+        before_lines,
+        after_lines,
+        fromfile=f"a/{filename}",
+        tofile=f"b/{filename}",
+    )
+    return "".join(diff)
+
+def my_writer(content, file, note=None):
+    if (content):
+        with open(file, 'w', encoding="utf-8") as outfile:
+            outfile.write(content)
+            print(' '.join(['Wrote', note, 'to', file]))
+            #print(f"Wrote {note} to {file}.")
+    else:
+        print(f"Failed to write {file}.")
+
 def main(args):
     print(f"Checking style for {args.doc}")
     doc_name, ext = os.path.splitext(os.path.basename(args.doc))
+
+    with open(args.doc, 'r', encoding="utf-8") as infile:
+        doc = infile.read()
 
     with open('style/prompt.md', 'r') as infile:
         prompt = infile.read()
@@ -29,34 +57,17 @@ def main(args):
             prompt += infile.read()
     prompt += "\n</terminology>\n\n"
 
-    with open(args.doc, 'r', encoding="utf-8") as infile:
-        prompt += "\n\n<document>\n\n"
-        prompt += infile.read()
-        prompt += "\n\n</document>\n\n"
+    prompt += "\n\n<document>\n\n"
+    prompt += doc
+    prompt += "\n\n</document>\n\n"
     
-    prompt_file = f"temp/{doc_name}_prompt.md"
-    with open(prompt_file, 'w', encoding="utf-8") as outfile:
-        outfile.write(prompt)
-        print(f"Wrote prompt to {prompt_file}.")
-
+    my_writer(prompt, f"temp/{doc_name}_prompt.md", 'prompt')
     response = llm_client.get_response(prompt)
-    response_file = f"temp/{doc_name}_response.md"
-    if (response):
-        with open(response_file, 'w', encoding="utf-8") as outfile:
-            outfile.write(response)
-            print(f"Wrote response to {response_file}.")
-    else:
-        print(f"Failed to generate {response_file}.")
-
+    my_writer(response, f"temp/{doc_name}_response.md", 'response')
     revision = llm_client.get_lines_between_tags(response, 'document')
-    revision_file = f"temp/{doc_name}_revision.md"
-    if (revision):
-        with open(revision_file, 'w', encoding="utf-8") as outfile:
-            outfile.write(revision)
-            print(f"Wrote revision to {revision_file}.")
-    else:
-        print(f"Failed to generate {revision_file}.")
-
+    my_writer(revision, f"temp/{doc_name}_revision{ext}", 'revision')
+    diff = generate_git_diff(doc, revision, doc_name)
+    my_writer(diff, f"temp/{doc_name}.diff", 'diff')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check writing style of markdown file")

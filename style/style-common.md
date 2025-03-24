@@ -7,6 +7,7 @@ For the writing style, apply the following descriptive keywords to analyzing the
 - Vocabulary choice: consistent, technical
 - Grammar and syntax: structured, flawless, articulate
 - Descriptive language: clear, concise, informative
+- Language variant: standard technical/professional US American English; not British, Indian, or other variants.
 
 There are also some very specific style rules that need to be followed:
 

@@ -159,10 +159,10 @@ navigation:
             contents:
               - page: "Extracting data from external system"
                 slug: extracting-data
-                path: ../docs/pages/airdrop/development-guide/extracting-data.mdx
+                path: ../docs/pages/airdrop/extracting-data.mdx
               - page: "Loading data to DevRev"
                 slug: loading-data
-                path: ../docs/pages/airdrop/development-guide/loading-data.mdx
+                path: ../docs/pages/airdrop/loading-data.mdx
           - page: "Extraction phases"
             slug: extraction-phases
             path: ../docs/pages/airdrop/extraction-phases.mdx

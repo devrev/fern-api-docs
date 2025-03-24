@@ -1,35 +1,54 @@
-## Before you begin
+## Before You Begin
 
-- If you have not created a development organization on DevRev before, create a dedicated
-[DevRev organization for development purposes](https://app.devrev.ai/) where you are
-publishing your Airdrop snap-in.
-- Install required tools and packages:
-  - [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
-  - [jq](https://stedolan.github.io/jq)
-  - [golang](https://go.dev/doc/install)
-  - [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
+If this is your first time setting up an organization within DevRev, you'll need to create a dedicated DevRev organization for developing your new Airdrop snap-in:
 
-## Setting up the snap-in
+1. Click on your profile picture in the top left corner.
+2. Navigate to the **Orgs** section and click on **+**.
+3. Fill in the necessary details and click **Create**.
 
-1. Create a new repo from the [Airdrop template repo](https://github.com/devrev/adaas-template).
-Select _Use this template_ and then _Create a new repository_.
-1. Copy `.env.example` to `.env` and fill in the required variables.
-1. Configure a keyring for the external system in the `manifest.yaml`.
-   Refer to [Keyrings](/snapin-development/references/manifest#developer-keyrings) for instructions.
-1. Deploy a draft version of your snap-in to your dev org using `make deploy`.
-1. Install the snap-in in your DevRev at **Settings** > **Snap-ins** > **Install snap-in**.
-1. Define the connection at **Settings** > **Imports** > **Connections**.
-1. Create an import at **Settings** > **Imports** > **Import**.
+You will now find your newly created organization under **Orgs**.
 
-## Observability
+Install required tools and packages:
 
-- To observe logs from your snap-in in your development environment:
-   ```
-   devrev snap_in_package logs | jq
-   ```
-- To open logs in your favorite editor:
-  ```
-  devrev snap_in_package logs | code -
-  ```
+- [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
+- [jq](https://stedolan.github.io/jq)
+- [golang](https://go.dev/doc/install)
+- [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
+
+## Setting Up the Snap-in
+
+### Starter Template
+
+DevRev provides a starter template for Airdrop snap-in development.
+
+1. Create a new repository from [Airdrop template repository](https://github.com/devrev/adaas-template) by selecting _Use this template_ and then _Create a new repository_.
+1. Copy `.env.example` to a new file named `.env` and fill in the required variables.
+
+### Local Development
+
+For ease of development, you can run your snap-in locally and receive logs directly in your console. Follow the guide [here](/snapin-development/locally-testing-snap-ins).
+
+### Publishing the snap-in
+
+Once you're ready to launch your snap-in in a production environment, follow these steps:
+
+1. Deploy a draft version of your snap-in to your organization by using `make deploy`.
+1. Install the snap-in in your DevRev by going to **Settings** > **Snap-ins** > **Install snap-in**.
+1. Set up the connection under **Settings** > **Airdrops** > **Connections**.
+1. Create an import at **Settings** > **Airdrops** > **Airdrop**.
+
+#### Observability
+
+To observe logs from your snap-in in your development environment:
+
+```
+devrev snap_in_package logs | jq
+```
+
+To open logs in your favorite editor:
+
+```
+devrev snap_in_package logs | code -
+```
 
 For more information, refer to [Debugging](/snapin-development/debugging).

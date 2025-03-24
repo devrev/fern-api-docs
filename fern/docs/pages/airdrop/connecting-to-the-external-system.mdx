@@ -1,0 +1,18 @@
+TODO: Keyring explanation and guide setting up.
+
+## Keyrings
+
+_Keyrings_ are a DevRev-specific mechanism for managing authentication to external systems.
+They are called **Connections** in the DevRev app.
+
+Keyrings provide a secure way to store and manage credentials within your DevRev snap-in.
+This eliminates the need to expose sensitive information like passwords or access tokens directly
+within your code or configuration files, enhancing overall security.
+They also provide a valid token by abstracting OAuth token renewal from the end user.
+
+A keyring is used by a worker to authenticate to the external system in API calls.
+They include the key (for example, a PAT or API key), its type, the organization ID for which a
+key is valid, and in some cases the organization name.
+
+Configure a keyring for the external system in the `manifest.yaml`.
+Refer to [Keyrings](/snapin-development/references/manifest#developer-keyrings) for instructions.

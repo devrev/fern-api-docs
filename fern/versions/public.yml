@@ -145,6 +145,24 @@ navigation:
           - page: "Getting started"
             slug: getting-started
             path: ../docs/pages/airdrop/getting-started.mdx
+          - page: "How does it work"
+            slug: how-does-it-work
+            path: ../docs/pages/airdrop/how-does-it-work.mdx
+          - page: "Snap-in examples"
+            slug: snap-in-examples
+            path: ../docs/pages/airdrop/snap-in-examples.mdx
+          - page: "Connecting to the external system"
+            slug: connecting-to-the-external-system
+            path: ../docs/pages/airdrop/connecting-to-the-external-system.mdx
+          - section: "Development guide"
+            slug: development-guide
+            contents:
+              - page: "Extracting data from external system"
+                slug: extracting-data
+                path: ../docs/pages/airdrop/development-guide/extracting-data.mdx
+              - page: "Loading data to DevRev"
+                slug: loading-data
+                path: ../docs/pages/airdrop/development-guide/loading-data.mdx
           - page: "Extraction phases"
             slug: extraction-phases
             path: ../docs/pages/airdrop/extraction-phases.mdx
@@ -154,24 +172,27 @@ navigation:
             path: ../docs/pages/airdrop/loading-phases.mdx
           - page: "External sync units extraction"
             slug: external-sync-units-extraction
-            hidden: false
+            hidden: true
             path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
           - page: "Metadata extraction"
-            hidden: false
+            hidden: true
             slug: metadata-extraction
             path: ../docs/pages/airdrop/metadata-extraction.mdx
           - page: "Data extraction"
-            hidden: false
+            hidden: true
             slug: data-extraction
             path: ../docs/pages/airdrop/data-extraction.mdx
           - page: "Attachments extraction"
-            hidden: false
+            hidden: true
             slug: extract-attachments
             path: ../docs/pages/airdrop/attachments-extraction.mdx
           - page: "Data and attachments deletion"
             slug: data-attachments-deletion
-            hidden: false
+            hidden: true
             path: ../docs/pages/airdrop/data-attachments-deletion.mdx
+          - page: "Publish to the marketplace"
+            slug: publish-to-marketplace
+            path: ../docs/pages/airdrop/publish-to-marketplace.mdx
           - page: "Common issues - FAQ"
             slug: faq
             path: ../docs/pages/airdrop/faq.mdx

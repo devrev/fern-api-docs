@@ -8,9 +8,6 @@ DevRev’s Airdrop functionality.
 It enables developers to create external workers (extractors and loaders) to bring data from various
 external systems.
 
-<Tip>DevRev offers a repository template to help you create Airdrop snap-ins.
-Refer to [Getting started](getting-started) for instructions.</Tip>
-
 ```mermaid
 flowchart TD
 %%{init: {
@@ -57,18 +54,4 @@ An extractor function in the snap-in is responsible for extracting data from the
 A _reverse sync_ is a sync run from DevRev to an external system.
 It uses a loader function, to create or update data in the external system.
 
-## Keyrings
-
-_Keyrings_ are a DevRev-specific mechanism for managing authentication to external systems.
-They are called **Connections** in the DevRev app.
-
-Keyrings provide a secure way to store and manage credentials within your DevRev snap-in.
-This eliminates the need to expose sensitive information like passwords or access tokens directly
-within your code or configuration files, enhancing overall security.
-They also provide a valid token by abstracting OAuth token renewal from the end user.
-
-A keyring is used by a worker to authenticate to the external system in API calls.
-They include the key (for example, a PAT or API key), its type, the organization ID for which a
-key is valid, and in some cases the organization name.
-
-Refer to [Keyrings](/snapin-development/references/keyrings) for more information.
+TODO: 1-way sync, 2-way sync, incremental sync, ...

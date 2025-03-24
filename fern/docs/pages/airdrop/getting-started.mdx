@@ -1,30 +1,33 @@
-## Before You Begin
+## Before you begin
+
+### Create a new organization
 
 If this is your first time setting up an organization within DevRev, you'll need to create a dedicated DevRev organization for developing your new Airdrop snap-in:
 
 1. Click on your profile picture in the top left corner.
-2. Navigate to the **Orgs** section and click on **+**.
+2. Go to the **Orgs** section and click on **+**.
 3. Fill in the necessary details and click **Create**.
 
-You will now find your newly created organization under **Orgs**.
+You now find your newly created organization under **Orgs**.
 
-Install required tools and packages:
+### Install required tools and packages
 
 - [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
 - [jq](https://stedolan.github.io/jq)
 - [golang](https://go.dev/doc/install)
 - [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
+- [ngrok](https://ngrok.com)
 
-## Setting Up the Snap-in
+## Setting up the snap-in
 
-### Starter Template
+### Starter template
 
 DevRev provides a starter template for Airdrop snap-in development.
 
 1. Create a new repository from [Airdrop template repository](https://github.com/devrev/adaas-template) by selecting _Use this template_ and then _Create a new repository_.
-1. Copy `.env.example` to a new file named `.env` and fill in the required variables.
+2. Copy `.env.example` to a new file named `.env` and fill in the required variables.
 
-### Local Development
+### Local development
 
 For ease of development, you can run your snap-in locally and receive logs directly in your console. Follow the guide [here](/snapin-development/locally-testing-snap-ins).
 
@@ -33,9 +36,9 @@ For ease of development, you can run your snap-in locally and receive logs direc
 Once you're ready to launch your snap-in in a production environment, follow these steps:
 
 1. Deploy a draft version of your snap-in to your organization by using `make deploy`.
-1. Install the snap-in in your DevRev by going to **Settings** > **Snap-ins** > **Install snap-in**.
-1. Set up the connection under **Settings** > **Airdrops** > **Connections**.
-1. Create an import at **Settings** > **Airdrops** > **Airdrop**.
+2. Install the snap-in in your DevRev by going to **Settings** > **Snap-ins** > **Install snap-in**.
+3. Set up the connection under **Settings** > **Airdrops** > **Connections**.
+4. Create an import at **Settings** > **Airdrops** > **Airdrop**.
 
 #### Observability
 

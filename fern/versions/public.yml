@@ -148,7 +148,7 @@ navigation:
           - page: "How does it work"
             slug: how-does-it-work
             path: ../docs/pages/airdrop/how-does-it-work.mdx
-          - page: "Snap-in examples"
+          - page: "Examples of snap-ins"
             slug: snap-in-examples
             path: ../docs/pages/airdrop/snap-in-examples.mdx
           - page: "Connecting to the external system"
@@ -165,6 +165,7 @@ navigation:
                 path: ../docs/pages/airdrop/loading-data.mdx
           - page: "Extraction phases"
             slug: extraction-phases
+            hidden: true
             path: ../docs/pages/airdrop/extraction-phases.mdx
           - page: "Loading phases"
             slug: loading-phases

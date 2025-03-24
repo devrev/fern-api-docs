@@ -1,6 +1,6 @@
 _Airdrop_ is DevRev’s solution to migrate data. It allows our customers to bring in their existing
 data from external systems to DevRev, export data back to external systems, and keep data in sync
-between DevRev and the external systems.
+between DevRev and the external systems. It uses a standardized communication protocol for talking to Airdrop and a standardized data structure for all the files it extracts and processes, so that they can be seamlessly imported into DevRev.
 You can read more about Airdrop in the [general documentation](https://docs.devrev.ai/import#airdrop-features).
 
 DevRev is extending Airdrop's capabilities to give snap-in developers the ability to integrate with
@@ -36,22 +36,102 @@ s3[(AWS S3)]
 
 ```
 
-An _extractor_ is a function in an Airdrop-capable snap-in responsible for extracting data from an
-_external system_, such as Jira, Zendesk, or HubSpot.
-It uses a standardized communication protocol for talking to Airdrop and a standardized data
-structure for all the files it extracts and processes, so that they can be seamlessly imported
-into DevRev.
+## Terminology
 
-## Sync runs
+### Sync run
 
-Airdrop functions are executed in the context of _sync runs_, which is a directed operation that
-spans over many invocations of an Airdrop snap-in to bring the data to DevRev or load the data
-to the external system.
+Airdrop extractions are done in _sync runs_.
+A sync run is one execution of an import or sync.
+
+### Forward sync
 
 A _forward sync_ is a sync run from an external system to DevRev.
 An extractor function in the snap-in is responsible for extracting data from the external system.
 
+### Reverse sync
+
 A _reverse sync_ is a sync run from DevRev to an external system.
 It uses a loader function, to create or update data in the external system.
 
-TODO: 1-way sync, 2-way sync, incremental sync, ...
+### 1-way (incremental) sync
+
+A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial import has been successfully completed.
+An extractor extracts data that was created or updated in the external system after the start
+of the latest successful forward sync, including any changes that occurred during the forward sync,
+but were not picked up by it.
+
+A snap-in must consult its state to get information on when the last successful forward sync started.
+Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
+as well as between sync runs.
+
+A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
+
+## Sync run phases
+
+Each sync run is comprised out of phases.
+Phases follow sequentially, and each can consist of one or more invocations of the snap-in.
+
+1. External sync units extraction
+2. Metadata extraction
+3. Data extraction
+4. Attachments extraction
+
+```mermaid
+sequenceDiagram
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'signalColor': '#7d7f7c',
+        'signalTextColor': '#7d7f7c'
+}}}%%
+  actor user as User
+  participant gw as REST API Gateway
+  participant ad as Airdrop components
+  participant ee as External extractor
+
+	note over gw,ad: Extract External Sync Units
+	user ->> gw: Select import connection
+	gw ->> ad: Start External Sync Unit extraction
+	ad ->> ee: Start External Sync Unit extraction
+	ee -->> gw: List of External Sync Units
+	gw ->> ad: List of External Sync Units
+	ad ->> gw: List of External Sync Units
+	gw -->> user: Show available External Sync Units
+
+
+	note over gw,ad: Extract Metadata
+	ad ->> ee: Start Metadata extraction
+	ee -->> gw: List of extracted metadata artifacts
+	gw ->> ad: List of extracted metadata artifacts
+
+	note over gw,ad: Extract data
+	ad ->> ee: Start data extraction
+	ee -->> gw: List of extracted data artifacts
+	gw ->> ad: List of extracted data artifacts
+
+	note over ad: Transform and import data into DevRev
+
+	note over gw,ad: Extract attachments
+	ad ->> ee: Start attachment extraction
+	ee -->> gw: List of extracted attachments
+	gw ->> ad: List of extracted attachments
+
+	ad -->> gw: Finished import
+	gw -->> user: Show finished import and report
+
+	note over gw,ad: Delete data
+	user ->> gw: Delete import
+	gw ->> ad: Delete import
+	ad ->> ee: Delete data
+	ee -->> gw: Finished deleting data
+	gw ->> ad: Finished deleting data
+
+	note over gw,ad: Delete attachments
+	ad ->> ee: Delete attachments
+	ee -->> gw: Finished deleting attachments
+	gw ->> ad: Finished deleting attachments
+	note over ad: Deletes internal data
+	ad -->> gw: Finished deleting import
+	gw -->> user: Import deleted
+```

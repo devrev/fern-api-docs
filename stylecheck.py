@@ -2,22 +2,32 @@ import argparse
 import os
 import pathlib
 import llm_client
-
-
 import difflib
 
-def gen_diff(before, after, filename="file.txt"):
+def create_line_diff(old_file, new_file):
+    with open(old_file, 'r', encoding='utf-8') as f1:
+        old_lines = f1.readlines()
+    with open(new_file, 'r', encoding='utf-8') as f2:
+        new_lines = f2.readlines()
 
-    before_lines = before.splitlines(keepends=True)
-    after_lines = after.splitlines(keepends=True)
+    # Get line-level differences
+    matcher = difflib.SequenceMatcher(None, old_lines, new_lines)
+    
+    # Generate unified diff format
+    diff_lines = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == 'replace':
+            # Add hunk header
+            diff_lines.append(f'@@ -{i1+1},{i2-i1} +{j1+1},{j2-j1} @@')
+            # Add removals
+            for line in old_lines[i1:i2]:
+                diff_lines.append('-' + line.rstrip())
+            # Add additions
+            for line in new_lines[j1:j2]:
+                diff_lines.append('+' + line.rstrip())
+            diff_lines.append('')  # blank line between hunks
 
-    diff = difflib.unified_diff(
-        before_lines,
-        after_lines,
-        fromfile=f"a/{filename}",
-        tofile=f"b/{filename}",
-    )
-    return "".join(diff)
+    return '\n'.join(diff_lines)
 
 def gen_prompt(args):
 
@@ -44,7 +54,8 @@ def gen_prompt(args):
     prompt += "\n</terminology>\n\n"
 
     prompt += "\n\n<document>\n\n"
-    prompt += args.doc
+    with open(args.doc, 'r', encoding="utf-8") as infile:
+        prompt += infile.read()
     prompt += "\n\n</document>\n\n"
 
     return prompt
@@ -54,7 +65,6 @@ def my_writer(content, file, note=None):
         with open(file, 'w', encoding="utf-8") as outfile:
             outfile.write(content)
             print(' '.join(['Wrote', note, 'to', file]))
-            #print(f"Wrote {note} to {file}.")
     else:
         print(f"Failed to write {file}.")
 
@@ -62,16 +72,14 @@ def main(args):
     print(f"Checking style for {args.doc}")
     doc_name, ext = os.path.splitext(os.path.basename(args.doc))
 
-    with open(args.doc, 'r', encoding="utf-8") as infile:
-        args.doc = infile.read()
-
     prompt = gen_prompt(args)
     my_writer(prompt, f"temp/{doc_name}_prompt.md", 'prompt')
     response = llm_client.get_response(prompt)
     my_writer(response, f"temp/{doc_name}_response.md", 'response')
     revision = llm_client.get_lines_between_tags(response, 'document')
-    my_writer(revision, f"temp/{doc_name}_revision{ext}", 'revision')
-    diff = gen_diff(args.doc, revision, doc_name)
+    revision_file = f"temp/{doc_name}_revision{ext}"
+    my_writer(revision, revision_file, 'revision')
+    diff = create_line_diff(args.doc, revision_file)
     my_writer(diff, f"temp/{doc_name}.diff", 'diff')
 
 if __name__ == "__main__":

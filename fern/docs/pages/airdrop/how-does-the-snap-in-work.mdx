@@ -29,6 +29,8 @@ A snap-in is a Node.js project with a specific structure:
   - test/
 ```
 
+TODO: describe emitting events and invoking workers?
+
 #### `manifest.yaml`
 
 The snap-in manifest an essential part of a snap-in, as it's used to define a snap-in configuration: snap-in name, description, version, keyring types and functionality (functions).
@@ -65,10 +67,10 @@ For example, removing the entry with the name loading means syncing from DevRev 
 
 Extraction is comprised of 4 phases, which follow sequentially:
 
-1. External sync units extraction (only on initial import)
-2. Metadata extraction
-3. Data extraction
-4. Attachments extraction
+1. external sync units extraction (only on initial import)
+2. metadata extraction
+3. data extraction
+4. attachments extraction
 
 #### External sync units extraction
 
@@ -97,15 +99,13 @@ including its domain entities, types, relationships, and other metadata.
 
 #### Data extraction
 
-In the data extraction phase, the extractor is expected to call the external system's APIs
-to retrieve all the items that were updated since the start of the last extraction.
-If there was no previous extraction (the current run is an initial import),
-then all the items should be extracted.
+In initial sync we need to extract all data to create a baseline while in subsequent runs only updated objects need to be extracted.
+
+Snap-in should consult its internal state to determine what is already extracted and what it did not
 
 #### Attachments extraction
 
-For the attachment extraction phase of the import process, the extractor has to upload each
-attachment to DevRev
+For the attachment extraction phase of the import process, the extractor has to upload each attachment to DevRev
 
 ### Loading
 

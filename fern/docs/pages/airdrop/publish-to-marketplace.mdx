@@ -1,3 +1,41 @@
-When you feel like your snap-in is ready to be used by different organizations, you can publish it to the DevRev marketplace.
+When your snap-in is ready for use by you or other organizations, publish it to the DevRev marketplace. Before starting the publication process, ensure your snap-in is deployed to your organization. If you need a refresher, refer to the [instructions](/snapin-development/adaas/development-guide/getting-started#publishing-the-snap-in) for deploying your snap-in.
 
-Follow this [guide](/snapin-development/marketplace-listings).
+### 1. Create marketplace listing
+
+When creating a new marketplace listing, an initial marketplace submission must be created with all the mandatory properties. To create a new listing, run the following command, which will start a wizard to guide you through the process:
+
+```bash
+devrev marketplace_submissions create
+```
+
+### 2. Submit marketplace listing for review
+
+The newly created marketplace submission is in the Draft state. In order to publish it, we first have to transition it to Waiting for review state. This can be done by running the following command, which will start a wizard to guide you through the process:
+
+```bash
+devrev marketplace_submissions transition
+```
+
+Once the submission is transitioned to the Waiting for review state, it needs to be approved by a marketplace admin. While in review, the state of the submission is In review. Once it is reviewed, the state will be changed to either Approved or Rejected.
+
+<Callout intent="note">
+  Submissions whose state is _In review_ or _Approved_ cannot be modified.
+</Callout>
+
+If the submission was rejected, you can transition it back to Draft and modify it to satisfy the requirements. Once it is updated, you can transition it back to Waiting for review to be reviewed again.
+
+### 3. Publish marketplace submission
+
+If the submission was approved, you can publish it using the following command, which will start a wizard to guide you through the process:
+
+```bash
+devrev marketplace_items publish
+```
+
+To make sure that marketplace item was published you can retrieve it using its ID:
+
+```bash
+devrev marketplace_items show [marketplace_item_id] | jq '{name: .name, id: .id, state: .state}'
+```
+
+Learn more about the markeplace [here](/snapin-development/marketplace-listings).

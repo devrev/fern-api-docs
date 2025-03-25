@@ -145,12 +145,12 @@ navigation:
           - section: "Development guide"
             slug: development-guide
             contents:
-              - page: "How does a snap-in work"
-                slug: how-does-the-snap-in-work
-                path: ../docs/pages/airdrop/how-does-the-snap-in-work.mdx
               - page: "Getting started"
                 slug: getting-started
                 path: ../docs/pages/airdrop/getting-started.mdx
+              - page: "How does a snap-in work"
+                slug: how-does-the-snap-in-work
+                path: ../docs/pages/airdrop/how-does-the-snap-in-work.mdx
               - page: "Connecting to the external system"
                 slug: connecting-to-the-external-system
                 path: ../docs/pages/airdrop/connecting-to-the-external-system.mdx

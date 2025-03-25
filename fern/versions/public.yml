@@ -151,12 +151,12 @@ navigation:
           - page: "Examples of snap-ins"
             slug: snap-in-examples
             path: ../docs/pages/airdrop/snap-in-examples.mdx
-          - page: "Connecting to the external system"
-            slug: connecting-to-the-external-system
-            path: ../docs/pages/airdrop/connecting-to-the-external-system.mdx
           - section: "Development guide"
             slug: development-guide
             contents:
+              - page: "Connecting to the external system"
+                slug: connecting-to-the-external-system
+                path: ../docs/pages/airdrop/connecting-to-the-external-system.mdx
               - page: "Extracting data from external system"
                 slug: extracting-data
                 path: ../docs/pages/airdrop/extracting-data.mdx

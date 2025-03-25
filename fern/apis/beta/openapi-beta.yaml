@@ -23530,6 +23530,7 @@ components:
           type: string
           description: The sprint that the issue belongs to.
           format: id
+          x-some-special-tag: foo
         target_start_date:
           type: string
           description: Timestamp for when the work is expected to start.

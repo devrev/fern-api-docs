@@ -142,18 +142,15 @@ navigation:
           - page: "Overview"
             slug: overview
             path: ../docs/pages/airdrop/overview.mdx
-          - page: "Getting started"
-            slug: getting-started
-            path: ../docs/pages/airdrop/getting-started.mdx
-          - page: "How does it work"
-            slug: how-does-it-work
-            path: ../docs/pages/airdrop/how-does-it-work.mdx
-          - page: "Examples of snap-ins"
-            slug: snap-in-examples
-            path: ../docs/pages/airdrop/snap-in-examples.mdx
           - section: "Development guide"
             slug: development-guide
             contents:
+              - page: "How does a snap-in work"
+                slug: how-does-the-snap-in-work
+                path: ../docs/pages/airdrop/how-does-the-snap-in-work.mdx
+              - page: "Getting started"
+                slug: getting-started
+                path: ../docs/pages/airdrop/getting-started.mdx
               - page: "Connecting to the external system"
                 slug: connecting-to-the-external-system
                 path: ../docs/pages/airdrop/connecting-to-the-external-system.mdx
@@ -163,6 +160,9 @@ navigation:
               - page: "Loading data to DevRev"
                 slug: loading-data
                 path: ../docs/pages/airdrop/loading-data.mdx
+              - page: "Examples of snap-ins"
+                slug: snap-in-examples
+                path: ../docs/pages/airdrop/snap-in-examples.mdx
           - page: "Extraction phases"
             slug: extraction-phases
             hidden: true

@@ -1,39 +1,13 @@
 _Airdrop_ is DevRev’s solution to migrate data. It allows our customers to bring in their existing
 data from external systems to DevRev, export data back to external systems, and keep data in sync
-between DevRev and the external systems. It uses a standardized communication protocol for talking to Airdrop and a standardized data structure for all the files it extracts and processes, so that they can be seamlessly imported into DevRev.
-You can read more about Airdrop in the [general documentation](https://docs.devrev.ai/import#airdrop-features).
+between DevRev and the external systems.
+
+You can learn more about Airdrop in the [general documentation](https://docs.devrev.ai/import#airdrop-features).
 
 DevRev is extending Airdrop's capabilities to give snap-in developers the ability to integrate with
 DevRev’s Airdrop functionality.
 It enables developers to create external workers (extractors and loaders) to bring data from various
 external systems.
-
-```mermaid
-flowchart TD
-%%{init: {
-    'theme': 'base',
-    'themeVariables': {
-        'fontFamily': 'Segoe UI',
-        'lineColor': '#7d7f7c'
-}}}%%
-externalSystem[External system]
-worker([Worker])
-s3interact[S3interact]
-airdrop[Airdrop]
-s3[(AWS S3)]
-
-	externalSystem <-- Get/create users, issues, ... --> worker
-
-	worker <-- Exchange artifact upload/download URLs --> s3interact
-	worker <-- Upload/download artifacts --> s3
-	worker <-- Airdrop messages and REST API --> airdrop
-
-
-	subgraph DevRev
-	s3interact <-- Prepare upload/download URL --> s3
-	airdrop <-- Download/upload artifacts --> s3
-	end
-```
 
 ## Terminology
 

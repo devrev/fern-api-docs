@@ -1,0 +1,65 @@
+## How does it work?
+
+A snap-in is a software that runs in Node.js and communicates with Airdrop.
+
+It uses a standardized communication protocol for talking to Airdrop and a standardized data structure for all the files it extracts and processes, so that they can be seamlessly imported into DevRev.
+
+A sync run is comprised of 4 phases, which follow sequentially:
+
+1. External sync units extraction (only on initial import)
+2. Metadata extraction
+3. Data extraction
+4. Attachments extraction
+
+### External sync units extraction
+
+In the external sync unit extraction phase, the snap-in is expected to obtain a list of external
+sync units that it can extract from the external system API and send it to Airdrop in its response.
+
+An _external sync unit_ refers to a single unit in the external system that is being airdropped to DevRev.
+In some systems, this is a project; in some it is a repository; in support systems it could be
+called a brand or an organization.
+What a unit of data is called and what it represents depends on the external system's domain model.
+It usually combines contacts, users, work-like items, and comments into a unit of domain objects.
+
+Some external systems may offer a single unit in their free plans,
+while their enterprise plans may offer their clients to operate many separate units.
+
+The external sync unit ID is the identifier of the sync unit (project, repository, or similar)
+in the external system.
+For GitHub, this would be the repository, for example `cli` in `github.com/devrev/cli`.
+
+### Metadata extraction
+
+During the metadata extraction phase, the Airdrop snap-in must provide an
+`external_domain_metadata.json` file on each sync run.
+This file provides a structured way of describing the external system's domain system,
+including its domain entities, types, relationships, and other metadata.
+
+### Data extraction
+
+In the data extraction phase, the extractor is expected to call the external system's APIs
+to retrieve all the items that were updated since the start of the last extraction.
+If there was no previous extraction (the current run is an initial import),
+then all the items should be extracted.
+
+### Attachments extraction
+
+For the attachment extraction phase of the import process, the extractor has to upload each
+attachment to DevRev
+
+## Recommended steps of snap-in development
+
+1. Inspect available objects in the external system and in DevRev - think about what will map to what
+2. Check which fields in the objects are required by DevRev (Where should I check that? - API docs? Schema?) and which fields are available in the external system API.
+3. Decide on what will be the external sync unit (How do I decide? An external sync unit should be the smallest unit containing the objects you want to import (e.g. a project).)
+4. Implement External sync units extraction (check below)
+   Prepare API endpoints from the external system and get data that we will be importing in .json file for each object type (tasks.json, issues.json, users.json).
+   https://github.com/devrev/adaas-chef-cli/blob/main/docs/step_by_step.md#getting-a-good-starting-point-metadata-using-the-infer-metadata-command
+5. Implement Metadata extraction (check below)
+
+TODO: Explain how ADaaS code works by using the template
+
+TODO: Explain the role of manifest.yaml and where is what
+
+TODO: Explain how the communication between snap-in and DevRev works (through emitting events).

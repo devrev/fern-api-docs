@@ -33,3 +33,8 @@ def get_lines_between_tags(text, tag):
   pattern = r'<' + tag + r'>(.*?)<\/' + tag + r'>'
   matches = re.findall(pattern, text, re.DOTALL)
   return "".join([match.strip() for match in matches])
+
+def get_lines_before_tag(text, tag):
+  pattern = r'(.*?)<' + tag + r'>'
+  matches = re.findall(pattern, text, re.DOTALL)
+  return "".join([match.strip() for match in matches])

@@ -1,6 +1,7 @@
-In order to start an airdrop, go to UI and click **Airdrops** -> **Start Airdrop** -> **Your snap-in**.
+Now that you have a running snap-in, you can start an airdrop.
+Go to UI and click **Airdrops** -> **Start Airdrop** -> **Your snap-in**.
 
-### From the UI perspective
+### What happens in the UI
 
 1. Starting an airdrop begins with establishing a connection to the external system. The snap-in prompts for specific information needed to create this connection. Afterwards, the snap-in verifies that the connection is successful and you should see a success message.
 
@@ -14,9 +15,9 @@ In order to start an airdrop, go to UI and click **Airdrops** -> **Start Airdrop
 
 6. Finally, the snap-in streams any possible attachments from the external system to DevRev.
 
-The process described above is known as the initial sync. In all subsequent syncs, the first two steps are skipped.
+The process described above is called the **initial sync**. In all subsequent syncs, the first two steps are skipped.
 
-### In the background
+### What happens in the background
 
 The snap-in constantly communicates with Airdrop, which manages its behavior. When an action occurs in the UI, Airdrop sends a message to the snap-in with details about the event. The snap-in performs an action based on the event type. For example, when a user starts a new airdrop for the first time, Airdrop instructs the snap-in to perform an external sync unit extraction. The snap-in carries out the task and sends back available sync units to Airdrop.
 
@@ -37,17 +38,13 @@ An **extractor** function in the snap-in is responsible for extracting data from
 A _reverse sync_ is a sync run from DevRev to an external system.
 It uses a **loader** function, to create or update data in the external system.
 
+### Initial sync
+
+It is the first forward sync to run. In initial sync we need to extract all data to create a baseline (while in incremental runs only updated objects need to be extracted).
+
 ### 1-way (incremental) sync
 
-A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial import has been successfully completed.
-An extractor extracts data that was created or updated in the external system after the start
+A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial sync run has been successfully completed.
+In the incremental sync an extractor extracts data that was created or updated in the external system after the start
 of the latest successful forward sync, including any changes that occurred during the forward sync,
 but were not picked up by it.
-
-A snap-in must consult its state to get information on when the last successful forward sync started.
-Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
-as well as between sync runs.
-
-A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
-
-TODO: define the sync unit and how it relates to external project/sync unit, ...

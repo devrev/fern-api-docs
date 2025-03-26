@@ -1,3 +1,25 @@
+## What happens during an airdrop
+
+### From the UI perspective
+
+1. Starting an airdrop begins with establishing a connection to the external system. The snap-in prompts for specific information needed to create this connection. Afterwards, the snap-in verifies that the connection is successful and you should see a success message.
+
+2. Once the connection is established, the snap-in collects information from the external system about the data unit to be exported. This phase is called _external sync units extraction_. An external sync unit is the data unit from the external system to be imported to DevRev. At this point, the UI prompts the user to select an external sync unit from the list.
+
+3. The snap-in then extracts data from the external system.
+
+4. Afterwards, the UI requests the mapping of data from the external system to DevRev. The user can decide which fields from each system should match.
+
+5. Once mapping is complete, the snap-in saves the data to DevRev.
+
+6. Finally, the snap-in streams any possible attachments from the external system to DevRev.
+
+The process described above is known as the initial sync. In all subsequent syncs, the first two steps are skipped.
+
+### In the background
+
+The snap-in constantly communicates with Airdrop, which manages its behavior. When an action occurs in the UI, Airdrop sends a message to the snap-in with details about the event. The snap-in performs an action based on the event type. For example, when a user starts a new airdrop for the first time, Airdrop instructs the snap-in to perform an external sync unit extraction. The snap-in carries out the task and sends back available sync units to Airdrop.
+
 ## Snap-in code structure
 
 A snap-in is a Node.js project with a specific structure:
@@ -29,84 +51,8 @@ A snap-in is a Node.js project with a specific structure:
   - test/
 ```
 
-TODO: describe emitting events and invoking workers?
+The `manifest.yaml` file is crucial in a snap-in as it contains the configuration details, including the snap-in's name, description, version, connection info, and functionality details. It serves as the starting point for snap-in development.
 
-#### `manifest.yaml`
+The `code/` folder houses the snap-in implementation. The functions/ directory is where the core logic resides, with the extraction folder handling data extraction from external systems and the loading folder managing data loading into DevRev.
 
-The snap-in manifest an essential part of a snap-in, as it's used to define a snap-in configuration: snap-in name, description, version, keyring types and functionality (functions).
-
-#### `code/`
-
-This folder contains the Node.js project.
-
-#### `scripts/`
-
-This folder includes scripts for deploying (`deploy.sh`) and building (`build.sh`) the snap-in using a Makefile.
-
-#### `functions/`
-
-This directory holds the snap-in's core logic. The logic for extracting data from the external system is found in the `extraction` folder, and the logic for loading data into the external system from DevRev is in the `loading` folder.
-
-## Snap-in functionality
-
-The DevRev platform enables the creation of a snap-in that can either import data from an external system into DevRev or export data from DevRev to an external system. Implementing both isn't necessary. The implemented functionalities are specified in `manifest.yaml` under the `functions` key, as shown in the starter template:
-
-```yaml
-functions:
-  - name: extraction
-    description: Extraction function for the template snap-in
-  - name: loading
-    description: Loading function for the template snap-in
-  - name: install_initial_domain_mapping
-    description: Create blueprint and install initial domain mapping
-```
-
-For example, removing the entry with the name loading means syncing from DevRev to the external system is not available in the UI.
-
-### Extraction
-
-Extraction is comprised of 4 phases, which follow sequentially:
-
-1. external sync units extraction (only on initial import)
-2. metadata extraction
-3. data extraction
-4. attachments extraction
-
-#### External sync units extraction
-
-In the external sync unit extraction phase, the snap-in is expected to obtain a list of external
-sync units that it can extract from the external system API and send it to Airdrop in its response.
-
-An _external sync unit_ refers to a single unit in the external system that is being airdropped to DevRev.
-In some systems, this is a project; in some it is a repository; in support systems it could be
-called a brand or an organization.
-What a unit of data is called and what it represents depends on the external system's domain model.
-It usually combines contacts, users, work-like items, and comments into a unit of domain objects.
-
-Some external systems may offer a single unit in their free plans,
-while their enterprise plans may offer their clients to operate many separate units.
-
-The external sync unit ID is the identifier of the sync unit (project, repository, or similar)
-in the external system.
-For GitHub, this would be the repository, for example `cli` in `github.com/devrev/cli`.
-
-#### Metadata extraction
-
-During the metadata extraction phase, the Airdrop snap-in must provide an
-`external_domain_metadata.json` file on each sync run.
-This file provides a structured way of describing the external system's domain system,
-including its domain entities, types, relationships, and other metadata.
-
-#### Data extraction
-
-In initial sync we need to extract all data to create a baseline while in subsequent runs only updated objects need to be extracted.
-
-Snap-in should consult its internal state to determine what is already extracted and what it did not
-
-#### Attachments extraction
-
-For the attachment extraction phase of the import process, the extractor has to upload each attachment to DevRev
-
-### Loading
-
-TODO
+The `scripts/` folder contains scripts for building and deploying the snap-in.

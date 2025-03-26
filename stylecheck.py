@@ -29,6 +29,18 @@ def create_line_diff(old_file, new_file):
 
     return '\n'.join(diff_lines)
 
+
+def restore_title(old, new):
+    with open(old, 'r') as infile:
+        old = infile.read()
+
+    old_first = old.splitlines()[0]
+    new_first = new.splitlines()[0]
+    if old_first.startswith('#') and not new_first.startswith('#'):
+        new = old_first + "\n\n" + new
+
+    return new
+
 def gen_prompt(args):
 
     with open('style/prompt.md', 'r') as infile:
@@ -87,6 +99,7 @@ def main(args):
             print(f"LLM response in {response_file} not found. Exiting.")
             return
     revision = llm_client.get_lines_between_tags(response, 'document')
+    revision = restore_title(args.doc, revision)
     revision_file = f"temp/{doc_name}_revision{ext}"
     my_writer(revision, revision_file, 'revision')
     diff = create_line_diff(args.doc, revision_file)

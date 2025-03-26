@@ -74,8 +74,18 @@ def main(args):
 
     prompt = gen_prompt(args)
     my_writer(prompt, f"temp/{doc_name}_prompt.md", 'prompt')
-    response = llm_client.get_response(prompt)
-    my_writer(response, f"temp/{doc_name}_response.md", 'response')
+    response_file = f"temp/{doc_name}_response.md"
+    if args.llm:
+        response = llm_client.get_response(prompt)
+        my_writer(response, response_file, 'response')
+    else:
+        try:
+            with open(response_file, 'r') as infile:
+                response = infile.read()
+            print(f"Reading response from {response_file}.")
+        except:
+            print(f"LLM response in {response_file} not found. Exiting.")
+            return
     revision = llm_client.get_lines_between_tags(response, 'document')
     revision_file = f"temp/{doc_name}_revision{ext}"
     my_writer(revision, revision_file, 'revision')
@@ -84,9 +94,12 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check writing style of markdown file")
-    parser.add_argument('--doc', type=pathlib.Path, required=True)
     parser.add_argument('--style', type=pathlib.Path)
     parser.add_argument('--term', type=pathlib.Path)
+    parser.add_argument('--llm', default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument('doc', nargs=1, type=pathlib.Path)
 
     args = parser.parse_args()
+    args.doc = str(args.doc[0])
+
     main(args)

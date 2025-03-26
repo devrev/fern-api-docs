@@ -145,12 +145,12 @@ navigation:
           - page: "Getting started"
             slug: getting-started
             path: ../docs/pages/airdrop/getting-started.mdx
-          - page: "How does a snap-in work"
+          - page: "Start an airdrop"
             slug: how-does-the-snap-in-work
             path: ../docs/pages/airdrop/how-does-the-snap-in-work.mdx
-          - page: "First steps of development"
-            slug: first-steps-of-development
-            path: ../docs/pages/airdrop/first-steps-of-development.mdx
+          - page: "Snap-in configuration"
+            slug: snap-in-configuration
+            path: ../docs/pages/airdrop/snap-in-configuration.mdx
           - page: "Connecting to the external system"
             slug: connecting-to-the-external-system
             path: ../docs/pages/airdrop/connecting-to-the-external-system.mdx
@@ -163,6 +163,9 @@ navigation:
           - page: "Examples of snap-ins"
             slug: snap-in-examples
             path: ../docs/pages/airdrop/snap-in-examples.mdx
+          - page: "Deploy to organization"
+            slug: deploy-to-organization
+            path: ../docs/pages/airdrop/deploy-to-organization.mdx
           - page: "Publish to the marketplace"
             slug: publish-to-marketplace
             path: ../docs/pages/airdrop/publish-to-marketplace.mdx

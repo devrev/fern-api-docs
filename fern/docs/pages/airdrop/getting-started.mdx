@@ -62,28 +62,39 @@ DevRev provides a template with example code to implement an Airdrop as a Servic
    ```
 9. Start the import (**Airdrops** -> **Start Airdrop** -> **Your snap-in**).
 
-## Publishing the snap-in
+## Snap-in code structure
 
-Once you're ready to launch your snap-in in a production environment, follow these steps:
-
-1. Copy `.env.example` to a new file named `.env` and fill in the required variables.
-2. Deploy a draft version of your snap-in to your organization by using `make deploy`.
-3. Install the snap-in in your DevRev by going to **Settings** > **Snap-ins** > **Install snap-in**.
-4. Set up the connection under **Settings** > **Airdrops** > **Connections**.
-5. Create an import at **Settings** > **Airdrops** > **Airdrop**.
-
-### Observability
-
-To observe logs from your snap-in in your development environment:
+A snap-in is a Node.js project with a specific file structure:
 
 ```
-devrev snap_in_package logs | jq
+- manifest.yaml
+- code/
+  - scripts/
+  - src/
+    - fixtures/
+    - functions/
+      - external-system/
+      - extraction/
+        - workers/
+          - attachments-extraction.ts
+          - data-extraction.ts
+          - external-sync-units-extraction.ts
+          - metadata-extraction.ts
+        - index.ts
+      - install_initial_domain_mapping/
+      - loading/
+        - workers/
+          - load-data.ts
+          - data-extraction.ts
+          - external-sync-units-extraction.ts
+          - metadata-extraction.ts
+        - index.ts
+    - test-runner/
+  - test/
 ```
 
-To open logs in your favorite editor:
+The `manifest.yaml` file plays a critical role in a snap-in, holding key configuration details such as the snap-in's name, description, version, connection information, and functionality specifics. This file is the initial step in the development of a snap-in.
 
-```
-devrev snap_in_package logs | code -
-```
+The `code/` folder holds the implementation of the snap-in. Inside, the `functions/` subfolder includes the logic for retrieving external sync units, extracting data from and loading data to external systems, and mapping between them.
 
-For more information, refer to [Debugging](/snapin-development/debugging).
+The `scripts/` folder contains the scripts necessary for the building and deployment of the snap-in, streamlining the development and deployment processes with the help of tools like `deploy.sh` and `build.sh`.

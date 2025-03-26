@@ -1,0 +1,27 @@
+## Setting up the snap-in configuration
+
+Development of a snap-in starts with a `manifest.yaml`.
+Manifest holds a snap-in configuration: snap-in name, description, version, connection information and information about implemented functionality.
+
+In the template change values for
+
+- `name`
+- `description`
+
+## Snap-in functionalities
+
+This directory holds the snap-in's core logic. The logic for extracting data from the external system is found in the `extraction` folder, and the logic for loading data into the external system from DevRev is in the `loading` folder.
+
+The DevRev platform enables the creation of a snap-in that can either import data from an external system into DevRev or export data from DevRev to an external system. Implementing both isn't necessary. The implemented functionalities are specified in `manifest.yaml` under the `functions` key, as shown in the starter template:
+
+```yaml
+functions:
+  - name: extraction
+    description: Extraction function for the template snap-in
+  - name: loading
+    description: Loading function for the template snap-in
+  - name: install_initial_domain_mapping
+    description: Create blueprint and install initial domain mapping
+```
+
+For example, removing the entry with the name loading means syncing from DevRev to the external system is not available in the UI.

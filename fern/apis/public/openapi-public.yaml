@@ -10772,6 +10772,12 @@ components:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
       title: workflow-summary
+    works-create-request-wrapper:
+      type: object
+      properties:
+        wrapper:
+          $ref: '#/components/schemas/works-create-request'
+      title: works-create-request-wrapper
     works-create-request:
       type: object
       discriminator:
@@ -18294,7 +18300,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/works-create-request'
+              $ref: '#/components/schemas/works-create-request-wrapper'
         required: true
       responses:
         "201":

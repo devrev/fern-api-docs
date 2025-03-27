@@ -1,19 +1,17 @@
 # DevRev Docs
 
-Tagging a release on this repository will update the following clients:
+Merging a change in this repository will update the following clients:
 
-- [API Docs](https://devrev.docs.buildwithfern.com)
-
-## What is in this repository?
+- [API Docs](https://developer.devrev.ai)
 
 This repository contains
 
 - DevRev's `Public` OpenAPI spec & `Beta` OpenAPI spec
 - Fern configuration
 
-## What is in the API Definition?
+## API definition
 
-The API Definition contains an OpenAPI specification adapted to be compatible with Fern.
+The API Definition contains an OpenAPI specification adapted to be compatible with Fern. The specs are in `/fern/apis`.
 
 To make sure that the definition is valid, you can use the Fern CLI.
 
@@ -22,9 +20,9 @@ npm install -g fern-api # Installs CLI
 fern check # Checks if the definition is valid
 ```
 
-## What are generators?
+## Generators
 
-Generators read in your API Definition and output artifacts (e.g. the TypeScript SDK Generator) and are tracked in [generators.yml](./fern/api/generators.yml).
+Generators read in your API Definition and output artifacts (the TypeScript SDK Generator) and are tracked in [generators.yml](./fern/api/generators.yml).
 
 To trigger the generators run:
 
@@ -33,15 +31,14 @@ To trigger the generators run:
 fern generate --version <version>
 ```
 
-## Upgrading Fern
-You can use the following command to upgrade fern to the latest version:
-```bash
-fern upgrade --rc
+## Run a local instance
+
+In the root of this repository:
+```
+cd custom-implementation/ && npm i && npm run build && cd ..
+fern docs dev
 ```
 
 ### Troubleshooting
 
 If you run into errors, you can add the ` --log-level debug` flag to get more information.
-
-If you get a 403 error, you may need to first run `fern login`. You might also need to be added
-to the Vellum org in Fern, which requires contacting the fern team in #fern-x-vellum in Slack.

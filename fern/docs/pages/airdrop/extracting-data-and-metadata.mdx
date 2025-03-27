@@ -1,0 +1,43 @@
+### Metadata and data extraction
+
+<Callout intent="tip">
+  It is recommended that you develop the metadata and data extraction phases
+  iteratively. The idea is that you first try to get one type of object with a
+  few simple fields, then continue to extend functionality and test the
+  implementation throughout the process.
+</Callout>
+
+The idea for metadata extraction phase is that the snap-in provides an
+`external_domain_metadata.json` file to Airdrop.
+
+```typescript
+import externalDomainMetadata from "../../external-system/external_domain_metadata.json";
+
+// ...
+
+await adapter
+  .getRepo("external_domain_metadata")
+  ?.push([externalDomainMetadata]);
+await adapter.emit(ExtractorEventType.ExtractionMetadataDone);
+```
+
+Metadata extraction should be implemented in the [metadata-extraction.ts](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/workers/metadata-extraction.ts) file.
+
+#### Preparing `external_domain_metadata.json`
+
+This `external_domain_metadata.json` file provides a structured way of describing the external system's domain system,
+including its domain entities, types, relationships, and other metadata.
+
+Check the [example](https://github.com/devrev/adaas-template/blob/main/code/src/functions/external-system/external_domain_metadata.json) from the starter template.
+
+The `record_types` object should contain all the objects that will be imported from the external system and specifications for their fields.
+
+#### Data extraction
+
+In initial sync we need to extract all data to create a baseline while in subsequent runs only updated objects need to be extracted.
+
+Snap-in should consult its internal state to determine what is already extracted and what it did not
+
+#### Attachments extraction
+
+For the attachment extraction phase of the import process, the extractor has to upload each attachment to DevRev and associate it with the data object it is attached to.

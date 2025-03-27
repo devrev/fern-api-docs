@@ -1,45 +1,19 @@
-## Snap-in functionality
+Data extraction involves four sequential phases:
 
-### Extraction
+1. external sync units extraction (only on initial import),
+2. metadata extraction,
+3. data extraction,
+4. attachments extraction.
 
-Extraction is comprised of 4 phases, which follow sequentially:
+### Before you start implementation
 
-1. external sync units extraction (only on initial import)
-2. metadata extraction
-3. data extraction
-4. attachments extraction
+It is recommended you consider the following points before you start the implementation:
 
-#### External sync units extraction
+1. Examine the available objects in both the external system and DevRev and decide how they should correspond to each other.
+2. Identify required fields in DevRev and available fields in the external system API. Plan mappings accordingly, considering how to handle required fields in one system that are optional in the other.
+3. Check the external system API too see what are options and limitations.
 
-In the external sync unit extraction phase, the snap-in is expected to obtain a list of external
-sync units that it can extract from the external system API and send it to Airdrop in its response.
-
-An _external sync unit_ refers to a single unit in the external system that is being airdropped to DevRev.
-In some systems, this is a project; in some it is a repository; in support systems it could be
-called a brand or an organization.
-What a unit of data is called and what it represents depends on the external system's domain model.
-It usually combines contacts, users, work-like items, and comments into a unit of domain objects.
-
-Some external systems may offer a single unit in their free plans,
-while their enterprise plans may offer their clients to operate many separate units.
-
-The external sync unit ID is the identifier of the sync unit (project, repository, or similar)
-in the external system.
-For GitHub, this would be the repository, for example `cli` in `github.com/devrev/cli`.
-
-#### Metadata extraction
-
-During the metadata extraction phase, the Airdrop snap-in must provide an
-`external_domain_metadata.json` file on each sync run.
-This file provides a structured way of describing the external system's domain system,
-including its domain entities, types, relationships, and other metadata.
-
-#### Data extraction
-
-In initial sync we need to extract all data to create a baseline while in subsequent runs only updated objects need to be extracted.
-
-Snap-in should consult its internal state to determine what is already extracted and what it did not
-
-#### Attachments extraction
-
-For the attachment extraction phase of the import process, the extractor has to upload each attachment to DevRev and associate it with the data object it is attached to.
+<Callout intent="tip">
+  Full specification of objects available in DevRev is
+  [here](https://github.com/devrev/airdrop-recipe-manager/blob/main/v2/devrev_metadata/devrev_metadata_docs.md)
+</Callout>

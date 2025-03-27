@@ -154,9 +154,18 @@ navigation:
           - page: "Connecting to the external system"
             slug: connecting-to-the-external-system
             path: ../docs/pages/airdrop/connecting-to-the-external-system.mdx
-          - page: "Extracting data from external system"
+          - section: Extracting data from external system
             slug: extracting-data
-            path: ../docs/pages/airdrop/extracting-data.mdx
+            contents:
+              - page: "Getting started with extraction"
+                slug: getting-started
+                path: ../docs/pages/airdrop/extracting-data.mdx
+              - page: "External sync units extraction"
+                slug: external-sync-units-extraction
+                path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
+              - page: "Extracting metadata and data"
+                slug: extracting-data
+                path: ../docs/pages/airdrop/extracting-data-and-metadata.mdx
           - page: "Loading data to DevRev"
             slug: loading-data
             path: ../docs/pages/airdrop/loading-data.mdx

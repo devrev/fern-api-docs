@@ -1,18 +1,18 @@
 Development of a snap-in starts with a `manifest.yaml`.
 Manifest holds a snap-in configuration: snap-in name, description, version, connection information and information about implemented functionality.
 
-Begin by setting the values in the template for
+Begin by setting the values in the template for `name` and `description`.
 
-- `name`
-- `description`
+```yaml
+name: ADaaS Template
+description: A template for creating a new ADaaS snap-in
+```
 
 ### Set snap-in functionalities
 
 The DevRev platform enables the creation of a snap-in that can import data from an external system into DevRev (called _extraction_) and export data from DevRev to an external system (called _loading_). Implementation of extration is necessary, while of loading isn't.
 
 To specify the implemented functionalities, first review the `functions` section of `manifest.yaml`.
-
-In case you're not going to implement loading, remove it from the list.
 
 ```yaml
 functions:
@@ -24,7 +24,7 @@ functions:
     description: Create blueprint and install initial domain mapping
 ```
 
-Removing the entry with the name `loading` will also remove this option from the UI.
+In case you're not going to implement loading, remove it from the list. This will also remove this option from the UI.
 
 Next, check the `imports` section.
 
@@ -45,4 +45,4 @@ Remove `loader_function` in case you're not using it.
 
 Make sure the names for `extractor_function` and `loader_function` match your settings in the `functions` section.
 
-When you are done you can continue with the next section that focuses on `keyring_types`.
+When you are done you can continue with the next section that focuses on establishing a connection to the external system using `keyring_types`.

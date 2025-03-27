@@ -68,15 +68,13 @@ navigation:
       - page: Restricted messages on a timeline
         slug: timeline-entries
         path: ../docs/pages/timeline-entries.mdx
-  - section: SDKs
+  - section: PLuG SDKs
     slug: sdks
+    path: ../docs/pages/plug-sdk/index.mdx
     contents:
       - section: Web SDK
         slug: web
         contents:
-          - page: Overview
-            slug: overview
-            path: ../docs/pages/plug-sdk/sdk-intro.mdx
           - page: Install the Web SDK
             slug: installation
             path: ../docs/pages/plug-sdk/web-sdk-install.mdx
@@ -92,7 +90,7 @@ navigation:
           - page: Methods
             slug: methods
             path: ../docs/pages/plug-sdk/methods.mdx
-          - page: Custom implementation of PLuG widget
+          - page: Custom implementation
             slug: customize
             path: ../docs/pages/plug-sdk/customize.mdx
       - section: Mobile SDK

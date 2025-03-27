@@ -70,6 +70,12 @@ redirects:
   - source: /public/snap-in-development/:slug*
     destination: /public/snapin-development/:slug*
     permanent: true
+  - source: /sdks/web/overview
+    destination: /sdks
+    permanent: true
+  - source: /public/sdks/web/overview
+    destination: /sdks
+    permanent: true
     
 analytics:
   ga4:

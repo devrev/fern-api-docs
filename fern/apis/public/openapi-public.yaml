@@ -16508,7 +16508,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla Tracker
+      summary: Get SLA Tracker
       tags:
         - slas
       x-fern-audiences:
@@ -16544,7 +16544,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla Tracker (POST)
+      summary: Get SLA Tracker (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -16665,7 +16665,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Sla Trackers
+      summary: List SLA Trackers
       tags:
         - slas
       x-fern-audiences:
@@ -16699,7 +16699,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Sla Trackers (POST)
+      summary: List SLA Trackers (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -16736,7 +16736,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Assign Slas
+      summary: Assign SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -16771,7 +16771,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Create Sla
+      summary: Create SLA
       tags:
         - slas
       x-fern-audiences:
@@ -16811,7 +16811,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla
+      summary: Get SLA
       tags:
         - slas
       x-fern-audiences:
@@ -16847,7 +16847,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla (POST)
+      summary: Get SLA (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -16942,7 +16942,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Slas
+      summary: List SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -16976,7 +16976,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Slas (POST)
+      summary: List SLAs (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -17013,7 +17013,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Transition Slas
+      summary: Transition SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -17050,7 +17050,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Update Sla
+      summary: Update SLA
       tags:
         - slas
       x-fern-audiences:

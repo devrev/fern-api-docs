@@ -780,6 +780,11 @@ components:
         - running_total
         - sum
         - unique_count
+    aggregation-detail-summary:
+      type: object
+      additionalProperties: false
+      description: Stores aggregation type and dimension information.
+      title: aggregation-detail-summary
     ai-agent-event:
       type: object
       description: An event to be processed by an AI agent.
@@ -2152,23 +2157,35 @@ components:
         mapping:
           account: '#/components/schemas/account'
           app_fragment: '#/components/schemas/app-fragment'
+          auth_token: '#/components/schemas/auth-token'
           capability: '#/components/schemas/capability'
+          code_change: '#/components/schemas/code-change'
+          command: '#/components/schemas/command'
           conversation: '#/components/schemas/conversation'
+          custom_object: '#/components/schemas/custom-object'
           custom_type_fragment: '#/components/schemas/custom-type-fragment'
+          dev_org: '#/components/schemas/dev-org'
           dev_user: '#/components/schemas/dev-user'
           dm: '#/components/schemas/dm'
           engagement: '#/components/schemas/engagement'
           enhancement: '#/components/schemas/enhancement'
           feature: '#/components/schemas/feature'
+          group: '#/components/schemas/group'
           incident: '#/components/schemas/incident'
           issue: '#/components/schemas/issue'
+          link: '#/components/schemas/link'
           meeting: '#/components/schemas/meeting'
+          object_member: '#/components/schemas/object-member'
           opportunity: '#/components/schemas/opportunity'
           product: '#/components/schemas/product'
           question_answer: '#/components/schemas/question-answer'
           rev_org: '#/components/schemas/rev-org'
           rev_user: '#/components/schemas/rev-user'
           service_account: '#/components/schemas/service-account'
+          sla: '#/components/schemas/sla'
+          sla_tracker: '#/components/schemas/sla-tracker'
+          snap_in: '#/components/schemas/snap-in'
+          snap_in_version: '#/components/schemas/snap-in-version'
           sys_user: '#/components/schemas/sys-user'
           tag: '#/components/schemas/tag'
           task: '#/components/schemas/task'
@@ -2176,29 +2193,42 @@ components:
           ticket: '#/components/schemas/ticket'
           timeline_change_event: '#/components/schemas/timeline-change-event'
           timeline_comment: '#/components/schemas/timeline-comment'
+          uom: '#/components/schemas/uom'
           user_preferences: '#/components/schemas/user-preferences'
           webhook: '#/components/schemas/webhook'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account'
         - $ref: '#/components/schemas/app-fragment'
+        - $ref: '#/components/schemas/auth-token'
         - $ref: '#/components/schemas/capability'
+        - $ref: '#/components/schemas/code-change'
+        - $ref: '#/components/schemas/command'
         - $ref: '#/components/schemas/conversation'
+        - $ref: '#/components/schemas/custom-object'
         - $ref: '#/components/schemas/custom-type-fragment'
+        - $ref: '#/components/schemas/dev-org'
         - $ref: '#/components/schemas/dev-user'
         - $ref: '#/components/schemas/dm'
         - $ref: '#/components/schemas/engagement'
         - $ref: '#/components/schemas/enhancement'
         - $ref: '#/components/schemas/feature'
+        - $ref: '#/components/schemas/group'
         - $ref: '#/components/schemas/incident'
         - $ref: '#/components/schemas/issue'
+        - $ref: '#/components/schemas/link'
         - $ref: '#/components/schemas/meeting'
+        - $ref: '#/components/schemas/object-member'
         - $ref: '#/components/schemas/opportunity'
         - $ref: '#/components/schemas/product'
         - $ref: '#/components/schemas/question-answer'
         - $ref: '#/components/schemas/rev-org'
         - $ref: '#/components/schemas/rev-user'
         - $ref: '#/components/schemas/service-account'
+        - $ref: '#/components/schemas/sla'
+        - $ref: '#/components/schemas/sla-tracker'
+        - $ref: '#/components/schemas/snap-in'
+        - $ref: '#/components/schemas/snap-in-version'
         - $ref: '#/components/schemas/sys-user'
         - $ref: '#/components/schemas/tag'
         - $ref: '#/components/schemas/task'
@@ -2206,6 +2236,7 @@ components:
         - $ref: '#/components/schemas/ticket'
         - $ref: '#/components/schemas/timeline-change-event'
         - $ref: '#/components/schemas/timeline-comment'
+        - $ref: '#/components/schemas/uom'
         - $ref: '#/components/schemas/user-preferences'
         - $ref: '#/components/schemas/webhook'
       properties:
@@ -2262,23 +2293,35 @@ components:
         mapping:
           account: '#/components/schemas/account-summary'
           app_fragment: '#/components/schemas/app-fragment-summary'
+          auth_token: '#/components/schemas/auth-token-summary'
           capability: '#/components/schemas/capability-summary'
+          code_change: '#/components/schemas/code-change-summary'
+          command: '#/components/schemas/command-summary'
           conversation: '#/components/schemas/conversation-summary'
+          custom_object: '#/components/schemas/custom-object-summary'
           custom_type_fragment: '#/components/schemas/custom-type-fragment-summary'
+          dev_org: '#/components/schemas/dev-org-summary'
           dev_user: '#/components/schemas/dev-user-summary'
           dm: '#/components/schemas/dm-summary'
           engagement: '#/components/schemas/engagement-summary'
           enhancement: '#/components/schemas/enhancement-summary'
           feature: '#/components/schemas/feature-summary'
+          group: '#/components/schemas/group-summary'
           incident: '#/components/schemas/incident-summary'
           issue: '#/components/schemas/issue-summary'
+          link: '#/components/schemas/link-summary'
           meeting: '#/components/schemas/meeting-summary'
+          object_member: '#/components/schemas/object-member-summary'
           opportunity: '#/components/schemas/opportunity-summary'
           product: '#/components/schemas/product-summary'
           question_answer: '#/components/schemas/question-answer-summary'
           rev_org: '#/components/schemas/rev-org-summary'
           rev_user: '#/components/schemas/rev-user-summary'
           service_account: '#/components/schemas/service-account-summary'
+          sla: '#/components/schemas/sla-summary'
+          sla_tracker: '#/components/schemas/sla-tracker-summary'
+          snap_in: '#/components/schemas/snap-in-summary'
+          snap_in_version: '#/components/schemas/snap-in-version-summary'
           sys_user: '#/components/schemas/sys-user-summary'
           tag: '#/components/schemas/tag-summary'
           task: '#/components/schemas/task-summary'
@@ -2286,29 +2329,42 @@ components:
           ticket: '#/components/schemas/ticket-summary'
           timeline_change_event: '#/components/schemas/timeline-change-event-summary'
           timeline_comment: '#/components/schemas/timeline-comment-summary'
+          uom: '#/components/schemas/uom-summary'
           user_preferences: '#/components/schemas/user-preferences-summary'
           webhook: '#/components/schemas/webhook-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account-summary'
         - $ref: '#/components/schemas/app-fragment-summary'
+        - $ref: '#/components/schemas/auth-token-summary'
         - $ref: '#/components/schemas/capability-summary'
+        - $ref: '#/components/schemas/code-change-summary'
+        - $ref: '#/components/schemas/command-summary'
         - $ref: '#/components/schemas/conversation-summary'
+        - $ref: '#/components/schemas/custom-object-summary'
         - $ref: '#/components/schemas/custom-type-fragment-summary'
+        - $ref: '#/components/schemas/dev-org-summary'
         - $ref: '#/components/schemas/dev-user-summary'
         - $ref: '#/components/schemas/dm-summary'
         - $ref: '#/components/schemas/engagement-summary'
         - $ref: '#/components/schemas/enhancement-summary'
         - $ref: '#/components/schemas/feature-summary'
+        - $ref: '#/components/schemas/group-summary'
         - $ref: '#/components/schemas/incident-summary'
         - $ref: '#/components/schemas/issue-summary'
+        - $ref: '#/components/schemas/link-summary'
         - $ref: '#/components/schemas/meeting-summary'
+        - $ref: '#/components/schemas/object-member-summary'
         - $ref: '#/components/schemas/opportunity-summary'
         - $ref: '#/components/schemas/product-summary'
         - $ref: '#/components/schemas/question-answer-summary'
         - $ref: '#/components/schemas/rev-org-summary'
         - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/service-account-summary'
+        - $ref: '#/components/schemas/sla-summary'
+        - $ref: '#/components/schemas/sla-tracker-summary'
+        - $ref: '#/components/schemas/snap-in-summary'
+        - $ref: '#/components/schemas/snap-in-version-summary'
         - $ref: '#/components/schemas/sys-user-summary'
         - $ref: '#/components/schemas/tag-summary'
         - $ref: '#/components/schemas/task-summary'
@@ -2316,6 +2372,7 @@ components:
         - $ref: '#/components/schemas/ticket-summary'
         - $ref: '#/components/schemas/timeline-change-event-summary'
         - $ref: '#/components/schemas/timeline-comment-summary'
+        - $ref: '#/components/schemas/uom-summary'
         - $ref: '#/components/schemas/user-preferences-summary'
         - $ref: '#/components/schemas/webhook-summary'
       properties:
@@ -2329,23 +2386,35 @@ components:
       enum:
         - account
         - app_fragment
+        - auth_token
         - capability
+        - code_change
+        - command
         - conversation
+        - custom_object
         - custom_type_fragment
+        - dev_org
         - dev_user
         - dm
         - engagement
         - enhancement
         - feature
+        - group
         - incident
         - issue
+        - link
         - meeting
+        - object_member
         - opportunity
         - product
         - question_answer
         - rev_org
         - rev_user
         - service_account
+        - sla
+        - sla_tracker
+        - snap_in
+        - snap_in_version
         - sys_user
         - tag
         - task
@@ -2353,6 +2422,7 @@ components:
         - ticket
         - timeline_change_event
         - timeline_comment
+        - uom
         - user_preferences
         - webhook
     atoms-get-request:
@@ -2690,6 +2760,10 @@ components:
           name: urn-devrev-params-oauth-token-type-userinfo
         urn:ietf:params:oauth:token-type:jwt:
           name: urn-ietf-params-oauth-token-type-jwt
+    auth-token-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: auth-token-summary
     auth-token-token-type:
       type: string
       description: |
@@ -3368,7 +3442,6 @@ components:
             type: string
             format: id
           maxItems: 16
-          minItems: 1
         users:
           type: array
           description: |
@@ -3655,6 +3728,10 @@ components:
         - azure_devops
         - bitbucket
         - github
+    code-change-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: code-change-summary
     code-changes-create-request:
       type: object
       properties:
@@ -3916,6 +3993,16 @@ components:
         - disabled
         - draft
         - enabled
+    command-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: Name of the command.
+              format: text
+      title: command-summary
     command-surface:
       type: object
       description: |
@@ -5458,6 +5545,50 @@ components:
     custom-link-type:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            backward_name:
+              type: string
+              description: Human readable name of the link from target to source.
+              format: text
+            forward_name:
+              type: string
+              description: Human readable name of the link from source to target.
+              format: text
+            is_deprecated:
+              type: boolean
+              description: True if this link type is deprecated.
+            max_hops:
+              type: integer
+              description: |
+                Max hops sets the limit on how many hierarchical levels can be
+                traversed for a given link type, considering both forward and
+                backward directions. For example, if max_hops is set to 1, a link
+                from 'issue-1' to 'ticket-1' is allowed, but extending the chain to
+                'issue-2' -> 'issue-1' -> 'ticket-1' would exceed the limit and is
+                not allowed.
+              format: int32
+            name:
+              type: string
+              description: The human readable name of the link type.
+              format: text
+            source_types:
+              type: array
+              description: Types from which this link type can originate.
+              items:
+                $ref: '#/components/schemas/link-target-descriptor'
+            target_types:
+              type: array
+              description: Types to which this link type can go.
+              items:
+                $ref: '#/components/schemas/link-target-descriptor'
+            tooltip:
+              type: string
+              description: Additional information about the link type.
+              format: text
+          required:
+            - source_types
+            - target_types
       title: custom-link-type
     custom-link-type-create-request:
       type: object
@@ -7228,6 +7359,18 @@ components:
         - auth_connection
       title: dev-org-auth-connections-update-response
       x-go-name: DevOrgAuthConnectionsUpdateResponseBody
+    dev-org-summary:
+      allOf:
+        - $ref: '#/components/schemas/org-base-summary'
+        - type: object
+          properties:
+            dev_slug:
+              type: string
+              description: Customer chosen URL slug for the DevOrg.
+              format: text
+          required:
+            - dev_slug
+      title: dev-org-summary
     dev-orgs-get-request:
       type: object
       additionalProperties: false
@@ -11958,7 +12101,9 @@ components:
         mapping:
           account: '#/components/schemas/account-summary'
           capability: '#/components/schemas/capability-summary'
+          code_change: '#/components/schemas/code-change-summary'
           conversation: '#/components/schemas/conversation-summary'
+          custom_object: '#/components/schemas/custom-object-summary'
           dev_user: '#/components/schemas/dev-user-summary'
           enhancement: '#/components/schemas/enhancement-summary'
           feature: '#/components/schemas/feature-summary'
@@ -11975,7 +12120,9 @@ components:
       oneOf:
         - $ref: '#/components/schemas/account-summary'
         - $ref: '#/components/schemas/capability-summary'
+        - $ref: '#/components/schemas/code-change-summary'
         - $ref: '#/components/schemas/conversation-summary'
+        - $ref: '#/components/schemas/custom-object-summary'
         - $ref: '#/components/schemas/dev-user-summary'
         - $ref: '#/components/schemas/enhancement-summary'
         - $ref: '#/components/schemas/feature-summary'
@@ -11999,7 +12146,9 @@ components:
       enum:
         - account
         - capability
+        - code_change
         - conversation
+        - custom_object
         - dev_user
         - enhancement
         - feature
@@ -12080,8 +12229,24 @@ components:
       title: link-summary
     link-target-descriptor:
       type: object
-      additionalProperties: false
       description: A link target descriptor.
+      properties:
+        is_custom_leaf_type:
+          type: boolean
+          description: True when the descriptor describes a custom leaf type.
+        leaf_only:
+          type: boolean
+          description: |
+            Set to true when only the specified leaf type (no subtypes) is
+            allowed as a link target.
+        leaf_type:
+          type: string
+          description: Leaf type of the target objects.
+          format: text
+        subtype:
+          type: string
+          description: Specific subtype of the target objects.
+          format: text
       title: link-target-descriptor
     link-type:
       type: string
@@ -12827,11 +12992,13 @@ components:
       discriminator:
         mapping:
           dev_user: '#/components/schemas/dev-user-summary'
+          group: '#/components/schemas/group-summary'
           rev_user: '#/components/schemas/rev-user-summary'
           sys_user: '#/components/schemas/sys-user-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/dev-user-summary'
+        - $ref: '#/components/schemas/group-summary'
         - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/sys-user-summary'
       properties:
@@ -12844,6 +13011,7 @@ components:
       type: string
       enum:
         - dev_user
+        - group
         - rev_user
         - sys_user
     metric-action-execute-request:
@@ -13253,6 +13421,18 @@ components:
       additionalProperties: false
       title: notifications-send-response
       x-go-name: NotificationsSendResponseBody
+    object-member:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            member:
+              $ref: '#/components/schemas/atom-summary'
+            object:
+              $ref: '#/components/schemas/atom-summary'
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata'
+      title: object-member
     object-member-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'
@@ -13877,10 +14057,12 @@ components:
       discriminator:
         mapping:
           account: '#/components/schemas/account-summary'
+          dev_org: '#/components/schemas/dev-org-summary'
           rev_org: '#/components/schemas/rev-org-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account-summary'
+        - $ref: '#/components/schemas/dev-org-summary'
         - $ref: '#/components/schemas/rev-org-summary'
       properties:
         type:
@@ -13892,6 +14074,7 @@ components:
       type: string
       enum:
         - account
+        - dev_org
         - rev_org
     parent-part-filter:
       type: object
@@ -15031,8 +15214,21 @@ components:
       title: remove-tag-with-value
     removed-sla-metric-history:
       type: object
-      additionalProperties: false
-      description: User, timestamp and metric id of removed metrics.
+      description: Information about removed metrics.
+      properties:
+        metric_definition:
+          $ref: '#/components/schemas/metric-definition-summary'
+        removed_at:
+          type: string
+          description: Timestamp when the metric was removed.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        removed_by:
+          $ref: '#/components/schemas/user-summary'
+      required:
+        - metric_definition
+        - removed_at
+        - removed_by
       title: removed-sla-metric-history
     resource:
       type: object
@@ -18083,7 +18279,7 @@ components:
                 $ref: '#/components/schemas/archetype-metric-target'
             removed_sla_metric_history:
               type: array
-              description: User, timestamp and metric Id of removed metrics.
+              description: Information about removed metrics.
               items:
                 $ref: '#/components/schemas/removed-sla-metric-history'
             sla:
@@ -18206,6 +18402,32 @@ components:
         - sla_trackers
       title: sla-trackers-list-response
       x-go-name: SlaTrackersListResponseBody
+    sla-trackers-remove-metric-request:
+      type: object
+      properties:
+        metric:
+          type: string
+          description: |
+            ID of the metric that is to be removed. If the metric has already
+            been removed, there will be no effect.
+          format: id
+        object:
+          type: string
+          description: ID of the object from which the metric is to be removed.
+          format: id
+      required:
+        - metric
+        - object
+      title: sla-trackers-remove-metric-request
+    sla-trackers-remove-metric-response:
+      type: object
+      properties:
+        sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
+      required:
+        - sla_tracker
+      title: sla-trackers-remove-metric-response
+      x-go-name: SlaTrackersRemoveMetricResponseBody
     sla-type:
       type: string
       description: Type of the SLA.
@@ -18445,6 +18667,14 @@ components:
               type: object
               description: Values of the inputs.
       title: snap-in
+    snap-in-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: snap-in-summary
+    snap-in-version:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+      title: snap-in-version
     snap-in-version-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -21170,7 +21400,9 @@ components:
       enum:
         - account
         - capability
+        - code_change
         - conversation
+        - custom_object
         - dm
         - engagement
         - enhancement
@@ -21182,6 +21414,7 @@ components:
         - product
         - rev_org
         - rev_user
+        - snap_in
         - task
         - ticket
         - timeline_change_event
@@ -21338,6 +21571,25 @@ components:
         - name
         - type
       title: unit
+    unit-summary:
+      type: object
+      description: |
+        Unit encapsulates the name of the unit and the type of the unit. For
+        example, '#Number of API calls' where name is 'number_of_api_calls' and
+        type is 'number'.
+      properties:
+        type:
+          $ref: '#/components/schemas/unit-type'
+        name:
+          type: string
+          description: |
+            This represents human readable unit name of the UOM For example,
+            number of API calls.
+          format: text
+      required:
+        - name
+        - type
+      title: unit-summary
     unit-type:
       type: string
       description: |
@@ -21445,6 +21697,29 @@ components:
       enum:
         - org
         - user
+    uom-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            aggregation_details:
+              $ref: '#/components/schemas/aggregation-detail-summary'
+            metric_name:
+              type: string
+              description: Human readable metric name of the UOM.
+              format: text
+            name:
+              type: string
+              description: Human readable name of the UOM.
+              format: text
+            unit:
+              $ref: '#/components/schemas/unit-summary'
+          required:
+            - aggregation_details
+            - metric_name
+            - name
+            - unit
+      title: uom-summary
     uoms-count-request:
       type: object
       properties:
@@ -32065,6 +32340,62 @@ paths:
             items:
               type: string
               format: sort-by
+        - description: True when the descriptor describes a custom leaf type.
+          explode: false
+          in: query
+          name: source_types.link_descriptors.is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: |
+            Set to true when only the specified leaf type (no subtypes) is
+            allowed as a link target.
+          explode: false
+          in: query
+          name: source_types.link_descriptors.leaf_only
+          schema:
+            type: boolean
+        - description: Leaf type of the target objects.
+          explode: false
+          in: query
+          name: source_types.link_descriptors.leaf_type
+          schema:
+            type: string
+            format: text
+        - description: Specific subtype of the target objects.
+          explode: false
+          in: query
+          name: source_types.link_descriptors.subtype
+          schema:
+            type: string
+            format: text
+        - description: True when the descriptor describes a custom leaf type.
+          explode: false
+          in: query
+          name: target_types.link_descriptors.is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: |
+            Set to true when only the specified leaf type (no subtypes) is
+            allowed as a link target.
+          explode: false
+          in: query
+          name: target_types.link_descriptors.leaf_only
+          schema:
+            type: boolean
+        - description: Leaf type of the target objects.
+          explode: false
+          in: query
+          name: target_types.link_descriptors.leaf_type
+          schema:
+            type: string
+            format: text
+        - description: Specific subtype of the target objects.
+          explode: false
+          in: query
+          name: target_types.link_descriptors.subtype
+          schema:
+            type: string
+            format: text
       responses:
         "200":
           content:
@@ -35770,6 +36101,7 @@ paths:
         - sdks
   /rev-users.link:
     post:
+      deprecated: true
       description: Links a rev user to a rev org.
       operationId: link-rev-user-to-rev-org
       requestBody:
@@ -36329,6 +36661,7 @@ paths:
         - sdks
   /rev-users.unlink:
     post:
+      deprecated: true
       description: Unlinks a rev user from a rev org.
       operationId: unlink-rev-user-from-rev-org
       requestBody:
@@ -37700,6 +38033,43 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       summary: List Sla Trackers (POST)
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /sla-trackers.remove-metric:
+    post:
+      description: Removes a metric from the given object's SLA.
+      operationId: sla-trackers-remove-metric
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sla-trackers-remove-metric-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sla-trackers-remove-metric-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Remove-Metric Sla Trackers
       tags:
         - slas
       x-fern-audiences:

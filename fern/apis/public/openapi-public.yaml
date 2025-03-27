@@ -1422,15 +1422,21 @@ components:
       type: object
       discriminator:
         mapping:
+          auth_token: '#/components/schemas/auth-token'
           capability: '#/components/schemas/capability'
           conversation: '#/components/schemas/conversation'
           dev_user: '#/components/schemas/dev-user'
           enhancement: '#/components/schemas/enhancement'
           feature: '#/components/schemas/feature'
+          group: '#/components/schemas/group'
           issue: '#/components/schemas/issue'
+          link: '#/components/schemas/link'
           product: '#/components/schemas/product'
           rev_org: '#/components/schemas/rev-org'
           rev_user: '#/components/schemas/rev-user'
+          service_account: '#/components/schemas/service-account'
+          sla: '#/components/schemas/sla'
+          sla_tracker: '#/components/schemas/sla-tracker'
           sys_user: '#/components/schemas/sys-user'
           tag: '#/components/schemas/tag'
           ticket: '#/components/schemas/ticket'
@@ -1438,15 +1444,21 @@ components:
           webhook: '#/components/schemas/webhook'
         propertyName: type
       oneOf:
+        - $ref: '#/components/schemas/auth-token'
         - $ref: '#/components/schemas/capability'
         - $ref: '#/components/schemas/conversation'
         - $ref: '#/components/schemas/dev-user'
         - $ref: '#/components/schemas/enhancement'
         - $ref: '#/components/schemas/feature'
+        - $ref: '#/components/schemas/group'
         - $ref: '#/components/schemas/issue'
+        - $ref: '#/components/schemas/link'
         - $ref: '#/components/schemas/product'
         - $ref: '#/components/schemas/rev-org'
         - $ref: '#/components/schemas/rev-user'
+        - $ref: '#/components/schemas/service-account'
+        - $ref: '#/components/schemas/sla'
+        - $ref: '#/components/schemas/sla-tracker'
         - $ref: '#/components/schemas/sys-user'
         - $ref: '#/components/schemas/tag'
         - $ref: '#/components/schemas/ticket'
@@ -1503,15 +1515,21 @@ components:
     atom-type:
       type: string
       enum:
+        - auth_token
         - capability
         - conversation
         - dev_user
         - enhancement
         - feature
+        - group
         - issue
+        - link
         - product
         - rev_org
         - rev_user
+        - service_account
+        - sla
+        - sla_tracker
         - sys_user
         - tag
         - ticket
@@ -5899,11 +5917,13 @@ components:
       discriminator:
         mapping:
           dev_user: '#/components/schemas/dev-user-summary'
+          group: '#/components/schemas/group-summary'
           rev_user: '#/components/schemas/rev-user-summary'
           sys_user: '#/components/schemas/sys-user-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/dev-user-summary'
+        - $ref: '#/components/schemas/group-summary'
         - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/sys-user-summary'
       properties:
@@ -5916,6 +5936,7 @@ components:
       type: string
       enum:
         - dev_user
+        - group
         - rev_user
         - sys_user
     metric-definition:
@@ -6657,7 +6678,7 @@ components:
     removed-sla-metric-history:
       type: object
       additionalProperties: false
-      description: User, timestamp and metric id of removed metrics.
+      description: Information about removed metrics.
       title: removed-sla-metric-history
     resource:
       type: object
@@ -7998,6 +8019,10 @@ components:
       allOf:
         - $ref: '#/components/schemas/user-base'
       title: service-account
+    service-account-summary:
+      allOf:
+        - $ref: '#/components/schemas/user-base-summary'
+      title: service-account-summary
     service-accounts-get-request:
       type: object
       description: The request object to get a service account's information.
@@ -8435,7 +8460,7 @@ components:
                 $ref: '#/components/schemas/archetype-metric-target'
             removed_sla_metric_history:
               type: array
-              description: User, timestamp and metric Id of removed metrics.
+              description: Information about removed metrics.
               items:
                 $ref: '#/components/schemas/removed-sla-metric-history'
             sla:
@@ -10182,11 +10207,13 @@ components:
         mapping:
           dev_user: '#/components/schemas/dev-user-summary'
           rev_user: '#/components/schemas/rev-user-summary'
+          service_account: '#/components/schemas/service-account-summary'
           sys_user: '#/components/schemas/sys-user-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/dev-user-summary'
         - $ref: '#/components/schemas/rev-user-summary'
+        - $ref: '#/components/schemas/service-account-summary'
         - $ref: '#/components/schemas/sys-user-summary'
       properties:
         type:
@@ -10199,6 +10226,7 @@ components:
       enum:
         - dev_user
         - rev_user
+        - service_account
         - sys_user
     vista-group-item-state:
       type: string

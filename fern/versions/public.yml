@@ -77,22 +77,22 @@ navigation:
         contents:
           - page: Install the Web SDK
             slug: installation
-            path: ../docs/pages/plug-sdk/web-sdk-install.mdx
+            path: ../docs/pages/plug-sdk/web/install.mdx
           - page: Install PLuG search
             slug: install-search
-            path: ../docs/pages/plug-sdk/search-install.mdx
+            path: ../docs/pages/plug-sdk/web/search.mdx
           - page: Identify your users with PLuG
             slug: user-identity
-            path: ../docs/pages/plug-sdk/identify-web-user.mdx
+            path: ../docs/pages/plug-sdk/web/user-identity.mdx
           - page: Track events
             slug: track-events
-            path: ../docs/pages/plug-sdk/track-events.mdx
+            path: ../docs/pages/plug-sdk/web/track-events.mdx
           - page: Methods
             slug: methods
-            path: ../docs/pages/plug-sdk/methods.mdx
+            path: ../docs/pages/plug-sdk/web/methods.mdx
           - page: Custom implementation
             slug: customize
-            path: ../docs/pages/plug-sdk/customize.mdx
+            path: ../docs/pages/plug-sdk/web/customize.mdx
       - section: Mobile SDK
         slug: mobile
         contents:

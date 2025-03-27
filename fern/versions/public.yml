@@ -98,16 +98,27 @@ navigation:
         contents:
           - page: Android integration
             slug: android
-            path: ../docs/pages/plug-sdk/v1-1-3/android.mdx
+            path: ../docs/pages/plug-sdk/v1-1-4/android.mdx
           - page: iOS integration
             slug: ios
-            path: ../docs/pages/plug-sdk/v1-1-3/ios.mdx
+            path: ../docs/pages/plug-sdk/v1-1-4/ios.mdx
           - page: React Native integration
             slug: react-native
-            path: ../docs/pages/plug-sdk/v1-1-2/react-native.mdx
+            path: ../docs/pages/plug-sdk/v1-1-3/react-native.mdx
           - page: Push notifications
             slug: push-notification
             path: ../docs/pages/plug-sdk/push-notification.mdx
+          - section: Previous versions
+            contents:
+              - page: "Android v1.1.3"
+                slug: android-v1-1-3
+                path: ../docs/pages/plug-sdk/v1-1-3/android.mdx
+              - page: "iOS v1.1.3"
+                slug: ios-v1-1-3
+                path: ../docs/pages/plug-sdk/v1-1-3/ios.mdx
+              - page: "React Native v1.1.2"
+                slug: react-native-v1-1-2
+                path: ../docs/pages/plug-sdk/v1-1-2/react-native.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

@@ -145,8 +145,45 @@ navigation:
           - page: "Getting started"
             slug: getting-started
             path: ../docs/pages/airdrop/getting-started.mdx
+          - page: "Start an airdrop"
+            slug: how-does-the-snap-in-work
+            path: ../docs/pages/airdrop/how-does-the-snap-in-work.mdx
+          - page: "Snap-in configuration"
+            slug: snap-in-configuration
+            path: ../docs/pages/airdrop/snap-in-configuration.mdx
+          - page: "Connect to the external system"
+            slug: connect-to-the-external-system
+            path: ../docs/pages/airdrop/connect-to-the-external-system.mdx
+          - section: Extraction
+            slug: extraction
+            contents:
+              - page: "Getting started"
+                slug: getting-started
+                path: ../docs/pages/airdrop/extraction-getting-started.mdx
+              - page: "External sync units extraction"
+                slug: external-sync-units-extraction
+                path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
+              - page: "Data extraction"
+                slug: data-extraction
+                path: ../docs/pages/airdrop/data-extraction.mdx
+          - page: "Loading data to DevRev"
+            slug: loading-data
+            path: ../docs/pages/airdrop/loading-data.mdx
+          - page: "Examples of snap-ins"
+            slug: snap-in-examples
+            path: ../docs/pages/airdrop/snap-in-examples.mdx
+          - page: "Deploy to organization"
+            slug: deploy-to-organization
+            path: ../docs/pages/airdrop/deploy-to-organization.mdx
+          - page: "Publish to the marketplace"
+            slug: publish-to-marketplace
+            path: ../docs/pages/airdrop/publish-to-marketplace.mdx
+          - page: "Common issues - FAQ"
+            slug: faq
+            path: ../docs/pages/airdrop/faq.mdx
           - page: "Extraction phases"
             slug: extraction-phases
+            hidden: true
             path: ../docs/pages/airdrop/extraction-phases.mdx
           - page: "Loading phases"
             slug: loading-phases
@@ -154,27 +191,24 @@ navigation:
             path: ../docs/pages/airdrop/loading-phases.mdx
           - page: "External sync units extraction"
             slug: external-sync-units-extraction
-            hidden: false
+            hidden: true
             path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
           - page: "Metadata extraction"
-            hidden: false
+            hidden: true
             slug: metadata-extraction
             path: ../docs/pages/airdrop/metadata-extraction.mdx
           - page: "Data extraction"
-            hidden: false
+            hidden: true
             slug: data-extraction
             path: ../docs/pages/airdrop/data-extraction.mdx
           - page: "Attachments extraction"
-            hidden: false
+            hidden: true
             slug: extract-attachments
             path: ../docs/pages/airdrop/attachments-extraction.mdx
           - page: "Data and attachments deletion"
             slug: data-attachments-deletion
-            hidden: false
+            hidden: true
             path: ../docs/pages/airdrop/data-attachments-deletion.mdx
-          - page: "Common issues - FAQ"
-            slug: faq
-            path: ../docs/pages/airdrop/faq.mdx
       - section: References
         slug: references
         contents:

@@ -13,16 +13,7 @@ External sync unit extraction is executed only during the initial import.
 
 This phase should be implemented in the [`external-sync-units-extraction.ts`](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/workers/external-sync-units-extraction.ts) file.
 
-The snap-in should emit the list of external sync units in the provided event message
-`event_data.external_sync_units` containing the following fields:
-
-- `id`: The unique identifier in the external system.
-- `name`: The human-readable name in the external system.
-- `description`: The short description if the external system provides it.
-- `item_count`: The number of items (issues, tickets, comments or others) in the external system.
-  Item count should be provided if it can be obtained in a lightweight manner, such as by calling an API endpoint.
-  If there is no such way to get it (for example, if the items would need to be extracted to count them),
-  then the item count should be `-1` to avoid blocking the import with long-running queries.
+The snap-in should emit the list of external sync units in the given format:
 
 ```typescript
 const externalSyncUnits: ExternalSyncUnit[] = [
@@ -34,6 +25,14 @@ const externalSyncUnits: ExternalSyncUnit[] = [
   },
 ];
 ```
+
+- `id`: The unique identifier in the external system.
+- `name`: The human-readable name in the external system.
+- `description`: The short description if the external system provides it.
+- `item_count`: The number of items (issues, tickets, comments or others) in the external system.
+  Item count should be provided if it can be obtained in a lightweight manner, such as by calling an API endpoint.
+  If there is no such way to get it (for example, if the items would need to be extracted to count them),
+  then the item count should be `-1` to avoid blocking the import with long-running queries.
 
 The snap-in must respond to Airdrop with a message, which contains a list of external sync units as a payload:
 

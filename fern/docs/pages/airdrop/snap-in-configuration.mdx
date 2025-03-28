@@ -1,7 +1,6 @@
-Development of a snap-in starts with a `manifest.yaml`.
-Manifest holds a snap-in configuration: snap-in name, description, version, connection information and information about implemented functionality.
+Start developing a snap-in with a `manifest.yaml` file. The manifest defines the snap-in's configuration, including its name, description, version, connection details, and functionality.
 
-Begin by setting the values in the template for `name` and `description`.
+Begin by setting the values for `name` and `description` in the template.
 
 ```yaml
 name: ADaaS Template
@@ -10,9 +9,9 @@ description: A template for creating a new ADaaS snap-in
 
 ### Set snap-in functionalities
 
-The DevRev platform enables the creation of a snap-in that can import data from an external system into DevRev (called _extraction_) and export data from DevRev to an external system (called _loading_). Implementation of extration is necessary, while of loading isn't.
+DevRev supports creating snap-ins for importing data from an external system into DevRev (_extraction_) and exporting data from DevRev to an external system (_loading_). Implementing the extraction functionality is essential, while loading is optional.
 
-To specify the implemented functionalities, first review the `functions` section of `manifest.yaml`.
+To define the functionalities, review the `functions` section in the manifest.
 
 ```yaml
 functions:
@@ -24,9 +23,9 @@ functions:
     description: Create blueprint and install initial domain mapping
 ```
 
-In case you're not going to implement loading, remove it from the list. This will also remove this option from the UI.
+If loading is not implemented, remove it from the list. This action also removes the option from the UI.
 
-Next, check the `imports` section.
+Check the `imports` section next.
 
 ```yaml
 imports:
@@ -39,10 +38,10 @@ imports:
       - example-connection
 ```
 
-Change `slug`, `display_name` and `description` according to your snap-in.
+Update the `slug`, `display_name`, and `description` to match your snap-in.
 
-Remove `loader_function` in case you're not using it.
+If loading is not used, remove `loader_function`.
 
-Make sure the names for `extractor_function` and `loader_function` match your settings in the `functions` section.
+Ensure that `extractor_function` and `loader_function` names correspond with those in the `functions` section.
 
-When you are done you can continue with the next section that focuses on establishing a connection to the external system using `keyring_types`.
+Proceed to the next section, which dives in on establishing a connection to the external system using `keyring_types`.

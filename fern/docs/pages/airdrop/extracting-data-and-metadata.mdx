@@ -1,5 +1,3 @@
-### Metadata and data extraction
-
 <Callout intent="tip">
   It is recommended that you develop the metadata and data extraction phases
   iteratively. The idea is that you first try to get one type of object with a
@@ -23,7 +21,7 @@ await adapter.emit(ExtractorEventType.ExtractionMetadataDone);
 
 Metadata extraction should be implemented in the [metadata-extraction.ts](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/workers/metadata-extraction.ts) file.
 
-#### Preparing `external_domain_metadata.json`
+### Preparing `external_domain_metadata.json`
 
 This `external_domain_metadata.json` file provides a structured way of describing the external system's domain system,
 including its domain entities, types, relationships, and other metadata.

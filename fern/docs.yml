@@ -70,6 +70,8 @@ redirects:
   - source: /:path*/web/overview
     destination: /sdks
     permanent: true
+  - source: /sdks/mobile/:path*
+    destination: /sdks/:path*
     
 analytics:
   ga4:

@@ -87,7 +87,7 @@ You can now use the `chef-cli` web UI to create initial domain mappings.
 
 The final artifact of the recipe creation process is the `initial_domain_mapping.json`, which has to be embedded in the extractor.
 
-This mapping, unlike the recipe blueprint of a concrete import, can contain multiple options for each external record type from which the end-user might choose (for example, allow *task* from an external system to map either to *issue* or *ticket* in DevRev), and it can also contain mappings that apply to a record type category. When the user runs a new import, and the extractor reports in its metadata record types belonging to this category that are not directly mapped in the initial domain mappings, the recipe manager will apply the per-category default to them.
+This mapping, unlike the recipe blueprint of a concrete import, can contain multiple options for each external record type from which the end-user might choose (for example, allow *task* from an external system to map either to *issue* or *ticket* in DevRev), and it can also contain mappings that apply to a record type category. When the user runs a new import, and the extractor reports in its metadata record types belonging to this category that are not directly mapped in the initial domain mappings, the recipe manager applies the per-category default to them.
 
 After the blueprint of the test import is completed, the *Install in this org* button takes you to the initial domain mapping creation screen, where you can *merge* the blueprint to the existing initial mappings of the org.
 

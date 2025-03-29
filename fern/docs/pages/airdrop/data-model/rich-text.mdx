@@ -18,7 +18,7 @@ Mention represents any mention (user, issue, etc.) in rich text and is defined a
   | Field                  | Type   | Required | Description                                                                                                                          |
   | ---------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
   | `id`                   | String | Yes      | Identifier of the item being mentioned. This could be a user ID or any other identifier, in the format used by the source system.    |
-  | `ref_type`             | String | Yes      | Type of the item being mentioned. Examples include "issue", "comment", etc. The recipe will convert this according to user mappings. |
+  | `ref_type`             | String | Yes      | Type of the item being mentioned. Examples include "issue", "comment", etc. The recipe converts this according to user mappings. |
   | `fallback_record_name` | String | No       | The text to display if the mention cannot be resolved. This could be a user's display name or a ticket title, for instance.          |
 
 In reverse loaders should expect the following structure:
@@ -44,10 +44,10 @@ Articles support Markdown as well as HTML.
 
 ### Article mentions
 
-We support mentions to artifacts and articles. An inline attachment must be mapped to an artifact. A link to another article must be mapped to an article.
+Mentions to artifacts and articles are supported. An inline attachment must be mapped to an artifact. A link to another article must be mapped to an article.
 
 #### Inline attachments
-If an inline attachment is hosted in the source system, it must be created as an artifact in DevRev. The same link cannot be used as the attachment will be deleted in the source system when our customers deactivate the account. However, creating an artifact is not enough. The artifact must linked in the appropriate place in the article content. 
+If an inline attachment is hosted in the source system, it must be created as an artifact in DevRev. The same link cannot be used as the attachment is deleted in the source system when our customers deactivate the account. However, creating an artifact is not enough. The artifact must be linked in the appropriate place in the article content. 
 
 ##### HTML
 ```html
@@ -85,7 +85,7 @@ To achieve this, you need to transform the content of the article to this:
     "\" alt=\"download.jpeg\"></p>" 
 ]
 ```
-The ref_type should be set to artifact and the ID should be the ID of the attachment in the external source system. The platform simply replaces the mention block with the ID of the corresponding artifact. The resolved value is not wrapped in double quotes.
+The ref_type should be set to artifact and the ID should be the ID of the attachment in the external source system. The platform replaces the mention block with the ID of the corresponding artifact. The resolved value is not wrapped in double quotes.
 
 #### Links to other articles
 If there is a link to another article in the content of the article, you need to create a mention to the article. The link must be to an article that was either created in previous syncs or will be created in the current sync. At the extractor stage, it is impossible to predict the ID of the article that will be created in DevRev. So, this must be handled by the platform. This feature is only available for HTML format. However, since Markdown can contain HTML, you can use the same approach for Markdown as well.
@@ -123,4 +123,4 @@ The ref_type should be set to the item type in the external system that is being
 
 ## Managing Permissions
 
-You can manage permissions in the `shared_with` field. Permissions can reference users, groups and [platform groups](./platform_groups.md).
+You can manage permissions in the `shared_with` field. Permissions can reference users, groups, and [platform groups](./platform_groups.md).

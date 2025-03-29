@@ -1,4 +1,3 @@
-
 During the metadata extraction phase, the Airdrop snap-in must provide an
 `external_domain_metadata.json` file on each sync run.
 This file provides a structured way of describing the external system's domain system,
@@ -24,6 +23,33 @@ During the metadata extraction phase, the Airdrop snap-in must provide an
 The transformation can be crafted and finalized further using the `chef-cli` to ensure extracted
 data is mapped consistently to the DevRev domain model.
 
+## Getting started with infer-metadata
+
+The `chef-cli` provides a helpful command to generate initial domain metadata from example data:
+
+```bash
+chef-cli infer-metadata example_data_directory > metadata.json
+```
+
+To get good results with this approach:
+
+1. Collect example data from the external system and place them in a directory. Each file should:
+   - Contain the same type of records, named after their type
+   - Have .json or .jsonl extension, for example `issues.json`
+   - Contain either a single JSON array of objects, or newline-separated objects
+
+2. Run the `infer-metadata` command targeting this directory
+
+3. Inspect the generated metadata, particularly field types and the suggestions the tool generates
+
+For best results:
+- Provide 10-100 examples of each record type (but not more than 1000)
+- Ensure logically distinct fields are separate keys at the top level
+- Use referentially consistent example data if possible
+- Make sure IDs are strings, not numbers
+
+This generated metadata serves as a starting point that will need further refinement.
+
 ## Craft the metadata declaration
 
 Since crafting metadata declaration in the form of an `external_domain_metadata.json` file can be a
@@ -36,7 +62,6 @@ a snap-in run from external system APIs (since they are configurable in the exte
 be changed by the end user at any time, such as mandatory fields or custom fields).
 
 <Steps>
-
   ### Declare the extracted record types
 
     _Record types_ are the types of records that has a well-defined schema you extract from or load
@@ -266,23 +291,24 @@ be changed by the end user at any time, such as mandatory fields or custom field
   existing in that record type, marked 'is_identifier'. For example:
   ```json
   {
-  "record_types": {
-    "users": {
-      "fields": {
-        "email": {
-          "type": "text",
-          "is_identifier":true
+    "record_types": {
+      "users": {
+        "fields": {
+          "email": {
+            "type": "text",
+            "is_identifier":true
+          }
         }
-      }
-    },
-    "comments": {
-      "fields": {
-        "user_email": {
-          "type": "reference",
-          "reference": {
-            "refers_to": {
-              "#record:users": {
-                "by_field": "email"
+      },
+      "comments": {
+        "fields": {
+          "user_email": {
+            "type": "reference",
+            "reference": {
+              "refers_to": {
+                "#record:users": {
+                  "by_field": "email"
+                }
               }
             }
           }
@@ -290,6 +316,101 @@ be changed by the end user at any time, such as mandatory fields or custom field
       }
     }
   }
-}
   ```
+
+  ### Define field attributes
+
+  External system fields that shouldn't be mapped in reverse should be marked as `is_read_only`. 
+  Depending on their purpose you can also mark fields as `is_indexed`, `is_identifier`, `is_filterable`, 
+  `is_write_only` etc. By default these will be set to false. You can find the full list of supported 
+  field attributes and their descriptions in the [metadata schema](./external_domain_metadata_schema.json).
+
+  ### Configure state transitions
+
+  If an external record type has some concept of states, between which only certain transitions are 
+  possible (e.g., to move to the 'resolved' status, an issue first has to be 'in_testing'), you 
+  can declare these in the metadata too.
+
+  This will allow creation of a matching 'stage diagram' in DevRev, which enables a much simpler 
+  import and a closer preservation of the external data than mapping to DevRev's builtin stages.
+
+  This is especially important for two-way sync, as setting the transitions correctly ensures that 
+  the transitions a record undergoes in DevRev can be replicated in the external system.
+
+  To declare this in the metadata, make sure the status is represented as an enum field, and then 
+  declare the allowed transitions:
+
+  ```json
+  {
+    "fields": {
+      "status": {
+        "name": "Status",
+        "is_required": true,
+        "type": "enum",
+        "enum": {
+          "values": [
+            {
+              "key": "detected",
+              "name": "Detected"
+            },
+            {
+              "key": "mitigated",
+              "name": "Mitigated"
+            },
+            {
+              "key": "rca_ready",
+              "name": "RCA Ready"
+            },
+            {
+              "key": "archived",
+              "name": "Archived"
+            }
+          ]
+        }
+      }
+    },
+    "stage_diagram": {
+      "controlling_field": "status",
+      "starting_stage": "detected",
+      "all_transitions_allowed": false,
+      "stages": {
+        "detected": {
+          "transitions_to": ["mitigated", "archived", "rca_ready"],
+          "state": "new"
+        },
+        "mitigated": {
+          "transitions_to": ["archived", "detected"],
+          "state": "work_in_progress"
+        },
+        "rca_ready": {
+          "transitions_to": ["archived"],
+          "state": "work_in_progress"
+        },
+        "archived": {
+          "transitions_to": [],
+          "state": "completed"
+        }
+      },
+      "states": {
+        "new": {
+          "name": "New"
+        },
+        "work_in_progress": {
+          "name": "Work in Progress"
+        },
+        "completed": {
+          "name": "Completed",
+          "is_end_state": true
+        }
+      }
+    }
+  }
+  ```
+
+  In the above example:
+  - The status field is the controlling field of the stage diagram
+  - If a status field has no explicit transitions but you still want a stage diagram, set `all_transitions_allowed` to `true`
+  - External systems may categorize statuses (like Jira's status categories), which can be included in the diagram metadata (`states` in the example)
+  - The `starting_stage` defines the initial stage for new object instances
+  - In current metadata format (v0.2.0), the order and human-readable name are taken from the enum values defined on the controlling field
 </Steps>

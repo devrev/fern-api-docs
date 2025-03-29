@@ -164,6 +164,10 @@ navigation:
             hidden: false
             slug: data-extraction
             path: ../docs/pages/airdrop/data-extraction.mdx
+          - page: "Initial domain mapping"
+            hidden: false
+            slug: initial-domain-mapping
+            path: ../docs/pages/airdrop/initial-domain-mapping.mdx
           - page: "Attachments extraction"
             hidden: false
             slug: extract-attachments

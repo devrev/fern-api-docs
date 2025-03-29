@@ -47,7 +47,9 @@ Articles support Markdown as well as HTML.
 Mentions to artifacts and articles are supported. An inline attachment must be mapped to an artifact. A link to another article must be mapped to an article.
 
 #### Inline attachments
-If an inline attachment is hosted in the source system, it must be created as an artifact in DevRev. The same link cannot be used as the attachment is deleted in the source system when our customers deactivate the account. However, creating an artifact is not enough. The artifact must be linked in the appropriate place in the article content. 
+If an inline attachment is hosted in the source system, it must be created as an artifact in DevRev. 
+The same link cannot be used as the attachment is deleted in the source system when our customers deactivate the account.
+However, creating an artifact is not enough. The artifact must be linked in the appropriate place in the article content. 
 
 ##### HTML
 ```html
@@ -88,7 +90,11 @@ To achieve this, you need to transform the content of the article to this:
 The ref_type should be set to artifact and the ID should be the ID of the attachment in the external source system. The platform replaces the mention block with the ID of the corresponding artifact. The resolved value is not wrapped in double quotes.
 
 #### Links to other articles
-If there is a link to another article in the content of the article, you need to create a mention to the article. The link must be to an article that was either created in previous syncs or is created in the current sync. At the extractor stage, it is impossible to predict the ID of the article that is created in DevRev. So, this must be handled by the platform. This feature is only available for HTML format. However, since Markdown can contain HTML, you can use the same approach for Markdown as well.
+If there is a link to another article in the content of the article, you need to create a mention to the article. 
+The link must be to an article that was either created in previous syncs or is created in the current sync. 
+At the extractor stage, it is impossible to predict the ID of the article that is created in DevRev. 
+So, this must be handled by the platform. This feature is only available for HTML format. 
+However, since Markdown can contain HTML, you can use the same approach for Markdown as well.
 
 ##### HTML
 ```html
@@ -119,7 +125,10 @@ To achieve this, you need to transform the content of the article to this:
     "\" target=\"_self\"> only</a> with the company email."
 ]
 ```
-The ref_type should be set to the item type in the external system that is being mapped to articles. For example, if you're importing documents from the external system as articles, the `ref_type` should be set to documents. The ID should be the ID of the item in the external source system. The platform replaces the mention block with the ID of the corresponding article in DevRev as well as adds the href attribute with the appropriate value.
+The ref_type should be set to the item type in the external system that is being mapped to articles. 
+For example, if you're importing documents from the external system as articles, 
+the `ref_type` should be set to documents. The ID should be the ID of the item in the external source system. 
+The platform replaces the mention block with the ID of the corresponding article in DevRev as well as adds the href attribute with the appropriate value.
 
 ## Managing Permissions
 

@@ -28,7 +28,9 @@
   <Accordion title="Tips for defining record types">
     The main purpose of metadata is to define record types. Each record type should correspond to a homogeneous set of records in the external system: a domain object that has a well-defined schema.
 
-    In some cases, this means simply declaring one record type for API endpoints like '/comments' of the external system, but in other cases, external systems can have configurable custom types or subtypes (for example, issuetypes in Jira). In these cases, the snap-in will need to query an API for the list of types and produce a dynamic list of record types in the metadata.
+    In some cases, this means simply declaring one record type for API endpoints like '/comments' of the external system,
+    but in other cases, external systems can have configurable custom types or subtypes (for example, issuetypes in Jira).
+    In these cases, the snap-in will need to query an API for the list of types and produce a dynamic list of record types in the metadata.
   </Accordion>
   
   <Accordion title="Understanding record type categories">
@@ -46,7 +48,9 @@
   </Accordion>
   
   <Accordion title="Handling record IDs and metadata">
-    The primary key (id) of the record in the external system doesn't need to be declared as a field in the record type. Instead, id, created_date, and modified_date should be provided at the top level, with all other fields inside the data field. Example:
+    The primary key (id) of the record in the external system doesn't need to be declared as a field in the record type. 
+    Instead, id, created_date, and modified_date should be provided at the top level, with all other fields inside the data field. 
+    Example:
 
     ```json
     {
@@ -69,7 +73,8 @@
   
   <Accordion title="Working with collections">
     All logical data types can be modified to be a collection instead.
-    The natural format of a collection is a JSON array (or null), containing the natural format of its elements. For example:
+    The natural format of a collection is a JSON array (or null), containing the natural format of its elements. 
+    For example:
 
     ```json
     {
@@ -104,7 +109,8 @@
   <Accordion title="Using struct fields">
     Structs are embedded JSON objects inside a given field. They represent data that consists of multiple elements belonging together (like a phone number or address) but doesn't form its own record with identity.
     
-    These are helpful when the whole struct is optional/nullable, but some of its fields are required, providing a cleaner representation than flattening it. Example:
+    These are helpful when the whole struct is optional/nullable, but some of its fields are required, providing a cleaner representation than flattening it. 
+    Example:
 
     ```json
     {
@@ -131,7 +137,9 @@
     }
     ```
 
-    Such 'detailed references' should not be declared as structs in Airdrop. They should be transformed to either a simple ID reference or a dynamically typed reference with exactly the fields `id`, `fallback_record_name`, and `ref_type`. Using references and structs inside structs is currently not supported.
+    Such 'detailed references' should not be declared as structs in Airdrop. 
+    They should be transformed to either a simple ID reference or a dynamically typed reference with exactly the fields `id`, `fallback_record_name`, and `ref_type`. 
+    Using references and structs inside structs is currently not supported.
   </Accordion>
   
   <Accordion title="Custom fields">

@@ -1,4 +1,3 @@
-
 During the metadata extraction phase, the Airdrop snap-in must provide an
 `external_domain_metadata.json` file on each sync run.
 This file provides a structured way of describing the external system's domain system,
@@ -73,14 +72,14 @@ tedious process, a step-by-step approach is useful for understanding the metadat
 as a checklist to declare the metadata for an extraction from a specific external system.
 
 Metadata declarations include both _static declarations_, formulated by deduction and comparison of
-external domain system, and DevRev domain system and _dynamic declarations_ that are obtained during
+external domain system and DevRev domain system, and _dynamic declarations_ that are obtained during
 a snap-in run from external system APIs (since they are configurable in the external system and can
 be changed by the end user at any time, such as mandatory fields or custom fields).
 
 <Steps>
   ### Declare the extracted record types
 
-    _Record types_ are the types of records that has a well-defined schema you extract from or load
+    _Record types_ are the types of records that have a well-defined schema you extract from or load
     to the external system, a domain object in the external system.
 
     If the snap-in is extracting issues and comments, a good starting point to declare record types
@@ -152,7 +151,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
 
     If the external system allows records to change the record type within the category,
     while still preserving identity, this can be defined by the `are_record_type_conversions_possible`
-    field in the `record_type_categories` section. For example, if an issue that can be moved to
+    field in the `record_type_categories` section. For example, if an issue can be moved to
     become a problem in the external system.
 
     ```json
@@ -202,7 +201,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
     - `permission`
     - `type_key`
 
-    Refer to the metadata schema file (`external_domain_metadata_schema.json`) to help choose appropriate type for your fields.
+    Refer to the metadata schema file (`external_domain_metadata_schema.json`) to help choose the appropriate type for your fields.
 
     If the external system supports custom fields, the set of custom fields in each record type
     you wish to extract must be declared too.
@@ -281,7 +280,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
 
   ### Declare arrays
 
-    If the field is array in the extracted data, it is still typed with the one of the supported types.
+    If the field is an array in the extracted data, it is still typed with one of the supported types.
     Lists must be marked as a `collection`.
 
     ``` json
@@ -302,7 +301,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
 
   ### Handle special references
 
-  - Some references have role of parent or child.
+  - Some references have the role of parent or child.
   This means that the child record doesn't make sense without its parent, for example a comment
   attached to a ticket.
   Assigning a `reference_type` helps Airdrop correctly handle such fields in case the end-user
@@ -344,8 +343,8 @@ be changed by the end user at any time, such as mandatory fields or custom field
   ### Define field attributes
 
   External system fields that shouldn't be mapped in reverse should be marked as `is_read_only`. 
-  Depending on their purpose you can also mark fields as `is_indexed`, `is_identifier`, `is_filterable`, 
-  `is_write_only` etc. By default these will be set to false. You can find the full list of supported 
+  Depending on their purpose, you can also mark fields as `is_indexed`, `is_identifier`, `is_filterable`, 
+  `is_write_only`, etc. By default, these will be set to false. You can find the full list of supported 
   field attributes and their descriptions in the `external_domain_metadata_schema.json`.
 
   ### Configure state transitions
@@ -356,7 +355,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
 
   This will allow creation of a matching 'stage diagram' (a collection of stages and their permitted 
   transitions) in DevRev, which enables a much simpler import and a closer preservation of the external 
-  data than mapping to DevRev's builtin stages.
+  data than mapping to DevRev's built-in stages.
 
   This is especially important for two-way sync, as setting the transitions correctly ensures that 
   the transitions a record undergoes in DevRev can be replicated in the external system.

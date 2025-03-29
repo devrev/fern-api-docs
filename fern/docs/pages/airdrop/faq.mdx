@@ -16,7 +16,7 @@
 ## Token handling
 <AccordionGroup>
   <Accordion title="*Token is expired* when deploying or cleaning up">
-    Authentication token to the `DEV_ORG` has expired. Reauthenticate the organization by running.
+    Authentication token to the `DEV_ORG` has expired. Reauthenticate the organization by running:
     ```bash
     make auth
     ```
@@ -26,9 +26,9 @@
 ## Metadata extraction
 <AccordionGroup>
   <Accordion title="Tips for defining record types">
-    The main purpose of metadata is to define record types. Each record type should correspond to a homogenous set of records in the external system: a domain object that has a well-defined schema.
+    The main purpose of metadata is to define record types. Each record type should correspond to a homogeneous set of records in the external system: a domain object that has a well-defined schema.
 
-    In some cases this means simply declaring one record type for API endpoints like '/comments' of the external system, but in other cases, external systems can have configurable custom types or subtypes (for example issuetypes in Jira). In these cases the snap-in will need to query an API for the list of types, and produce a dynamic list of record_types in the metadata.
+    In some cases, this means simply declaring one record type for API endpoints like '/comments' of the external system, but in other cases, external systems can have configurable custom types or subtypes (for example, issuetypes in Jira). In these cases, the snap-in will need to query an API for the list of types and produce a dynamic list of record types in the metadata.
   </Accordion>
   
   <Accordion title="Understanding record type categories">
@@ -39,7 +39,7 @@
   </Accordion>
   
   <Accordion title="Working with integer fields">
-    The field type 'int' is used to represent integer numeric values. In certain external systems, identifiers of records or enum values are also stored as integers. These are however not 'conceptually integers' in Airdrop's perspective.
+    The field type `int` is used to represent integer numeric values. In certain external systems, identifiers of records or enum values are also stored as integers. These are, however, not 'conceptually integers' in Airdrop's perspective.
     
     The natural format of integers is `null` | JSON numbers without decimals.
     Numbers encoded to strings (e.g., `"2112"`), or empty strings should not be used.

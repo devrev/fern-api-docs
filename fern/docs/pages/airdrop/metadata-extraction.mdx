@@ -3,16 +3,17 @@ During the metadata extraction phase, the Airdrop snap-in must provide an
 This file provides a structured way of describing the external system's domain system,
 including its domain entities, types, relationships, and other metadata.
 
+
+## Validating metadata
+
 The extraction function of the snap-in must provide a valid metadata file.
 DevRev provides a JSON schema and a CLI tool [chef-cli](https://github.com/devrev/adaas-chef-cli)
 to validate the proposed schema.
 
-## Validating metadata
-
 To check the metadata for internal consistency, you should use the following command after every step:
 
 ```bash
-chef-cli validate-metadata < metadata.json
+chef-cli validate-metadata < external_domain_metadata.json
 ```
 
 This will output any problems there may be with the metadata file.
@@ -432,3 +433,9 @@ be changed by the end user at any time, such as mandatory fields or custom field
   - In current metadata format (v0.2.0), the order and human-readable name are taken from the enum values defined on the controlling field
   - If the `states` field is not provided, default DevRev states will be used: `open`, `in_progress` and `closed`
 </Steps>
+
+## Metadata requirement
+
+You are required to provide an `external_domain_metadata.json` file from your extractor, describing the logical schema of the external system.
+The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. The file is available as part of the chef-cli package.
+There, you can also find an example of a metadata file (`metadata.json`).

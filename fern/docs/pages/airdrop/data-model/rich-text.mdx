@@ -1,0 +1,126 @@
+
+Rich text is used in DevRev to represent text fields that can be formatted and can contain mentions. Eg.: description of an issue, body of a conversation, etc.
+
+A simple rich text looks like one markdown string wrapped in an array: `["Hello **world**!"]`.
+Markdown should be compatible with [CommonMark Spec v0.30](https://spec.commonmark.org/0.30).
+
+To support mentions `rich_text` can be formatted as an array of strings and mention objects like so:  
+```json
+  [
+    "Hello ", 
+    {"ref_type":"external_user_type", "id":"1...", "fallback_record_name": "John Doe"}, 
+    "how are you?"
+  ]
+  ```
+
+
+Mention represents any mention (user, issue, etc.) in rich text and is defined as:
+  | Field                  | Type   | Required | Description                                                                                                                          |
+  | ---------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+  | `id`                   | String | Yes      | Identifier of the item being mentioned. This could be a user ID or any other identifier, in the format used by the source system.    |
+  | `ref_type`             | String | Yes      | Type of the item being mentioned. Examples include "issue", "comment", etc. The recipe will convert this according to user mappings. |
+  | `fallback_record_name` | String | No       | The text to display if the mention cannot be resolved. This could be a user's display name or a ticket title, for instance.          |
+
+In reverse loaders should expect the following structure:
+  ```json
+  {
+    "type": "rich_text",
+    "content": [
+      "Hello ",
+      {
+        "ref_type": "external_user_type",
+        "id": "don:...",
+        "fallback_record_name": "John Smith"
+      },
+      "how are you?"
+    ]
+  }
+  ```
+
+
+## Importing articles
+
+Articles support Markdown as well as HTML.
+
+### Article mentions
+
+We support mentions to artifacts and articles. An inline attachment must be mapped to an artifact. A link to another article must be mapped to an article.
+
+#### Inline attachments
+If an inline attachment is hosted in the source system, it must be created as an artifact in DevRev. The same link cannot be used as the attachment will be deleted in the source system when our customers deactivate the account. However, creating an artifact is not enough. The artifact must linked in the appropriate place in the article content. 
+
+##### HTML
+```html
+<img src="don:core:dvrv-us-1:devo/0:artifact/1" alt="Alt Text"/>
+```
+
+##### Markdown
+```markdown
+![Alt Text](don:core:dvrv-us-1:devo/0:artifact/1)
+```
+
+##### Example
+Let's say the content of your external system looks like this:
+```html
+<p>This is an article with one image.</p>
+<p><img src="https://devrev.zendesk.com/hc/article_attachments/29908544740244" alt="download.jpeg"></p>
+```
+
+The content in DevRev should look like this:
+```html
+<p>This is an article with one image.</p>
+<p><img src="don:core:dvrv-us-1:devo/0:artifact/1" alt="download.jpeg"></p>
+```
+
+`don:core:dvrv-us-1:devo/0:artifact/1` is the ID of the artifact created in DevRev corresponding to the attachment with ID `29908544740244` in the external source system.
+To achieve this, you need to transform the content of the article to this:
+```json
+[ 
+    "<p>This is an article with one image.</p><p><img src=\"",
+    {
+        "ref_type": "artifact",
+        "id": "29908544740244",
+        "fallback_record_name": "<fallback link>"
+    },
+    "\" alt=\"download.jpeg\"></p>" 
+]
+```
+The ref_type should be set to artifact and the ID should be the ID of the attachment in the external source system. The platform simply replaces the mention block with the ID of the corresponding artifact. The resolved value is not wrapped in double quotes.
+
+#### Links to other articles
+If there is a link to another article in the content of the article, you need to create a mention to the article. The link must be to an article that was either created in previous syncs or will be created in the current sync. At the extractor stage, it is impossible to predict the ID of the article that will be created in DevRev. So, this must be handled by the platform. This feature is only available for HTML format. However, since Markdown can contain HTML, you can use the same approach for Markdown as well.
+
+##### HTML
+```html
+<a data-article-id="don:core:dvrv-us-1:devo/0:article/10" href="/ART-10" target="_self">Contact our Support Team</a>
+```
+
+##### Example
+Let's say the content of your external system looks like this:
+```html
+<p>You can create an account and log-in <a href="https://devrev.zendesk.com/hc/en-us/articles/360059607772" target="_self">only</a> with the company email.
+```
+
+The content in DevRev should look like this:
+```html
+<p>You can create an account and log-in <a data-article-id="don:core:dvrv-us-1:devo/0:article/10" href="/ART-10" target="_self">only</a> with the company email.
+```
+
+`don:core:dvrv-us-1:devo/0:article/10` is the ID of the article created in DevRev corresponding to the article with ID `360059607772` in the external source system.
+To achieve this, you need to transform the content of the article to this:
+```json
+[
+    "You can create an account and log-in <a data-article-id=\"",
+    {
+        "ref_type": "article",
+        "id": "360059607772",
+        "fallback_record_name": "<fallback article ID>"
+    },
+    "\" target=\"_self\"> only</a> with the company email."
+]
+```
+The ref_type should be set to the item type in the external system that is being mapped to articles. For example, if you're importing documents from the external system as articles, the `ref_type` should be set to documents. The ID should be the ID of the item in the external source system. The platform replaces the mention block with the ID of the corresponding article in DevRev as well as adds the href attribute with the appropriate value.
+
+## Managing Permissions
+
+You can manage permissions in the `shared_with` field. Permissions can reference users, groups and [platform groups](./platform_groups.md).

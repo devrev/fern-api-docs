@@ -176,9 +176,24 @@ navigation:
             slug: data-attachments-deletion
             hidden: false
             path: ../docs/pages/airdrop/data-attachments-deletion.mdx
-          - page: "Common issues - FAQ"
+          - page: "Common issues"
             slug: faq
             path: ../docs/pages/airdrop/faq.mdx
+          - section: Data model
+            slug: data-model
+            contents:
+              - page: "Rich text"
+                slug: rich-text
+                hidden: true
+                path: ../docs/pages/airdrop/airdrop-data-model/rich_text.mdx
+              - page: "Permissions"
+                slug: permissions
+                hidden: true
+                path: ../docs/pages/airdrop/airdrop-data-model/permissions.mdx
+              - page: "Mapping reasons"
+                slug: mapping-reasons
+                hidden: true
+                path: ../docs/pages/airdrop/airdrop-data-model/mapping_reasons.mdx
       - section: References
         slug: references
         contents:

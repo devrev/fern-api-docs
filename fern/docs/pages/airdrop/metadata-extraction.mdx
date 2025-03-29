@@ -1,8 +1,8 @@
+
 During the metadata extraction phase, the Airdrop snap-in must provide an
 `external_domain_metadata.json` file on each sync run.
 This file provides a structured way of describing the external system's domain system,
 including its domain entities, types, relationships, and other metadata.
-
 
 ## Validating metadata
 
@@ -17,6 +17,11 @@ chef-cli validate-metadata < external_domain_metadata.json
 ```
 
 This will output any problems there may be with the metadata file.
+
+<Info>
+  The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. The file is available as part of the CLI package.
+  There, you can also find an example of a metadata file (`metadata.json`).
+</Info>
 
 ## Triggering event
 
@@ -186,16 +191,18 @@ be changed by the end user at any time, such as mandatory fields or custom field
     - `bool`
     - `int`
     - `float`
-    - `text`
-    - `rich_text`: Formatted text with mentions and images.
+    - `text`: Interpreted as plain text.
+    - `rich_text`: Formatted text with mentions and images, see [rich text](./rich-text.mdx).
     - `reference`: IDs referring to another record. References have to declare what they can refer
     to, which can be one or more record types (`#record:`) or categories (`#category:`).
     - `enum`: A string from a predefined set of values with the optional human-readable names for each value.
     - `date`
     - `timestamp`
     - `struct`
+    - `permission`
+    - `type_key`
 
-    For a detailed explanation of these supported types, refer to the [supported types page](./supported_types.md).
+    Refer to the metadata schema file (`external_domain_metadata_schema.json`) to help choose appropriate type for your fields.
 
     If the external system supports custom fields, the set of custom fields in each record type
     you wish to extract must be declared too.
@@ -434,8 +441,3 @@ be changed by the end user at any time, such as mandatory fields or custom field
   - If the `states` field is not provided, default DevRev states will be used: `open`, `in_progress` and `closed`
 </Steps>
 
-## Metadata requirement
-
-You are required to provide an `external_domain_metadata.json` file from your extractor, describing the logical schema of the external system.
-The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. The file is available as part of the chef-cli package.
-There, you can also find an example of a metadata file (`metadata.json`).

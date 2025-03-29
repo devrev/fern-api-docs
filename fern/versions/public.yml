@@ -185,15 +185,15 @@ navigation:
               - page: "Rich text"
                 slug: rich-text
                 hidden: true
-                path: ../docs/pages/airdrop/airdrop-data-model/rich_text.mdx
+                path: ../docs/pages/airdrop/data-model/rich-text.mdx
               - page: "Permissions"
                 slug: permissions
                 hidden: true
-                path: ../docs/pages/airdrop/airdrop-data-model/permissions.mdx
+                path: ../docs/pages/airdrop/data-model/permissions.mdx
               - page: "Mapping reasons"
                 slug: mapping-reasons
                 hidden: true
-                path: ../docs/pages/airdrop/airdrop-data-model/mapping_reasons.mdx
+                path: ../docs/pages/airdrop/data-model/mapping_reasons.mdx
       - section: References
         slug: references
         contents:

@@ -15,7 +15,7 @@ To check the metadata for internal consistency, you should use the following com
 chef-cli validate-metadata < external_domain_metadata.json
 ```
 
-This will output any problems there may be with the metadata file.
+This outputs any problems there may be with the metadata file.
 
 <Info>
   The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. The file is available as part of the CLI package.
@@ -49,21 +49,21 @@ chef-cli infer-metadata example_data_directory > metadata.json
 To get good results with this approach:
 
 1. Collect example data from the external system and place them in a directory. Each file should:
-   - Contain the same type of records, named after their type
-   - Have .json or .jsonl extension, for example `issues.json`
-   - Contain either a single JSON array of objects, or newline-separated objects
+   - Contain the same type of records, named after their type.
+   - Have .json or .jsonl extension, for example `issues.json`.
+   - Contain either a single JSON array of objects, or newline-separated objects.
 
-2. Run the `infer-metadata` command targeting this directory
+2. Run the `infer-metadata` command targeting this directory.
 
-3. Inspect the generated metadata, particularly field types and the suggestions the tool generates
+3. Inspect the generated metadata, particularly field types and the suggestions the tool generates.
 
 For best results:
-- Provide 10-100 examples of each record type (but not more than 1000)
-- Ensure logically distinct fields are separate keys at the top level
-- Use referentially consistent example data if possible
-- Make sure IDs are strings, not numbers
+- Provide 10-100 examples of each record type (but not more than 1000).
+- Ensure logically distinct fields are separate keys at the top level.
+- Use referentially consistent example data if possible.
+- Make sure IDs are strings, not numbers.
 
-This generated metadata serves as a starting point that will need further refinement. It can be used to prototype initial domain mappings (by running a sync with it) and to generate example normalized data, but it is still just a guess: It has to be reviewed and refined.
+This generated metadata serves as a starting point that needs further refinement. It can be used to prototype initial domain mappings (by running a sync with it) and to generate example normalized data, but it is still just a guess: It has to be reviewed and refined.
 
 ## Craft the metadata declaration
 
@@ -344,16 +344,16 @@ be changed by the end user at any time, such as mandatory fields or custom field
 
   External system fields that shouldn't be mapped in reverse should be marked as `is_read_only`. 
   Depending on their purpose, you can also mark fields as `is_indexed`, `is_identifier`, `is_filterable`, 
-  `is_write_only`, etc. By default, these will be set to false. You can find the full list of supported 
+  is_write_only, etc. By default, these are set to false. You can find the full list of supported 
   field attributes and their descriptions in the `external_domain_metadata_schema.json`.
 
   ### Configure state transitions
 
   If an external record type has some concept of states, between which only certain transitions are 
-  possible (e.g., to move to the 'resolved' status, an issue first has to be 'in_testing'), you 
+  possible (for example, to move to the 'resolved' status, an issue first has to be 'in_testing'), you 
   can declare these in the metadata too.
 
-  This will allow creation of a matching 'stage diagram' (a collection of stages and their permitted 
+  This allows creation of a matching 'stage diagram' (a collection of stages and their permitted 
   transitions) in DevRev, which enables a much simpler import and a closer preservation of the external 
   data than mapping to DevRev's built-in stages.
 
@@ -432,11 +432,11 @@ be changed by the end user at any time, such as mandatory fields or custom field
   ```
 
   In the above example:
-  - The status field is the controlling field of the stage diagram
-  - If a status field has no explicit transitions but you still want a stage diagram, set `all_transitions_allowed` to `true`, which will create a diagram where all the defined stages can transition to each other
-  - External systems may categorize statuses (like Jira's status categories), which can be included in the diagram metadata (`states` in the example)
-  - The `starting_stage` defines the initial stage for new object instances. This data should always be provided if available, otherwise the starting stage will be selected alphabetically
-  - In current metadata format (v0.2.0), the order and human-readable name are taken from the enum values defined on the controlling field
-  - If the `states` field is not provided, default DevRev states will be used: `open`, `in_progress` and `closed`
+  - The status field is the controlling field of the stage diagram.
+  - If a status field has no explicit transitions but you still want a stage diagram, set `all_transitions_allowed` to `true`, which creates a diagram where all the defined stages can transition to each other.
+  - External systems may categorize statuses (like Jira's status categories), which can be included in the diagram metadata (`states` in the example).
+  - The `starting_stage` defines the initial stage for new object instances. This data should always be provided if available, otherwise the starting stage is selected alphabetically
+  - In current metadata format (v0.2.0), the order and human-readable name are taken from the enum values defined on the controlling field.
+  - If the `states` field is not provided, default DevRev states are used: `open`, `in_progress`, and `closed`.
 </Steps>
 

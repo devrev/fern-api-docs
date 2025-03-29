@@ -88,7 +88,7 @@ To achieve this, you need to transform the content of the article to this:
 The ref_type should be set to artifact and the ID should be the ID of the attachment in the external source system. The platform replaces the mention block with the ID of the corresponding artifact. The resolved value is not wrapped in double quotes.
 
 #### Links to other articles
-If there is a link to another article in the content of the article, you need to create a mention to the article. The link must be to an article that was either created in previous syncs or will be created in the current sync. At the extractor stage, it is impossible to predict the ID of the article that will be created in DevRev. So, this must be handled by the platform. This feature is only available for HTML format. However, since Markdown can contain HTML, you can use the same approach for Markdown as well.
+If there is a link to another article in the content of the article, you need to create a mention to the article. The link must be to an article that was either created in previous syncs or is created in the current sync. At the extractor stage, it is impossible to predict the ID of the article that is created in DevRev. So, this must be handled by the platform. This feature is only available for HTML format. However, since Markdown can contain HTML, you can use the same approach for Markdown as well.
 
 ##### HTML
 ```html

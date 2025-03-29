@@ -8,11 +8,11 @@ allowing them to import data while maintaining semantic meaning from their sourc
 
 ### Prerequisites
 
-- Snap-in is set up, deployed, and activated
-- An import has been created and is in the mapping stage
+- Snap-in is set up, deployed, and activated.
+- An import has been created and is in the mapping stage.
 
 It's also recommended that you have the DevRev CLI authenticated appropriately. 
-This can be done either with `devrev profiles authenticate -e prod -o <your org slug> -u <your email>` 
+This can be done either with `devrev profiles authenticate -e prod -o <your_org_slug> -u <your_email>` 
 or by running `make auth` in your snap-in repository.
 
 <Steps>
@@ -38,7 +38,7 @@ chef-cli ctx switch --env prod
 
 This prints the list of Airdrop imports in the org. Select the one you like by running
 ```bash
-eval $(chef-cli ctx switch --env prod --id <the id you choose>); chef-cli ctx show
+eval $(chef-cli ctx switch --env prod --id <import_id>); chef-cli ctx show
 ```
 
 If this method doesn't work, you can manually export the variable (replacing the values based on the logs of your running import):
@@ -99,7 +99,7 @@ Finally, the Export button allows you to retrieve the `initial_domain_mapping.js
 <Tip>
 You can also provide a local metadata file to the command using the `-m` flag, for example: `chef-cli configure-mappings --env prod -m metadata.json`. 
 This enables the following features:
-- raw jq transformations using an external field as input. (This is an experimental feature)
+- raw jq transformations using an external field as input. (This is an experimental feature.)
 - filling in example input data for trying out the transformation.
 
 In this case it's not validated that the local file is the same as the one submitted by the snap-in.

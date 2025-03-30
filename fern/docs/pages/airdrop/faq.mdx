@@ -28,28 +28,28 @@
   <Accordion title="Tips for defining record types">
     The main purpose of metadata is to define record types. Each record type should correspond to a homogeneous set of records in the external system: a domain object that has a well-defined schema.
 
-    In some cases, this means simply declaring one record type for API endpoints like '/comments' of the external system,
-    but in other cases, external systems can have configurable custom types or subtypes (for example, issuetypes in Jira).
+    In some cases, this means simply declaring one record type for API endpoints like `/comments` of the external system,
+    but in other cases, external systems can have configurable custom types or subtypes (for example, issue types in Jira).
     In these cases, the snap-in will need to query an API for the list of types and produce a dynamic list of record types in the metadata.
   </Accordion>
   
   <Accordion title="Understanding record type categories">
     Record types don't have hierarchy; each is a leaf type corresponding to concrete records in files marked with that itemtype. Record type categories can be used to group them, serving two purposes:
 
-    1. To define mapping rules that apply to a dynamic set of record types, unknown at the time the snap-in is created
-    2. To tell the recipe system that a record can transition between two record types while preserving its identity
+    1. To define mapping rules that apply to a dynamic set of record types, unknown at the time the snap-in is created.
+    2. To tell the recipe system that a record can transition between two record types while preserving its identity.
   </Accordion>
   
   <Accordion title="Working with integer fields">
-    The field type `int` is used to represent integer numeric values. In certain external systems, identifiers of records or enum values are also stored as integers. These are, however, not 'conceptually integers' in Airdrop's perspective.
+    The field type `int` is used to represent integer numeric values. In certain external systems, identifiers of records or enum values are also stored as integers. These are, however, not *conceptually integers* in Airdrop's perspective.
     
     The natural format of integers is `null` | JSON numbers without decimals.
     Numbers encoded to strings (e.g., `"2112"`), or empty strings should not be used.
   </Accordion>
   
   <Accordion title="Handling record IDs and metadata">
-    The primary key (id) of the record in the external system doesn't need to be declared as a field in the record type. 
-    Instead, id, created_date, and modified_date should be provided at the top level, with all other fields inside the data field. 
+    The primary key (`id`) of the record in the external system doesn't need to be declared as a field in the record type. 
+    Instead, `id`, `created_date`, and `modified_date` should be provided at the top level, with all other fields inside the `data` field. 
     Example:
 
     ```json
@@ -73,7 +73,7 @@
   
   <Accordion title="Working with collections">
     All logical data types can be modified to be a collection instead.
-    The natural format of a collection is a JSON array (or null), containing the natural format of its elements. 
+    The natural format of a collection is a JSON array (or `null`), containing the natural format of its elements. 
     For example:
 
     ```json
@@ -130,27 +130,27 @@
     {
       "creator": {
         "userId": "2103232144",
-        "name": "Lara Croft",
+        "name": "Jane Doe",
         "role": "Adventurer",
-        "email": "tomb@raider.com"
+        "email": "jane@doe.com"
       }
     }
     ```
 
-    Such 'detailed references' should not be declared as structs in Airdrop. 
+    Such detailed references should not be declared as structs in Airdrop. 
     They should be transformed to either a simple ID reference or a dynamically typed reference with exactly the fields `id`, `fallback_record_name`, and `ref_type`. 
     Using references and structs inside structs is currently not supported.
   </Accordion>
   
   <Accordion title="Custom fields">
-    Any fields in the metadata not otherwise mapped are offered to the end user as custom fields, with no additional effort needed.
+    Any field in the metadata not otherwise mapped is offered to the end user as a custom field, with no additional effort needed.
   </Accordion>
 </AccordionGroup>
 
 ## Troubleshooting
 <AccordionGroup>
-  <Accordion title="Chef-CLI version">
-    Check if chef-cli version is up to date. You can find the version you are using with `chef-cli --version` and the latest available version under project releases.
+  <Accordion title="Chef-cli version">
+    Check if chef-cli version is up to date. You can find the version you are using with `chef-cli --version` and the latest available version under GitHub releases.
   </Accordion>
 </AccordionGroup>
 

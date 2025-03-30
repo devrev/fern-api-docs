@@ -18,7 +18,7 @@ chef-cli validate-metadata < external_domain_metadata.json
 This outputs any problems there may be with the metadata file.
 
 <Info>
-  The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. The file is available as part of the CLI package.
+  The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. The file is available as part of the chef-cli package.
   There, you can also find an example of a metadata file (`metadata.json`).
 </Info>
 
@@ -50,7 +50,7 @@ To get good results with this approach:
 
 1. Collect example data from the external system and place them in a directory. Each file should:
    - Contain the same type of records, named after their type.
-   - Have .json or .jsonl extension, for example `issues.json`.
+   - Have `.json` or `.jsonl` extension, for example `issues.json`.
    - Contain either a single JSON array of objects, or newline-separated objects.
 
 2. Run the `infer-metadata` command targeting this directory.
@@ -63,7 +63,9 @@ For best results:
 - Use referentially consistent example data if possible.
 - Make sure IDs are strings, not numbers.
 
+<Note>
 This generated metadata serves as a starting point that needs further refinement. It can be used to prototype initial domain mappings (by running a sync with it) and to generate example normalized data, but it is still just a guess: It has to be reviewed and refined.
+</Note>
 
 ## Craft the metadata declaration
 
@@ -120,8 +122,8 @@ be changed by the end user at any time, such as mandatory fields or custom field
 
     Define human-readable names for the record types defined in your metadata file.
 
-    ```json
-      {
+    ```json {4,7,10,13}
+    {
       "record_types":{
         "issues_stock_epic":{
           "name":"Epic"
@@ -154,7 +156,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
     field in the `record_type_categories` section. For example, if an issue can be moved to
     become a problem in the external system.
 
-    ```json
+    ```json {5,9,13,19-22}
     {
       "record_types":{
         "issues_stock_epic":{
@@ -191,7 +193,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
     - `int`
     - `float`
     - `text`: Interpreted as plain text.
-    - `rich_text`: Formatted text with mentions and images, see [rich text](./rich-text.mdx).
+    - `rich_text`: Formatted text with mentions and images. 
     - `reference`: IDs referring to another record. References have to declare what they can refer
     to, which can be one or more record types (`#record:`) or categories (`#category:`).
     - `enum`: A string from a predefined set of values with the optional human-readable names for each value.
@@ -283,7 +285,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
     If the field is an array in the extracted data, it is still typed with one of the supported types.
     Lists must be marked as a `collection`.
 
-    ```json {10-12}
+    ```json {10-12, 16-19}
     {
       "name": "Assignees",
       "is_required": true,

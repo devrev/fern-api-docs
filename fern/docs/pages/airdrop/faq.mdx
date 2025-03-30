@@ -46,31 +46,7 @@
     The natural format of integers is `null` | JSON numbers without decimals.
     Numbers encoded to strings (e.g., `"2112"`), or empty strings should not be used.
   </Accordion>
-  
-  <Accordion title="Handling record IDs and metadata">
-    The primary key (`id`) of the record in the external system doesn't need to be declared as a field in the record type. 
-    Instead, `id`, `created_date`, and `modified_date` should be provided at the top level, with all other fields inside the `data` field. 
-    Example:
-
-    ```json
-    {
-      "id": "2102e01F",
-      "operation": "created",
-      "created_date": "1970-01-01T01:00:04+01:00",
-      "modified_date": "1972-03-29T22:04:47+01:00",
-      "data": {
-        "actual_close_date": "1970-01-01T02:33:18+01:00",
-        "created_date": "1970-01-01T01:08:25+01:00",
-        "modified_date": "1970-01-01T01:00:08+01:00",
-        "owner": "3A",
-        "priority": "P1",
-        "target_close_date": null,
-        "title": "Lorem ipsum dolor sit amet"
-      }
-    }
-    ```
-  </Accordion>
-  
+    
   <Accordion title="Working with collections">
     All logical data types can be modified to be a collection instead.
     The natural format of a collection is a JSON array (or `null`), containing the natural format of its elements. 

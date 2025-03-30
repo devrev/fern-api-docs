@@ -95,7 +95,11 @@ By repeating this process (run a new import, create a different configuration, m
 Finally, the Export button allows you to retrieve the `initial_domain_mapping.json`.
 
 <Tip>
-You can also provide a local metadata file to the command using the `-m` flag, for example: `chef-cli configure-mappings --env prod -m metadata.json`. 
+You can also provide a local metadata file to the command using the `-m` flag, for example: 
+```bash
+chef-cli configure-mappings --env prod -m metadata.json
+```
+
 This enables the following features:
 - Raw jq transformations using an external field as input (experimental feature).
 - Filling in example input data for trying out the transformation.

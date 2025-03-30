@@ -313,7 +313,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
   when referring to a case by serial number, or to a user by their email.
   To correctly resolve such references, they must be marked with `by_field`, which must be a field
   existing in that record type, marked `is_identifier`. For example:
-  ```json {7}
+  ```json {7,16-20}
   {
     "record_types": {
       "users": {

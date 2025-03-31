@@ -90,8 +90,10 @@ echo '{}' | chef-cli fuzz-extracted -r issue -m external_domain_metadata.json > 
 
 Once you have implemented data extraction, you should deploy your snap-in to your test organization and run an import.
 
-To deploy the snap-in, run `make auth` and `make deploy` in the snap-in repository. Then, activate the snap-in by running `devrev snap_in activate`. 
+To deploy the snap-in, run `make auth` and `make deploy` in the snap-in repository. 
+Then, activate the snap-in by running `devrev snap_in activate`. 
 
-After activation, you can create an import in the DevRev UI, which will initially reach the 'waiting for user input' stage. During this phase, you can verify your data extraction implementation is working correctly.
+After activation, you can create an import in the DevRev UI, which will initially reach the 'waiting for user input' stage. 
+During this phase, you can verify your data extraction implementation is working correctly.
 
-Relevant documentation can be found under [Snap-in development](/snapin-development/locally-testing-snap-ins).
+Relevant documentation can be found in the [Snap-in development](/snapin-development/locally-testing-snap-ins) section.

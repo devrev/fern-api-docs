@@ -26,7 +26,8 @@
 ## Metadata extraction
 <AccordionGroup>
   <Accordion title="Tips for defining record types">
-    The main purpose of metadata is to define record types. Each record type should correspond to a homogeneous set of records in the external system: a domain object that has a well-defined schema.
+    The main purpose of metadata is to define record types. 
+    Each record type should correspond to a homogeneous set of records in the external system: a domain object that has a well-defined schema.
 
     In some cases, this means simply declaring one record type for API endpoints like `/comments` of the external system,
     but in other cases, external systems can have configurable custom types or subtypes (for example, issue types in Jira).
@@ -34,14 +35,17 @@
   </Accordion>
   
   <Accordion title="Understanding record type categories">
-    Record types don't have hierarchy; each is a leaf type corresponding to concrete records in files marked with that itemtype. Record type categories can be used to group them, serving two purposes:
+    Record types don't have hierarchy; each is a leaf type corresponding to concrete records in files marked with that itemtype. 
+    Record type categories can be used to group them, serving two purposes:
 
     1. To define mapping rules that apply to a dynamic set of record types, unknown at the time the snap-in is created.
     2. To tell the recipe system that a record can transition between two record types while preserving its identity.
   </Accordion>
   
   <Accordion title="Working with integer fields">
-    The field type `int` is used to represent integer numeric values. In certain external systems, identifiers of records or enum values are also stored as integers. These are, however, not *conceptually integers* in Airdrop's perspective.
+    The field type `int` is used to represent integer numeric values. 
+    In certain external systems, identifiers of records or enum values are also stored as integers. 
+    These are, however, not *conceptually integers* in Airdrop's perspective.
     
     The natural format of integers is `null` | JSON numbers without decimals.
     Numbers encoded to strings (e.g., `"2112"`), or empty strings should not be used.
@@ -83,7 +87,8 @@
   </Accordion>
   
   <Accordion title="Using struct fields">
-    Structs are embedded JSON objects inside a given field. They represent data that consists of multiple elements belonging together (like a phone number or address) but doesn't form its own record with identity.
+    Structs are embedded JSON objects inside a given field. 
+    They represent data that consists of multiple elements belonging together (like a phone number or address) but doesn't form its own record with identity.
     
     These are helpful when the whole struct is optional/nullable, but some of its fields are required, providing a cleaner representation than flattening it. 
     Example:
@@ -126,7 +131,8 @@
 ## Troubleshooting
 <AccordionGroup>
   <Accordion title="Chef-cli version">
-    Check if chef-cli version is up to date. You can find the version you are using with `chef-cli --version` and the latest available version under GitHub releases.
+    Check if chef-cli version is up to date. 
+    You can find the version you are using with `chef-cli --version` and the latest available version under GitHub releases.
   </Accordion>
 </AccordionGroup>
 

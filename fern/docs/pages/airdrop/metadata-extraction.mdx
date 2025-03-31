@@ -18,7 +18,8 @@ chef-cli validate-metadata < external_domain_metadata.json
 This outputs any problems there may be with the metadata file.
 
 <Info>
-  The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. The file is available as part of the chef-cli package.
+  The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. 
+  The file is available as part of the chef-cli package.
   There, you can also find an example of a metadata file (`metadata.json`).
 </Info>
 
@@ -64,7 +65,9 @@ For best results:
 - Make sure IDs are strings, not numbers.
 
 <Note>
-This generated metadata serves as a starting point that needs further refinement. It can be used to prototype initial domain mappings (by running a sync with it) and to generate example normalized data, but it is still just a guess: It has to be reviewed and refined.
+This generated metadata serves as a starting point that needs further refinement. 
+It can be used to prototype initial domain mappings (by running a sync with it) and to generate example normalized data, but it's important to understand that it's only an initial guess. 
+The metadata must be carefully reviewed and refined to ensure accuracy and proper representation of your external system's data model.
 </Note>
 
 ## Craft the metadata declaration

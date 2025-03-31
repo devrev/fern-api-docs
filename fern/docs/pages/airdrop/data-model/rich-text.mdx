@@ -1,5 +1,6 @@
 
-Rich text is used in DevRev to represent text fields that can be formatted and can contain mentions. E.g.: description of an issue, body of a conversation, etc.
+Rich text is used in DevRev to represent text fields that can be formatted and can contain mentions. 
+E.g.: description of an issue, body of a conversation, etc.
 
 A simple rich text looks like one markdown string wrapped in an array: `["Hello **world**!"]`.
 Markdown should be compatible with [CommonMark Spec v0.30](https://spec.commonmark.org/0.30).
@@ -41,9 +42,11 @@ In reverse, the loader should expect the following structure:
 
 ## Importing articles
 
-An article is a document containing essential information about the company's products, services, and processes. Articles support Markdown as well as HTML.
+An article is a document containing essential information about the company's products, services, and processes. 
+Articles support Markdown as well as HTML.
 
-Articles support mentions to artifacts and articles. An inline attachment must be mapped to an artifact. A link to another article must be mapped to an article.
+Articles support mentions to artifacts and articles. An inline attachment must be mapped to an artifact. 
+A link to another article must be mapped to an article.
 
 ### Managing permissions
 
@@ -90,12 +93,15 @@ To achieve this, you need to transform the content of the article to the followi
 ]
 ```
 
-The `ref_type` should be set to artifact and the ID should be the ID of the attachment in the external source system. The platform replaces the mention block with the ID of the corresponding artifact. The resolved value is not wrapped in double quotes.
+The `ref_type` should be set to artifact and the ID should be the ID of the attachment in the external source system. 
+The platform replaces the mention block with the ID of the corresponding artifact. 
+The resolved value is not wrapped in double quotes.
 
 ### Links to other articles
 If there is a link to another article in the content of the article, you need to create a mention to the article. 
 The link must be to an article that was either created in previous syncs or is created in the current sync. 
-At the extractor stage, it is impossible to predict the ID of the article that is created in DevRev. This is why the platform handles this. This feature is only available for the HTML format. 
+At the extractor stage, it is impossible to predict the ID of the article that is created in DevRev. 
+This is why the platform handles this. This feature is only available for the HTML format. 
 However, since Markdown can contain HTML, you can use the same approach for Markdown as well.
 
 The following HTML example shows a link to another article:

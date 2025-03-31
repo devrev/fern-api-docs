@@ -163,9 +163,15 @@ navigation:
               - page: "External sync units extraction"
                 slug: external-sync-units-extraction
                 path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
+              - page: "Metadata extraction"
+                slug: metadata-extraction
+                path: ../docs/pages/airdrop/metadata-extraction.mdx
               - page: "Data extraction"
                 slug: data-extraction
                 path: ../docs/pages/airdrop/data-extraction.mdx
+              - page: "Attachments extraction"
+                slug: extract-attachments
+                path: ../docs/pages/airdrop/attachments-extraction.mdx
           - page: "Loading data to DevRev"
             slug: loading-data
             path: ../docs/pages/airdrop/loading-data.mdx

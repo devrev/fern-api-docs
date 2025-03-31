@@ -1,4 +1,3 @@
-
 In the data extraction phase, the extractor is expected to call the external system's APIs
 to retrieve all the items that were updated since the start of the last extraction.
 If there was no previous extraction (the current run is an initial import),
@@ -10,46 +9,45 @@ so that it can extract only items created or updated since this date in the next
 ## Triggering event
 
 Airdrop initiates data extraction by starting the snap-in with a message with event of type
-`EXTRACTION_DATA_START` when transitioning to the data extraction phase.
+`ExtractionDataStart` when transitioning to the data extraction phase.
 
 During the data extraction phase, the snap-in extracts data from an external system,
 prepares batches of data and uploads them in the form of artifacts to DevRev.
 
-The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_DATA_PROGRESS`,
+The snap-in must respond to Airdrop with a message with event of type `ExtractionDataProgress`,
 together with an optional progress estimate and relevant artifacts
 when it extracts some data and the maximum Airdrop snap-in runtime (12 minutes) has been reached.
 
 If the extraction has been rate-limited by the external system and back-off is required, the snap-in
-must respond to Airdrop with a message with event of type `EXTRACTION_DATA_DELAY` and specifying
+must respond to Airdrop with a message with event of type `ExtractionDataDelay` and specifying
 back-off time with `delay` attribute.
 
-In both cases, Airdrop starts the snap-in with a message with event of type `EXTRACTION_DATA_CONTINUE`.
-The restarting is immediate (in case of `EXTRACTION_DATA_PROGRESS`) or delayed
-(in case of `EXTRACTION_DATA_DELAY`).
+In both cases, Airdrop starts the snap-in with a message with event of type `ExtractionDataContinue`.
+The restarting is immediate (in case of `ExtractionDataProgress`) or delayed
+(in case of `ExtractionDataDelay`).
 
 Once the data extraction is done, the snap-in must respond to Airdrop with a message with event of
-type  `EXTRACTION_DATA_DONE`.
+type `ExtractionDataDone`.
 
 If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a
-message with event of type `EXTRACTION_DATA_ERROR`.
+message with event of type `ExtractionDataError`.
+
+Data extraction should be implemented in the [data-extraction.ts](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/workers/data-extraction.ts) file.
 
 ## Response from the snap-in
 
-During the data extraction phase, the snap-in uploads batches of extracted items (the recommended
-batch size is 2000 items) formatted in JSONL (JSON Lines format), gzipped, and submitted as an
-artifact to S3Interact (with tooling from `@devrev/adaas-sdk`).
+During the data extraction phase, the snap-in uploads batches of extracted items (with tooling from `@devrev/adaas-sdk`).
 
 Each artifact is submitted with an `item_type`, defining a separate domain object from the
 external system and matching the `record_type` in the provided metadata.
-Item types defined when uploading extracted data must validate the declarations in the metadata file.
 
 Extracted data must be normalized.
 
 - Null values: All fields without a value should either be omitted or set to null.
-For example, if an external system provides values such as "", -1 for missing values,
-those must be set to null.
+  For example, if an external system provides values such as "", -1 for missing values,
+  those must be set to null.
 - Timestamps: Full-precision timestamps should be formatted as RFC3999 (`1972-03-29T22:04:47+01:00`),
-and dates should be just `2020-12-31`.
+  and dates should be just `2020-12-31`.
 - References: references must be strings, not numbers or objects.
 - Number fields must be valid JSON numbers (not strings).
 - Multiselect fields must be provided as an array (not CSV).
@@ -60,23 +58,48 @@ All other fields are contained within the `data` attribute.
 
 ```json
 {
-    "id": "2102e01F",
-    "created_date": "1972-03-29T22:04:47+01:00",
-    "modified_date": "1970-01-01T01:00:04+01:00",
-    "data": {
-        "actual_close_date": "1970-01-01T02:33:18+01:00",
-        "creator": "b8",
-        "owner": "A3A",
-        "rca": null,
-        "severity": "fatal",
-        "summary": "Lorem ipsum"
-    }
+  "id": "2102e01F",
+  "created_date": "1972-03-29T22:04:47+01:00",
+  "modified_date": "1970-01-01T01:00:04+01:00",
+  "data": {
+    "actual_close_date": "1970-01-01T02:33:18+01:00",
+    "creator": "b8",
+    "owner": "A3A",
+    "rca": null,
+    "severity": "fatal",
+    "summary": "Lorem ipsum"
+  }
 }
 ```
-
 
 Extracted artifacts can be validated with the `chef-cli` using the following command:
 
 ```bash
 $ chef-cli validate-metadata -m external_domain_metadata.json -r issue < extractor_issues_2.json
+```
+
+## State handling
+
+Since each snap-in invocation is a separate runtime instance (with a maximum execution time of 12 minutes), it does not know what has been previously accomplished or how many records have already been extracted. To enable information passing between invocations and runs, support has been added for saving a limited amount of data as the snap-in `state`. Snap-in state persists between phases in one sync run as well as between multiple sync runs.
+
+A snap-in must consult its state to obtain information on when the last successful forward sync started.
+
+- The snap-in's `state` is loaded at the start of each invocation and saved at its end.
+- The snap-in's `state` must be a valid JSON object.
+- Each sync direction (to DevRev and from DevRev) has its own `state` object that is not shared.
+- The snap-in `state` should be smaller than 1 MB, which maps to approximately 500,000 characters.
+
+Effective use of the state and breaking down the problem into smaller chunks are crucial for good performance and user experience. Without knowing what has been processed, the snap-in will extract the same data multiple times, using valuable API capacity and time, and possibly duplicate the data inside DevRev or the external application.
+
+The snap-in starter template contains an [example](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/index.ts) of a very simple state. Adding more data to the state can help with pagination and rate limiting by saving the point at which extraction was left off.
+
+To more easily test the state in development, you can decrease the timeout between snap-in invocations.
+
+```typescript
+await spawn<DummyExtractorState>({
+    ...,
+    option: {
+        timeout: 1 * 60 * 1000; // 1 minute in milliseconds
+    }
+});
 ```

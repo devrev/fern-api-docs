@@ -1,0 +1,40 @@
+For fast and efficient snap-in development, a template is available at [this GitHub repository](https://github.com/devrev/adaas-template). This template is highly recommended for developers as it streamlines the development process.
+
+The template makes use of DevRev's SDK library to manage communication with Airdrop, simplifying the interaction with DevRev's API. It also ensures that the correct communication protocol with Airdrop is followed.
+
+Communication between Airdrop and the snap-in involves messages known as events. Depending on the type of event, the snap-in performs different actions.
+
+### Snap-in code structure
+
+If you check the template, you can see that a snap-in is a Node.js project with a specific file structure:
+
+```
+- manifest.yaml
+- code/
+  - scripts/
+  - src/
+    - fixtures/
+    - functions/
+      - external-system/
+      - extraction/
+        - workers/
+          - attachments-extraction.ts
+          - data-extraction.ts
+          - external-sync-units-extraction.ts
+          - metadata-extraction.ts
+        - index.ts
+      - install_initial_domain_mapping/
+      - loading/
+        - workers/
+          - load-attachments.ts
+          - load-data.ts
+        - index.ts
+    - test-runner/
+  - test/
+```
+
+The `manifest.yaml` file plays a critical role in a snap-in, holding key configuration details such as the snap-in's name, description, version, connection information, and functionality specifics. This file is the initial step in the development of a snap-in.
+
+The `code/` folder holds the implementation of the snap-in. Inside, the `functions/` subfolder includes the logic for retrieving external sync units, extracting data from and loading data to external systems, and mapping between them.
+
+The `scripts/` folder contains the scripts necessary for the building and deployment of the snap-in, streamlining the development and deployment processes with the help of tools like `deploy.sh` and `build.sh`.

@@ -3,6 +3,8 @@ During the metadata extraction phase, the snap-in must provide an
 This file provides a structured way of describing the external system's domain system,
 including its domain entities, types, relationships, and other metadata.
 
+Before you start implementation, examine the domain model of the external system to identify available and required fields for its objects. Then, review DevRev's domain model using the specification provided [here](https://github.com/devrev/airdrop-recipe-manager/blob/main/v2/devrev_metadata/devrev_metadata_docs.md). With this information, decide how objects should correspond to each other and plan field mappings accordingly. It's important to consider how to manage required fields in one system that may be optional in the other.
+
 ## Triggering event
 
 Airdrop initiates the metadata extraction by starting the snap-in with a message with an event

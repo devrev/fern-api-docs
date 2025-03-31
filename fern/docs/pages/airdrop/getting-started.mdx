@@ -1,8 +1,6 @@
-## Before you begin
+## DevRev organization
 
-### Create a new organization
-
-If this is your first time setting up an organization within DevRev, you need to create a dedicated DevRev organization for developing your new Airdrop snap-in:
+If this is your first time setting up an organization within DevRev, you need to create a DevRev organization for developing your new Airdrop snap-in:
 
 1. Click on your profile picture in the top left corner.
 2. Go to the **Orgs** section and click on **+**.
@@ -10,90 +8,45 @@ If this is your first time setting up an organization within DevRev, you need to
 
 You now find your newly created organization under **Orgs**.
 
-## Local development
+## External system
 
-For ease of development, you can run your snap-in locally and receive logs directly in your console.
+Before starting the development of a snap-in for integration with an external system API, consider gathering the following information:
 
-### Prerequisites
+- API Documentation: Obtain the official API documentation of the external system. This will be the primary source of information about how to connect and interact with the system.
+- Authentication and Authorization: Understand the authentication and authorization methods required. This may include API keys, OAuth tokens, or other security mechanisms.
+- Endpoints and Resources: Identify the required API endpoints and resources. Understand their functions, input parameters, expected outputs, and usage limitations.
+- Data Format: Determine the data format used by the API, such as JSON or XML. This helps in parsing responses and formatting requests appropriately.
+- Rate Limits and Quotas: Be aware of any rate limits or usage quotas. This information is crucial to ensure that the integration does not exceed allowed requests or data usage.
+- Error Handling: Learn about error response formats and codes. Knowing this will help in effectively handling errors and exceptions in your integration.
 
-- [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
-- [jq](https://stedolan.github.io/jq)
-- [golang](https://go.dev/doc/install)
-- [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
-- [ngrok](https://ngrok.com)
+## Terminology
 
-### Starter template
+### Sync run
 
-DevRev provides a template with example code to implement an Airdrop as a Service (ADaaS) snap-in.
+Airdrop extractions are done in _sync runs_.
+A sync run is one execution of an airdrop or sync.
 
-1. Create a new repository:
-   - Create a new repository from this template by clicking the "Use this template" button in the upper right corner and then "Create a new repository".
-   - The repository name must start with `airdrop-` (for example, `airdrop-<external system>-snap-in`).
-2. Open the project in your IDE and authenticate to your DevRev organization using the DevRev CLI:
-   ```bash
-   devrev profiles authenticate --org <your DevRev organization slug>
-   ```
-3. Install the snap-in dependencies from the `code` directory:
-   ```bash
-   npm ci
-   ```
-4. Start the snap-in development server from the `code` directory:
-   ```bash
-   npm run test:server -- local
-   ```
-   This will start the snap-in server on `http://localhost:8000`.
-5. Start the ngrok tunnel in a separate terminal window:
-   ```bash
-   ngrok http 8000
-   ```
-   This will create a tunnel to your local server.
-   The ngrok forwarding URL will be displayed in the terminal window.
-6. Copy the ngrok forwarding URL and create a new snap-in version and snap-in package using the DevRev CLI:
-   ```bash
-   devrev snap_in_version create-one  --manifest ./manifest.yaml --create-package --testing-url <ngrok forwarding URL>
-   ```
-7. Create a snap-in draft using the DevRev CLI:
-   ```bash
-   devrev snap_in draft
-   ```
-8. After the snap-in draft is created, install the snap-in:
-   ```bash
-   devrev snap_in activate
-   ```
+### Forward sync
 
-### Snap-in code structure
+A _forward sync_ is a sync run from an external system to DevRev.
+An **extractor** function in the snap-in is responsible for extracting data from the external system.
 
-If you check the template, you can see that a snap-in is a Node.js project with a specific file structure:
+### Reverse sync
 
-```
-- manifest.yaml
-- code/
-  - scripts/
-  - src/
-    - fixtures/
-    - functions/
-      - external-system/
-      - extraction/
-        - workers/
-          - attachments-extraction.ts
-          - data-extraction.ts
-          - external-sync-units-extraction.ts
-          - metadata-extraction.ts
-        - index.ts
-      - install_initial_domain_mapping/
-      - loading/
-        - workers/
-          - load-data.ts
-          - data-extraction.ts
-          - external-sync-units-extraction.ts
-          - metadata-extraction.ts
-        - index.ts
-    - test-runner/
-  - test/
-```
+A _reverse sync_ is a sync run from DevRev to an external system.
+It uses a **loader** function, to create or update data in the external system.
 
-The `manifest.yaml` file plays a critical role in a snap-in, holding key configuration details such as the snap-in's name, description, version, connection information, and functionality specifics. This file is the initial step in the development of a snap-in.
+### Initial sync
 
-The `code/` folder holds the implementation of the snap-in. Inside, the `functions/` subfolder includes the logic for retrieving external sync units, extracting data from and loading data to external systems, and mapping between them.
+It is the first forward sync to run. In initial sync all data needs to be extracted to create a baseline (while in incremental runs only updated objects need to be extracted).
 
-The `scripts/` folder contains the scripts necessary for the building and deployment of the snap-in, streamlining the development and deployment processes with the help of tools like `deploy.sh` and `build.sh`.
+### 1-way (incremental) sync
+
+A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial sync run has been successfully completed.
+In the incremental sync an extractor extracts data that was created or updated in the external system after the start
+of the latest successful forward sync, including any changes that occurred during the forward sync,
+but were not picked up by it.
+
+### Sync unit
+
+A _sync unit_ is one connection instance to an external system (for example SalesForce, Freshdesk, Zendesk).

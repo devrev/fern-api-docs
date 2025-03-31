@@ -44,7 +44,7 @@ external system and matching the `record_type` in the provided metadata.
 Extracted data must be normalized.
 
 - Null values: All fields without a value should either be omitted or set to null.
-  For example, if an external system provides values such as "", -1 for missing values,
+  For example, if an external system provides values such as "", –1 for missing values,
   those must be set to null.
 - Timestamps: Full-precision timestamps should be formatted as RFC3999 (`1972-03-29T22:04:47+01:00`),
   and dates should be just `2020-12-31`.
@@ -89,9 +89,9 @@ A snap-in must consult its state to obtain information on when the last successf
 - Each sync direction (to DevRev and from DevRev) has its own `state` object that is not shared.
 - The snap-in `state` should be smaller than 1 MB, which maps to approximately 500,000 characters.
 
-Effective use of the state and breaking down the problem into smaller chunks are crucial for good performance and user experience. Without knowing what has been processed, the snap-in will extract the same data multiple times, using valuable API capacity and time, and possibly duplicate the data inside DevRev or the external application.
+Effective use of the state and breaking down the problem into smaller chunks are crucial for good performance and user experience. Without knowing what has been processed, the snap-in extracts the same data multiple times, using valuable API capacity and time, and possibly duplicates the data inside DevRev or the external application.
 
-The snap-in starter template contains an [example](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/index.ts) of a very simple state. Adding more data to the state can help with pagination and rate limiting by saving the point at which extraction was left off.
+The snap-in starter template contains an [example](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/index.ts) of a simple state. Adding more data to the state can help with pagination and rate limiting by saving the point at which extraction was left off.
 
 To more easily test the state in development, you can decrease the timeout between snap-in invocations.
 

@@ -1,3 +1,5 @@
+For the attachment extraction phase of the import process, the extractor has to upload each attachment to DevRev and associate it with the data object it is attached to.
+
 For the attachment extraction phase of the import process, the extractor has to upload each
 attachment to DevRev's S3 using the `S3Interact` API.
 
@@ -43,6 +45,7 @@ The uploaded artifact is structured like a normal artifact containing extracted 
 ## Examples
 
 Here is an example of an SSOR attachment file:
+
 ```json lines
 {
   "id": {

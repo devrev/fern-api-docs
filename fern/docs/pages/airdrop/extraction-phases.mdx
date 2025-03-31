@@ -7,79 +7,19 @@ sync run.
 Each sync run is comprised out of phases.
 Phases follow sequentially, and each can consist of one or more invocations of the snap-in.
 
-```mermaid
-sequenceDiagram
-%%{init: {
-    'theme': 'base',
-    'themeVariables': {
-        'fontFamily': 'Segoe UI',
-        'signalColor': '#7d7f7c',
-        'signalTextColor': '#7d7f7c'
-}}}%%
-  actor user as User
-  participant gw as REST API Gateway
-  participant ad as Airdrop components
-  participant ee as External extractor
-
-	note over gw,ad: Extract External Sync Units
-	user ->> gw: Select import connection
-	gw ->> ad: Start External Sync Unit extraction
-	ad ->> ee: Start External Sync Unit extraction
-	ee -->> gw: List of External Sync Units
-	gw ->> ad: List of External Sync Units
-	ad ->> gw: List of External Sync Units
-	gw -->> user: Show available External Sync Units
-
-
-	note over gw,ad: Extract Metadata
-	ad ->> ee: Start Metadata extraction
-	ee -->> gw: List of extracted metadata artifacts
-	gw ->> ad: List of extracted metadata artifacts
-
-	note over gw,ad: Extract data
-	ad ->> ee: Start data extraction
-	ee -->> gw: List of extracted data artifacts
-	gw ->> ad: List of extracted data artifacts
-
-	note over ad: Transform and import data into DevRev
-
-	note over gw,ad: Extract attachments
-	ad ->> ee: Start attachment extraction
-	ee -->> gw: List of extracted attachments
-	gw ->> ad: List of extracted attachments
-
-	ad -->> gw: Finished import
-	gw -->> user: Show finished import and report
-
-	note over gw,ad: Delete data
-	user ->> gw: Delete import
-	gw ->> ad: Delete import
-	ad ->> ee: Delete data
-	ee -->> gw: Finished deleting data
-	gw ->> ad: Finished deleting data
-
-	note over gw,ad: Delete attachments
-	ad ->> ee: Delete attachments
-	ee -->> gw: Finished deleting attachments
-	gw ->> ad: Finished deleting attachments
-	note over ad: Deletes internal data
-	ad -->> gw: Finished deleting import
-	gw -->> user: Import deleted
-```
-
 ## Sync modes
 
 ### Initial import
 
 An _initial import_ is the first import of data from the external system to DevRev.
-It is triggered manually by the end user in DevRev's **Imports** UI.
+It is triggered manually by the end user in DevRev's **Airdrops** UI.
 
 An _initial import_ consists of the following phases:
+
 1. External sync units extraction
 2. Metadata extraction
 3. Data extraction
 4. Attachments extraction
-
 
 ### 1-way sync
 
@@ -93,15 +33,16 @@ Airdrop snap-ins must maintain their own states that persists between phases in 
 as well as between sync runs.
 
 A 1-way sync consists of the following phases:
+
 1. Metadata extraction
 2. Data extraction
 3. Attachments extraction
 
 A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
 
-
 ### Deletion mode
 
 A _deletion_ consists of the following phases:
+
 1. Data deletion
 2. Attachments deletion

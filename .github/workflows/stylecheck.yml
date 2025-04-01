@@ -37,6 +37,7 @@ jobs:
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
+          echo "DATE=$(date --iso-8601=seconds)" >> $GITHUB_ENV
           mkdir -p temp
           for file in $(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -E '\.mdx?$'); do
             python stylecheck.py "$file"
@@ -44,5 +45,5 @@ jobs:
       - name: Archive temp files
         uses: actions/upload-artifact@v4
         with:
-          name: stylecheck-$(date --iso-8601=seconds)
+          name: stylecheck-${{ env.DATE }}
           path: temp/**

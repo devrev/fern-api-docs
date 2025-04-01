@@ -151,9 +151,11 @@ def post_review_comment(comment):
         response = requests.post(url, headers=headers, json=comment)
         response.raise_for_status()
         print(message)
+        return 0
     except Exception as e:
         print(
             f"Failed to post comment. Error: {type(e)} {e}")
+        return 1
  
 def my_writer(data, file, note=None):
     if (data):
@@ -195,11 +197,27 @@ def main(args):
 
     suggestions = parse_diff_hunks(diff)
     my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
+    failures = 0
     if (args.suggest):
-        post_review_comment({'body': comment_text})
         for suggestion in suggestions:
             time.sleep(1)
-            post_review_comment(suggestion)
+            failures += post_review_comment(suggestion)
+        if failures > 0:
+            comment_text += f"""
+
+I made suggestions where possible but couldn't add them everywhere. My complete revision is below.
+
+<details><summary>Full text</summary>
+
+```
+{revision}
+```
+
+</details>
+
+"""
+        post_review_comment({'body': comment_text})
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check writing style of markdown file")

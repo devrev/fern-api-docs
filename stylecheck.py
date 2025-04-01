@@ -128,20 +128,22 @@ def parse_diff_hunks(diff_text):
                 
     return comments
 
-def post_review_comment(owner, repo, pr_number, comment):
-    comment['commit_id'] = os.environ.get('COMMIT')
+def post_review_comment(comment):
+    owner = os.environ.get('REPO_OWNER')
+    repo = os.environ.get('REPO_NAME')
+    pr = os.environ.get('PR_NUMBER')
 
     if comment.get('line'):
         # Suggestion
-        url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/comments'
+        url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr}/comments'
         message = f"Posted comment on line {comment['line']}."
     else:
         # Timeline comment
-        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{pr_number}/comments'
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{pr}/comments'
         message = f"Posted comment on timeline."
 
     headers = {
-        'Authorization': f"token {os.environ.get('STYLECHECK')}",
+        'Authorization': f"token {os.environ.get('GITHUB_TOKEN')}",
         'Accept': 'application/vnd.github.v3+json'
     }
     try:
@@ -193,10 +195,10 @@ def main(args):
     suggestions = parse_diff_hunks(diff)
     my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
     if (args.suggest):
-        post_review_comment(os.environ.get('OWNER'), os.environ.get('REPO'), os.environ.get('PR'), {'body': comment_text})
+        post_review_comment({'body': comment_text})
         for suggestion in suggestions:
             time.sleep(1)
-            post_review_comment(os.environ.get('OWNER'), os.environ.get('REPO'), os.environ.get('PR'), suggestion)
+            post_review_comment(suggestion)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check writing style of markdown file")

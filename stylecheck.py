@@ -116,7 +116,8 @@ def parse_diff_hunks(diff_text):
                     'path': path,
                     'line': old_start + old_lines - 1,
                     'side': 'RIGHT',
-                    'body': f'```suggestion\n{added_lines}\n```'
+                    'body': f'```suggestion\n{added_lines}\n```',
+                    'commit_id': os.environ.get('COMMIT_SHA')
                 }
                 if old_start < comment['line']:
                     comment['start_line'] = old_start

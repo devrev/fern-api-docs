@@ -20,3 +20,6 @@ navigation:
         path: ../docs/pages/custom-objects.mdx
       - page: Account creation
         path: ../docs/pages/create-accounts.mdx
+      - page: Agents async API
+        slug: agents-async-api
+        path: ../docs/pages/interact-agent.mdx

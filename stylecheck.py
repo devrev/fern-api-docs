@@ -85,47 +85,55 @@ def parse_diff_hunks(diff_text):
     hunks = diff_text.split('@@ ')
     comments = []
     
-    for hunk in hunks[1:]:  # Skip first empty element
-        # Parse hunk header
+    for hunk in hunks[1:]:
         header_match = re.match(r'^-(\d+),(\d+) \+(\d+),(\d+) @@', hunk)
         if not header_match:
             continue
             
         old_start, old_lines, new_start, new_lines = map(int, header_match.groups())
-        
-        # Split hunk content into lines
         lines = hunk.split('\n')[1:]  # Skip header line
+        
         old_line = old_start
         new_line = new_start
         
-        # Find consecutive removal/addition pairs
         i = 0
         while i < len(lines):
-            if i + 1 < len(lines) and lines[i].startswith('-') and lines[i+1].startswith('+'):
-                old_text = lines[i][1:]  # Remove the '-' prefix
-                new_text = lines[i+1][1:]  # Remove the '+' prefix
-                
-                # Create suggestion comment
+            # Collect consecutive removed lines
+            removed_lines = []
+            while i < len(lines) and lines[i].startswith('-'):
+                removed_lines.append(lines[i][1:])  # Store without the '-'
+                i += 1
+            
+            # Collect consecutive added lines
+            added_lines = []
+            start_line = new_line  # Remember where the addition starts
+            while i < len(lines) and lines[i].startswith('+'):
+                added_lines.append(lines[i][1:])  # Store without the '+'
+                i += 1
+            
+            # If we have both removed and added lines, create a suggestion
+            if removed_lines and added_lines:
+                added_lines = "\n".join(added_lines)
                 comment = {
                     'path': path,
-                    'line': new_line,
+                    'start_line': start_line,
+                    'line': start_line + len(added_lines) - 1,  # End line of the addition
                     'side': 'RIGHT',
-                    'body': f'```suggestion\n{new_text}\n```'
+                    'body': f'```suggestion\n{added_lines}\n```'
                 }
                 comments.append(comment)
                 
+            # Adjust line numbers
+            old_line += len(removed_lines)
+            new_line += len(added_lines)
+            
+            # Skip context lines
+            while i < len(lines) and not (lines[i].startswith('-') or lines[i].startswith('+')):
                 old_line += 1
                 new_line += 1
-                i += 2
-            else:
-                if not lines[i].startswith('+'):
-                    old_line += 1
-                if not lines[i].startswith('-'):
-                    new_line += 1
                 i += 1
                 
     return comments
-
 
 def post_review_comment(owner, repo, pr_number, comment):
     comment['commit_id'] = os.environ.get('COMMIT')

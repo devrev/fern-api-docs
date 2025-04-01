@@ -1,4 +1,3 @@
-
 Airdrop uses transformation methods to map data from one data model to another. 
 These methods operate at the individual field level, meaning they transform data field-by-field rather than transforming entire records at once. 
 Each transformation method has specific requirements regarding the field types and data formats it can work with. 
@@ -17,10 +16,10 @@ make it unavailable for mapping outside of using the custom jq transformation me
 Refer to the [metadata tips](../faq.mdx#metadata-extraction) for more information.
 4. Links are supported only on works and conversations.
 
-## Transformation Methods
+## Transformation methods
 The following tables outline the available transformation methods categorized by their applicable field types:
 
-### Custom Fields Transformation Methods
+### Custom fields transformation methods
 
 | Method | Description | Requirements |
 |--------|-------------|-------------|
@@ -29,7 +28,7 @@ The following tables outline the available transformation methods categorized by
 | `make_uenum` | Produces an enum field | External field must be of type enum |
 | `reference_custom_field` | Produces a reference field | External field must be of type reference |
 
-### Metadata Extraction Transformation Methods
+### Metadata extraction transformation methods
 
 | Method | Description | Requirements |
 |--------|-------------|-------------|
@@ -41,19 +40,19 @@ The following tables outline the available transformation methods categorized by
 | `use_directly` | Identity operator that returns exactly the input | External field must be of the same type as the DevRev field; if external field is an array, internal field must also be an array |
 | `use_fixed_value` | Produces a fixed value in DevRev | Only available for boolean or enum DevRev fields |
 
-### Custom and Stock Fields Transformation Methods
+### Custom and stock fields transformation methods
 
 | Method | Description | Requirements |
 |--------|-------------|-------------|
 | `use_rich_text` | Produces a rich text field | External field must be of type `rich_text` |
 
-### Constructed Custom Fields Transformation Methods
+### Constructed custom fields transformation methods
 
 | Method | Description | Requirements |
 |--------|-------------|-------------|
 | `construct_text_field` | Produces a text field | External field must be of type text |
 
-### Universal Transformation Method
+### Universal transformation method
 
 | Method | Description | Requirements |
 |--------|-------------|-------------|

@@ -193,7 +193,7 @@ navigation:
               - page: "Mapping reasons"
                 slug: mapping-reasons
                 hidden: true
-                path: ../docs/pages/airdrop/data-model/mapping_reasons.mdx
+                path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx
       - section: References
         slug: references
         contents:

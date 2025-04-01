@@ -67,14 +67,22 @@ The following Markdown example shows an inline attachment:
 
 Let's say the content of your external system looks like this:
 ```html
-<p>This is an article with one image.</p>
-<p><img src="https://devrev.zendesk.com/hc/article_attachments/29908544740244" alt="download.jpeg"></p>
+<p>
+  This is an article with one image.  
+</p>
+<p>
+  <img src="https://devrev.zendesk.com/hc/article_attachments/29908544740244" alt="download.jpeg">
+</p>
 ```
 
 The content in DevRev should look like this:
 ```html
-<p>This is an article with one image.</p>
-<p><img src="don:core:dvrv-us-1:devo/0:artifact/1" alt="download.jpeg"></p>
+<p>
+  This is an article with one image.
+</p>
+<p>
+  <img src="don:core:dvrv-us-1:devo/0:artifact/1" alt="download.jpeg">
+</p>
 ```
 
 `don:core:dvrv-us-1:devo/0:artifact/1` is the ID of the artifact created in DevRev corresponding to the attachment with ID `29908544740244` in the external source system.
@@ -104,20 +112,30 @@ However, since Markdown can contain HTML, you can use the same approach for Mark
 
 The following HTML example shows a link to another article:
 ```html
-<a data-article-id="don:core:dvrv-us-1:devo/0:article/10" href="/ART-10" target="_self">Contact our Support Team</a>
+<a data-article-id="don:core:dvrv-us-1:devo/0:article/10" href="/ART-10" target="_self">
+  Contact our Support Team
+</a>
 ```
 
 Let's say the content of your external system looks like this:
 ```html
 <p>
-You can create an account and log-in <a href="https://devrev.zendesk.com/hc/en-us/articles/360059607772" target="_self">only</a> with the company email.
+  You can create an account and log-in
+  <a href="https://devrev.zendesk.com/hc/en-us/articles/360059607772" target="_self">
+    only
+  </a>
+  with the company email.
 </p>
 ```
 
 The content in DevRev should look like this:
 ```html
 <p>
-You can create an account and log-in <a data-article-id="don:core:dvrv-us-1:devo/0:article/10" href="/ART-10" target="_self">only</a> with the company email.
+  You can create an account and log-in
+  <a data-article-id="don:core:dvrv-us-1:devo/0:article/10" href="/ART-10" target="_self">
+    only
+  </a>
+  with the company email.
 </p>
 ```
 

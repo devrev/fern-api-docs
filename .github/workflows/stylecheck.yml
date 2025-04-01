@@ -38,7 +38,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "DATE=$(date --iso-8601=seconds)" >> $GITHUB_ENV
+          echo "DATE=$(date +'%Y-%m-%d-%H%M%S')" >> $GITHUB_ENV
           mkdir -p temp
           for file in $(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -E '\.mdx?$'); do
             python stylecheck.py "$file"

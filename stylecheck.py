@@ -6,6 +6,7 @@ import difflib
 import re
 import requests
 import json
+import time
 
 
 def create_line_diff(old_file, new_file):
@@ -130,7 +131,15 @@ def parse_diff_hunks(diff_text):
 def post_review_comment(owner, repo, pr_number, comment):
     comment['commit_id'] = os.environ.get('COMMIT')
 
-    url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/comments'
+    if comment.get('line'):
+        # Suggestion
+        url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/comments'
+        message = f"Posted comment on line {comment['line']}."
+    else:
+        # Timeline comment
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{pr_number}/comments'
+        message = f"Posted comment on timeline."
+
     headers = {
         'Authorization': f"token {os.environ.get('STYLECHECK')}",
         'Accept': 'application/vnd.github.v3+json'
@@ -138,7 +147,7 @@ def post_review_comment(owner, repo, pr_number, comment):
     try:
         response = requests.post(url, headers=headers, json=comment)
         response.raise_for_status()
-        print(f"Posted comment on line {comment['line']}.")
+        print(message)
     except Exception as e:
         print(
             f"Failed to post comment. Error: {type(e)} {e}")
@@ -172,7 +181,8 @@ def main(args):
         except:
             print(f"LLM response in {response_file} not found. Exiting.")
             return
-    comment = llm_client.get_lines_before_tag(response, 'document')
+    comment_text = llm_client.get_lines_before_tag(response, 'document')
+    comment_text = "✨ Comment from AI reviewer ✨\n\n" + comment_text
     revision = llm_client.get_lines_between_tags(response, 'document')
     revision = restore_title(args.doc, revision)
     revision_file = f"temp/{doc_name}_revision{ext}"
@@ -183,7 +193,9 @@ def main(args):
     suggestions = parse_diff_hunks(diff)
     my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
     if (args.suggest):
+        post_review_comment(os.environ.get('OWNER'), os.environ.get('REPO'), os.environ.get('PR'), {'body': comment_text})
         for suggestion in suggestions:
+            time.sleep(1)
             post_review_comment(os.environ.get('OWNER'), os.environ.get('REPO'), os.environ.get('PR'), suggestion)
 
 if __name__ == "__main__":

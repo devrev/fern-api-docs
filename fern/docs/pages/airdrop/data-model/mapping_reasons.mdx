@@ -12,32 +12,49 @@ Refer to the [supported types](../metadata-extraction.mdx#declare-fields-for-eac
 section and the general DevRev documentation for more information.
 2. Only references can be mapped to references. Ensure that source system fields are correctly 
 mapped to reference fields in DevRev.
-3. Currently, support for the `struct` type is limited. Marking a field as a struct in the metadata schema will 
+3. Support for the `struct` type is limited. Marking a field as a struct in the metadata schema will 
 make it unavailable for mapping outside of using the custom jq transformation method. 
 Refer to the [metadata tips](../faq.mdx#metadata-extraction) for more information.
 4. Links are supported only on works and conversations.
 
-The following transformation methods are provided for **custom fields**:
-1. `make_constrained_simple_value` a simple method that along with mapping allows you to propagate validation constraints from the external system and enforces those in DevRev.
-2. `make_enum` produces an enum field, where external field should be of type enum.
-3. `make_uenum` produces an enum field, where external field should be of type enum.
-4. `reference_custom_field` produces a reference field, where external field should be of type reference.
+## Transformation Methods
+The following tables outline the available transformation methods categorized by their applicable field types:
 
-The following transformation methods are provided for Metadata extraction:
-1. `make_custom_stages` makes custom stages in accordance with the stage diagram data provided in the domain metadata.
-2. `map_enum` produces an enum field, where the external field should be of type enum.
-3. `map_roles` maps permission roles from external to DevRev format.
-4. `use_as_array_value` produces an array field from a scalar (single-value) external field.
-5. `use_devrev_record` enables use of a fixed reference to something in DevRev, where Don should be of right type.
-6. `use_directly` is the identity operator, it returns exactly the input, where external field should be of the same 
-type as the DevRev field. If external field is an array (is marked as collection) internal field has to be an array as well.
-7. `use_fixed_value` produces a fixed value in DevRev, which is useful to map required DevRev fields if source system doesn't have an equivalent field. Only available for boolean or enum DevRev fields
+### Custom Fields Transformation Methods
 
-The following transformation methods are provided for both **custom and stock fields**:
-1. `use_rich_text` produces a rich text field, where external field should be of type `rich_text`.
+| Method | Description | Requirements |
+|--------|-------------|-------------|
+| `make_constrained_simple_value` | Propagates validation constraints from the external system and enforces those in DevRev | - |
+| `make_enum` | Produces an enum field | External field must be of type enum |
+| `make_uenum` | Produces an enum field | External field must be of type enum |
+| `reference_custom_field` | Produces a reference field | External field must be of type reference |
 
-The following transformation methods are available for **constructed custom fields**:
-1. `construct_text_field` produces a text field, where external field should be of type text.
+### Metadata Extraction Transformation Methods
 
-`use_raw_jq` can be used on all fields. It enables the use of `jq` to transform data and should be used sparingly
-if no other transformation method is available.
+| Method | Description | Requirements |
+|--------|-------------|-------------|
+| `make_custom_stages` | Makes custom stages | Requires stage diagram data in the domain metadata |
+| `map_enum` | Produces an enum field | External field must be of type enum |
+| `map_roles` | Maps permission roles from external to DevRev format | - |
+| `use_as_array_value` | Produces an array field | External field must be a scalar (single-value) |
+| `use_devrev_record` | Enables use of a fixed reference to something in DevRev | DON should be of the right type |
+| `use_directly` | Identity operator that returns exactly the input | External field must be of the same type as the DevRev field; if external field is an array, internal field must also be an array |
+| `use_fixed_value` | Produces a fixed value in DevRev | Only available for boolean or enum DevRev fields |
+
+### Custom and Stock Fields Transformation Methods
+
+| Method | Description | Requirements |
+|--------|-------------|-------------|
+| `use_rich_text` | Produces a rich text field | External field must be of type `rich_text` |
+
+### Constructed Custom Fields Transformation Methods
+
+| Method | Description | Requirements |
+|--------|-------------|-------------|
+| `construct_text_field` | Produces a text field | External field must be of type text |
+
+### Universal Transformation Method
+
+| Method | Description | Requirements |
+|--------|-------------|-------------|
+| `use_raw_jq` | Enables the use of `jq` to transform data | Can be used on all fields, but should be used sparingly, only if no other transformation method is available |

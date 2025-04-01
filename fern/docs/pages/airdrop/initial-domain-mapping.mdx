@@ -11,7 +11,7 @@ allowing them to import data while maintaining semantic meaning from their sourc
 - Snap-in is set up, deployed, and activated.
 - An import has been created and is in the mapping stage.
 
-It's also recommended that you have the DevRev CLI authenticated appropriately. 
+It's also required that you have the DevRev CLI authenticated appropriately. 
 This can be done either with `devrev profiles authenticate -e prod -o <your_org_slug> -u <your_email>` 
 or by running `make auth` in your snap-in repository.
 
@@ -19,7 +19,7 @@ or by running `make auth` in your snap-in repository.
 
 ### Add your token as an environment variable
    
-Obtain a PAT-token from the **Settings** > **Account** tab of the DevOrg where you deploy your snap-in, 
+Obtain a PAT-token from the **Settings** > **Account** tab of the dev org where you deploy your snap-in, 
 and export it as `DEVREV_TOKEN`. 
 
 You can also run the following command if you are authenticated with the CLI:
@@ -64,12 +64,12 @@ If you are also creating a bidirectional sync (DevRev to external system), to en
 chef-cli configure-mappings --env prod --reverse
 ```
 
-If your org is not in *US-East-1*, you have to override an environment variable to make sure the tool reaches the right server, e.g.:
+If your org is not in `US-East-1`, you have to override an environment variable to make sure the tool reaches the right server. For example:
 ```bash
 ACTIVE_PARTITION=dvrv-in-1 chef-cli configure-mappings --env prod
 ```
 
-where the options are: `dvrv-us-1`, `dvrv-eu-1`, `dvrv-in-1`, and `dvrv-de-1`.
+The options are: `dvrv-us-1`, `dvrv-eu-1`, `dvrv-in-1`, and `dvrv-de-1`.
 
 The first function of the local UI is to assemble a *blueprint* for a concrete import running in the test-org, allowing the mapping to be tested out and evaluated.
 After it is used for the import, the mappings become immutable, but the chef-cli UI offers a button to make a draft clone, which can be edited again for refinements.

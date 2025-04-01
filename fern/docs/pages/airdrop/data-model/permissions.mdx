@@ -9,22 +9,14 @@ Articles can be shared with users or groups.
 The `shared_with` field allows to specify the permission level for each user or group using the `permission` type. 
 The `permission` type is a special structure associating a reference to an user-like record type (the field `member_id`)
 with an `enum` value that provides the user with the role or permission level.
-
-## Platform Groups
+## Platform groups
 
 Platform groups are groups automatically created by the DevRev platform for every organization. 
 For example, DevRev provides *Dev users* and *Rev users* groups that contain all the Dev and Rev users respectively.
 
 We allow developers to map their external default groups to platform groups. 
-This functionality allows for flexible integration with the platform's permission system while allowing for re-mapping by the end user. 
+This functionality allows for flexible integration with the platform's permission system while allowing for re-mapping by the end user.
 
-### Implementation Guide
-
-1. Developers need to create a mapping between their external default groups and the platform's 
-internal default groups using a new mapping object. 
-   - To do this define a new object in external metadata. 
-   - The object should have one enum field with the possible values being the default groups available in external system.  
-2. Developers can use the initial domain mapping to map their object to the *platform groups* object in DevRev.
-3. The platform groups object can be referenced in other objects, for example in the `shared_with` field of articles.
+To implement this mapping, developers need to define a new object in external metadata with one enum field containing the possible values of default groups available in the external system. During the initial domain mapping, developers can map this object to the *platform groups* object in DevRev. The platform groups object can then be referenced in other objects, such as in the `shared_with` field of articles.
 
 {/* ### Authorization policy */}

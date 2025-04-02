@@ -2,7 +2,7 @@ name: PR Review Suggestions
 
 on:
   pull_request:
-    types: [opened, synchronize, labeled]
+    types: [opened, synchronize, labeled, unlabeled]
     paths:
       - '**.md'
       - '**.mdx'

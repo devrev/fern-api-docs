@@ -9,7 +9,7 @@ on:
 
 jobs:
   suggest:
-    if: contains(github.event.pull_request.labels.*.name, 'stylecheck')
+    if: contains(github.event.pull_request.labels.*.name, 'stylecheck') && contains(github.event.pull_request.labels.*.name, 'stylecheck-complete') == false
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -43,6 +43,12 @@ jobs:
           for file in $(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -E '\.mdx?$'); do
             python stylecheck.py "$file"
           done
+      - name: Add success label
+        if: success() && steps.stylecheck.conclusion == 'success'
+        run: |
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "stylecheck-complete"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Archive temp files
         uses: actions/upload-artifact@v4
         with:

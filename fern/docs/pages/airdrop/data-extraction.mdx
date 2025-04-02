@@ -101,7 +101,7 @@ Effective use of the state and breaking down the problem into smaller chunks are
 
 The snap-in starter template contains an [example](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/index.ts) of a simple state. Adding more data to the state can help with pagination and rate limiting by saving the point at which extraction was left off.
 
-To more easily test the state in development, you can decrease the timeout between snap-in invocations.
+To test the state in development, you can decrease the timeout between snap-in invocations.
 
 ```typescript
 await spawn<DummyExtractorState>({

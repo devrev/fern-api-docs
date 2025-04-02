@@ -190,15 +190,19 @@ def main(args):
     comment_text = "✨ Comment from AI reviewer ✨\n\n" + comment_text
     revision = llm_client.get_lines_between_tags(response, 'document')
     revision = restore_title(args.doc, revision)
-    revision_file = f"temp/{doc_name}_revision{ext}"
+    
+    if args.suggest:
+        revision_file = f"temp/{doc_name}_revision{ext}"   
+    else:     
+        revision_file = args.doc
     my_writer(revision, revision_file, 'revision')
-    diff = create_line_diff(args.doc, revision_file)
-    my_writer(diff, f"temp/{doc_name}.diff", 'diff')
 
-    suggestions = parse_diff_hunks(diff)
-    my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
-    failures = 0
     if (args.suggest):
+        diff = create_line_diff(args.doc, revision_file)
+        my_writer(diff, f"temp/{doc_name}.diff", 'diff')
+        suggestions = parse_diff_hunks(diff)
+        my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
+        failures = 0
         for suggestion in suggestions:
             time.sleep(1)
             failures += post_review_comment(suggestion)

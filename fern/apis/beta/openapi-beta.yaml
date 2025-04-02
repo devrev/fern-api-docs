@@ -6411,21 +6411,22 @@ components:
     custom-schema-spec:
       type: object
       description: |
-        Requested custom schemas described abstractly. Every provided schema's
-        custom field must be specified, otherwise a bad request error is
-        returned. If a new custom schema specifier is provided, then it will be
-        added to the work, otherwise if a custom schema is omitted from the
-        specifier, it remains unmodified.
+        Custom schemas described using identifiers. Each custom field in the
+        request must have the corresponding schema specified; omission results
+        in a Bad Request error. If a custom schema is not included in the
+        specifier, it remains unchanged. For surfaces with human interactors,
+        it is recommended to provide tenant_fragment: true and
+        validate_required_fields: true.
       properties:
         apps:
           type: array
-          description: List of apps that are requested.
+          description: List of apps.
           items:
             type: string
             format: text
         subtype:
           type: string
-          description: Name of the subtype requested.
+          description: Name of the subtype.
           format: text
         tenant_fragment:
           type: boolean
@@ -7712,6 +7713,28 @@ components:
         - dev_users
       title: dev-users-list-response
       x-go-name: DevUsersListResponseBody
+    dev-users-merge-request:
+      type: object
+      description: Request object for merging Dev users.
+      properties:
+        primary_user:
+          type: string
+          description: The unique ID of the primary user.
+          format: id
+        secondary_user:
+          type: string
+          description: The unique ID of the secondary user.
+          format: id
+      required:
+        - primary_user
+        - secondary_user
+      title: dev-users-merge-request
+    dev-users-merge-response:
+      type: object
+      additionalProperties: false
+      description: Response object for request to merge Dev users.
+      title: dev-users-merge-response
+      x-go-name: DevUsersMergeResponseBody
     dev-users-self-request:
       type: object
       additionalProperties: false
@@ -10895,6 +10918,8 @@ components:
       properties:
         member:
           $ref: '#/components/schemas/member-summary'
+        member_rev_org:
+          $ref: '#/components/schemas/rev-org-summary'
       required:
         - member
       title: group-members-list-response-member
@@ -14288,6 +14313,12 @@ components:
           items:
             type: string
             format: id
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when creating a part.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-create'
         tags:
           type: array
           description: Tags associated with the part.
@@ -14428,6 +14459,9 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
+        custom_fields:
+          type: object
+          description: Filters for custom fields.
         limit:
           type: integer
           description: |
@@ -14533,6 +14567,13 @@ components:
           format: text
         owned_by:
           $ref: '#/components/schemas/parts-update-request-owned-by'
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when updating the stage or
+            the stage diagram of an object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-update'
         tags:
           $ref: '#/components/schemas/parts-update-request-tags'
       required:
@@ -14719,6 +14760,13 @@ components:
               type: string
               description: The Question.
               format: text
+            sources:
+              type: array
+              description: |
+                Details of the sources from which the question answer was
+                generated.
+              items:
+                $ref: '#/components/schemas/atom-summary'
             status:
               $ref: '#/components/schemas/question-answer-status'
             suggested_answer:
@@ -17678,7 +17726,9 @@ components:
           format: date-time
         snippet:
           type: string
-          description: Text snippet where the search hit occurred.
+          description: |
+            Concatenated text snippets from all search hits for this object.
+            This may contain duplicate content.
           format: text
       title: search-summary-base
     send-notification:
@@ -29008,9 +29058,8 @@ paths:
         Creates a new enterprise authentication connection for a Dev
         organization. This authentication connection will not be enabled by
         default for the organization and the user will need to explicitly
-        enable this. Keep in mind that at a time, only one authentication
-        connection can be enabled for a Dev organization. At present, only 5
-        enterprise connections can be created by an organization.
+        enable this. Only 5 authentication connections can be created by an
+        organization.
       operationId: dev-org-auth-connections-create
       requestBody:
         content:
@@ -29246,10 +29295,8 @@ paths:
     post:
       description: |
         Enable or disable an authentication connection for a Dev organization.
-        Currently, only 1 authentication connection can be enabled at a time.
-        When a new authentication connection is enabled, the connection which
-        is currently enabled for the Dev organization is automatically
-        disabled.
+        Atleast one authentication connection must be enabled for a Dev
+        organization.
       operationId: dev-org-auth-connections-toggle
       requestBody:
         content:
@@ -29785,6 +29832,48 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       summary: List Dev Users (POST)
+      tags:
+        - dev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /dev-users.merge:
+    post:
+      description: |
+        Merges the identity of a secondary Dev user with the primary Dev user.
+        The account of the secondary Dev user will be deactivated and will no
+        longer be able to log into DevRev. All objects - issues, tickets, parts
+        etc. owned by the secondary Dev user will be transferred to the primary
+        Dev user.
+      operationId: dev-users-merge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-merge-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-merge-response'
+          description: Response object for request to merge Dev users.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Merge Dev Users
       tags:
         - dev-users
       x-fern-audiences:
@@ -34483,6 +34572,12 @@ paths:
           schema:
             type: string
             format: text
+        - description: Filters for custom fields.
+          explode: false
+          in: query
+          name: custom_fields
+          schema:
+            type: object
         - description: |
             The maximum number of parts to return. The default is '50'.
           explode: false
@@ -37841,7 +37936,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla Tracker
+      summary: Get SLA Tracker
       tags:
         - slas
       x-fern-audiences:
@@ -37877,7 +37972,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla Tracker (POST)
+      summary: Get SLA Tracker (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -37998,7 +38093,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Sla Trackers
+      summary: List SLA Trackers
       tags:
         - slas
       x-fern-audiences:
@@ -38032,7 +38127,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Sla Trackers (POST)
+      summary: List SLA Trackers (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -38069,7 +38164,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Remove-Metric Sla Trackers
+      summary: Remove SLA Tracker Metric
       tags:
         - slas
       x-fern-audiences:
@@ -38106,7 +38201,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Assign Slas
+      summary: Assign SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -38141,7 +38236,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Create Sla
+      summary: Create SLA
       tags:
         - slas
       x-fern-audiences:
@@ -38181,7 +38276,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla
+      summary: Get SLA
       tags:
         - slas
       x-fern-audiences:
@@ -38217,7 +38312,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla (POST)
+      summary: Get SLA (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -38312,7 +38407,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Slas
+      summary: List SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -38346,7 +38441,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Slas (POST)
+      summary: List SLAs (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -38383,7 +38478,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Transition Slas
+      summary: Transition SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -38420,7 +38515,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Update Sla
+      summary: Update SLA
       tags:
         - slas
       x-fern-audiences:

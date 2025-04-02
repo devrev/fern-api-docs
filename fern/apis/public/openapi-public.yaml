@@ -1512,6 +1512,58 @@ components:
       required:
         - id
       title: atom-base-summary
+    atom-summary:
+      type: object
+      discriminator:
+        mapping:
+          auth_token: '#/components/schemas/auth-token-summary'
+          capability: '#/components/schemas/capability-summary'
+          conversation: '#/components/schemas/conversation-summary'
+          dev_user: '#/components/schemas/dev-user-summary'
+          enhancement: '#/components/schemas/enhancement-summary'
+          feature: '#/components/schemas/feature-summary'
+          group: '#/components/schemas/group-summary'
+          issue: '#/components/schemas/issue-summary'
+          link: '#/components/schemas/link-summary'
+          product: '#/components/schemas/product-summary'
+          rev_org: '#/components/schemas/rev-org-summary'
+          rev_user: '#/components/schemas/rev-user-summary'
+          service_account: '#/components/schemas/service-account-summary'
+          sla: '#/components/schemas/sla-summary'
+          sla_tracker: '#/components/schemas/sla-tracker-summary'
+          sys_user: '#/components/schemas/sys-user-summary'
+          tag: '#/components/schemas/tag-summary'
+          ticket: '#/components/schemas/ticket-summary'
+          timeline_comment: '#/components/schemas/timeline-comment-summary'
+          webhook: '#/components/schemas/webhook-summary'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/auth-token-summary'
+        - $ref: '#/components/schemas/capability-summary'
+        - $ref: '#/components/schemas/conversation-summary'
+        - $ref: '#/components/schemas/dev-user-summary'
+        - $ref: '#/components/schemas/enhancement-summary'
+        - $ref: '#/components/schemas/feature-summary'
+        - $ref: '#/components/schemas/group-summary'
+        - $ref: '#/components/schemas/issue-summary'
+        - $ref: '#/components/schemas/link-summary'
+        - $ref: '#/components/schemas/product-summary'
+        - $ref: '#/components/schemas/rev-org-summary'
+        - $ref: '#/components/schemas/rev-user-summary'
+        - $ref: '#/components/schemas/service-account-summary'
+        - $ref: '#/components/schemas/sla-summary'
+        - $ref: '#/components/schemas/sla-tracker-summary'
+        - $ref: '#/components/schemas/sys-user-summary'
+        - $ref: '#/components/schemas/tag-summary'
+        - $ref: '#/components/schemas/ticket-summary'
+        - $ref: '#/components/schemas/timeline-comment-summary'
+        - $ref: '#/components/schemas/webhook-summary'
+      properties:
+        type:
+          $ref: '#/components/schemas/atom-type'
+      required:
+        - type
+      title: atom-summary
     atom-type:
       type: string
       enum:
@@ -1870,6 +1922,10 @@ components:
           name: urn-devrev-params-oauth-token-type-userinfo
         urn:ietf:params:oauth:token-type:jwt:
           name: urn-ietf-params-oauth-token-type-jwt
+    auth-token-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: auth-token-summary
     auth-token-token-type:
       type: string
       description: |
@@ -2768,21 +2824,22 @@ components:
     custom-schema-spec:
       type: object
       description: |
-        Requested custom schemas described abstractly. Every provided schema's
-        custom field must be specified, otherwise a bad request error is
-        returned. If a new custom schema specifier is provided, then it will be
-        added to the work, otherwise if a custom schema is omitted from the
-        specifier, it remains unmodified.
+        Custom schemas described using identifiers. Each custom field in the
+        request must have the corresponding schema specified; omission results
+        in a Bad Request error. If a custom schema is not included in the
+        specifier, it remains unchanged. For surfaces with human interactors,
+        it is recommended to provide tenant_fragment: true and
+        validate_required_fields: true.
       properties:
         apps:
           type: array
-          description: List of apps that are requested.
+          description: List of apps.
           items:
             type: string
             format: text
         subtype:
           type: string
-          description: Name of the subtype requested.
+          description: Name of the subtype.
           format: text
         tenant_fragment:
           type: boolean
@@ -5274,6 +5331,8 @@ components:
       properties:
         member:
           $ref: '#/components/schemas/member-summary'
+        member_rev_org:
+          $ref: '#/components/schemas/rev-org-summary'
       required:
         - member
       title: group-members-list-response-member
@@ -5734,6 +5793,22 @@ components:
         - rev_org
         - rev_user
         - ticket
+    link-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            link_type:
+              $ref: '#/components/schemas/link-type'
+            source:
+              $ref: '#/components/schemas/link-endpoint-summary'
+            target:
+              $ref: '#/components/schemas/link-endpoint-summary'
+          required:
+            - link_type
+            - source
+            - target
+      title: link-summary
     link-type:
       type: string
       description: Type of link used to define the relationship.
@@ -6298,6 +6373,12 @@ components:
           items:
             type: string
             format: id
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when creating a part.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-create'
         tags:
           type: array
           description: Tags associated with the part.
@@ -6530,6 +6611,13 @@ components:
           format: text
         owned_by:
           $ref: '#/components/schemas/parts-update-request-owned-by'
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when updating the stage or
+            the stage diagram of an object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-update'
         tags:
           $ref: '#/components/schemas/parts-update-request-tags'
       required:
@@ -6635,6 +6723,13 @@ components:
               type: string
               description: The Question.
               format: text
+            sources:
+              type: array
+              description: |
+                Details of the sources from which the question answer was
+                generated.
+              items:
+                $ref: '#/components/schemas/atom-summary'
             status:
               $ref: '#/components/schemas/question-answer-status'
             suggested_answer:
@@ -9782,6 +9877,10 @@ components:
         - snap_kit
         - snap_widget
         - text
+    timeline-comment-summary:
+      allOf:
+        - $ref: '#/components/schemas/timeline-entry-base-summary'
+      title: timeline-comment-summary
     timeline-entries-create-request:
       type: object
       description: The request to create a timeline entry for an object.
@@ -10079,6 +10178,10 @@ components:
             - object
             - object_display_id
       title: timeline-entry-base
+    timeline-entry-base-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: timeline-entry-base-summary
     timeline-entry-object-type:
       type: string
       description: The type of object that the Timeline entry belongs to.
@@ -10537,6 +10640,10 @@ components:
         - active
         - inactive
         - unverified
+    webhook-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: webhook-summary
     webhooks-create-request:
       type: object
       description: The request to create a new webhook.
@@ -13666,9 +13773,8 @@ paths:
         Creates a new enterprise authentication connection for a Dev
         organization. This authentication connection will not be enabled by
         default for the organization and the user will need to explicitly
-        enable this. Keep in mind that at a time, only one authentication
-        connection can be enabled for a Dev organization. At present, only 5
-        enterprise connections can be created by an organization.
+        enable this. Only 5 authentication connections can be created by an
+        organization.
       operationId: dev-org-auth-connections-create
       requestBody:
         content:
@@ -13904,10 +14010,8 @@ paths:
     post:
       description: |
         Enable or disable an authentication connection for a Dev organization.
-        Currently, only 1 authentication connection can be enabled at a time.
-        When a new authentication connection is enabled, the connection which
-        is currently enabled for the Dev organization is automatically
-        disabled.
+        Atleast one authentication connection must be enabled for a Dev
+        organization.
       operationId: dev-org-auth-connections-toggle
       requestBody:
         content:
@@ -16508,7 +16612,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla Tracker
+      summary: Get SLA Tracker
       tags:
         - slas
       x-fern-audiences:
@@ -16544,7 +16648,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla Tracker (POST)
+      summary: Get SLA Tracker (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -16665,7 +16769,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Sla Trackers
+      summary: List SLA Trackers
       tags:
         - slas
       x-fern-audiences:
@@ -16699,7 +16803,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Sla Trackers (POST)
+      summary: List SLA Trackers (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -16736,7 +16840,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Assign Slas
+      summary: Assign SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -16771,7 +16875,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Create Sla
+      summary: Create SLA
       tags:
         - slas
       x-fern-audiences:
@@ -16811,7 +16915,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla
+      summary: Get SLA
       tags:
         - slas
       x-fern-audiences:
@@ -16847,7 +16951,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Get Sla (POST)
+      summary: Get SLA (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -16942,7 +17046,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Slas
+      summary: List SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -16976,7 +17080,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: List Slas (POST)
+      summary: List SLAs (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -17013,7 +17117,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Transition Slas
+      summary: Transition SLAs
       tags:
         - slas
       x-fern-audiences:
@@ -17050,7 +17154,7 @@ paths:
           $ref: '#/components/responses/internal-server-error'
         "503":
           $ref: '#/components/responses/service-unavailable'
-      summary: Update Sla
+      summary: Update SLA
       tags:
         - slas
       x-fern-audiences:

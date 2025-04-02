@@ -177,6 +177,10 @@ navigation:
             hidden: false
             slug: data-extraction
             path: ../docs/pages/airdrop/data-extraction.mdx
+          - page: "Initial domain mapping"
+            hidden: false
+            slug: initial-domain-mapping
+            path: ../docs/pages/airdrop/initial-domain-mapping.mdx
           - page: "Attachments extraction"
             hidden: false
             slug: extract-attachments
@@ -185,9 +189,24 @@ navigation:
             slug: data-attachments-deletion
             hidden: false
             path: ../docs/pages/airdrop/data-attachments-deletion.mdx
-          - page: "Common issues - FAQ"
+          - page: "Common issues"
             slug: faq
             path: ../docs/pages/airdrop/faq.mdx
+          - section: Data model
+            slug: data-model
+            contents:
+              - page: "Rich text"
+                slug: rich-text
+                hidden: true
+                path: ../docs/pages/airdrop/data-model/rich-text.mdx
+              - page: "Permissions"
+                slug: permissions
+                hidden: true
+                path: ../docs/pages/airdrop/data-model/permissions.mdx
+              - page: "Mapping reasons"
+                slug: mapping-reasons
+                hidden: true
+                path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx
       - section: References
         slug: references
         contents:

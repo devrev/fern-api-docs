@@ -1,6 +1,6 @@
 This cookbook provides a step-by-step guide to use the asynchronous API for DevRev agents. It assumes you've already created an agent using the DevRev agent builder platform.
 
-This DevRev async API enables you to execute agents without any execution timeout concerns. The execution occurs as an asynchronous workflow that sends events to you via webhooks. This approach ensures:
+The DevRev async API enables you to execute agents without any execution timeout concerns. The execution occurs as an asynchronous workflow that sends events to you via webhooks. This approach ensures:
 
 - Agent complexity does not bring timeout concerns with it.
 - Complete execution tracking via progress events.
@@ -10,7 +10,7 @@ This DevRev async API enables you to execute agents without any execution timeou
   In any unlikely and unforeseen circumstances, if an individual operation of the workflow times out, you do not receive an error event right now to notify that you should not wait for any more messages. It is better to have a client side timeout for now while the issue is brainstormed and fixed for you. 
 </Callout>
 
-## Setting up webhook
+## Set up webhook
 
 Before using the async API, you need to create a webhook to receive agent execution events:
 
@@ -142,7 +142,7 @@ You should follow the documentation provided for webhooks [here](https://develop
   across multiple calls.
 </Callout>
 
-## Handling webhook events
+## Handle webhook events
 
 Your webhook endpoint receives three types of events.
 

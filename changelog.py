@@ -1,9 +1,7 @@
 import yaml
 import argparse
-import requests
-import os
 import datetime
-import re
+import llm_client
 
 
 def main(vrn, d):
@@ -17,43 +15,16 @@ def main(vrn, d):
         outfile.write(p)
         print(f"Wrote prompt to {pr_file}.")
 
-    l = gen_log(p)
+    l = llm_client.get_response(p)
 
     log_file = f"./fern/apis/{vrn}/changelog/{d}.md"
-    with open(log_file, 'w', encoding="utf-8") as outfile:
-        outfile.write(l)
-        print(f"Wrote log to {log_file}.")
-
-
-def gen_log(prompt):
-
-    auth = os.environ.get('LLM_JWT')
-    if auth:
-        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {auth}"}
-        payload = {
-            "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
-        }
-
-        try:
-            r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
-                                headers=headers)
-            log = r.json()['choices'][0]['message']['content']
-            log = re.sub(r"^# .*\n?", '', log, flags=re.MULTILINE)
-            log = re.sub(r"^Here.*\n?", '', log, flags=re.MULTILINE)
-            log = re.sub(r"^Let me know.*\n?", '', log, flags=re.MULTILINE)
-        except Exception as e:
-            print(
-                f"Failed to generate changelog. Error: {type(e)} {e} {r}")
+    if (l):
+        with open(log_file, 'w', encoding="utf-8") as outfile:
+            outfile.write(l)
+            print(f"Wrote log to {log_file}.")
     else:
-        log = "No auth token"
-        
-    return log
+        print(f"Failed to generate {log_file}.")
+
 
 
 def gen_prompt(oasdiff, links, version):

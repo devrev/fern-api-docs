@@ -30,6 +30,7 @@ jobs:
           pip install requests
 
       - name: Run stylecheck on changed files
+        id: stylecheck
         env:
           GITHUB_TOKEN: ${{ secrets.STYLECHECK }}
           LLM_JWT: ${{ secrets.LLM_JWT }} 
@@ -44,7 +45,7 @@ jobs:
             python stylecheck.py "$file"
           done
       - name: Add success label
-        if: success() && steps.stylecheck.conclusion == 'success'
+        if: success() && steps.stylecheck.outcome == 'success'
         run: |
           gh pr edit ${{ github.event.pull_request.number }} --add-label "stylecheck-complete"
         env:

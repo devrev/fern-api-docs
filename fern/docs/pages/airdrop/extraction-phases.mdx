@@ -1,48 +1,66 @@
-Airdrop extractions are done in _sync runs_.
-A sync run is one execution of an import or sync.
-If you do an initial import from the external system to DevRev, that import will be one sync run.
-If you then decide to do a reverse sync from DevRev to the external system, that would be another
-sync run.
+Each snap-in must handle all the phases of Airdrop extraction. In a snap-in,you typically define a run
+function that iterates over events and invokes workers per extraction phase.
 
-Each sync run is comprised out of phases.
-Phases follow sequentially, and each can consist of one or more invocations of the snap-in.
+The SDK library exports `processTask` to structure the work within each phase, and `onTimeout` function
+to handle timeouts.
 
-## Sync modes
+The snap-in extraction lifecycle consists of three main phases: External Sync Units Extraction,
+Metadata Extraction, and Data Extraction. Each phase is defined in a separate file and is responsible
+for fetching the respective data.
 
-### Initial import
+The SDK library provides a repository management system to handle artifacts in batches.
+The `initializeRepos` function initializes the repositories, and the `push` function uploads the
+artifacts to the repositories. The `postState` function is used to post the state of the extraction task.
 
-An _initial import_ is the first import of data from the external system to DevRev.
-It is triggered manually by the end user in DevRev's **Airdrops** UI.
+State management is crucial for snap-ins to maintain the state of the extraction task.
+The `postState` function is used to post the state of the extraction task.
+The state is stored in the adapter and can be retrieved using the `adapter.state` property.
 
-An _initial import_ consists of the following phases:
+```typescript
+import { AirdropEvent, EventType, spawn } from "@devrev/ts-adaas";
 
-1. External sync units extraction
-2. Metadata extraction
-3. Data extraction
-4. Attachments extraction
+interface DummyExtractorState {
+  issues: { completed: boolean };
+  users: { completed: boolean };
+  attachments: { completed: boolean };
+}
 
-### 1-way sync
+const initialState: DummyExtractorState = {
+  issues: { completed: false },
+  users: { completed: false },
+  attachments: { completed: false },
+};
 
-A _1-way sync_ refers to any extraction after the initial import has been successfully completed.
-An extractor extracts data that was created or updated in the external system after the start
-of the latest successful forward sync, including any changes that occurred during the forward sync,
-but were not picked up by it.
+function getWorkerPerExtractionPhase(event: AirdropEvent) {
+  let path;
+  switch (event.payload.event_type) {
+    case EventType.ExtractionExternalSyncUnitsStart:
+      path = __dirname + "/workers/external-sync-units-extraction";
+      break;
+    case EventType.ExtractionMetadataStart:
+      path = __dirname + "/workers/metadata-extraction";
+      break;
+    case EventType.ExtractionDataStart:
+    case EventType.ExtractionDataContinue:
+      path = __dirname + "/workers/data-extraction";
+      break;
+  }
+  return path;
+}
 
-A snap-in must consult its state to get information on when the last successful forward sync started.
-Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
-as well as between sync runs.
+const run = async (events: AirdropEvent[]) => {
+  for (const event of events) {
+    const file = getWorkerPerExtractionPhase(event);
+    await spawn<DummyExtractorState>({
+      event,
+      initialState,
+      workerPath: file,
+      options: {
+        isLocalDevelopment: true,
+      },
+    });
+  }
+};
 
-A 1-way sync consists of the following phases:
-
-1. Metadata extraction
-2. Data extraction
-3. Attachments extraction
-
-A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
-
-### Deletion mode
-
-A _deletion_ consists of the following phases:
-
-1. Data deletion
-2. Attachments deletion
+export default run;
+```

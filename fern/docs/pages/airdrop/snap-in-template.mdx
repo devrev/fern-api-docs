@@ -1,8 +1,17 @@
-For fast and efficient snap-in development, a template is available at [this GitHub repository](https://github.com/devrev/adaas-template). This template is highly recommended for developers as it streamlines the development process.
+For easier snap-in development, a starter template is available [here](https://github.com/devrev/adaas-template).
 
-The template makes use of DevRev's SDK library to manage communication with Airdrop, simplifying the interaction with DevRev's API. It also ensures that the correct communication protocol with Airdrop is followed.
+The template makes use of **DevRev's SDK library**, which helps developers build snap-ins that
+integrate with DevRev’s Airdrop platform. This library simplifies the workflow for handling
+data extraction and loading, event-driven actions, state management, and artifact handling.
 
-Communication between Airdrop and the snap-in involves messages known as events. Depending on the type of event, the snap-in performs different actions.
+It provides features such as:
+
+- **Type definitions**: Structured types for Airdrop control protocol.
+- **Event management**: Communication between Airdrop and the snap-in involves messages called
+  _events_ - depending on the type of event, the snap-in performs different actions.
+- **State handling**: Update and access state in real-time within tasks.
+- **Artifact management**: Supports batched storage of artifacts.
+- **Error & timeout support**: Error handling and timeout management for long-running tasks.
 
 ### Snap-in code structure
 
@@ -33,7 +42,7 @@ If you check the template, you can see that a snap-in is a Node.js project with 
   - test/
 ```
 
-The `manifest.yaml` file plays a critical role in a snap-in, holding key configuration details such as the snap-in's name, description, version, connection information, and functionality specifics. This file is the initial step in the development of a snap-in.
+The `manifest.yaml` is a configuration file that defines details such as the snap-in's name, description, version, connection information, and functionality specifics. Adjusting this file is the initial step in the development of a snap-in.
 
 The `code/` folder holds the implementation of the snap-in. Inside, the `functions/` subfolder includes the logic for retrieving external sync units, extracting data from and loading data to external systems, and mapping between them.
 

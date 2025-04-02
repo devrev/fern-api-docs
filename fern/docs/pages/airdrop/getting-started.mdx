@@ -1,6 +1,7 @@
 ## DevRev organization
 
-If this is your first time setting up an organization within DevRev, you need to create a DevRev organization for developing your new Airdrop snap-in:
+If this is your first time setting up an organization within DevRev, you need to create a
+DevRev organization for developing your new Airdrop snap-in:
 
 1. Click on your profile picture in the top left corner.
 2. Go to the **Orgs** section and click on **+**.
@@ -10,14 +11,21 @@ You now find your newly created organization under **Orgs**.
 
 ## External system
 
-Before starting the development of a snap-in for integration with an external system API, consider gathering the following information:
+Before starting the development of a snap-in for integration with an external system API,
+consider gathering the following information:
 
-- API Documentation: Obtain the official API documentation of the external system. This will be the primary source of information about how to connect and interact with the system.
-- Authentication and Authorization: Understand the authentication and authorization methods required. This may include API keys, OAuth tokens, or other security mechanisms.
-- Endpoints and Resources: Identify the required API endpoints and resources. Understand their functions, input parameters, expected outputs, and usage limitations.
-- Data Format: Determine the data format used by the API, such as JSON or XML. This helps in parsing responses and formatting requests appropriately.
-- Rate Limits and Quotas: Be aware of any rate limits or usage quotas. This information is crucial to ensure that the integration does not exceed allowed requests or data usage.
-- Error Handling: Learn about error response formats and codes. Knowing this will help in effectively handling errors and exceptions in your integration.
+- **API documentation**: Obtain the official API documentation of the external system.
+  This will be the primary source of information about how to connect and interact with the system.
+- **Authentication and authorization**: Understand the authentication and authorization
+  methods required. This may include API keys, OAuth tokens, or other security mechanisms.
+- **Endpoints and resources**: Identify the required API endpoints and resources. Understand
+  their functions, input parameters, expected outputs, and usage limitations.
+- **Data format**: Determine the data format used by the API, such as JSON or XML. This helps
+  in parsing responses and formatting requests appropriately.
+- **Rate Limits and quotas**: Be aware of any rate limits or usage quotas. This information is
+  crucial to ensure that the integration does not exceed allowed requests or data usage.
+- **Error handling**: Learn about error response formats and codes. Knowing this will help in
+  effectively handling errors and exceptions in your integration.
 
 ## Terminology
 
@@ -25,6 +33,12 @@ Before starting the development of a snap-in for integration with an external sy
 
 Airdrop extractions are done in _sync runs_.
 A sync run is one execution of an airdrop or sync.
+If you do an initial import from the external system to DevRev, that import will be one sync run.
+If you then decide to do a reverse sync from DevRev to the external system, that would be another
+sync run.
+
+Each sync run is comprised out of phases.
+Phases follow sequentially, and each can consist of one or more invocations of the snap-in.
 
 ### Forward sync
 
@@ -36,16 +50,39 @@ An **extractor** function in the snap-in is responsible for extracting data from
 A _reverse sync_ is a sync run from DevRev to an external system.
 It uses a **loader** function, to create or update data in the external system.
 
-### Initial sync
+### Initial import
 
-It is the first forward sync to run. In initial sync all data needs to be extracted to create a baseline (while in incremental runs only updated objects need to be extracted).
+An _initial import_ is the first import of data from the external system to DevRev.
+It is triggered manually by the end user in DevRev's **Airdrops** UI.
+
+In initial import all data needs to be extracted to create a baseline (while in incremental runs only
+updated objects need to be extracted).
+
+An _initial import_ consists of the following phases:
+
+1. External sync units extraction
+2. Metadata extraction
+3. Data extraction
+4. Attachments extraction
 
 ### 1-way (incremental) sync
 
 A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial sync run has been successfully completed.
-In the incremental sync an extractor extracts data that was created or updated in the external system after the start
+An extractor extracts data that was created or updated in the external system after the start
 of the latest successful forward sync, including any changes that occurred during the forward sync,
 but were not picked up by it.
+
+A snap-in must consult its state to get information on when the last successful forward sync started.
+Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
+as well as between sync runs.
+
+A 1-way sync consists of the following phases:
+
+1. Metadata extraction
+2. Data extraction
+3. Attachments extraction
+
+A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
 
 ### Sync unit
 

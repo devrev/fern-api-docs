@@ -145,7 +145,7 @@ navigation:
           - page: "Getting started"
             slug: getting-started
             path: ../docs/pages/airdrop/getting-started.mdx
-          - page: "Airdrop Snap-in template"
+          - page: "Airdrop snap-in template"
             slug: snap-in-template
             path: ../docs/pages/airdrop/snap-in-template.mdx
           - page: "Local development"

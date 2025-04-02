@@ -42,7 +42,7 @@ jobs:
           echo "DATE=$(date +'%Y-%m-%d-%H%M%S')" >> $GITHUB_ENV
           mkdir -p temp
           for file in $(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -E '\.mdx?$'); do
-            python stylecheck.py "$file"
+            python stylecheck.py --style=style/developer.md "$file"
           done
       - name: Add success label
         if: success() && steps.stylecheck.outcome == 'success'

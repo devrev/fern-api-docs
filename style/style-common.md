@@ -14,7 +14,7 @@ There are also some very specific style rules that need to be followed:
 - Use sentence case (only capitalize the first word and proper nouns) in any type of heading, including in two-level lists.
 - Ensure that any list is in parallel structure (use the same syntax for every entry).
 - Instructions or how-to guides:
-    - They may use two levels; both should be ordered (numbered) lists, not unordered (bulleted).
+    - They may use two levels; both should be ordered (numbered) lists, not unordered (bulleted) lists.
     - Instructions should be in imperative mood.
     - If there is a location or condition in a step, it should be at the front of the main clause, which must still be in imperative.
     - Steps should be more than a single “click”; combine steps if needed to make them more meaningful. If there is an outcome of the step stated, it should be part of the same step, not a new step.

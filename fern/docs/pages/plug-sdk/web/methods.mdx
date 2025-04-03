@@ -61,6 +61,16 @@ Passing `false` closes the chat widget.
 window.plugSDK.toggleWidget(true);
 ```
 
+## Check widget status
+
+Use `isWidgetOpen` to determine whether your chat widget is currently open or closed.
+
+```jsx
+window.plugSDK.isWidgetOpen
+```
+
+This returns true if the chat widget is open and false if it is closed.
+
 ## Take action from PLuG chat events
 
 This method allows you to listen for events from the PLuG widget. Below are the available values for `PAYLOAD_TYPE`.
@@ -81,16 +91,6 @@ useEffect(() => {
   });
 }, []);
 ```
-
-## Check widget status
-
-Use `isWidgetOpen` to determine whether your chat widget is currently open or closed.
-
-```jsx
-window.plugSDK.isWidgetOpen
-```
-
-This returns true if the chat widget is open and false if it is closed.
 
 ## Start conversation
 
@@ -177,7 +177,7 @@ window.plugSDK.addSessionProperties({
 
 ## Get session details
 
-You can use the getSessionDetails method to fetch the session id and tab id of an currently ongoing session.These details can then be passed across different domains to maintain the journey as a single, continuous session.
+You can use the `getSessionDetails` method to fetch the session id and tab id of an currently ongoing session.These details can then be passed across different domains to maintain the journey as a single, continuous session.
 
 ```jsx
 const { sessionId, tabId } = window.plugSDK.getSessionDetails();

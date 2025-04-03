@@ -72,6 +72,10 @@ redirects:
     permanent: true
   - source: /:path*/sdks/mobile/:slug*
     destination: /:path*/sdks/:slug*
+    permanent: true
+  - source: /:path*/sdks/push-notification
+    destination: /:path*/sdks/
+    permanent: true
     
 analytics:
   ga4:

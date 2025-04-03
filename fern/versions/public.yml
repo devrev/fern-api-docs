@@ -106,9 +106,6 @@ navigation:
         slug: react-native
         icon: fa-brands fa-react
         path: ../docs/pages/plug-sdk/react-native.mdx
-      - page: Push notifications for mobile
-        slug: push-notification
-        path: ../docs/pages/plug-sdk/push-notification.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

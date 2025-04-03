@@ -33,7 +33,7 @@ On iOS, if you haven't previously identified the user, the DevRev SDK will autom
 </Callout>
 
 <Callout intent="note">
-The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
+The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be used. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
 </Callout>
 
 You can select from the following methods to identify users within your application:
@@ -71,7 +71,7 @@ The `userID` property cannot be updated.
 Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen. 
 
 <Callout intent="note">
-This functionality requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
+This feature requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
 </Callout>
 
 To show the support chat screen in your app, you can use the following method:
@@ -90,7 +90,7 @@ DevRev.createSupportConversation()
 
 ### In-app link handling
 
-In some instances, links opened from the support chat are displayed within the app rather than in a browser. You can manage whether the chat modal should close after a link is opened by using the following method:
+In certain cases, the links opened from the support chat are opened in the app instead of a browser. You can control whether the chat modal should be dismissed after the link is opened by calling the following method:
 
 ```typescript
 DevRev.setShouldDismissModalsOnOpenLink(value: boolean)
@@ -101,7 +101,7 @@ Setting this flag to `true` applies the system's default behavior for opening li
 ### In-app link callback
 
 <Callout intent="note">
-This functionality is for Android only.
+This feature is for Android only.
 </Callout>
 
 For scenarios where custom handling is needed, links from the support chat can be captured with the following method:
@@ -116,11 +116,11 @@ If a custom handler is not defined, all external and in-app links from the suppo
 
  ## Analytics
 
-The DevRev SDK allows you to send custom analytic events by using a properties map. You can track these events using the following function:
-
 <Callout intent="note">
-This functionality requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
+This feature requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
 </Callout>
+
+The DevRev SDK allows you to send custom analytic events by using a properties map. You can track these events using the following function:
 
 ```typescript
 DevRev.trackEvent(name: string, properties?: Map<string, string>)
@@ -146,7 +146,7 @@ DevRev.resumeAllMonitoring()
 
 ### Session recording
 
-You can enable session recording to capture user interactions with your app.
+You can enable session recording to record user interactions with your app.
 
 <Callout intent="note">
 The session recording feature is opt-out and is enabled by default.
@@ -156,10 +156,11 @@ The session recording feature includes the following methods to control the reco
 
 | Method                                                               | Action                                                    |
 |--------------------------------------------------------------------|-----------------------------------------------------------|
-|`DevRev.startRecording()`   | Starts the session recording.                             |
-|`DevRev.stopRecording()`    | Ends the session recording and uploads it to the portal. |
-|`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
-|`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
+|`DevRev.startRecording()`   | Start the session recording.                             |
+|`DevRev.stopRecording()`    | End the session recording and uploads it to the portal. |
+|`DevRev.pauseRecording()`   | Pause the ongoing session recording.                     |
+|`DevRev.resumeRecording()`  | Resume a paused session recording.                       |
+|`DevRev.processAllOnDemandSessions()`  | End the ongoing session recording and uploads all offline sessions on demand, including the current one.|
 
 ### Session properties
 
@@ -195,7 +196,7 @@ DevRev.unmarkSensitiveViews(tags: any[])
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
 
-The mechanism utilizes balanced start and stop methods, both of which accept a timer name and an optional dictionary of properties.
+The mechanism uses balanced start and stop methods, both of which accept a timer name and an optional dictionary of properties.
 
 To start a timer, use the following method:
 
@@ -219,9 +220,9 @@ DevRev.trackScreen(name: string)
 
 ## Push notifications
 
-You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
+You can configure your app to receive push notifications from the DevRev SDK. The SDK is able to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to alert users about new messages in the PLuG support chat.
+The DevRev backend sends push notifications to your app to notify users about new messages in the PLuG support chat.
 
 ### Configuration
 
@@ -230,7 +231,7 @@ To receive push notifications, you need to configure your DevRev organization by
 ### Register for push notifications
 
 <Callout intent="note">
-Push notifications require SDK configuration and user identification, whether unverified or anonymous, to ensure delivery to the correct user.
+Push notifications require that the SDK has been configured and the user has been identified, to ensure delivery to the correct user.
 </Callout>
 
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
@@ -239,7 +240,7 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRevSDK.registerDeviceToken(deviceToken: string, deviceID: string)
 ```
 
-On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNS) token.
+On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
 
 ### Unregister from push notifications
 
@@ -297,4 +298,3 @@ DevRevSDK.processPushNotification(JSON.stringify(payload));
 ## License
 
 Apache 2.0
-

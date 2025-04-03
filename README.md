@@ -53,7 +53,7 @@ If a PR has the label `stylecheck` and not the label `stylecheck-complete`, the 
 When the action completes, it adds the `stylecheck-complete` tag. If you want stylecheck to run on new changes on a PR where it has already run, remove the `stylecheck-complete` label before pushing the new changes.
 
 ### Local execution
-To run the script locally and not as part of a PR, set your environment variable `LLM_TOKEN` to your PAT from [OpenWebUI](https://openwebui.dev.devrev-eng.ai/) > **Settings** > **Account** > API Keys. Set the options to skip creating GitHub suggestions (since there is no PR) and include the supplemental developer style rules.
+To run the script locally and not as part of a PR, set your environment variable `LLM_TOKEN` to your PAT from [OpenWebUI](https://openwebui.dev.devrev-eng.ai/) > **Settings** > **Account** > API Keys. Include the supplemental developer style rules with the `--style` option.
 ```
-python stylecheck.py --no-suggest --style=style/developer.md <path/to/file.mdx>
+python stylecheck.py --style=style/developer.md <path/to/file.mdx>
 ```

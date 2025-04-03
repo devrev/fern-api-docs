@@ -64,12 +64,14 @@ redirects:
   - source: /sdks/plug/install-android
     destination: /sdks/mobile/android
     permanent: true
-  - source: /snap-in-development/:slug*
-    destination: /snapin-development/:slug*
-    permanent: true
-  - source: /public/snap-in-development/:slug*
+  - source: /:path*/snap-in-development/:slug*
     destination: /public/snapin-development/:slug*
     permanent: true
+  - source: /:path*/web/overview
+    destination: /sdks
+    permanent: true
+  - source: /sdks/mobile/:path*
+    destination: /sdks/:path*
     
 analytics:
   ga4:

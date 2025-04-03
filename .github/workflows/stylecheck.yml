@@ -1,0 +1,57 @@
+name: PR Review Suggestions
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
+    paths:
+      - '**.md'
+      - '**.mdx'
+
+jobs:
+  suggest:
+    if: contains(github.event.pull_request.labels.*.name, 'stylecheck') && !contains(github.event.pull_request.labels.*.name, 'stylecheck-complete')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Run stylecheck on changed files
+        id: stylecheck
+        env:
+          GITHUB_TOKEN: ${{ secrets.STYLECHECK }}
+          LLM_JWT: ${{ secrets.LLM_JWT }} 
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "DATE=$(date +'%Y-%m-%d-%H%M%S')" >> $GITHUB_ENV
+          mkdir -p temp
+          for file in $(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -E '\.mdx?$'); do
+            python stylecheck.py --style=style/developer.md "$file"
+          done
+      - name: Add success label
+        if: success() && steps.stylecheck.outcome == 'success'
+        run: |
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "stylecheck-complete"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Archive temp files
+        uses: actions/upload-artifact@v4
+        with:
+          name: stylecheck-${{ env.DATE }}
+          path: temp/**

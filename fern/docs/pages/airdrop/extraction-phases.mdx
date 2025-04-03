@@ -19,14 +19,14 @@ The state is stored in the adapter and can be retrieved using the `adapter.state
 ```typescript
 import { AirdropEvent, EventType, spawn } from "@devrev/ts-adaas";
 
-interface DummyExtractorState {
-  issues: { completed: boolean };
+export interface ExtractorState {
+  todos: { completed: boolean };
   users: { completed: boolean };
   attachments: { completed: boolean };
 }
 
-const initialState: DummyExtractorState = {
-  issues: { completed: false },
+export const initialState: ExtractorState = {
+  todos: { completed: false },
   users: { completed: false },
   attachments: { completed: false },
 };
@@ -35,14 +35,18 @@ function getWorkerPerExtractionPhase(event: AirdropEvent) {
   let path;
   switch (event.payload.event_type) {
     case EventType.ExtractionExternalSyncUnitsStart:
-      path = __dirname + "/workers/external-sync-units-extraction";
+      path = __dirname + '/workers/external-sync-units-extraction';
       break;
     case EventType.ExtractionMetadataStart:
-      path = __dirname + "/workers/metadata-extraction";
+      path = __dirname + '/workers/metadata-extraction';
       break;
     case EventType.ExtractionDataStart:
     case EventType.ExtractionDataContinue:
-      path = __dirname + "/workers/data-extraction";
+      path = __dirname + '/workers/data-extraction';
+      break;
+    case EventType.ExtractionAttachmentsStart:
+    case EventType.ExtractionAttachmentsContinue:
+      path = __dirname + '/workers/attachments-extraction';
       break;
   }
   return path;
@@ -51,13 +55,14 @@ function getWorkerPerExtractionPhase(event: AirdropEvent) {
 const run = async (events: AirdropEvent[]) => {
   for (const event of events) {
     const file = getWorkerPerExtractionPhase(event);
-    await spawn<DummyExtractorState>({
+    await spawn<ExtractorState>({
       event,
       initialState,
       workerPath: file,
-      options: {
-        isLocalDevelopment: true,
-      },
+
+      // TODO: If needed you can pass additional options to the spawn function.
+      // For example timeout of the lambda, batch size, etc.
+      // options: {},
     });
   }
 };

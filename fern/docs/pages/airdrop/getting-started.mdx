@@ -22,12 +22,16 @@ consider gathering the following information:
   their functions, input parameters, expected outputs, and usage limitations.
 - **Data format**: Determine the data format used by the API, such as JSON or XML. This helps
   in parsing responses and formatting requests appropriately.
-- **Rate Limits and quotas**: Be aware of any rate limits or usage quotas. This information is
+- **Rate limits and quotas**: Be aware of any rate limits or usage quotas. This information is
   crucial to ensure that the integration does not exceed allowed requests or data usage.
 - **Error handling**: Learn about error response formats and codes. Knowing this helps in
   handling errors and exceptions in your integration.
 
 ## Terminology
+
+### Sync unit
+
+A _sync unit_ is one connection instance to an external system (for example SalesForce, Freshdesk, Zendesk).
 
 ### Sync run
 
@@ -83,7 +87,3 @@ A 1-way sync consists of the following phases:
 3. Attachments extraction
 
 A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
-
-### Sync unit
-
-A _sync unit_ is one connection instance to an external system (for example SalesForce, Freshdesk, Zendesk).

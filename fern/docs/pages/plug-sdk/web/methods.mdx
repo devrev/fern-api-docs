@@ -146,6 +146,16 @@ If no input is provided, the method toggles the search bar: opening it if it's c
 window.plugSDK.toggleSearchAgent(true);
 ```
 
+## Check Search Agent status
+
+Use isSearchAgentOpen to determine whether the search agent is currently open or closed.
+
+```jsx
+window.plugSDK.isSearchAgentOpen
+```
+
+This returns true if the search agent is open and false if it is closed.
+
 ## Prefill search query in search agent
 
 Use the `prefillSearchQuery` method to prefill a search query when opening and initializing the search agent.

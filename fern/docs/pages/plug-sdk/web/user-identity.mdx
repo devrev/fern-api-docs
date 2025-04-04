@@ -120,3 +120,41 @@ const sessionToken = '<SESSION_TOKEN>'
         })})();
 </script>
 ```
+
+## Identify users without session token
+
+You can also pass the identifiers in the `plugSDK.init` option without generating the session token.
+
+<Callout intent="note">
+The frontend method, by its nature, is not secure as the data is transmitted through the client side. We recommend using the session token method to securely identify users.
+</Callout>
+
+```jsx
+window.plugSDK.init({
+        app_id: '<your_unique_app_id>',
+        identity: { 
+            user_ref: string;
+            user_traits?: {
+                custom_fields?: object;
+                display_name?: string;
+                email?: string;
+                phone_numbers?: string[];
+            };
+	})
+```
+
+You can add or update the data in `user_traits` by using the `updateIdentity` method on the PLuG SDK. Attached is a sample code snippet for the same. 
+
+```jsx
+window.plugSDK.updateIdentity({
+    user_traits?: {
+    custom_fields?: object;
+    display_name?: string;
+    email?: string;
+    phone_numbers?: string[];
+ };
+})
+
+```
+
+

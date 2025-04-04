@@ -320,11 +320,39 @@ You can configure your app to receive push notifications from the DevRev SDK. Th
 
 The DevRev backend sends push notifications to your app to alert users about new messages in the PLuG support chat.
 
-### Configuration
-
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
+To receive push notifications, you need to configure your DevRev organization by following the instructions below.
 
 You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNs).
+
+### Configure DevRev org
+
+<Info>
+**Prerequisites**
+
+- Apple Developer Program access
+- Admin access to DevRev PLuG settings
+- Access to Bundle ID, Team ID, and APNs/FCM keys
+- Mobile SDK integration with your iOS app.
+</Info>
+
+1. Go to **Settings** > **Support** > **PLuG settings** > **Mobile push notifications**.
+
+2. Click **+ Configure app** and select **iOS App**.
+
+3. Fill in the configuration form.
+
+   - **App name**: Your iOS app's name.
+   - **Bundle ID**: The app's unique identifier in reverse domain notation, such as, `com.example.app`. Refer to [Apple's documentation](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) to confirm your bundle ID.
+   - **Apple Team ID**: The 10-character Apple Team ID assigned to your organization. Details are available in [Apple's Team ID documentation](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id/).
+   - **Key ID**: The ID for your APNs auth key. See [Apple's Key ID documentation](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/sending_notification_requests_to_apns) for further instructions.
+   - **Upload APNs Auth Key**: The `.p8` APNs auth key file (maximum size: 10 MB).
+   - **Sandbox Environment**: Check this for development environments to enable notifications in debug builds.
+
+    Click **Save App** to complete the setup.
+
+4. Click **Save and Publish** to activate push notifications in your DevRev SDK.
+
+For additional support or inquiries, refer to the latest [Apple developer documentation](https://developer.apple.com/) as guidelines may change.
 
 ### Register for push notifications
 

@@ -65,8 +65,8 @@ def gen_prompt(args):
             prompt += "\n\n"
 
     with open('style/term-common.csv', 'r', encoding="utf-8") as infile:
-            prompt += "\n\n<terminology>\n"
-            prompt += infile.read()
+        prompt += "\n\n<terminology>\n"
+        prompt += infile.read()
     
     if args.term and os.path.exists(args.term):
         with open(args.style, 'r', encoding="utf-8") as infile:
@@ -172,10 +172,18 @@ def main(args):
     print(f"Checking style for {args.doc}")
     doc_name, ext = os.path.splitext(os.path.basename(args.doc))
 
+    required_vars = ['REPO_OWNER', 'REPO_NAME', 'PR_NUMBER']
+    missing_vars = [var for var in required_vars if not os.environ.get(var)]
+    if args.suggest and missing_vars:
+        print(f"Skipping pull request suggestions. Missing required environment variables: {', '.join(missing_vars)}")
+        args.suggest = False
+
     prompt = gen_prompt(args)
     my_writer(prompt, f"temp/{doc_name}_prompt.md", 'prompt')
+
     response_file = f"temp/{doc_name}_response.md"
     if args.llm:
+        print("Requesting revision from LLM.")
         response = llm_client.get_response(prompt)
         my_writer(response, response_file, 'response')
     else:
@@ -190,15 +198,19 @@ def main(args):
     comment_text = "✨ Comment from AI reviewer ✨\n\n" + comment_text
     revision = llm_client.get_lines_between_tags(response, 'document')
     revision = restore_title(args.doc, revision)
-    revision_file = f"temp/{doc_name}_revision{ext}"
+    
+    if args.suggest:
+        revision_file = f"temp/{doc_name}_revision{ext}"   
+    else:     
+        revision_file = args.doc
     my_writer(revision, revision_file, 'revision')
-    diff = create_line_diff(args.doc, revision_file)
-    my_writer(diff, f"temp/{doc_name}.diff", 'diff')
 
-    suggestions = parse_diff_hunks(diff)
-    my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
-    failures = 0
     if (args.suggest):
+        diff = create_line_diff(args.doc, revision_file)
+        my_writer(diff, f"temp/{doc_name}.diff", 'diff')
+        suggestions = parse_diff_hunks(diff)
+        my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
+        failures = 0
         for suggestion in suggestions:
             time.sleep(1)
             failures += post_review_comment(suggestion)

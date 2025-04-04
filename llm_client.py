@@ -4,7 +4,7 @@ import requests
 
 def get_response(prompt):
 
-    auth = os.environ.get('LLM_JWT')
+    auth = os.environ.get('LLM_TOKEN')
     if auth:
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {auth}"}
         payload = {

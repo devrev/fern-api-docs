@@ -1,35 +1,96 @@
-## Before you begin
+Before starting snap-in development, it's important to understand these fundamental terms and concepts,
+as well as the capabilities and limitations of the external system being integrated.
 
-- If you have not created a development organization on DevRev before, create a dedicated
-[DevRev organization for development purposes](https://app.devrev.ai/) where you are
-publishing your Airdrop snap-in.
-- Install required tools and packages:
-  - [devrev-cli](https://developer.devrev.ai/snapin-development/references/cli-install) (version 4.7 or higher)
-  - [jq](https://stedolan.github.io/jq)
-  - [golang](https://go.dev/doc/install)
-  - [nodejs](https://nodejs.org/en/download/package-manager) (version 18.x.x+ or higher)
+## DevRev organization
 
-## Setting up the snap-in
+If this is your first time setting up an organization within DevRev, you need to create a
+DevRev organization for developing your new Airdrop snap-in:
 
-1. Create a new repo from the [Airdrop template repo](https://github.com/devrev/adaas-template).
-Select _Use this template_ and then _Create a new repository_.
-2. Copy `.env.example` to `.env` and fill in the required variables.
-3. Configure a keyring for the external system in the `manifest.yaml`.
-   Refer to [Keyrings](/snapin-development/references/manifest#developer-keyrings) for instructions.
-4. Deploy a draft version of your snap-in to your dev org using `make deploy`.
-5. Install the snap-in in your DevRev at **Settings** > **Snap-ins** > **Install snap-in**.
-6. Define the connection at **Settings** > **Imports** > **Connections**.
-7. Create an import at **Settings** > **Imports** > **Import**.
+1. Click on your profile picture in the top left corner.
+2. Go to the **Orgs** section and click on **+**.
+3. Fill in the necessary details and click **Create**.
 
-## Observability
+You now find your newly created organization under **Orgs**.
 
-- To observe logs from your snap-in in your development environment:
-   ```bash
-   devrev snap_in_package logs | jq
-   ```
-- To open logs in your favorite editor:
-  ```bash
-  devrev snap_in_package logs | code -
-  ```
+## External system
 
-For more information, refer to [Debugging](/snapin-development/debugging).
+Before starting the development of a snap-in for integration with an external system API,
+consider gathering the following information:
+
+- **API documentation**: Obtain the official API documentation of the external system.
+  This is the primary source of information about how to connect and interact with the system.
+- **Authentication and authorization**: Understand the authentication and authorization
+  methods required. This may include API keys, OAuth tokens, or other security mechanisms.
+- **Endpoints and resources**: Identify the required API endpoints and resources. Understand
+  their functions, input parameters, expected outputs, and usage limitations.
+- **Data format**: Determine the data format used by the API, such as JSON or XML. This helps
+  in parsing responses and formatting requests appropriately.
+- **Rate limits and quotas**: Be aware of any rate limits or usage quotas. This information is
+  crucial to ensure that the integration does not exceed allowed requests or data usage.
+- **Error handling**: Learn about error response formats and codes. Knowing this helps in
+  handling errors and exceptions in your integration.
+
+## Terminology
+
+### Sync unit
+
+A _sync unit_ is one self encompassing unit of data that is synced to an external system. Examples:
+- Jira project
+- SalesForce
+- Zendesk
+
+### Sync run
+
+Airdrop extractions are done in _sync runs_.
+A sync run is one end-to-end (extract-transform-load) execution of a _sync unit_.
+If you do an initial import from the external system to DevRev, that import will be one sync run.
+Another import in the same direction is another sync run.
+And if you then decide to do a reverse sync from DevRev to the external system, that would be another
+sync run.
+
+Each sync run is comprised out of phases.
+Phases follow sequentially, and each can consist of one or more invocations of the snap-in.
+
+### Forward sync
+
+A _forward sync_ is a sync run from an external system to DevRev.
+An **extractor** function in the snap-in is responsible for extracting data from the external system.
+
+### Reverse sync
+
+A _reverse sync_ is a sync run from DevRev to an external system.
+It uses a **loader** function, to create or update data in the external system.
+
+### Initial import
+
+An _initial import_ is the first import of data from the external system to DevRev.
+It is triggered manually by the end user in DevRev's **Airdrops** UI.
+
+In initial import all data needs to be extracted to create a baseline (while in incremental runs only
+updated objects need to be extracted).
+
+An _initial import_ consists of the following phases:
+
+1. External sync units extraction
+2. Metadata extraction
+3. Data extraction
+4. Attachments extraction
+
+### 1-way (incremental) sync
+
+A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial sync run has been successfully completed.
+An extractor extracts data that was created or updated in the external system after the start
+of the latest successful forward sync, including any changes that occurred during the forward sync,
+but were not picked up by it.
+
+A snap-in must consult its state to get information on when the last successful forward sync started.
+Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
+as well as between sync runs.
+
+A 1-way sync consists of the following phases:
+
+1. Metadata extraction
+2. Data extraction
+3. Attachments extraction
+
+A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.

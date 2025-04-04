@@ -1,5 +1,4 @@
-For the attachment extraction phase of the import process, the extractor has to upload each
-attachment to DevRev's S3 using the `S3Interact` API.
+In the attachment extraction phase, the snap-in has to upload each attachment to DevRev and associate it with its parent data object.
 
 ## Triggering event
 
@@ -29,7 +28,10 @@ with an event of type `EXTRACTION_ATTACHMENTS_DONE`.
 If attachment extraction fails the snap-in must respond to Airdrop with a message with an event of
 type `EXTRACTION_ATTACHMENTS_ERROR`.
 
-## Response from the snap-in
+## Implementation
+
+Attachments extraction is already provided by SDK, but if you need to customize it for your use case,
+it should be implemented in the [attachments-extraction.ts](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/workers/attachments-extraction.ts) file.
 
 After uploading an attachment or a batch of attachments, the extractor also has to prepare and
 upload a file specifying the extracted and uploaded attachments.
@@ -43,6 +45,7 @@ The uploaded artifact is structured like a normal artifact containing extracted 
 ## Examples
 
 Here is an example of an SSOR attachment file:
+
 ```json lines
 {
   "id": {

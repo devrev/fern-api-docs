@@ -39,7 +39,7 @@ def create_line_diff(old_file, new_file):
 
 
 def restore_title(old, new):
-    with open(old, 'r') as infile:
+    with open(old, 'r', encoding="utf-8") as infile:
         old = infile.read()
 
     old_first = old.splitlines()[0]
@@ -51,11 +51,11 @@ def restore_title(old, new):
 
 def gen_prompt(args):
 
-    with open('style/prompt.md', 'r') as infile:
+    with open('style/prompt.md', 'r', encoding="utf-8") as infile:
         prompt = infile.read()
     prompt += "\n\n"
 
-    with open('style/style-common.md', 'r', encoding="utf-8") as infile:
+    with open('style/common.md', 'r', encoding="utf-8") as infile:
         prompt += infile.read()
 
     if args.style and os.path.exists(args.style):
@@ -188,7 +188,7 @@ def main(args):
         my_writer(response, response_file, 'response')
     else:
         try:
-            with open(response_file, 'r') as infile:
+            with open(response_file, 'r', encoding="utf-8") as infile:
                 response = infile.read()
             print(f"Reading response from {response_file}.")
         except:

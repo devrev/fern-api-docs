@@ -3,8 +3,8 @@ Start developing your snap-in with a `manifest.yaml` file. The manifest defines 
 Begin by setting the values for `name` and `description` in the template.
 
 ```yaml
-name: ADaaS Template
-description: A template for creating a new ADaaS snap-in
+name: Template Connector
+description: Template Connector for importing dummy data into DevRev
 ```
 
 ### Set snap-in functionalities
@@ -29,9 +29,9 @@ Check the `imports` section next.
 
 ```yaml
 imports:
-  - slug: adaas-template
-    display_name: ADaaS Connector Template
-    description: ADaaS Connector Template
+  - slug: airdrop-template-snap-in
+    display_name: Template Connector
+    description: Template Connector for importing data into DevRev
     extractor_function: extraction
     loader_function: loading
     allowed_connection_types:

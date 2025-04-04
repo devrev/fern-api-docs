@@ -88,7 +88,11 @@ echo '{}' | chef-cli fuzz-extracted -r issue -m external_domain_metadata.json > 
 
 ## State handling
 
-Since each snap-in invocation is a separate runtime instance (with a maximum execution time of 12 minutes), it does not know what has been previously accomplished or how many records have already been extracted. To enable information passing between invocations and runs, support has been added for saving a limited amount of data as the snap-in `state`. Snap-in state persists between phases in one sync run as well as between multiple sync runs.
+Since each snap-in invocation is a separate runtime instance (with a maximum execution time of 12 minutes),
+it does not know what has been previously accomplished or how many records have already been extracted. 
+To enable information passing between invocations and runs, support has been added for saving a limited amount 
+of data as the snap-in `state`. Snap-in `state` persists between phases in one sync run as well as between multiple sync runs.
+You can access the `state` through SDK's `adapter` object.
 
 A snap-in must consult its state to obtain information on when the last successful forward sync started.
 

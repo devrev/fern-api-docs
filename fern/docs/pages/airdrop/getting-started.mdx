@@ -1,3 +1,6 @@
+Before starting snap-in development, it's important to understand these fundamental terms and concepts,
+as well as the capabilities and limitations of the external system being integrated.
+
 ## DevRev organization
 
 If this is your first time setting up an organization within DevRev, you need to create a
@@ -31,14 +34,18 @@ consider gathering the following information:
 
 ### Sync unit
 
-A _sync unit_ is one connection instance to an external system (for example SalesForce, Freshdesk, Zendesk).
+A _sync unit_ is one self encompassing unit of data that is synced to an external system. Examples:
+- Jira project
+- SalesForce
+- Zendesk
 
 ### Sync run
 
 Airdrop extractions are done in _sync runs_.
-A sync run is one execution of an airdrop or sync.
+A sync run is one end-to-end (extract-transform-load) execution of a _sync unit_.
 If you do an initial import from the external system to DevRev, that import will be one sync run.
-If you then decide to do a reverse sync from DevRev to the external system, that would be another
+Another import in the same direction is another sync run.
+And if you then decide to do a reverse sync from DevRev to the external system, that would be another
 sync run.
 
 Each sync run is comprised out of phases.

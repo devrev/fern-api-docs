@@ -195,6 +195,9 @@ navigation:
           - page: "Common issues"
             slug: faq
             path: ../docs/pages/airdrop/faq.mdx
+          - page: "Supported DevRev object types"
+            slug: supported-object-types
+            path: ../docs/pages/airdrop/supported-object-types.mdx
           - section: Data model
             slug: data-model
             contents:

@@ -19,7 +19,7 @@ Mention objects represents any mention (user, issue, etc.) in rich text and have
 | Field                  | Type   | Required | Description                                                                                                                          |
 | ---------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                   | String | Yes      | Identifier of the mentioned item (user ID, etc.) in the format used by the source system.                                            |
-| `ref_type`             | String | Yes      | Type of the mentioned item (e.g., "issue", "comment"). The recipe converts this based on user mappings.                              |
+| `ref_type`             | String | Yes      | Type of the mentioned item (for example, "issue", "comment"). The recipe converts this based on user mappings.                             |
 | `fallback_record_name` | String | No       | Display text if the mention cannot be resolved (user display name, ticket title, etc.).                                              |
 
 In reverse, the loader should expect the following structure:
@@ -100,7 +100,7 @@ To accomplish this, transform the article content to this JSON:
 ```
 
 Set `ref_type` to `artifact` and use the source system's attachment ID. 
-The platform will replace the mention with the corresponding artifact ID.
+The platform replaces the mention with the corresponding artifact ID.
 Note that the resolved value isn't wrapped in double quotes.
 
 ### Links to other articles

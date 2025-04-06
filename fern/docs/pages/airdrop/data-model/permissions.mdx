@@ -30,16 +30,15 @@ For articles with `scope=internal`, the `access_level` must always be set to `PR
 - `access_level` must be set to `PRIVATE`
 - By default, only the owner has access
 - Additional access is granted exclusively through the `shared_with` field
-- The model follows Google Docs-style sharing permissions
 </Tab>
 
 <Tab title="External scope (`scope=external`)">
 - `access_level` can be set to any valid value
 - By default:
-  - Admins have CRUD (Create, Read, Update, Delete) rights
-  - Platform users have CRU (Create, Read, Update) rights
+  - Admins have CRUD (create, read, update, delete) rights
+  - Platform users have CRU (create, read, update) rights
 - Additional rights can be assigned by creating roles and assigning them to the entire organization or specific groups
-- Articles can be shared with Rev users and published on the portal/plug
+- Articles can be shared with customers and published to Portal/PLuG
 </Tab>
 </Tabs>
 
@@ -52,7 +51,7 @@ The `shared_with` field allows you to specify who can access an article and what
 Each entry in the `shared_with` collection contains two key components:
 
 - `member_id`: Identifies which user or group is being granted access
-- `role`: Specifies the permission level (e.g., "viewer", "editor", "owner")
+- `role`: Specifies the permission level (for example, "viewer", "editor", "owner")
 
 #### References to platform groups
 
@@ -159,7 +158,7 @@ targets: ["#record:document", "#category:users"]
 
 Define an `enum` field representing the distinct permission levels available in the external system. Normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
 
-During initial domain mapping, you will map these enum values to DevRev's standard CRUD permissions. End users can later customize this mapping if needed.
+During initial domain mapping, you map these enum values to DevRev's standard CRUD permissions. End users can later customize this mapping if needed.
 
 <Warning>
 Authorization policies should always represent the current state of the external system. In each sync run, the entire policy should be recreated or not provided at all.

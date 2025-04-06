@@ -4,12 +4,98 @@ You can read more about permissions in the [DevRev documentation](https://devrev
 
 ## Article permissions
 
-{/* TODO: more on article permissions */}
-Articles can be shared with users or groups.
+Articles in DevRev can be shared with individual users or groups, allowing for granular control over who can access what content.
+
+### Sharing mechanism
 
 The `shared_with` field specifies the permission level for each user or group using the `permission` type.
 This type is a structure that connects a reference to a user-like record type (the `member_id` field)
 with an `enum` value that defines the user's role or permission level.
+
+### Scope and access level interaction
+
+Articles have two important fields that control their visibility:
+
+- **Scope**: Determines whether an article is internal or external
+- **Access Level**: Controls the visibility within the scope
+
+<Info>
+For articles with `scope=internal`, the `access_level` must always be set to `PRIVATE`. In this case, only users specified in the `shared_with` field can access the article.
+</Info>
+
+### Permission behavior by scope
+
+<Tabs>
+<Tab title="Internal scope (`scope=internal`)">
+- `access_level` must be set to `PRIVATE`
+- By default, only the owner has access
+- Additional access is granted exclusively through the `shared_with` field
+- The model follows Google Docs-style sharing permissions
+</Tab>
+
+<Tab title="External scope (`scope=external`)">
+- `access_level` can be set to any valid value
+- By default:
+  - Admins have CRUD (Create, Read, Update, Delete) rights
+  - Platform users have CRU (Create, Read, Update) rights
+- Additional rights can be assigned by creating roles and assigning them to the entire organization or specific groups
+- Articles can be shared with Rev users and published on the portal/plug
+</Tab>
+</Tabs>
+
+### Shared with
+
+The `shared_with` field allows you to specify who can access an article and what level of permissions they have. This field uses the `permission` type to connect users or groups with specific roles.
+
+#### Structure
+
+Each entry in the `shared_with` collection contains two key components:
+
+- `member_id`: Identifies which user or group is being granted access
+- `role`: Specifies the permission level (e.g., "viewer", "editor", "owner")
+
+#### References to platform groups
+
+The `member_id` field can reference three different types of objects:
+- Individual users (`#record:users`)
+- Standard groups (`#record:groups`)
+- Platform groups (`#record:platform_groups`)
+
+#### External metadata example
+
+```json
+{
+  "shared_with": {
+    "type": "permission",
+    "collection": {},
+    "permission": {
+      "role": {
+        "values": [
+          {
+            "key": "owner",
+            "name": "Owner"
+          },
+          {
+            "key": "editor",
+            "name": "Editor"
+          },
+          {
+            "key": "viewer",
+            "name": "Viewer"
+          }
+        ]
+      },
+      "member_id": {
+        "refers_to": {
+          "#record:users": {},
+          "#record:groups": {},
+          "#record:platform_groups": {}
+        }
+      }
+    }
+  }
+}
+```
 
 ## Groups
 

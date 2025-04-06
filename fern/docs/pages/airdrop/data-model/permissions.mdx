@@ -135,28 +135,19 @@ The Authorization policy object supports the following fields:
 - `targets`: Defines the DevRev record types the permissions apply to. The format differs between metadata definition and runtime import.
 - `privileges`: Specifies the permissions granted by the policy. These should be normalized to CRUD operations.
 
-### Defining `targets` and `privileges`
+### External domain metadata
 
-The representation of `targets` and `privileges` varies depending on the context: defining the external domain metadata versus importing data at runtime.
-
-<Tabs>
-<Tab title="External domain metadata">
-
-When defining the external domain metadata for your Airdrop integration:
-
-#### `targets` field
-
-Specify a list of strings representing the record types or record type categories the policy applies to.
+To define the `targets` field in the external domain metadata, specify a list of strings representing the record types or record type categories the policy applies to.
 - Use the prefix `#record:` for specific record types (for example, `#record:document`).
 - Use the prefix `#category:` for record type categories (for example, `#category:users`).
 
-```json title="Example: Metadata targets field"
-targets: ["#record:document", "#category:users"]
+Example:
+```json
+["#record:document", "#category:users"]
 ```
 
-#### `privileges` field
-
-Define an `enum` field representing the distinct permission levels available in the external system. Normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
+To define the `privileges` field in the external domain metadata, specify an `enum` field representing the distinct permission levels available in the external system. 
+Normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
 
 During initial domain mapping, you map these enum values to DevRev's standard CRUD permissions. End users can later customize this mapping if needed.
 
@@ -166,28 +157,18 @@ Authorization policies should always represent the current state of the external
 The object must be marked as `is_snapshot` to indicate it represents the current state of the external system.
 </Warning>
 
-</Tab>
-<Tab title="Runtime import">
+### Runtime import
 
-During the data import process at runtime:
-
-#### `targets` field
-
-Provide an array of strings containing the actual DevRev record type names. If a category was specified in the metadata (for example, `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
+The `targets` field is an array of strings containing the actual DevRev record type names. If a category was specified in the metadata (for example, `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
 
 For example, if the `#category:users` includes "executives" and "developers", the runtime targets field should be:
 ```json
 ["document", "executives", "developers"]
 ```
 
-#### `privileges` field
-
-Provide an array of strings representing the specific CRUD permissions granted by the policy, based on the mapping defined during domain setup (or as re-mapped by the user).
+The `privileges` field is an array of strings representing the specific CRUD permissions granted by the policy, based on the mapping defined during domain setup (or as re-mapped by the user).
 
 For example, if the external role granted read and update access, the runtime privileges field should be:
 ```json
 ["read", "update"]
 ```
-
-</Tab>
-</Tabs>

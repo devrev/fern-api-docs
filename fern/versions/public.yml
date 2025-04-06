@@ -203,15 +203,15 @@ navigation:
             contents:
               - page: "Rich text"
                 slug: rich-text
-                hidden: true
+                hidden: false
                 path: ../docs/pages/airdrop/data-model/rich-text.mdx
               - page: "Permissions"
                 slug: permissions
-                hidden: true
+                hidden: false
                 path: ../docs/pages/airdrop/data-model/permissions.mdx
               - page: "Mapping reasons"
                 slug: mapping-reasons
-                hidden: true
+                hidden: false
                 path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx
       - section: References
         slug: references

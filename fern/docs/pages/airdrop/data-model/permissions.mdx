@@ -1,5 +1,6 @@
 DevRev uses the concept of permissions to control access to records. 
 Permissions are associated with users or groups and define the level of access they have to leaf types and their fields.
+You can read more about permissions in the [DevRev documentation](https://devrev.ai/docs/product/access-control).
 
 ## Article permissions
 
@@ -9,6 +10,16 @@ Articles can be shared with users or groups.
 The `shared_with` field allows to specify the permission level for each user or group using the `permission` type. 
 The `permission` type is a special structure associating a reference to an user-like record type (the field `member_id`)
 with an `enum` value that provides the user with the role or permission level.
+
+## Groups
+
+To make the groups available in the DevRev platform, Airdrop expects two objects:
+
+1. An object that contains the descriptions of the groups that are available in the external system.
+    - This object should be mapped to the `group` object in DevRev.
+2. An object that contains a 1:1 mapping between the groups and the users in the external system.
+    - This object should be mapped to the `object_member` object in DevRev.
+
 ## Platform groups
 
 Platform groups are groups automatically created by the DevRev platform for every organization. 
@@ -19,4 +30,32 @@ This functionality allows for flexible integration with the platform's permissio
 
 To implement this mapping, developers need to define a new object in external metadata with one enum field containing the possible values of default groups available in the external system. During the initial domain mapping, developers can map this object to the *platform groups* object in DevRev. The platform groups object can then be referenced in other objects, such as in the `shared_with` field of articles.
 
-{/* ### Authorization policy */}
+## Authorization policy
+
+The authorization policy object is used to import external system permissions into the DevRev platform. Airdrop uses this object type to create Roles, Role Sets, and Access Control Entries. Importing the Authorization policy object allows importing of CRUD permissions for leaf types for users and/or groups in DevRev.
+
+The following fields are supported:
+
+- `groups`: Groups this role applies to.
+- `privileges`: Privileges the role provides.
+- `targets`: Target object types the role applies to.
+- `users`: Users this role applies to.
+
+Only 1-way sync is supported for the authorization policy.
+
+### Defining external domain metadata
+
+When defining external domain metadata, the `targets` field is a list of record types or record type categories that the role applies to. For example, if a role applies to external record type `document` and the record type category `users`, the `targets` field will be `["#record:document", "#category:users"]`.
+
+The `privileges` field defines all the permissions that the role provides. In DevRev this is a CRUD representation of the permissions the role provides. You should keep normalize external permissison to their CRUD representation. In initial domain mapping you can map the enum values of the `privileges` field to create, read, update, and delete permissions. End users can then re-map the permissions.
+
+### Importing the authorization policy
+
+In runtime the `targets` field is an array of record types. For example, if a role applies to external record type `document` and the record type category `users`, the `targets` field will be `["document", "executives", "developers"]`.
+
+The `privileges` field is a CRUD representation of the permissions the role provides. For example, if a role provides create, read, and update permissions for the `document` record type, the `privileges` field will be `["create", "read", "update"]`.
+
+
+
+
+

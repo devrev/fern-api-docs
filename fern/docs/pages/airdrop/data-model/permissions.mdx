@@ -7,28 +7,31 @@ You can read more about permissions in the [DevRev documentation](https://devrev
 {/* TODO: more on article permissions */}
 Articles can be shared with users or groups.
 
-The `shared_with` field allows to specify the permission level for each user or group using the `permission` type.
-The `permission` type is a special structure associating a reference to an user-like record type (the field `member_id`)
-with an `enum` value that provides the user with the role or permission level.
+The `shared_with` field specifies the permission level for each user or group using the `permission` type.
+This type is a structure that connects a reference to a user-like record type (the `member_id` field)
+with an `enum` value that defines the user's role or permission level.
 
 ## Groups
 
-To make the groups available in the DevRev platform, Airdrop expects two objects:
+To make groups available in the DevRev platform, Airdrop expects two objects:
 
-1. An object that contains the descriptions of the groups that are available in the external system.
-    - This object should be mapped to the `group` object in DevRev.
-2. An object that contains a 1:1 mapping between the groups and the users in the external system.
-    - This object should be mapped to the `object_member` object in DevRev.
+1. An object containing descriptions of groups available in the external system.
+   - Maps to the `group` object in DevRev.
+2. An object containing a 1:1 mapping between groups and users in the external system.
+   - Maps to the `object_member` object in DevRev.
 
 ## Platform groups
 
-Platform groups are groups automatically created by the DevRev platform for every organization. 
-For example, DevRev provides *Dev users* and *Rev users* groups that contain all the Dev and Rev users respectively.
+Platform groups are automatically created by the DevRev platform for every organization. 
+For example, DevRev provides *Dev users* and *Rev users* groups that contain all Dev and Rev users respectively.
 
-Developers and end-users are able to map external default groups to platform groups. 
-This functionality allows for flexible integration with the platform's permission system while allowing for re-mapping by the end user.
+Developers and end-users can map external default groups to platform groups. 
+This functionality allows flexible integration with DevRev's permission system while enabling re-mapping by the end user.
 
-To implement this mapping, developers need to define a new object in external metadata with one enum field containing the possible values of default groups available in the external system. During the initial domain mapping, developers can map this object to the *platform groups* object in DevRev. The platform groups object can then be referenced in other objects, such as in the `shared_with` field of articles.
+To implement this mapping:
+1. Define a new object in external metadata with one enum field containing possible values of default groups available in the external system
+2. During initial domain mapping, map this object to the *platform groups* object in DevRev
+3. Reference the platform groups object in other objects, such as in the `shared_with` field of articles
 
 ## Authorization policy
 
@@ -68,15 +71,14 @@ targets: ["#record:document", "#category:users"]
 
 #### `privileges` field
 
-Define an `enum` field representing the distinct permission levels available in the external system. You should normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
+Define an `enum` field representing the distinct permission levels available in the external system. Normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
 
 During initial domain mapping, you will map these enum values to DevRev's standard CRUD permissions. End users can later customize this mapping if needed.
 
-
 <Warning>
-Authorization policies should always be the snapshot of the current state of the external system. In each sync run, the entire policy should be recreated or not provided at all.
+Authorization policies should always represent the current state of the external system. In each sync run, the entire policy should be recreated or not provided at all.
 
-The object has to be marked as `is_snapshot` to indicate that it should be the snapshot of the current state of the external system.
+The object must be marked as `is_snapshot` to indicate it represents the current state of the external system.
 </Warning>
 
 </Tab>
@@ -104,7 +106,3 @@ For example, if the external role granted read and update access, the runtime pr
 
 </Tab>
 </Tabs>
-
-
-
-

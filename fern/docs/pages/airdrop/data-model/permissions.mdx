@@ -5,9 +5,9 @@ You can read more about permissions in the [DevRev documentation](https://devrev
 ## Article permissions
 
 {/* TODO: more on article permissions */}
-Articles can be shared with users or groups. 
+Articles can be shared with users or groups.
 
-The `shared_with` field allows to specify the permission level for each user or group using the `permission` type. 
+The `shared_with` field allows to specify the permission level for each user or group using the `permission` type.
 The `permission` type is a special structure associating a reference to an user-like record type (the field `member_id`)
 with an `enum` value that provides the user with the role or permission level.
 
@@ -56,7 +56,7 @@ The representation of `targets` and `privileges` varies depending on the context
 
 When defining the external domain metadata for your Airdrop integration:
 
-**`targets` field:**
+#### `targets` field
 
 Specify a list of strings representing the record types or record type categories the policy applies to.
 - Use the prefix `#record:` for specific record types (for example, `#record:document`).
@@ -66,7 +66,7 @@ Specify a list of strings representing the record types or record type categorie
 targets: ["#record:document", "#category:users"]
 ```
 
-**`privileges` field:**
+#### `privileges` field
 
 Define an `enum` field representing the distinct permission levels available in the external system. You should normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
 
@@ -84,7 +84,7 @@ The object has to be marked as `is_snapshot` to indicate that it should be the s
 
 During the data import process at runtime:
 
-**`targets` field:**
+#### `targets` field
 
 Provide an array of strings containing the actual DevRev record type names. If a category was specified in the metadata (for example, `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
 
@@ -93,7 +93,7 @@ For example, if the `#category:users` includes "executives" and "developers", th
 ["document", "executives", "developers"]
 ```
 
-**`privileges` field:**
+#### `privileges` field
 
 Provide an array of strings representing the specific CRUD permissions granted by the policy, based on the mapping defined during domain setup (or as re-mapped by the user).
 

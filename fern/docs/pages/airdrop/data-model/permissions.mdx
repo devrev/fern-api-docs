@@ -25,7 +25,7 @@ To make the groups available in the DevRev platform, Airdrop expects two objects
 Platform groups are groups automatically created by the DevRev platform for every organization. 
 For example, DevRev provides *Dev users* and *Rev users* groups that contain all the Dev and Rev users respectively.
 
-We allow developers to map their external default groups to platform groups. 
+Developers and end-users are able to map external default groups to platform groups. 
 This functionality allows for flexible integration with the platform's permission system while allowing for re-mapping by the end user.
 
 To implement this mapping, developers need to define a new object in external metadata with one enum field containing the possible values of default groups available in the external system. During the initial domain mapping, developers can map this object to the *platform groups* object in DevRev. The platform groups object can then be referenced in other objects, such as in the `shared_with` field of articles.
@@ -59,8 +59,8 @@ When defining the external domain metadata for your Airdrop integration:
 **`targets` field:**
 
 Specify a list of strings representing the record types or record type categories the policy applies to.
-- Use the prefix `#record:` for specific record types (e.g., `#record:document`).
-- Use the prefix `#category:` for record type categories (e.g., `#category:users`).
+- Use the prefix `#record:` for specific record types (for example, `#record:document`).
+- Use the prefix `#category:` for record type categories (for example, `#category:users`).
 
 ```json title="Example: Metadata targets field"
 targets: ["#record:document", "#category:users"]
@@ -70,7 +70,7 @@ targets: ["#record:document", "#category:users"]
 
 Define an `enum` field representing the distinct permission levels available in the external system. You should normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
 
-During the initial domain mapping setup, you will map these enum values to DevRev's standard CRUD permissions. End users can later customize this mapping if needed.
+During initial domain mapping, you will map these enum values to DevRev's standard CRUD permissions. End users can later customize this mapping if needed.
 
 
 <Warning>
@@ -86,7 +86,7 @@ During the data import process at runtime:
 
 **`targets` field:**
 
-Provide an array of strings containing the actual DevRev record type names. If a category was specified in the metadata (e.g., `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
+Provide an array of strings containing the actual DevRev record type names. If a category was specified in the metadata (for example, `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
 
 For example, if the `#category:users` includes "executives" and "developers", the runtime targets field should be:
 ```json

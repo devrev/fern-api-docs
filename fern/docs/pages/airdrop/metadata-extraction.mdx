@@ -3,7 +3,7 @@ During the metadata extraction phase, the snap-in must provide an
 This file provides a structured way of describing the external system's domain model,
 including its domain entities, types, relationships, and other metadata.
 
-You can check which object types for Airdrop DevRev supports [here](/snapin-development/airdrop/supported-object-types).
+You can check which object types for Airdrop DevRev supports [here](/public/snapin-development/adaas/supported-object-types).
 
 ## Triggering event
 
@@ -15,7 +15,7 @@ when done, or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Implementation
 
-Metadata extraction should be implemented in the [metadata-extraction.ts](https://github.com/devrev/adaas-template/blob/main/code/src/functions/extraction/workers/metadata-extraction.ts) file.
+Metadata extraction should be implemented in the [metadata-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/metadata-extraction.ts) file.
 
 ```typescript
 import { ExtractorEventType, processTask } from "@devrev/ts-adaas";

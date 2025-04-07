@@ -90,7 +90,7 @@ DevRev.createSupportConversation()
 
 ### In-app link handling
 
-In certain cases, the links opened from the support chat are opened in the app instead of a browser. You can control whether the chat modal should be dismissed after the link is opened by calling the following method:
+In certain cases, tapping links in the support chat will open them in the app instead of a browser. You can control whether the chat modal screen should be dismissed after the link is opened by calling the following method:
 
 ```typescript
 DevRev.setShouldDismissModalsOnOpenLink(value: boolean)
@@ -157,10 +157,10 @@ The session recording feature includes the following methods to control the reco
 | Method                                                               | Action                                                    |
 |--------------------------------------------------------------------|-----------------------------------------------------------|
 |`DevRev.startRecording()`   | Start the session recording.                             |
-|`DevRev.stopRecording()`    | Stop the session recording and uploads it to the portal. |
+|`DevRev.stopRecording()`    | Stop the session recording and upload it to the portal. |
 |`DevRev.pauseRecording()`   | Pause the ongoing session recording.                     |
 |`DevRev.resumeRecording()`  | Resume a paused session recording.                       |
-|`DevRev.processAllOnDemandSessions()`  | Stop the ongoing session recording and uploads all offline sessions on demand, including the current one.|
+|`DevRev.processAllOnDemandSessions()`  | Stop the ongoing session recording and upload all offline sessions on demand, including the current one.|
 
 ### Session properties
 
@@ -231,7 +231,7 @@ To receive push notifications, you need to configure your DevRev organization by
 ### Register for push notifications
 
 <Callout intent="note">
-Push notifications require that the SDK has been configured and the user has been identified, to ensure delivery to the correct user.
+To ensure delivery to the correct user, push notifications require that the SDK has been configured and the user has been identified.
 </Callout>
 
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
@@ -240,7 +240,7 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRevSDK.registerDeviceToken(deviceToken: string, deviceID: string)
 ```
 
-On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
+On Android devices, the `deviceToken` must be the Firebase Cloud Messaging (FCM) token value. On iOS devices, it must be the Apple Push Notification Service (APNs) token.
 
 ### Unregister from push notifications
 

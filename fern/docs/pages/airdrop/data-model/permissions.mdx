@@ -2,6 +2,28 @@ DevRev uses the concept of permissions to control access to records.
 Permissions are associated with users or groups and define the level of access they have to leaf types and their fields.
 You can read more about permissions in the [DevRev documentation](https://devrev.ai/docs/product/access-control).
 
+## Groups
+
+To make groups available in the DevRev platform, Airdrop expects two objects:
+
+1. An object containing descriptions of groups available in the external system.
+   - Maps to the `group` object in DevRev.
+2. An object containing a 1:1 mapping between groups and users in the external system.
+   - Maps to the `object_member` object in DevRev.
+
+## Platform groups
+
+Platform groups are automatically created by the DevRev platform for every organization. 
+For example, DevRev provides *Dev users* and *Rev users* groups that contain all Dev and Rev users respectively.
+
+Developers and end-users can map external default groups to platform groups. 
+This functionality allows flexible integration with DevRev's permission system while enabling re-mapping by the end user.
+
+To implement this mapping:
+1. Define a new object in external domain metadata with one enum field containing possible values of default groups available in the external system. 
+2. During initial domain mapping, map this object to the *platform groups* object in DevRev.
+3. Reference your object in other fields, such as in the `shared_with` field of articles.
+
 ## Article permissions
 
 Articles in DevRev can be shared with individual users or groups, allowing for granular control over who can access what content.
@@ -12,33 +34,25 @@ The `shared_with` field specifies the permission level for each user or group us
 This type is a structure that connects a reference to a user-like record type (the `member_id` field)
 with an `enum` value that defines the user's role or permission level.
 
-### Scope and access level interaction
-
-Articles have two important fields that control their visibility:
-
-- **Scope**: Determines whether an article is internal or external
-- **Access Level**: Controls the visibility within the scope
-
-<Info>
-For articles with `scope=internal`, the `access_level` must always be set to `PRIVATE`. In this case, only users specified in the `shared_with` field can access the article.
-</Info>
-
-### Permission behavior by scope
+### Scope interaction
 
 <Tabs>
-<Tab title="Internal scope (`scope=internal`)">
-- `access_level` must be set to `PRIVATE`
-- By default, only the owner has access
-- Additional access is granted exclusively through the `shared_with` field
+<Tab title="Internal scope">
+
+For `scope=internal` articles:
+- By default, only the owner has access.
+- Additional access is granted exclusively through the `shared_with` field.
 </Tab>
 
-<Tab title="External scope (`scope=external`)">
-- `access_level` can be set to any valid value
+<Tab title="External scope">
+
+For `scope=external` articles the expected behavior is they will be published to Portal/PLuG and shared with customers.
+
 - By default:
-  - Admins have CRUD (create, read, update, delete) rights
-  - Platform users have CRU (create, read, update) rights
-- Additional rights can be assigned by creating roles and assigning them to the entire organization or specific groups
-- Articles can be shared with customers and published to Portal/PLuG
+  - Admins have CRUD (create, read, update, delete) rights.
+  - Platform users have CRU (create, read, update) rights.
+- Additional rights can be assigned by creating roles and assigning them to the entire organization or specific groups.
+- Articles can be shared with customers and published to Portal/PLuG.
 </Tab>
 </Tabs>
 
@@ -50,8 +64,8 @@ The `shared_with` field allows you to specify who can access an article and what
 
 Each entry in the `shared_with` collection contains two key components:
 
-- `member_id`: Identifies which user or group is being granted access
-- `role`: Specifies the permission level (for example, "viewer", "editor", "owner")
+- `member_id`: Identifies which user or group is being granted access.
+- `role`: Specifies the permission level (for example, "viewer", "editor", "owner").
 
 #### References to platform groups
 
@@ -96,34 +110,13 @@ The `member_id` field can reference three different types of objects:
 }
 ```
 
-## Groups
-
-To make groups available in the DevRev platform, Airdrop expects two objects:
-
-1. An object containing descriptions of groups available in the external system.
-   - Maps to the `group` object in DevRev.
-2. An object containing a 1:1 mapping between groups and users in the external system.
-   - Maps to the `object_member` object in DevRev.
-
-## Platform groups
-
-Platform groups are automatically created by the DevRev platform for every organization. 
-For example, DevRev provides *Dev users* and *Rev users* groups that contain all Dev and Rev users respectively.
-
-Developers and end-users can map external default groups to platform groups. 
-This functionality allows flexible integration with DevRev's permission system while enabling re-mapping by the end user.
-
-To implement this mapping:
-1. Define a new object in external metadata with one enum field containing possible values of default groups available in the external system
-2. During initial domain mapping, map this object to the *platform groups* object in DevRev
-3. Reference the platform groups object in other objects, such as in the `shared_with` field of articles
 
 ## Authorization policy
 
 The *Authorization policy* object translates permission structures from an external system into DevRev's access control model. It enables the import of external roles and their associated permissions, automatically creating corresponding Roles, Role Sets, and Access Control Entries (ACEs) within DevRev. This allows defining CRUD (Create, Read, Update, Delete) permissions for specific record types, applying them to users and groups.
 
 <Info>
-Currently, only 1-way sync (from the external system to DevRev) is supported for the authorization policy.
+Currently, only 1-way sync (from the external system to DevRev) is supported for authorization policy.
 </Info>
 
 ### Object fields
@@ -132,12 +125,12 @@ The Authorization policy object supports the following fields:
 
 - `groups`: A list of group identifiers from the external system to which this policy applies.
 - `users`: A list of user identifiers from the external system to which this policy applies.
-- `targets`: Defines the DevRev record types the permissions apply to. The format differs between metadata definition and runtime import.
+- `targets`: Defines the DevRev record types the permissions apply to. It uses the `type_key` type. The format differs between metadata definition and runtime import.
 - `privileges`: Specifies the permissions granted by the policy. These should be normalized to CRUD operations.
 
 ### External domain metadata
 
-To define the `targets` field in the external domain metadata, specify a list of strings representing the record types or record type categories the policy applies to.
+To define the `targets` field in the external domain metadata use the `type_key` type to specify a list of strings representing the record types or record type categories the policy applies to.
 - Use the prefix `#record:` for specific record types (for example, `#record:document`).
 - Use the prefix `#category:` for record type categories (for example, `#category:users`).
 

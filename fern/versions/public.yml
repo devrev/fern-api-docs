@@ -201,10 +201,10 @@ navigation:
           - section: Data model
             slug: data-model
             contents:
-              - page: "Rich text"
-                slug: rich-text
+              - page: "Rich text fields"
+                slug: rich-text-fields
                 hidden: false
-                path: ../docs/pages/airdrop/data-model/rich-text.mdx
+                path: ../docs/pages/airdrop/data-model/rich-text-fields.mdx
               - page: "Permissions"
                 slug: permissions
                 hidden: false

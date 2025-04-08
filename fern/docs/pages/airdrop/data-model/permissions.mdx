@@ -1,6 +1,6 @@
 DevRev uses the concept of permissions to control access to records. 
 Permissions are associated with users or groups and define the level of access they have to leaf types and their fields.
-You can read more about permissions in the [DevRev documentation](https://devrev.ai/docs/product/access-control).
+You can read more about permissions in the [access control documentation](https://devrev.ai/docs/product/access-control).
 
 ## Groups
 
@@ -58,7 +58,8 @@ For `scope=external` articles the expected behavior is they will be published to
 
 ### Shared with
 
-The `shared_with` field allows you to specify who can access an article and what level of permissions they have. This field uses the `permission` type to connect users or groups with specific roles.
+The `shared_with` field allows you to specify who can access an article and what level of permissions they have.
+This field uses the `permission` type to connect users or groups with specific roles.
 
 #### Structure
 
@@ -113,7 +114,9 @@ The `member_id` field can reference three different types of objects:
 
 ## Authorization policy
 
-The *Authorization policy* object translates permission structures from an external system into DevRev's access control model. It enables the import of external roles and their associated permissions, automatically creating corresponding Roles, Role Sets, and Access Control Entries (ACEs) within DevRev. This allows defining CRUD (Create, Read, Update, Delete) permissions for specific record types, applying them to users and groups.
+The *Authorization policy* object translates permission structures from an external system into DevRev's access control model. 
+It enables the import of external roles and their associated permissions, automatically creating corresponding roles, role sets, and access control entries (ACEs) within DevRev. 
+This allows defining CRUD (Create, Read, Update, Delete) permissions for specific record types, applying them to users and groups.
 
 <Info>
 Currently, only 1-way sync (from the external system to DevRev) is supported for authorization policy.
@@ -123,8 +126,8 @@ Currently, only 1-way sync (from the external system to DevRev) is supported for
 
 The Authorization policy object supports the following fields:
 
-- `groups`: A list of group identifiers from the external system to which this policy applies.
-- `users`: A list of user identifiers from the external system to which this policy applies.
+- `groups` (optional): A list of group identifiers from the external system to which this policy applies.
+- `users` (optional): A list of user identifiers from the external system to which this policy applies.
 - `targets`: Defines the DevRev record types the permissions apply to. It uses the `type_key` type. The format differs between metadata definition and runtime import.
 - `privileges`: Specifies the permissions granted by the policy. These should be normalized to CRUD operations.
 
@@ -152,7 +155,8 @@ The object must be marked as `is_snapshot` to indicate it represents the current
 
 ### Runtime import
 
-The `targets` field is an array of strings containing the actual DevRev record type names. If a category was specified in the metadata (for example, `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
+The `targets` field is an array of strings containing the actual DevRev record type names. 
+If a category was specified in the metadata (for example, `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
 
 For example, if the `#category:users` includes "executives" and "developers", the runtime targets field should be:
 ```json

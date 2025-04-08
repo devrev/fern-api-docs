@@ -70,46 +70,45 @@ navigation:
         path: ../docs/pages/timeline-entries.mdx
   - section: SDKs
     slug: sdks
+    path: ../docs/pages/plug-sdk/index.mdx
     contents:
-      - section: Web SDK
+      - section: PLuG SDK for Web
         slug: web
+        icon: fa-globe
         contents:
-          - page: Overview
-            slug: overview
-            path: ../docs/pages/plug-sdk/sdk-intro.mdx
           - page: Install the Web SDK
             slug: installation
-            path: ../docs/pages/plug-sdk/web-sdk-install.mdx
+            path: ../docs/pages/plug-sdk/web/install.mdx
           - page: Install PLuG search
             slug: install-search
-            path: ../docs/pages/plug-sdk/search-install.mdx
+            path: ../docs/pages/plug-sdk/web/search.mdx
           - page: Identify your users with PLuG
             slug: user-identity
-            path: ../docs/pages/plug-sdk/identify-web-user.mdx
+            path: ../docs/pages/plug-sdk/web/user-identity.mdx
           - page: Track events
             slug: track-events
-            path: ../docs/pages/plug-sdk/track-events.mdx
+            path: ../docs/pages/plug-sdk/web/track-events.mdx
           - page: Methods
             slug: methods
-            path: ../docs/pages/plug-sdk/methods.mdx
-          - page: Custom implementation of PLuG widget
+            path: ../docs/pages/plug-sdk/web/methods.mdx
+          - page: Custom implementation
             slug: customize
-            path: ../docs/pages/plug-sdk/customize.mdx
-      - section: Mobile SDK
-        slug: mobile
-        contents:
-          - page: Android integration
-            slug: android
-            path: ../docs/pages/plug-sdk/sdk-android.mdx
-          - page: iOS integration
-            slug: ios
-            path: ../docs/pages/plug-sdk/sdk-ios.mdx
-          - page: React Native integration
-            slug: react-native
-            path: ../docs/pages/plug-sdk/sdk-react-native.mdx
-          - page: Push notifications
-            slug: push-notification
-            path: ../docs/pages/plug-sdk/push-notification.mdx
+            path: ../docs/pages/plug-sdk/web/customize.mdx
+      - page: DevRev SDK for Android
+        slug: android
+        icon: fa-brands fa-android
+        path: ../docs/pages/plug-sdk/android.mdx
+      - page: DevRev SDK for iOS
+        slug: ios
+        icon: fa-brands fa-apple
+        path: ../docs/pages/plug-sdk/ios.mdx
+      - page: DevRev SDK for React Native
+        slug: react-native
+        icon: fa-brands fa-react
+        path: ../docs/pages/plug-sdk/react-native.mdx
+      - page: Push notifications for mobile
+        slug: push-notification
+        path: ../docs/pages/plug-sdk/push-notification.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:
@@ -145,40 +144,60 @@ navigation:
           - page: "Getting started"
             slug: getting-started
             path: ../docs/pages/airdrop/getting-started.mdx
-          - page: "Extraction phases"
-            slug: extraction-phases
-            path: ../docs/pages/airdrop/extraction-phases.mdx
-          - page: "Loading phases"
-            slug: loading-phases
-            hidden: true
-            path: ../docs/pages/airdrop/loading-phases.mdx
-          - page: "External sync units extraction"
-            slug: external-sync-units-extraction
-            hidden: false
-            path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
-          - page: "Metadata extraction"
-            hidden: false
-            slug: metadata-extraction
-            path: ../docs/pages/airdrop/metadata-extraction.mdx
-          - page: "Data extraction"
-            hidden: false
-            slug: data-extraction
-            path: ../docs/pages/airdrop/data-extraction.mdx
-          - page: "Initial domain mapping"
-            hidden: false
-            slug: initial-domain-mapping
-            path: ../docs/pages/airdrop/initial-domain-mapping.mdx
-          - page: "Attachments extraction"
-            hidden: false
-            slug: extract-attachments
-            path: ../docs/pages/airdrop/attachments-extraction.mdx
-          - page: "Data and attachments deletion"
-            slug: data-attachments-deletion
-            hidden: false
-            path: ../docs/pages/airdrop/data-attachments-deletion.mdx
+          - section: "Development guide"
+            skip-slug: true
+            contents:
+              - page: "Airdrop snap-in template"
+                slug: snap-in-template
+                path: ../docs/pages/airdrop/snap-in-template.mdx
+              - page: "Local development"
+                slug: local-development
+                path: ../docs/pages/airdrop/local-development.mdx
+              - page: "Manifest"
+                slug: manifest
+                path: ../docs/pages/airdrop/manifest.mdx
+              - page: "Extraction phases"
+                slug: extraction-phases
+                path: ../docs/pages/airdrop/extraction-phases.mdx
+              - page: "External sync units extraction"
+                slug: external-sync-units-extraction
+                path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
+              - page: "Metadata extraction"
+                slug: metadata-extraction
+                path: ../docs/pages/airdrop/metadata-extraction.mdx
+              - page: "Initial domain mapping"
+                hidden: false
+                slug: initial-domain-mapping
+                path: ../docs/pages/airdrop/initial-domain-mapping.mdx
+              - page: "Data extraction"
+                slug: data-extraction
+                path: ../docs/pages/airdrop/data-extraction.mdx
+              - page: "Attachments extraction"
+                slug: extract-attachments
+                path: ../docs/pages/airdrop/attachments-extraction.mdx
+              - page: "Loading phases"
+                slug: loading-phases
+                hidden: true
+                path: ../docs/pages/airdrop/loading-phases.mdx
+              - page: "Data and attachments deletion"
+                slug: data-attachments-deletion
+                hidden: true
+                path: ../docs/pages/airdrop/data-attachments-deletion.mdx
+          - page: "Examples of snap-ins"
+            slug: snap-in-examples
+            path: ../docs/pages/airdrop/snap-in-examples.mdx
+          - page: "Deploy to organization"
+            slug: deploy-to-organization
+            path: ../docs/pages/airdrop/deploy-to-organization.mdx
+          - page: "Publish to the marketplace"
+            slug: publish-to-marketplace
+            path: ../docs/pages/airdrop/publish-to-marketplace.mdx
           - page: "Common issues"
             slug: faq
             path: ../docs/pages/airdrop/faq.mdx
+          - page: "Supported DevRev object types"
+            slug: supported-object-types
+            path: ../docs/pages/airdrop/supported-object-types.mdx
           - section: Data model
             slug: data-model
             contents:

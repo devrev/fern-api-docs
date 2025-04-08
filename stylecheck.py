@@ -65,8 +65,8 @@ def gen_prompt(args):
             prompt += "\n\n"
 
     with open('style/term-common.csv', 'r', encoding="utf-8") as infile:
-            prompt += "\n\n<terminology>\n"
-            prompt += infile.read()
+        prompt += "\n\n<terminology>\n"
+        prompt += infile.read()
     
     if args.term and os.path.exists(args.term):
         with open(args.style, 'r', encoding="utf-8") as infile:
@@ -116,7 +116,8 @@ def parse_diff_hunks(diff_text):
                     'path': path,
                     'line': old_start + old_lines - 1,
                     'side': 'RIGHT',
-                    'body': f'```suggestion\n{added_lines}\n```'
+                    'body': f'```suggestion\n{added_lines}\n```',
+                    'commit_id': os.environ.get('COMMIT_SHA')
                 }
                 if old_start < comment['line']:
                     comment['start_line'] = old_start
@@ -128,29 +129,33 @@ def parse_diff_hunks(diff_text):
                 
     return comments
 
-def post_review_comment(owner, repo, pr_number, comment):
-    comment['commit_id'] = os.environ.get('COMMIT')
+def post_review_comment(comment):
+    owner = os.environ.get('REPO_OWNER')
+    repo = os.environ.get('REPO_NAME')
+    pr = os.environ.get('PR_NUMBER')
 
     if comment.get('line'):
         # Suggestion
-        url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/comments'
+        url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr}/comments'
         message = f"Posted comment on line {comment['line']}."
     else:
         # Timeline comment
-        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{pr_number}/comments'
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{pr}/comments'
         message = f"Posted comment on timeline."
 
     headers = {
-        'Authorization': f"token {os.environ.get('STYLECHECK')}",
+        'Authorization': f"token {os.environ.get('GITHUB_TOKEN')}",
         'Accept': 'application/vnd.github.v3+json'
     }
     try:
         response = requests.post(url, headers=headers, json=comment)
         response.raise_for_status()
         print(message)
+        return 0
     except Exception as e:
         print(
             f"Failed to post comment. Error: {type(e)} {e}")
+        return 1
  
 def my_writer(data, file, note=None):
     if (data):
@@ -167,10 +172,18 @@ def main(args):
     print(f"Checking style for {args.doc}")
     doc_name, ext = os.path.splitext(os.path.basename(args.doc))
 
+    required_vars = ['REPO_OWNER', 'REPO_NAME', 'PR_NUMBER']
+    missing_vars = [var for var in required_vars if not os.environ.get(var)]
+    if args.suggest and missing_vars:
+        print(f"Skipping pull request suggestions. Missing required environment variables: {', '.join(missing_vars)}")
+        args.suggest = False
+
     prompt = gen_prompt(args)
     my_writer(prompt, f"temp/{doc_name}_prompt.md", 'prompt')
+
     response_file = f"temp/{doc_name}_response.md"
     if args.llm:
+        print("Requesting revision from LLM.")
         response = llm_client.get_response(prompt)
         my_writer(response, response_file, 'response')
     else:
@@ -185,18 +198,38 @@ def main(args):
     comment_text = "✨ Comment from AI reviewer ✨\n\n" + comment_text
     revision = llm_client.get_lines_between_tags(response, 'document')
     revision = restore_title(args.doc, revision)
-    revision_file = f"temp/{doc_name}_revision{ext}"
+    
+    if args.suggest:
+        revision_file = f"temp/{doc_name}_revision{ext}"   
+    else:     
+        revision_file = args.doc
     my_writer(revision, revision_file, 'revision')
-    diff = create_line_diff(args.doc, revision_file)
-    my_writer(diff, f"temp/{doc_name}.diff", 'diff')
 
-    suggestions = parse_diff_hunks(diff)
-    my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
     if (args.suggest):
-        post_review_comment(os.environ.get('OWNER'), os.environ.get('REPO'), os.environ.get('PR'), {'body': comment_text})
+        diff = create_line_diff(args.doc, revision_file)
+        my_writer(diff, f"temp/{doc_name}.diff", 'diff')
+        suggestions = parse_diff_hunks(diff)
+        my_writer(suggestions, f"temp/{doc_name}_suggestions.json", 'suggestions')
+        failures = 0
         for suggestion in suggestions:
             time.sleep(1)
-            post_review_comment(os.environ.get('OWNER'), os.environ.get('REPO'), os.environ.get('PR'), suggestion)
+            failures += post_review_comment(suggestion)
+        if failures > 0:
+            comment_text += f"""
+
+I made suggestions where possible but couldn't add them everywhere. My complete revision is below.
+
+<details><summary>Full text</summary>
+
+```
+{revision}
+```
+
+</details>
+
+"""
+        post_review_comment({'body': comment_text})
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check writing style of markdown file")

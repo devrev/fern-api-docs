@@ -24,58 +24,27 @@ To implement this mapping:
 2. During initial domain mapping, map this object to the *platform groups* object in DevRev.
 3. Reference your object in other fields, such as in the `shared_with` field of articles.
 
-## Article permissions
+## Shared with field
 
-Articles in DevRev can be shared with individual users or groups, allowing for granular control over who can access what content.
+The `shared_with` field enables you to define permissions for articles (and potentially other objects in the future). 
+It specifies both who can access the content and what permission level they have. 
+This field utilizes the `permission` type to associate users or groups with their designated roles.
 
-### Sharing mechanism
-
-The `shared_with` field specifies the permission level for each user or group using the `permission` type.
-This type is a structure that connects a reference to a user-like record type (the `member_id` field)
-with an `enum` value that defines the user's role or permission level.
-
-### Scope interaction
-
-<Tabs>
-<Tab title="Internal scope">
-
-For `scope=internal` articles:
-- By default, only the owner has access.
-- Additional access is granted exclusively through the `shared_with` field.
-</Tab>
-
-<Tab title="External scope">
-
-For `scope=external` articles the expected behavior is they will be published to Portal/PLuG and shared with customers.
-
-- By default:
-  - Admins have CRUD (create, read, update, delete) rights.
-  - Platform users have CRU (create, read, update) rights.
-- Additional rights can be assigned by creating roles and assigning them to the entire organization or specific groups.
-- Articles can be shared with customers and published to Portal/PLuG.
-</Tab>
-</Tabs>
-
-### Shared with
-
-The `shared_with` field allows you to specify who can access an article and what level of permissions they have.
-This field uses the `permission` type to connect users or groups with specific roles.
-
-#### Structure
+### Structure
 
 Each entry in the `shared_with` collection contains two key components:
 
 - `member_id`: Identifies which user or group is being granted access.
 - `role`: Specifies the permission level (for example, "viewer", "editor", "owner").
 
-#### References to platform groups
+### Member types
 
 The `member_id` field can reference three different types of objects:
 - Individual users (`#record:users`)
 - Standard groups (`#record:groups`)
 - Platform groups (`#record:platform_groups`)
 
-#### External metadata example
+### External metadata example
 
 ```json
 {
@@ -111,6 +80,39 @@ The `member_id` field can reference three different types of objects:
 }
 ```
 
+## Article permissions
+
+Articles in DevRev can be shared with individual users or groups, allowing for granular control over who can access what content.
+
+### Sharing mechanism
+
+The `shared_with` field specifies the permission level for each user or group using the `permission` type.
+This type is a structure that connects a reference to a user-like record type (the `member_id` field)
+with an `enum` value that defines the user's role or permission level.
+
+### Scope interaction
+
+<Tabs>
+<Tab title="Internal scope">
+
+For `scope=internal` articles:
+- By default, only the owner has access.
+- Additional access is granted exclusively through the `shared_with` field.
+</Tab>
+
+<Tab title="External scope">
+
+For `scope=external` articles the expected behavior is they will be published to Portal/PLuG and shared with customers.
+
+- By default:
+  - Admins have CRUD (create, read, update, delete) rights.
+  - Platform users have CRU (create, read, update) rights.
+- Additional rights can be assigned by creating roles and assigning them to the entire organization or specific groups.
+- Articles can be shared with customers and published to Portal/PLuG.
+</Tab>
+</Tabs>
+
+---
 
 ## Authorization policy
 

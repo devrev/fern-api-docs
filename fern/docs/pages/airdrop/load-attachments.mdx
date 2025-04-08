@@ -8,7 +8,7 @@ Airdrop initiates the load attachments phase by starting the snap-in with a mess
 
 This phase is defined in [load-attachments.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/loading/workers/load-attachments.ts). 
 
-The loading process involves providing the `create` function to add attachments to the external system. The `create` function is responsible for making API calls to the external system to create the attachments, as well as handling errors and the external system's rate limiting. The function returns the ID and modified date of the record in the external system or indicates a rate-limiting back-off or logs errors if the attachment could not be created.
+The loading process involves providing the `create` function to add attachments to the external system. The `create` function is responsible for making API calls to the external system to create the attachments, as well as handling errors and the external system's rate limiting. The function should return the `id` and optionally `modifiedDate` of the record in the external system or indicates a rate-limiting back-off or logs errors if the attachment could not be created.
 
 ```typescript
 processTask<LoaderState>({

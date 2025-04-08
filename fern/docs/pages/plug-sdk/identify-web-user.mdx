@@ -79,33 +79,32 @@ You can pass custom traits, as shown above, not only for `users` but also for `w
 
 If you prefer a two-level structure, where users are directly associated with an account instead of a workspace, you can provide the `user_ref` and details along with the `account_ref` and details.
 
-**Attributes for users**
+**Attributes for [users](https://developer.devrev.ai/public/api-reference/dev-users/product-builders-and-service-providers)**
 
-|Attributes   |Description   |Type   | Required  | Unique |
-|---|---|---|
-|`user_ref`   |A unique user reference that the DevRev app uses for identifying your users. This parameter is required.   |string   |✅ |- |
-|`email`   |The email address of the customer. It's used for sending email notifications of any support messages.   |string   |❌  |- |
-|`display_name`   |The name of the user that's shown on the widget.   |string   |❌  |- |
-|`phone_numbers`   |The customer's mobile number, which must adhere to the E.164 format.   |array   |❌ *  |- |
+| Attributes    | Description                                                                 | Type   | Required | Unique |
+|---------------|-----------------------------------------------------------------------------|--------|----------|--------|
+| user_ref      | A unique user reference that the DevRev app uses for identifying your users. This parameter is required. | string | ✅       | Yes    |
+| email         | The email address of the customer. It's used for sending email notifications of any support messages. | string | ❌       | No     |
+| display_name  | The name of the user that's shown on the widget.                          | string | ❌       | No     |
+| phone_numbers | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌ *     | No     |
 
 * If nothing is specified, a system-generated name will be assigned to the user.
 
-**Attributes for workspaces**                                              
+**Attributes for [workspaces](https://developer.devrev.ai/public/api-reference/rev-orgs/workspaces)**                                              
 
-|Attributes   |Description   |Type   | Required  | Unique |
-|---|---|---|
-|`workspace_ref`   |A unique reference for the user's workspace. If not provided, and an account reference is passed, the user is directly attached to the account.   |string   |❌ |- |
-|`display_name`   |The name of the workspace that's shown on the widget.   |string   |- |✅ |
+| Attributes      | Description                                                                                                        | Type   | Required | Unique |
+|-----------------|--------------------------------------------------------------------------------------------------------------------|--------|----------|--------|
+| `workspace_ref` | A unique reference for the user's workspace. If not provided, and an account reference is passed, the user is directly attached to the account. | string | ❌        | -      |
+| `display_name`  | The name of the workspace that's shown on the widget.                                                              | string | -        | ✅     |
 
-**Attributes for accounts**                                                        
+**Attributes for [accounts](https://developer.devrev.ai/public/api-reference/accounts/accounts)**                                                        
 
-|Attributes   |Description   |Type   | Required  | Unique |
-|---|---|---|
-|`account_ref`   |A unique reference for the account.    |string   | ❌ |- |
-|`display_name`    | The name of the account that's shown on the widget.    |string   |- |✅ |
-|`domains`   |The domain names of the accounts that the users belongs to.   |array   |- |✅ |
-|`phone_numbers`    |The phone number associated with the account must be in E.164 format.   |array   |- |- |
-
+| Attributes      | Description                                                                                                       | Type   | Required | Unique |
+|-----------------|-------------------------------------------------------------------------------------------------------------------|--------|----------|--------|
+| `account_ref`   | A unique reference for the account.                                                                               | string | ❌        | -      |
+| `display_name`  | The name of the account that's shown on the widget.                                                               | string | -        | ✅     |
+| `domains`       | Use a unique format like 'devrev.ai'. Formats such as 'https://devrev.ai' or 'www.devrev.ai' are not valid.       | array  | -        | ✅     |
+| `phone_numbers` | The phone number associated with the account must be in E.164 format.                                             | array  | -        | -      |
 ## Pass the session token 
 
 While initializing the PLuG widget you pass the session token for DevRev to identify this user and thereby make the widget more customized for the user and their context.

@@ -105,6 +105,35 @@ If you prefer a two-level structure, where users are directly associated with an
 | `display_name`  | The name of the account that's shown on the widget.                                                               | string | -        | ✅     |
 | `domains`       | Use a unique format like 'devrev.ai'. Formats such as 'https://devrev.ai' or 'www.devrev.ai' are not valid.       | array  | -        | ✅     |
 | `phone_numbers` | The phone number associated with the account must be in E.164 format.                                             | array  | -        | -      |
+
+
+### How resolution works
+
+In a DevOrg, we utilize unique identifiers to handle objects. If an object doesn't exist, we create it and then attempt to link it. For example, here's how it operates:
+
+User reference:
+- A user reference is mandatory, ensuring its constant presence.
+- If a user with the provided reference doesn't exist, the system automatically creates the user.
+
+This approach ensures efficient management and integration of objects within the DevOrg.
+
+| Workspace Ref | Account Ref | Results                                                                                              |
+|---------------|-------------|------------------------------------------------------------------------------------------------------|
+| ✅            | ✅          | If neither exists: System creates the account first, then creates the workspace. User is linked to both. |
+|               |             | If account exists but workspace doesn't: System creates the workspace under the existing account. User is linked to both. |
+|               |             | If workspace exists under different account: System returns an error, as workspaces cannot be moved between accounts. |
+| ✅            | ❌          | If workspace doesn’t exist: System creates a new account and workspace (if needed). User is linked to both. |
+| ❌            | ✅          | If the account doesn’t exist: An account is created, and the user is linked with the account.         |
+| ❌            | ❌          | No action on account or workspace. The user is returned.                                              |
+
+
+
+### Best practices
+
+- Ensure the email field is filled out. This helps the support team accurately identify users and prevents duplicate entries when integrating with systems like email integration or outreach.
+- If only an account and user are needed, you can omit workspace traits. This strategy helps prevent duplicate conflicts at the workspace level and maintains a clear object hierarchy.
+- Ensure that unique attributes and reference identifiers (Refs) are aligned to avoid conflicts.
+
 ## Pass the session token 
 
 While initializing the PLuG widget you pass the session token for DevRev to identify this user and thereby make the widget more customized for the user and their context.

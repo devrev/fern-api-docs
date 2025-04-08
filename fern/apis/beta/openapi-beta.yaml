@@ -2196,6 +2196,7 @@ components:
           uom: '#/components/schemas/uom'
           user_preferences: '#/components/schemas/user-preferences'
           webhook: '#/components/schemas/webhook'
+          widget: '#/components/schemas/widget'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account'
@@ -2239,6 +2240,7 @@ components:
         - $ref: '#/components/schemas/uom'
         - $ref: '#/components/schemas/user-preferences'
         - $ref: '#/components/schemas/webhook'
+        - $ref: '#/components/schemas/widget'
       properties:
         type:
           $ref: '#/components/schemas/atom-type'
@@ -2332,6 +2334,7 @@ components:
           uom: '#/components/schemas/uom-summary'
           user_preferences: '#/components/schemas/user-preferences-summary'
           webhook: '#/components/schemas/webhook-summary'
+          widget: '#/components/schemas/widget-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account-summary'
@@ -2375,6 +2378,7 @@ components:
         - $ref: '#/components/schemas/uom-summary'
         - $ref: '#/components/schemas/user-preferences-summary'
         - $ref: '#/components/schemas/webhook-summary'
+        - $ref: '#/components/schemas/widget-summary'
       properties:
         type:
           $ref: '#/components/schemas/atom-type'
@@ -2425,6 +2429,7 @@ components:
         - uom
         - user_preferences
         - webhook
+        - widget
     atoms-get-request:
       type: object
       properties:
@@ -6799,6 +6804,10 @@ components:
       additionalProperties: false
       description: Path component for rendering custom type lists in tree form.
       title: custom-type-path-component
+    dashboard:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+      title: dashboard
     dashboard-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'
@@ -8694,6 +8703,12 @@ components:
               description: Actual start date for the object.
               example: "2023-01-01T12:00:00.000Z"
               format: date-time
+            stage_v2:
+              $ref: '#/components/schemas/stage'
+            state_v2:
+              type: string
+              description: State of the object based upon the stage.
+              format: text
             target_close_date:
               type: string
               description: Target close date for the object.
@@ -8705,6 +8720,13 @@ components:
               example: "2023-01-01T12:00:00.000Z"
               format: date-time
       title: enhancement
+    enhancement-rev-score-tier:
+      type: string
+      description: Rev Score tier of the enhancement.
+      enum:
+        - high
+        - low
+        - medium
     enhancement-summary:
       allOf:
         - $ref: '#/components/schemas/part-base-summary'
@@ -9675,6 +9697,34 @@ components:
       required:
         - conversation
       title: event-conversation-updated
+    event-dashboard-created:
+      type: object
+      properties:
+        dashboard:
+          $ref: '#/components/schemas/dashboard'
+      required:
+        - dashboard
+      title: event-dashboard-created
+    event-dashboard-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the dashboard that was deleted.
+          format: id
+      required:
+        - id
+      title: event-dashboard-deleted
+    event-dashboard-updated:
+      type: object
+      properties:
+        dashboard:
+          $ref: '#/components/schemas/dashboard'
+        old_dashboard:
+          $ref: '#/components/schemas/dashboard'
+      required:
+        - dashboard
+      title: event-dashboard-updated
     event-dev-user-created:
       type: object
       properties:
@@ -9958,6 +10008,8 @@ components:
           type: string
           description: The ID of the SLA tracker that was deleted.
           format: id
+        old_sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
       required:
         - id
       title: event-sla-tracker-deleted
@@ -10303,6 +10355,34 @@ components:
       required:
         - webhook
       title: event-webhook-updated
+    event-widget-created:
+      type: object
+      properties:
+        widget:
+          $ref: '#/components/schemas/widget'
+      required:
+        - widget
+      title: event-widget-created
+    event-widget-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the widget that was deleted.
+          format: id
+      required:
+        - id
+      title: event-widget-deleted
+    event-widget-updated:
+      type: object
+      properties:
+        old_widget:
+          $ref: '#/components/schemas/widget'
+        widget:
+          $ref: '#/components/schemas/widget'
+      required:
+        - widget
+      title: event-widget-updated
     event-work-created:
       type: object
       properties:
@@ -11489,6 +11569,10 @@ components:
             The cursor used to iterate preceding results in accordance to the
             sort order. If not set, then no prior elements exist.
           format: text
+        total:
+          type: integer
+          description: The total number of incidents in the group.
+          format: int32
       required:
         - incidents
         - key
@@ -12141,6 +12225,7 @@ components:
           rev_user: '#/components/schemas/rev-user-summary'
           task: '#/components/schemas/task-summary'
           ticket: '#/components/schemas/ticket-summary'
+          widget: '#/components/schemas/widget-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account-summary'
@@ -12160,6 +12245,7 @@ components:
         - $ref: '#/components/schemas/rev-user-summary'
         - $ref: '#/components/schemas/task-summary'
         - $ref: '#/components/schemas/ticket-summary'
+        - $ref: '#/components/schemas/widget-summary'
       properties:
         type:
           $ref: '#/components/schemas/link-endpoint-type'
@@ -12186,6 +12272,7 @@ components:
         - rev_user
         - task
         - ticket
+        - widget
     link-rev-user-to-rev-org-request:
       type: object
       description: Request to link a Rev user to an existing Rev organization.
@@ -14357,6 +14444,11 @@ components:
             type: string
             format: id
           maxItems: 1
+        stage_v2:
+          type: string
+          description: |
+            Custom stage ID which will be used for creating the enhancement.
+          format: id
         target_close_date:
           type: string
           description: |
@@ -14417,6 +14509,66 @@ components:
       additionalProperties: false
       title: parts-delete-response
       x-go-name: PartsDeleteResponseBody
+    parts-filter-enhancement:
+      type: object
+      properties:
+        accounts:
+          type: array
+          description: Filters for enhancement by its accounts.
+          example:
+            - ACC-12345
+          items:
+            type: string
+            format: id
+        actual_close_date:
+          $ref: '#/components/schemas/date-time-filter'
+        actual_close_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        actual_start_date:
+          $ref: '#/components/schemas/date-time-filter'
+        actual_start_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        opportunities:
+          type: array
+          description: Filters for enhancement by its opportunities.
+          example:
+            - OPP-12345
+          items:
+            type: string
+            format: id
+        rev_score_tier:
+          type: array
+          description: Filters for enhancement by its rev score tier.
+          items:
+            $ref: '#/components/schemas/enhancement-rev-score-tier'
+        stage_v2:
+          type: array
+          description: |
+            List of IDs of the custom stages which will be used for filtering.
+          items:
+            type: string
+            format: id
+        state_v2:
+          type: array
+          description: Filters for part with any of the provided custom states.
+          items:
+            type: string
+            format: text
+        target_close_date:
+          $ref: '#/components/schemas/date-time-filter'
+        target_close_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        target_start_date:
+          $ref: '#/components/schemas/date-time-filter'
+        target_start_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        tickets:
+          type: array
+          description: Filters for enhancement by its tickets.
+          items:
+            type: string
+            format: id
+      title: parts-filter-enhancement
     parts-get-request:
       type: object
       properties:
@@ -14459,9 +14611,8 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
-        custom_fields:
-          type: object
-          description: Filters for custom fields.
+        enhancement:
+          $ref: '#/components/schemas/parts-filter-enhancement'
         limit:
           type: integer
           description: |
@@ -14598,6 +14749,11 @@ components:
     parts-update-request-enhancement:
       type: object
       properties:
+        stage_v2:
+          type: string
+          description: |
+            Custom stage ID which will be used for updating the enhancement.
+          format: id
         target_close_date:
           type: string
           description: Updates the target close date of the enhancement.
@@ -15337,6 +15493,7 @@ components:
               format: text
             domain:
               type: string
+              deprecated: true
               description: Company's domain name. Example - 'devrev.ai'.
               format: text
             external_ref:
@@ -19657,7 +19814,32 @@ components:
               format: id
             dispatched_channels:
               type: array
-              description: Source channels on which the survey is sent.
+              description: |
+                Source channels on which the survey is sent. Stock allowed values:
+                  {
+                    "id": 1,
+                    "label": "plug",
+                    "ordinal": 1,
+                    "overridable": false
+                  },
+                  {
+                    "id": 2,
+                    "label": "portal",
+                    "ordinal": 2,
+                    "overridable": false
+                  },
+                  {
+                    "id": 3,
+                    "label": "email",
+                    "ordinal": 3,
+                    "overridable": false
+                  },
+                  {
+                    "id": 4,
+                    "label": "slack",
+                    "ordinal": 4,
+                    "overridable": false
+                  }
               items:
                 $ref: '#/components/schemas/enum-value'
             object:
@@ -23081,6 +23263,12 @@ components:
           $ref: '#/components/schemas/event-conversation-deleted'
         conversation_updated:
           $ref: '#/components/schemas/event-conversation-updated'
+        dashboard_created:
+          $ref: '#/components/schemas/event-dashboard-created'
+        dashboard_deleted:
+          $ref: '#/components/schemas/event-dashboard-deleted'
+        dashboard_updated:
+          $ref: '#/components/schemas/event-dashboard-updated'
         dev_user_created:
           $ref: '#/components/schemas/event-dev-user-created'
         dev_user_deleted:
@@ -23195,6 +23383,12 @@ components:
           format: id
         webhook_updated:
           $ref: '#/components/schemas/event-webhook-updated'
+        widget_created:
+          $ref: '#/components/schemas/event-widget-created'
+        widget_deleted:
+          $ref: '#/components/schemas/event-widget-deleted'
+        widget_updated:
+          $ref: '#/components/schemas/event-widget-updated'
         work_created:
           $ref: '#/components/schemas/event-work-created'
         work_deleted:
@@ -23229,6 +23423,9 @@ components:
         - conversation_created
         - conversation_deleted
         - conversation_updated
+        - dashboard_created
+        - dashboard_deleted
+        - dashboard_updated
         - dev_user_created
         - dev_user_deleted
         - dev_user_updated
@@ -23281,6 +23478,9 @@ components:
         - webhook_created
         - webhook_deleted
         - webhook_updated
+        - widget_created
+        - widget_deleted
+        - widget_updated
         - work_created
         - work_deleted
         - work_fetched
@@ -23558,6 +23758,14 @@ components:
       additionalProperties: false
       description: The schedule for each week.
       title: weekly-org-schedule
+    widget:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+      title: widget
+    widget-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: widget-summary
     work:
       type: object
       discriminator:
@@ -23849,8 +24057,51 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: The sprint that the issue belongs to.
@@ -24506,8 +24757,51 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: Updates the sprint that the issue belongs to.
@@ -34572,12 +34866,140 @@ paths:
           schema:
             type: string
             format: text
-        - description: Filters for custom fields.
+        - description: Filters for enhancement by its accounts.
           explode: false
           in: query
-          name: custom_fields
+          name: enhancement.accounts
           schema:
-            type: object
+            type: array
+            example:
+              - ACC-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_close_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_close_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_start_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_start_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: Filters for enhancement by its opportunities.
+          explode: false
+          in: query
+          name: enhancement.opportunities
+          schema:
+            type: array
+            example:
+              - OPP-12345
+            items:
+              type: string
+              format: id
+        - description: Filters for enhancement by its rev score tier.
+          explode: false
+          in: query
+          name: enhancement.rev_score_tier
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/enhancement-rev-score-tier'
+        - description: |
+            List of IDs of the custom stages which will be used for filtering.
+          explode: false
+          in: query
+          name: enhancement.stage_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for part with any of the provided custom states.
+          explode: false
+          in: query
+          name: enhancement.state_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_close_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_close_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_start_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_start_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: Filters for enhancement by its tickets.
+          explode: false
+          in: query
+          name: enhancement.tickets
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: |
             The maximum number of parts to return. The default is '50'.
           explode: false

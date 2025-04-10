@@ -23849,8 +23849,51 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: The sprint that the issue belongs to.

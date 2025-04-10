@@ -23875,8 +23875,7 @@ components:
                 "label": "P3",
                 "ordinal": 4,
                 "overridable": true
-              }
-            ```
+              }```
           format: int64
           x-devrev-uenum-overridable: true
           x-devrev-uenum-values:

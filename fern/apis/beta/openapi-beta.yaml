@@ -23851,6 +23851,7 @@ components:
           description: |
             Priority enum id of the work based upon impact and criticality. The
             allowed ids can be extended by the user. Stock allowed values:
+            ```
               {
                 "id": 1,
                 "label": "P0",
@@ -23875,6 +23876,7 @@ components:
                 "ordinal": 4,
                 "overridable": true
               }
+            ```
           format: int64
           x-devrev-uenum-overridable: true
           x-devrev-uenum-values:

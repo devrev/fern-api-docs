@@ -2,7 +2,7 @@ Once you have [installed PLuG](./installation), all your users who interact with
 
 For users who are logged into your website, you can identify them in PLuG to enable them to view their conversation history and receive more personalized engagement.
 
-To implement user identification, you'll need to generate a session token for each user who visits your website. This token is created using your application access token combined with customer information, and must be generated on your backend to keep the application token secure.
+To implement user identification, you need to generate a session token for each user who visits your website. This token is created using your application access token combined with customer information, and must be generated on your backend to keep the application token secure.
 
 ## Generate an application access token
 
@@ -65,7 +65,7 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
 | display_name  | The name of the user that's shown on the widget.                          | string | ❌*       | ❌     |
 | phone_numbers | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌      | ❌     |
 
-* If nothing is specified, a system-generated name will be assigned to the user.
+* If nothing is specified, a system-generated name is assigned to the user.
 
 ** Email uniqueness is subjected to organization preferences. If organization want, it can be marked non unique. But it is not recommended.
 
@@ -104,7 +104,7 @@ You can pass the custom attributes that are created as shown below:
 
 You can pass custom traits, as shown above, not only for `users` but also for `workspaces` and `accounts`.
 
-### API Status codes and troubleshooting
+### API status codes and troubleshooting
 
 | Status code| Description & Troubleshooting |
 |----------|----------|
@@ -132,7 +132,7 @@ DevRev offers three ways to structure your customer's data:
    - What to include: User, workspace and account information
    - Only use workspace information if your business model requires workspace organization
 
-In a DevOrg, we utilize unique identifiers to handle objects. If an object doesn't exist, we create it and then attempt to link it. For example, here's how it operates:
+In a DevOrg, unique identifiers are utilized to handle objects. If an object doesn't exist, it is created and then an attempt is made to link it. For example, here's how it operates:
 
 User reference:
 - A user reference is mandatory, ensuring its constant presence.
@@ -154,7 +154,7 @@ This approach ensures efficient management and integration of objects within the
 ### Best practices
 
 - Populate user traits like email and display name to:
-    - Make users easily identifiable
+    - Make users identifiable
     - Prevent duplicate users across integrations
 - Maintain consistent unique identifiers across your system
 - Follow the specified formats for phone numbers and domains

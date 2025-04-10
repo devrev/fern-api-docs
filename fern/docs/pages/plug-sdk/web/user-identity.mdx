@@ -62,21 +62,6 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
 Ensure that you follow the specified format when providing your phone number.
 </Callout>
 
-## Pass custom attributes
-
-To create custom attributes, see [Object customization](https://devrev.ai/docs/product/object-customization).
-
-You can pass the custom attributes that are created as shown below:
-```json
-
-"custom_fields": {
-  "tnt__custom_attribute_name1": <value>,
-  "tnt__custom_attribute_name2": <value>,
-}
- ```
-
-You can pass custom traits, as shown above, not only for `users` but also for `workspaces` and `accounts`.
-
 If you prefer a two-level structure, where users are directly associated with an account instead of a workspace, you can provide the `user_ref` and details along with the `account_ref` and details.
 
 **Attributes for [users](https://developer.devrev.ai/public/api-reference/dev-users/product-builders-and-service-providers)**
@@ -84,11 +69,12 @@ If you prefer a two-level structure, where users are directly associated with an
 | Attributes    | Description                                                                 | Type   | Required | Unique |
 |---------------|-----------------------------------------------------------------------------|--------|----------|--------|
 | user_ref      | A unique user reference that the DevRev app uses for identifying your users. This parameter is required. | string | ✅       | ✅    |
-| email         | The email address of the customer. It's used for sending email notifications of any support messages. | string | ❌       | ✅     |
-| display_name  | The name of the user that's shown on the widget.                          | string | ❌       | ❌     |
-| phone_numbers | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌ *     | ❌     |
+| email         | The email address of the customer. It's used for sending email notifications of any support messages. | string | ❌       | ✅**     |
+| display_name  | The name of the user that's shown on the widget.                          | string | ❌*       | ❌     |
+| phone_numbers | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌      | ❌     |
 
 * If nothing is specified, a system-generated name will be assigned to the user.
+** Email uniqueness is subjected to organization preferences. If organization want, it can be marked non unique. But it is not recommended.
 
 **Attributes for [workspaces](https://developer.devrev.ai/public/api-reference/rev-orgs/workspaces)**                                              
 
@@ -106,16 +92,32 @@ If you prefer a two-level structure, where users are directly associated with an
 | `domains`       | Use a unique format like 'devrev.ai'. Formats such as 'https://devrev.ai' or 'www.devrev.ai' are not valid.       | array  | ❌        | ✅     |
 | `phone_numbers` | The phone number associated with the account must be in E.164 format.                                             | array  | ❌        | ❌      |
 
+## Pass custom attributes
 
+To create custom attributes, see [Object customization](https://devrev.ai/docs/product/object-customization).
 
-| Status code| Description |
+You can pass the custom attributes that are created as shown below:
+```json
+
+"custom_fields": {
+  "tnt__custom_attribute_name1": <value>,
+  "tnt__custom_attribute_name2": <value>,
+}
+ ```
+
+You can pass custom traits, as shown above, not only for `users` but also for `workspaces` and `accounts`.
+
+### API Status codes and troubleshooting
+
+| Status code| Description & Troubleshooting |
 |----------|----------|
-|          |    |
-|          |    |
-|          |    |
-|          |    |
-|          |    |
-|          |    |
+| 200 OK                    | The request was successful and the session token would be returned in the response. No troubleshooting required.  |
+| 400 Bad Request           | The request was invalid. Check the request body for errors. For fields like domain and phone number, check on their format. |
+| 401 Unauthorized          | The request was unauthorized. Check if the AAT is valid and not expired. |
+| 403 Forbidden             | The request was forbidden. Check the authorization header for errors and make sure the token is a valid AAT. |
+| 404 Not Found             | The requested resource could not be found. Verify the endpoint URL is correct. |
+| 429 Too Many Requests     | Rate limit exceeded. Implement request throttling or wait before retrying. |
+| 500 Internal Server Error | Server encounteres an unexpected error. Wait and try again later. If the issue persists, contact support with the request details and timestamp. |
 
 ### How resolution works
 
@@ -129,19 +131,20 @@ This approach ensures efficient management and integration of objects within the
 
 | Workspace Ref | Account Ref | Results                                                                                              |
 |---------------|-------------|------------------------------------------------------------------------------------------------------|
+| ❌            | ✅          | (Most common Usage) \nIf the account doesn’t exist: An account is created, and the user is linked with the account.         |
+| ❌            | ❌          | No action on account or workspace. The user is returned.                                              |
 | ✅            | ✅          | If neither exists: System creates the account first, then creates the workspace. User is linked to both. |
 |               |             | If account exists but workspace doesn't: System creates the workspace under the existing account. User is linked to both. |
-|               |             | If workspace exists under different account: System returns an error, as workspaces cannot be moved between accounts. |
+|               |             | If workspace exists under different account: System returns an error, as workspaces cannot be a part of 2 accounts. |
 | ✅            | ❌          | If workspace doesn’t exist: System creates a new account and workspace (if needed). User is linked to both. |
-| ❌            | ✅          | If the account doesn’t exist: An account is created, and the user is linked with the account.         |
-| ❌            | ❌          | No action on account or workspace. The user is returned.                                              |
 
 
 
 ### Best practices
 
-- Ensure the email field is filled out. This helps the support team accurately identify users and prevents duplicate entries when integrating with systems like email integration or outreach.
-- If only an account and user are needed, you can omit workspace traits. This strategy helps prevent duplicate conflicts at the workspace level and maintains a clear object hierarchy.
+- For B2C companies, we recommend to populate only the user ref and no workspace or account ref.
+- For B2B companies, we recommend to populate user ref alongside account ref. Workspace ref and traits are optional and are recommended to not be populated if workspace modelling actually makes sense for the companies and we have a unique identifier to resolve them.
+- Identifiers like email address and display name are recommended to be populated in the user traits so the resultant user is identifiable and also to avoid creating duplicates from other integrations like email integration or outreach.
 - Ensure that unique attributes and reference identifiers (Refs) are aligned to avoid conflicts.
 
 ## Pass the session token 

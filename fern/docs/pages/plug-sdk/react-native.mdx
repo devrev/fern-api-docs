@@ -10,7 +10,7 @@ npm install @devrev/sdk-react-native
 
 ## Set up the DevRev SDK
 
-In DevRev, go to **Settings** > **PLuG Chat** copy the value under **Your unique App ID**. After obtaining the credentials, you can configure the DevRev SDK in your app. 
+In DevRev, go to **Settings** > **PLuG Chat** copy the value under **Your unique App ID**. After obtaining the credentials, you can configure the DevRev SDK in your app.
 
 <Callout intent="note">
 The DevRev SDK must be configured before you can use any of its features.
@@ -107,7 +107,7 @@ This functionality is for Android only.
 For scenarios where custom handling is needed, links from the support chat can be captured with the following method:
 
 ```typescript
-DevRevSDK.setInAppLinkHandler((url) => {
+DevRev.setInAppLinkHandler((url) => {
 	// Perform an action here.
 });
 ```
@@ -169,7 +169,7 @@ You can add custom properties to the session recording to help you understand th
 DevRev.addSessionProperties(properties: Map<string, string>)
 ```
 
-To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method:
 
 ```typescript
 DevRev.clearSessionProperties()
@@ -236,19 +236,19 @@ Push notifications require SDK configuration and user identification, whether un
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
 
 ```typescript
-DevRevSDK.registerDeviceToken(deviceToken: string, deviceID: string)
+DevRev.registerDeviceToken(deviceToken: string, deviceID: string)
 ```
 
 On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNS) token.
 
 ### Unregister from push notifications
 
-If your app no longer needs to receive push notifications, you can unregister the device. 
+If your app no longer needs to receive push notifications, you can unregister the device.
 
 Use the following method to unregister the device:
 
 ```typescript
-DevRevSDK.unregisterDevice(deviceID: string)
+DevRev.unregisterDevice(deviceID: string)
 ```
 
 The method requires the device identifier, which should be the same as the one used when registering the device.
@@ -263,7 +263,7 @@ On Android, notifications are implemented as data messages to offer flexibility.
 To process the notification, use the following method:
 
 ```typescript
-DevRevSDK.processPushNotification(payload: string)
+DevRev.processPushNotification(payload: string)
 ```
 
 Here, the `message` object from the notification payload should be passed to this function.
@@ -278,23 +278,22 @@ const notificationPayload = {
 	}
 };
 const messageJson = notificationPayload["message"];
-DevRevSDK.processPushNotification(JSON.stringify(messageJson));
+DevRev.processPushNotification(JSON.stringify(messageJson));
 ```
 #### iOS
 
-On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions. 
+On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
 
 ```typescript
-DevRevSDK.processPushNotification(payload: string)
+DevRev.processPushNotification(payload: string)
 ```
 
 For example:
 
 ```typescript
-DevRevSDK.processPushNotification(JSON.stringify(payload));
+DevRev.processPushNotification(JSON.stringify(payload));
 ```
 
 ## License
 
 Apache 2.0
-

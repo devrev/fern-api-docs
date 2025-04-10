@@ -1,10 +1,8 @@
 Once you have [installed PLuG](./installation), all your users who interact with the widget are created as anonymous users in the DevRev app with a random name since there is no information about the user.
 
-For users who are logged into your website, you can identify them in PLuG so they can view their past conversations. Identifying your users also enables more personalized engagement.
+For users who are logged into your website, you can identify them in PLuG to enable them to view their conversation history and receive more personalized engagement.
 
-In this flow, you have to generate a session token for every user who visits your website. The session token identifies the customer when they interact with the widget. The session token is generated using the application access token and customer information. It should be generated on your website's back end since the app token needs to be kept hidden.
-
-To identify logged-in users, follow these steps:
+To implement user identification, you'll need to generate a session token for each user who visits your website. This token is created using your application access token combined with customer information, and must be generated on your backend to keep the application token secure.
 
 ## Generate an application access token
 
@@ -18,7 +16,7 @@ Ensure you copy your access token, as you will not be able to view it again.
 ## Generate a session token
 
 <Callout intent="note">
-For security reasons, this call should be made from the server side so that your AAT isn't exposed.
+For security reasons, this API call must be made from your server side to prevent exposing your Application Access Token (AAT).
 </Callout>
 
 Using the `rev_info` method, you can generate and recognize a user within the DevRev system by providing relevant user details. This method enables you to convey information systematically, ensuring alignment between your DevRev CRM and the structured data model. For information regarding terminologies, click [here](https://devrev.ai/docs/product/grow).
@@ -35,7 +33,7 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
         "workspace_ref": "devrev-dev",
         "user_traits": {
             "email": "test-user@devrev.ai",
-            "display_name": "Devrev Test USer",
+            "display_name": "Devrev Test User",
             "phone_numbers": ["+911122334455"],
             "custom_fields": {
                "tnt__<field1_name>": "value 1"
@@ -57,12 +55,6 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
     }
 }'
  ```
-
-<Callout intent="note">
-Ensure that you follow the specified format when providing your phone number.
-</Callout>
-
-If you prefer a two-level structure, where users are directly associated with an account instead of a workspace, you can provide the `user_ref` and details along with the `account_ref` and details.
 
 **Attributes for [users](https://developer.devrev.ai/public/api-reference/dev-users/product-builders-and-service-providers)**
 
@@ -92,6 +84,10 @@ If you prefer a two-level structure, where users are directly associated with an
 | `domains`       | Use a unique format like 'devrev.ai'. Formats such as 'https://devrev.ai' or 'www.devrev.ai' are not valid.       | array  | ❌        | ✅     |
 | `phone_numbers` | The phone number associated with the account must be in E.164 format.                                             | array  | ❌        | ❌      |
 
+<Callout intent="note">
+Ensure that you follow the specified format when populating phone numbers and domains in the request body.
+</Callout>
+
 ## Pass custom attributes
 
 To create custom attributes, see [Object customization](https://devrev.ai/docs/product/object-customization).
@@ -117,9 +113,23 @@ You can pass custom traits, as shown above, not only for `users` but also for `w
 | 403 Forbidden             | The request was forbidden. Check the authorization header for errors and make sure the token is a valid AAT. |
 | 404 Not Found             | The requested resource could not be found. Verify the endpoint URL is correct. |
 | 429 Too Many Requests     | Rate limit exceeded. Implement request throttling or wait before retrying. |
-| 500 Internal Server Error | Server encounteres an unexpected error. Wait and try again later. If the issue persists, contact support with the request details and timestamp. |
+| 500 Internal Server Error | Server encounters an unexpected error. Wait and try again later. If the issue persists, contact support with the request details and timestamp. |
 
 ### How resolution works
+
+DevRev offers three ways to structure your customer's data:
+1. **Single-level (Recommended for most B2C cases)**
+   - User
+   - What to include: Only user information
+
+2. **Two-level (Recommended for most B2B cases)**
+   - User → Account
+   - What to include: User and account information
+
+3. **Three-level**
+   - User → Workspace → Account
+   - What to include: User, workspace and account information
+   - Only use workspace information if your business model requires workspace organization
 
 In a DevOrg, we utilize unique identifiers to handle objects. If an object doesn't exist, we create it and then attempt to link it. For example, here's how it operates:
 
@@ -142,10 +152,12 @@ This approach ensures efficient management and integration of objects within the
 
 ### Best practices
 
-- For B2C companies, we recommend to populate only the user ref and no workspace or account ref.
-- For B2B companies, we recommend to populate user ref alongside account ref. Workspace ref and traits are optional and are recommended to not be populated if workspace modelling actually makes sense for the companies and we have a unique identifier to resolve them.
-- Identifiers like email address and display name are recommended to be populated in the user traits so the resultant user is identifiable and also to avoid creating duplicates from other integrations like email integration or outreach.
-- Ensure that unique attributes and reference identifiers (Refs) are aligned to avoid conflicts.
+- Populate user traits like email and display name to:
+    - Make users easily identifiable
+    - Prevent duplicate users across integrations
+- Maintain consistent unique identifiers across your system
+- Follow the specified formats for phone numbers and domains
+- Keep your application access token secure
 
 ## Pass the session token 
 

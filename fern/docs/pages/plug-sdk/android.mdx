@@ -359,10 +359,6 @@ The support button can also accept default parameters like
 
 ```kotlin
 android:src="@your_drawable_here"
-```
-and
-
-```kotlin
 android:backgroundTint="@your_background_color"
 ```
 
@@ -599,8 +595,9 @@ To protect sensitive data, the DevRev SDK provides an auto-masking feature that 
 
 While the auto-masking feature may be sufficient for most situations, you can manually mark/unmark additional views as sensitive.
 
-> [!NOTE]
-> Use Tag method only when you don't have any other tag already applied to your UI element.
+### Mask
+### Using tag
+<Note>Use the `Tag` method only when you don't have any other tag already applied to your UI element.</Note>
 
 ```xml
 android:tag="devrev-mask"
@@ -877,7 +874,7 @@ For example:
 ### Screen transition management
 
 The DevRev SDK allows tracking of screen transitions to understand user navigation within your app.
-You can check if a screen transition is in progress and manually update the state using the following methods:
+You can check if a screen transition is in progress and manually update the state using the following methods.
 
 ### Check if the screen is transitioning
 

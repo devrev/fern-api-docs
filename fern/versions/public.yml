@@ -163,7 +163,6 @@ navigation:
                 slug: metadata-extraction
                 path: ../docs/pages/airdrop/metadata-extraction.mdx
               - page: "Initial domain mapping"
-                hidden: false
                 slug: initial-domain-mapping
                 path: ../docs/pages/airdrop/initial-domain-mapping.mdx
               - page: "Data extraction"
@@ -174,8 +173,13 @@ navigation:
                 path: ../docs/pages/airdrop/attachments-extraction.mdx
               - page: "Loading phases"
                 slug: loading-phases
-                hidden: true
                 path: ../docs/pages/airdrop/loading-phases.mdx
+              - page: "Load data"
+                slug: load-data
+                path: ../docs/pages/airdrop/load-data.mdx
+              - page: "Load attachments"
+                slug: load-attachments
+                path: ../docs/pages/airdrop/load-attachments.mdx
               - page: "Data and attachments deletion"
                 slug: data-attachments-deletion
                 hidden: true

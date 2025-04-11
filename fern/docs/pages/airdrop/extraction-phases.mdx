@@ -4,9 +4,13 @@ function that iterates over events and invokes workers per extraction phase.
 The SDK library exports `processTask` to structure the work within each phase, and `onTimeout` function
 to handle timeouts.
 
-The Airdrop snap-in extraction lifecycle consists of four phases: External Sync Units Extraction,
-Metadata Extraction, Data Extraction and Attachments Extraction. Each phase is defined in a 
-separate file and is responsible for fetching the respective data.
+The Airdrop snap-in extraction lifecycle consists of four phases: 
+* External sync units extraction
+* Metadata extraction
+* Data extraction  
+* Attachments extraction
+
+Each phase is defined in a separate file and is responsible for fetching the respective data.
 
 The SDK library provides a repository management system to handle artifacts in batches.
 The `initializeRepos` function initializes the repositories, and the `push` function uploads the
@@ -59,9 +63,6 @@ const run = async (events: AirdropEvent[]) => {
       event,
       initialState,
       workerPath: file,
-
-      // TODO: If needed you can pass additional options to the spawn function.
-      // For example timeout of the lambda, batch size, etc.
       // options: {},
     });
   }

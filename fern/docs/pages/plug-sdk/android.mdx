@@ -51,7 +51,7 @@ After completing these steps in your `build.gradle` Groovy script, you should be
 </Tab>
 </Tabs>
 
-## Set up the DevRev SDK
+### Set up the DevRev SDK
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
 2. Under **PLuG settings** copy the value under **Your unique App ID**.
@@ -155,7 +155,7 @@ The identification function should be placed appropriately in your app after the
 The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
 </Callout>
 
-#### Anonymous identification
+### Anonymous identification
 
 The anonymous identification method allows you to create an anonymous user with an optional user identifier, ensuring that no other data is stored or associated with the user.
 
@@ -176,7 +176,7 @@ The anonymous identification method allows you to create an anonymous user with 
   </Tab>
 </Tabs>
 
-#### Unverified identification
+### Unverified identification
 
 The unverified identification method identifies users with a unique identifier, but it does not verify their identity with the DevRev backend.
 
@@ -199,7 +199,7 @@ The unverified identification method identifies users with a unique identifier, 
 
 The function accepts the `DevRev.Identity` structure, with the user identifier (`userID`) as the only required property, all other properties are optional.
 
-#### Verified identification
+### Verified identification
 
 The verified identification method is used to identify the user with a unique identifier and verify the user's identity with the DevRev backend.
 
@@ -261,7 +261,7 @@ Use this property to check whether the user has been provided to the SDK:
   </Tab>
 </Tabs>
 
-#### Updating the user
+### Updating the user
 
 To update a user's information, use the following method:
 
@@ -288,7 +288,7 @@ The function accepts the `DevRev.Identity` ojbect.
 The `userID` property cannot be updated.
 </Callout>
 
-#### Logout
+### Logout
 You can perform a logout of the current user by calling the following method:
 
 <Tabs>
@@ -327,7 +327,7 @@ Once user identification is complete, you can start using the chat (conversation
   </Tab>
 </Tabs>
 
-#### Creating a new conversation
+### Creating a new conversation
 
 You have the ability to create a new conversation from within your app. The method will show the support chat screen and create a new conversation at the same time.
 
@@ -461,7 +461,7 @@ For example:
 
 The DevRev SDK provides observability features to help you understand how your users are interacting with your app.
 
-#### Opting-in or out
+### Opting-in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -514,7 +514,7 @@ If the user was disabled for session recording by using the stopAllMonitoring() 
 This feature will only store a monitoring permission flag, it will not provide any UI or dialog.
 </Callout>
 
-#### Session recording
+### Session recording
 
 You can enable session recording to capture user interactions with your app.
 
@@ -562,7 +562,7 @@ To check if on-demand sessions are enabled, use:
   </Tab>
 </Tabs>
 
-#### Session properties
+### Session properties
 
 You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a dictionary of string values.
 
@@ -594,13 +594,11 @@ To clear the session properties in scenarios such as user logout or when the ses
   </Tab>
 </Tabs>
 
-#### Masking sensitive data
+### Masking sensitive data
 To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as text fields, text views, and web views are automatically masked.
 
 While the auto-masking feature may be sufficient for most situations, you can manually mark/unmark additional views as sensitive.
 
-##### Mask
-###### Using tag
 > [!NOTE]
 > Use Tag method only when you don't have any other tag already applied to your UI element.
 
@@ -634,7 +632,7 @@ You can also set the tag programmatically:
   </Tab>
 </Tabs>
 
-###### Using API
+### Using API
 
 <Tabs>
   <Tab title="Kotlin">
@@ -674,8 +672,8 @@ For example:
   </Tab>
 </Tabs>
 
-##### Unmask
-###### Using tag
+### Unmask
+### Using tag
 > [!NOTE]
 > Use Tag method only when you don't have any other tag already applied to your UI element.
 
@@ -710,7 +708,7 @@ You can also set the tag programmatically:
   </Tab>
 </Tabs>
 
-###### Using API
+### Using API
 
 <Tabs>
   <Tab title="Kotlin">
@@ -750,7 +748,7 @@ For example:
   </Tab>
 </Tabs>
 
-##### Mask jetpack compose views
+### Mask jetpack compose views
 If you want to mask any Jetpack Compose UI element(s) or view(s), you can apply a mask on it using a modifier.
 
 ```kotlin
@@ -769,7 +767,7 @@ TextField(
 )
 ```
 
-##### Mask webView elements
+### Mask webView elements
 If you wish to mask any WebView element on a Web page explicitly, you can mask it by using class 'devrev-mask'
 
 For example:
@@ -777,7 +775,7 @@ For example:
 <label class="devrev-mask">OTP: 12345</label>
 ```
 
-##### Unmask webView elements
+### Unmask webView elements
 If you wish to explicitly un-mask any manually masked WebView element, you can un-mask it by using class 'devrev-unmask'
 
 For example:
@@ -785,7 +783,7 @@ For example:
 <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
 ```
 
-#### Timers
+### Timers
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
 
@@ -844,7 +842,7 @@ For example:
   </Tab>
 </Tabs>
 
-#### Screen tracking
+### Screen tracking
 
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although view controllers are automatically tracked, you can manually track screens using the following method:
 
@@ -881,7 +879,7 @@ For example:
 The DevRev SDK allows tracking of screen transitions to understand user navigation within your app.
 You can check if a screen transition is in progress and manually update the state using the following methods:
 
-#### Check if the screen is transitioning
+### Check if the screen is transitioning
 
 <Tabs>
   <Tab title="Kotlin">
@@ -896,7 +894,7 @@ You can check if a screen transition is in progress and manually update the stat
   </Tab>
 </Tabs>
 
-##### Set screen transitioning state
+### Set screen transitioning state
 
 <Tabs>
   <Tab title="Kotlin">
@@ -923,7 +921,7 @@ To receive push notifications, you need to configure your DevRev organization by
 
 You need to ensure that your Android app is configured to receive push notifications. To set it up, follow the [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/android/client).
 
-#### Register for push notifications
+### Register for push notifications
 
 <Callout intent="note">
 Push notifications require that the SDK has been configured and the user has been identified (unverified and anonymous users). The user identification is required to send the push notification to the correct user.
@@ -964,7 +962,7 @@ This method will generate and return the device token.
    // Use the token as needed
    ```
 
-#### Unregister from push notifications
+### Unregister from push notifications
 
 If your app no longer needs to receive push notifications, you can unregister the device.
 
@@ -991,7 +989,7 @@ The method requires the device identifier, which should be the same as the one u
   </Tab>
 </Tabs>
 
-#### Handle push notifications
+### Handle push notifications
 The DevRev SDK currently does not support automatic handling of push notifications. To open the PLuG chat and manage navigation internally, you must pass the message payload received in the notification to the SDK.
 
 <Tabs>

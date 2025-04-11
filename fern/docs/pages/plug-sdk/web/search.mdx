@@ -71,22 +71,24 @@ Once the widget is installed on your website, every user who visits your website
 
 After integrating the PLuG widget, you can personalize and contextualize customer engagement. Learn how to [identify your customers](./user-identity) and update their information.
 
-## Bind hotkey to toggleSearchAgent
+## Bind a hotkey to toggle search agent
 
-You can bind the `toggleSearchAgent` method to a hotkey, such as `Cmd + K` (or `Ctrl + K` for Windows), to toggle the search agent quickly. Here's an example implementation:
+You can bind the `toggleSearchAgent` method to a hotkey, such as `Cmd + K` (or `Ctrl + K` for Windows), to toggle the search agent. Here's an example implementation:
 
 <Tabs>
   <Tab title="Setup">
     ```html
     <script>
       // Bind Cmd+K (or Ctrl+K) to toggle the search agent
-      document.addEventListener('keydown', function (event) {
-        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      document.addEventListener("keydown", function (event) {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
           event.preventDefault(); // Prevent default behavior
           window.plugSDK.toggleSearchAgent();
         }
       });
     </script>
+    ```
+  </Tab>
 
     ```
   </Tab>
@@ -94,19 +96,19 @@ You can bind the `toggleSearchAgent` method to a hotkey, such as `Cmd + K` (or `
 
     ```jsx
     useEffect(() => {
-        const handleKeyDown = (event) => {
-        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k'){
+        const handleKeyDown = event => {
+          if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
             event.preventDefault(); // Prevent default behavior
             window.plugSDK.toggleSearchAgent();
           }
         };
         // Attach the event listener
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener("keydown", handleKeyDown);
         // Clean up the event listener on unmount
         return () => {
-          document.removeEventListener('keydown', handleKeyDown);
+          document.removeEventListener("keydown", handleKeyDown);
         };
-      }, []); 
+      }, []);
     ```
   </Tab>
  

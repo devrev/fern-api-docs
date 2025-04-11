@@ -481,9 +481,36 @@ You can configure your app to receive push notifications from the DevRev SDK. Th
 
 DevRev sends push notifications to your app to alert users about new messages in the PLuG support chat.
 
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
+To receive push notifications, you need to configure your DevRev organization by following the instructions below.
 
 You need to ensure that your Android app is configured to receive push notifications. To set it up, follow the [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/android/client).
+
+### Configure DevRev org
+
+<Info>
+**Prerequisites**
+
+- Google Developer Account and Firebase project access
+- Admin access to DevRev PLuG settings
+- Access to Bundle ID, Team ID, and APNs/FCM keys
+- Mobile SDK integration with your Android app
+</Info>
+
+1. Go to **Settings** > **Support** > **PLuG settings** > **Mobile push notifications**.
+
+2. Click **+ Configure app** and select **Android App**.
+
+3. Fill in the configuration form.
+   
+   - **App name**: Your Android app's name.
+   - **Bundle ID**: Your app's unique identifier in reverse domain notation, such as, `com.example.app`. Refer to [Google’s documentation](https://developer.android.com/studio/build/application-id) to confirm your bundle ID.
+   - **Upload Service Account Key**: A Service Account Key JSON file (up to 10 MB) generated via Google Cloud for Firebase Cloud Messaging (FCM). Create this key following [Google’s documentation](https://firebase.google.com/docs/).
+
+    Click **Save App** to complete the setup.
+
+4. Click **Save and Publish** to activate push notifications in your DevRev SDK.
+
+For additional support or inquiries, refer to the latest [Android developer documentation](https://developer.android.com/) as guidelines may change.
 
 ### Register for push notifications
 

@@ -60,10 +60,10 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
 
 | Attributes    | Description                                                                 | Type   | Required | Unique |
 |---------------|-----------------------------------------------------------------------------|--------|----------|--------|
-| user_ref      | A unique user reference that the DevRev app uses for identifying your users. This parameter is required. | string | ✅       | ✅    |
-| email         | The email address of the customer. It's used for sending email notifications of any support messages. | string | ❌       | ✅**     |
-| display_name  | The name of the user that's shown on the widget.                          | string | ❌*       | ❌     |
-| phone_numbers | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌      | ❌     |
+| `user_ref`      | A unique user reference that the DevRev app uses for identifying your users. This parameter is required. | string | ✅       | ✅    |
+| `email`         | The email address of the customer. It's used for sending email notifications of any support messages. | string | ❌       | ✅**     |
+| `display_name`  | The name of the user that's shown on the widget.                          | string | ❌*       | ❌     |
+| `phone_numbers` | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌      | ❌     |
 
 * If nothing is specified, a system-generated name is assigned to the user.
 

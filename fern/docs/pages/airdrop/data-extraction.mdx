@@ -1,10 +1,13 @@
 In the data extraction phase, the extractor is expected to call the external system's APIs
-to retrieve all the items that were updated since the start of the last extraction.
-If there was no previous extraction (the current run is an initial import),
-then all the items should be extracted.
+to retrieve all the items that should be synced with DevRev.
 
-The extractor must store at what time it started each extraction in its state,
-so that it can extract only items created or updated since this date in the next sync run.
+If the current run is an initial sync, this means all the items should be extracted.
+Otherwise the extractor should retrieve all the items that were changed since the start of the last extraction.
+
+Each snap-in invocation is a separate runtime instance with a maximum execution time of 12 minutes. 
+If a large amount of data needs to be extracted, it might not all be extracted within this time frame. 
+To handle such situations, the snap-in uses a state object. 
+This state object is shared across all invocations and keeps track of where the previous snap-in invocations ended in the extraction process.
 
 ## Triggering event
 
@@ -12,36 +15,76 @@ Airdrop initiates data extraction by starting the snap-in with a message with ev
 `EXTRACTION_DATA_START` when transitioning to the data extraction phase.
 
 During the data extraction phase, the snap-in extracts data from an external system,
-prepares batches of data and uploads them in the form of artifacts to DevRev.
+prepares batches of data and uploads them in the form of artifacts (files) to DevRev.
 
-The snap-in must respond to Airdrop with a message with event of type `EXTRACTION_DATA_PROGRESS`,
-together with an optional progress estimate and relevant artifacts
-when it extracts some data and the maximum Airdrop snap-in runtime (12 minutes) has been reached.
+The snap-in must respond to Airdrop with a message with event type of `EXTRACTION_DATA_PROGRESS`,
+together with an optional progress estimate and relevant list of artifacts
+when the maximum Airdrop snap-in runtime (12 minutes) has been reached.
 
 If the extraction has been rate-limited by the external system and back-off is required, the snap-in
-must respond to Airdrop with a message with event of type `EXTRACTION_DATA_DELAY` and specifying
-back-off time with `delay` attribute.
+must respond to Airdrop with a message with event type `EXTRACTION_DATA_DELAY` and specifying
+back-off time with `delay` attribute (in seconds).
 
 In both cases, Airdrop starts the snap-in with a message with event of type `EXTRACTION_DATA_CONTINUE`.
-The restarting is immediate (in case of `EXTRACTION_DATA_PROGRESS`) or delayed
-(in case of `EXTRACTION_DATA_DELAY`).
+In case of `EXTRACTION_DATA_PROGRESS` the restarting is immediate,
+meanwhile in case of `EXTRACTION_DATA_DELAY` the restarting is delayed for the given number of seconds.
 
-Once the data extraction is done, the snap-in must respond to Airdrop with a message with event of
-type `EXTRACTION_DATA_DONE`.
+Once the data extraction is done, the snap-in must respond to Airdrop with a message with event type `EXTRACTION_DATA_DONE`.
 
 If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a
-message with event of type `EXTRACTION_DATA_ERROR`.
+message with event type `EXTRACTION_DATA_ERROR`.
 
 ## Implementation
 
 Data extraction should be implemented in the [data-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/data-extraction.ts) file.
 
-During the data extraction phase, the snap-in uploads batches of extracted items (with tooling from `@devrev/adaas-sdk`).
+### Extracting and storing the data
 
-Each artifact is submitted with an `item_type`, defining a separate domain object from the
-external system and matching the `record_type` in the provided metadata.
+The SDK library includes a repository system for storing extracted items.
+Each item type, such as users, tasks, or issues, has its own repository. 
+These are defined in the `repos` array as `itemType`. 
+The `itemType` name should match the `record_type` specified in the provided metadata.
 
-Extracted data must be normalized:
+```typescript
+const repos = [
+  {
+    itemType: 'todos',
+  },
+  {
+    itemType: 'users',
+  },
+  {
+    itemType: 'attachments',
+  },
+];
+```
+
+The `initializeRepos` function initializes the repositories and should be the first step when the process begins.
+
+```typescript
+processTask<ExtractorState>({
+  task: async ({ adapter }) => {
+    adapter.initializeRepos(repos);
+    // ...
+  },
+  onTimeout: async ({ adapter }) => {
+    // ...
+  },
+});
+```
+
+After initialization, items are retrieved from the external system and stored in the repository by calling the `push` function.
+
+```typescript
+await adapter.getRepo('users')?.push(items);
+```
+
+### Data normalization
+
+Extracted data must be normalized to fit the domain metadata defined in the `external-domain-metadata.json` file. 
+More details on this process are provided in the [Metadata extraction](/public/snapin-development/adaas/metadata-extraction) section.
+
+Normalization rules:
 
 - Null values: All fields without a value should either be omitted or set to null.
   For example, if an external system provides values such as "", –1 for missing values,
@@ -51,6 +94,27 @@ Extracted data must be normalized:
 - References: references must be strings, not numbers or objects.
 - Number fields must be valid JSON numbers (not strings).
 - Multiselect fields must be provided as an array (not CSV).
+
+Extracted items are automatically normalized when pushed to the `repo` if a normalization function is provided under the `normalize` key in the repo object.
+
+```typescript
+const repos = [
+  {
+    itemType: 'todos',
+    normalize: normalizeTodo,
+  },
+  {
+    itemType: 'users',
+    normalize: normalizeUser,
+  },
+  {
+    itemType: 'attachments',
+    normalize: normalizeAttachment,
+  },
+];
+```
+
+For examples of normalization functions, refer to the [data-normalization.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/external-system/data-normalization.ts) file in the starter template.
 
 Each line of the file contains an `id` and the optional `created_date` and `modified_date` fields
 in the beginning of the record.
@@ -88,10 +152,8 @@ echo '{}' | chef-cli fuzz-extracted -r issue -m external_domain_metadata.json > 
 
 ## State handling
 
-Since each snap-in invocation is a separate runtime instance (with a maximum execution time of 12 minutes),
-it does not know what has been previously accomplished or how many records have already been extracted. 
-To enable information passing between invocations and runs, support has been added for saving a limited amount 
-of data as the snap-in `state`. Snap-in `state` persists between phases in one sync run as well as between multiple sync runs.
+To enable information passing between invocations and runs, a limited amount of data can be saved as the snap-in `state`. 
+Snap-in `state` persists between phases in one sync run as well as between multiple sync runs.
 You can access the `state` through SDK's `adapter` object.
 
 A snap-in must consult its state to obtain information on when the last successful forward sync started.

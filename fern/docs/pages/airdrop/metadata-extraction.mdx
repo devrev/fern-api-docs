@@ -1,7 +1,43 @@
-During the metadata extraction phase, the Airdrop snap-in must provide an
-`external_domain_metadata.json` file on each sync run.
-This file provides a structured way of describing the external system's domain system,
+During the metadata extraction phase, the snap-in must provide an
+`external_domain_metadata.json` file to Airdrop.
+This file provides a structured way of describing the external system's domain model,
 including its domain entities, types, relationships, and other metadata.
+
+You can check which object types for Airdrop DevRev supports [here](/public/snapin-development/adaas/supported-object-types).
+
+## Triggering event
+
+Airdrop initiates the metadata extraction by starting the snap-in with a message with an event
+of type `EXTRACTION_METADATA_START`.
+
+The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_METADATA_DONE`
+when done, or `EXTRACTION_METADATA_ERROR` in case of an error.
+
+## Implementation
+
+Metadata extraction should be implemented in the [metadata-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/metadata-extraction.ts) file.
+
+```typescript
+import { ExtractorEventType, processTask } from "@devrev/ts-adaas";
+import externalDomainMetadata from "../../external-system/external_domain_metadata.json";
+
+const repos = [{ itemType: "external_domain_metadata" }];
+
+processTask({
+  task: async ({ adapter }) => {
+    adapter.initializeRepos(repos);
+    await adapter
+      .getRepo("external_domain_metadata")
+      ?.push([externalDomainMetadata]);
+    await adapter.emit(ExtractorEventType.ExtractionMetadataDone);
+  },
+  onTimeout: async ({ adapter }) => {
+    await adapter.emit(ExtractorEventType.ExtractionMetadataError, {
+      error: { message: "Failed to extract metadata. Lambda timeout." },
+    });
+  },
+});
+```
 
 ## Validating metadata
 
@@ -18,23 +54,11 @@ chef-cli validate-metadata < external_domain_metadata.json
 This outputs any problems there may be with the metadata file.
 
 <Info>
-  The detailed format of this metadata is defined by the `external_domain_metadata_schema.json` file. 
-  The file is available as part of the chef-cli package.
-  There, you can also find an example of a metadata file (`metadata.json`).
+  The detailed format of this metadata is defined by the
+  `external_domain_metadata_schema.json` file. The file is available as part of
+  the chef-cli package. There, you can also find an example of a metadata file
+  (`metadata.json`).
 </Info>
-
-## Triggering event
-
-Airdrop initiates the metadata extraction by starting the snap-in with a message with an event
-of type `EXTRACTION_METADATA_START`.
-
-The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_METADATA_DONE`
-when done, or `EXTRACTION_METADATA_ERROR` in case of an error.
-
-## Response from the snap-in
-
-During the metadata extraction phase, the Airdrop snap-in must provide an
-`external_domain_metadata.json` file on each sync run.
 
 The transformation can be crafted and finalized further using the chef-cli to ensure extracted
 data is mapped consistently to the DevRev domain model.
@@ -50,6 +74,7 @@ chef-cli infer-metadata example_data_directory > metadata.json
 To get good results with this approach:
 
 1. Collect example data from the external system and place them in a directory. Each file should:
+
    - Contain the same type of records, named after their type.
    - Have `.json` or `.jsonl` extension, for example `issues.json`.
    - Contain either a single JSON array of objects, or newline-separated objects.
@@ -59,15 +84,19 @@ To get good results with this approach:
 3. Inspect the generated metadata, particularly field types and the suggestions the tool generates.
 
 For best results:
+
 - Provide 10-100 examples of each record type (but not more than 1000).
 - Ensure logically distinct fields are separate keys at the top level.
 - Use referentially consistent example data if possible.
 - Make sure IDs are strings, not numbers.
 
 <Note>
-This generated metadata serves as a starting point that needs further refinement. 
-It can be used to prototype initial domain mappings (by running a sync with it) and to generate example normalized data, but it's important to understand that it's only an initial guess. 
-The metadata must be carefully reviewed and refined to ensure accuracy and proper representation of your external system's data model.
+  This generated metadata serves as a starting point that needs further
+  refinement. It can be used to prototype initial domain mappings (by running a
+  sync with it) and to generate example normalized data, but it's important to
+  understand that it's only an initial guess. The metadata must be carefully
+  reviewed and refined to ensure accuracy and proper representation of your
+  external system's data model.
 </Note>
 
 ## Craft the metadata declaration
@@ -80,7 +109,6 @@ Metadata declarations include both _static declarations_, formulated by deductio
 external domain system and DevRev domain system, and _dynamic declarations_ that are obtained during
 a snap-in run from external system APIs (since they are configurable in the external system and can
 be changed by the end user at any time, such as mandatory fields or custom fields).
-
 <Steps>
   ### Declare the extracted record types
 
@@ -303,9 +331,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
       }
     }
     ```
-
-  ### Handle special references
-
+  
   - Some references have the role of parent or child.
   This means that the child record doesn't make sense without its parent, for example a comment
   attached to a ticket.
@@ -444,4 +470,3 @@ be changed by the end user at any time, such as mandatory fields or custom field
   - In current metadata format (v0.2.0), the order and human-readable name are taken from the enum values defined on the controlling field.
   - If the `states` field is not provided, default DevRev states are used: `open`, `in_progress`, and `closed`.
 </Steps>
-

@@ -276,7 +276,6 @@ navigation:
         path: ../docs/pages/airdrop/supported-object-types.mdx
       - section: Data model
         slug: data-model
-        hidden: true
         contents:
           - page: "Rich text fields"
             slug: rich-text-fields

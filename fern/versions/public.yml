@@ -278,13 +278,13 @@ navigation:
         slug: data-model
         hidden: true
         contents:
-            - page: "Rich text fields"
-              slug: rich-text-fields
-              path: ../docs/pages/airdrop/data-model/rich-text-fields.mdx
-            - page: "Permissions"
-              slug: permissions
-              hidden: true
-              path: ../docs/pages/airdrop/data-model/permissions.mdx
-            - page: "Mapping reasons"
-              slug: mapping-reasons
-              path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx
+          - page: "Rich text fields"
+            slug: rich-text-fields
+            path: ../docs/pages/airdrop/data-model/rich-text-fields.mdx
+          - page: "Permissions"
+            slug: permissions
+            hidden: true
+            path: ../docs/pages/airdrop/data-model/permissions.mdx
+          - page: "Mapping reasons"
+            slug: mapping-reasons
+            path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx

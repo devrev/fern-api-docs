@@ -154,7 +154,7 @@ Use `isSearchAgentOpen` to determine whether the search agent is currently open 
 window.plugSDK.isSearchAgentOpen
 ```
 
-This returns true if the search agent is open and false if it is closed.
+This returns `true` if the search agent is open and `false` if it is closed.
 
 ## Prefill search query in search agent
 
@@ -177,7 +177,7 @@ window.plugSDK.addSessionProperties({
 
 ## Get session details
 
-You can use the `getSessionDetails` method to fetch the session id and tab id of currently ongoing session. These details can then be passed across different domains to maintain the journey as a single, continuous session.
+You can use the `getSessionDetails` method to fetch the session ID and tab ID of currently ongoing session. These details can then be passed across different domains to maintain the journey as a single, continuous session.
 
 ```jsx
 const { sessionId, tabId } = window.plugSDK.getSessionDetails();

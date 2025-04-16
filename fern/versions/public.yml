@@ -287,3 +287,9 @@ navigation:
           - page: "Mapping reasons"
             slug: mapping-reasons
             path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx
+      - section: Object type specifics
+        slug: object-types
+        contents:
+          - page: "Object members"
+            slug: object-members
+            path: ../docs/pages/airdrop/data-model/object-members.mdx

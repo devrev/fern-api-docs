@@ -1,0 +1,25 @@
+Object members define which users belong to which groups.
+
+They consist of the following fields:
+- `id`: The unique identifier for the object member in the external system
+- `object_id`: The unique identifier for the group in the external system
+- `member_id`: The unique identifier for the user that should be added to the group
+- `add_member_ids`: The list of unique identifiers for the users that should be added to the group
+- `remove_member_ids`: The list of unique identifiers for the users that should be removed from the group
+
+<Warning>
+If you set the `add_member_ids` field, the `member_id` field will be ignored!
+Always set either `add_member_ids` or `member_id`, but not both.
+</Warning>
+
+<Info>
+`member_id` is a legacy field that, while still supported, should be avoided in favor of `add_member_ids`.
+If possible, provide one object member per group, with the list of users to be added to the group.
+Originally each object member was used to add a single user to a group, but that has since been
+extended to support bulk addition and removal of users from a group.
+</Info>
+
+<Info>
+If the external system exposes a way to notify you of user removals from a group, set those users
+in the `remove_member_ids` field.
+</Info>

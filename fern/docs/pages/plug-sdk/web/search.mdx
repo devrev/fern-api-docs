@@ -90,28 +90,24 @@ You can bind the `toggleSearchAgent` method to a hotkey, such as `Cmd + K` (or `
     ```
   </Tab>
 
-    ```
-  </Tab>
   <Tab title="Setup for React">
-
     ```jsx
     useEffect(() => {
-        const handleKeyDown = event => {
-          if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-            event.preventDefault(); // Prevent default behavior
-            window.plugSDK.toggleSearchAgent();
-          }
-        };
-        // Attach the event listener
-        document.addEventListener("keydown", handleKeyDown);
-        // Clean up the event listener on unmount
-        return () => {
-          document.removeEventListener("keydown", handleKeyDown);
-        };
-      }, []);
+      const handleKeyDown = event => {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault(); // Prevent default behavior
+          window.plugSDK.toggleSearchAgent();
+        }
+      };
+      // Attach the event listener
+      document.addEventListener("keydown", handleKeyDown);
+      // Clean up the event listener on unmount
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }, []);
     ```
   </Tab>
- 
 </Tabs>
 
 You can modify the keydown event listener to bind other key or keys combinations, or any other user event based on your application's needs.

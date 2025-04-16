@@ -292,4 +292,4 @@ navigation:
         contents:
           - page: "Object members"
             slug: object-members
-            path: ../docs/pages/airdrop/data-model/object-members.mdx
+            path: ../docs/pages/airdrop/object-types/object-members.mdx

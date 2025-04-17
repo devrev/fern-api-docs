@@ -1,0 +1,76 @@
+# Quickstart Guide
+
+## Requirements
+
+- Android Studio 2022.1.1 or later
+- Android Gradle plugin version 7.4 or later
+- Gradle version 7.6 or later
+- Minimum Android SDK 24
+
+## Integration
+
+To integrate the latest version of our SDK into your app, follow these steps:
+
+<Tabs>
+<Tab title="Kotlin">
+
+1. Add the following dependencies to your app's `build.gradle.kts` file:
+
+   ```kotlin
+   dependencies {
+    implementation("ai.devrev.sdk:devrev-sdk:<version>")
+   }
+   ```
+2. Add `mavenCentral` to your root `build.gradle.kts` file:
+   ```kotlin
+   repositories {
+    mavenCentral()
+   }
+   ```
+
+</Tab>
+<Tab title="Groovy">
+
+1. Add the following dependencies to your app's `build.gradle` file:
+
+   ```groovy
+   dependencies {
+    implementation 'ai.devrev.sdk:devrev-sdk:<version>'
+   }
+   ```
+
+2. Add `mavenCentral` to your root `build.gradle` file:
+   ```groovy
+   repositories {
+       mavenCentral()
+   }
+   ```
+
+</Tab>
+</Tabs>
+
+## Set up the DevRev SDK
+
+1. Obtain **Your unique App ID** from the **PLuG settings** in DevRev.
+2. Configure the SDK in your app by calling the following method in your `Application` class:
+
+<Tabs>
+  <Tab title="Kotlin">
+   ```kotlin
+   DevRev.configure(context: Context, appId: String)
+   ```
+  </Tab>
+  <Tab title="Java">
+   ```java
+   DevRev.INSTANCE.configure(Context context, String appId);
+   ```
+  </Tab>
+</Tabs>
+
+Ensure that the custom application is specified in the `AndroidManifest.xml`:
+
+```xml
+<application
+    android:name=".MyApp">
+</application>
+```

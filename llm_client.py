@@ -22,8 +22,6 @@ def get_response(prompt):
                                 headers=headers)
             response = r.json()['choices'][0]['message']['content']
             response = re.sub(r"^# .*\n?", '', response, flags=re.MULTILINE)
-            response = re.sub(r"^Here.*\n?", '', response, flags=re.MULTILINE)
-            response = re.sub(r"^Let me know.*\n?", '', response, flags=re.MULTILINE)
             return response
         except Exception as e:
             print(f"Failed to generate changelog. Error: {type(e)} {e} {r}")

@@ -16,11 +16,11 @@ def main(vrn, d):
         print(f"Wrote prompt to {pr_file}.")
 
     print('Sending request to LLM.')
-    l = llm_client.get_lines_between_tags(llm_client.get_response(p), 'changelog')
+    l = llm_client.get_response(p)
     log_file = f"./fern/apis/{vrn}/changelog/{d}.md"
     if (l):
         with open(log_file, 'w', encoding="utf-8") as outfile:
-            outfile.write(l)
+            outfile.write(llm_client.get_lines_between_tags(l, 'changelog'))
             print(f"Wrote log to {log_file}.")
     else:
         print(f"Failed to generate {log_file}. No response from LLM.")

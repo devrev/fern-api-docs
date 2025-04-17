@@ -11,28 +11,28 @@ This section describes the process of integrating the DevRev SDK with your Andro
 
 To integrate the latest version of our SDK into your app, follow these steps:
 
+1. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root level `build.gradle` file.
+   ```gradle
+   repositories {
+       mavenCentral()
+   }
+   ```
+
 <Tabs>
 <Tab title="Kotlin">
 
-1. Add the following dependencies to your app's `build.gradle.kts` file to get the latest version of our SDK:
+2. Add the following dependencies to your app's `build.gradle.kts` file to get the latest version of our SDK:
 
    ```kotlin
    dependencies {
     implementation("ai.devrev.sdk:devrev-sdk:<version>")
    }
    ```
-2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle.kts` file.
-   ```kotlin
-   repositories {
-    mavenCentral()
-   }
-   ```
-After completing these steps in your `build.gradle.kts` Kotlin script, you should be able to import and use the DevRev SDK in your Android application.
 
 </Tab>
 <Tab title="Groovy">
 
-1. Add the following dependencies to your app's `build.gradle` file to get the latest version of our SDK:
+2. Add the following dependencies to your app's `build.gradle` file to get the latest version of our SDK:
 
    ```groovy
    dependencies {
@@ -40,16 +40,10 @@ After completing these steps in your `build.gradle.kts` Kotlin script, you shoul
    }
    ```
 
-2. Our SDK is available on Maven Central. To access it, add `mavenCentral` to your root `build.gradle` file.
-   ```groovy
-   repositories {
-       mavenCentral()
-   }
-   ```
-After completing these steps in your `build.gradle` Groovy script, you should be able to import and use the DevRev SDK in your Android application.
-
 </Tab>
 </Tabs>
+
+After completing these steps in your gradle files, you should be able to import and use the DevRev SDK in your Android application.
 
 ### Set up the DevRev SDK
 

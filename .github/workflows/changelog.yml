@@ -8,37 +8,45 @@ jobs:
   check-logs:
     runs-on: ubuntu-latest
     outputs:
-      date: ${{ steps.date.outputs.date }}
+      date: ${{ steps.get_date.outputs.date }}
       should_continue: ${{ steps.check.outputs.should_continue }}
     steps:
       - name: Get current date
-        id: date
+        id: get_date
         env:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           DATE=$(gh pr view ${{ env.PR_NUMBER }} --json createdAt --jq .[] | cut -d 'T' -f 1)
-          echo "date=$DATE" >> "$GITHUB_OUTPUT"
-          echo "DATE=$DATE" >> "$GITHUB_ENV"
+          echo "Got date: $DATE"
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+      - name: Debug date output
+        run: |
+          echo "Date output: ${{ steps.get_date.outputs.date }}"
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Check for existing logs
         id: check
         run: |
-          if ls fern/apis/*/changelog/${{ env.DATE }}.md >/dev/null 2>&1; then
+          if ls fern/apis/*/changelog/${{ steps.get_date.outputs.date }}.md >/dev/null 2>&1; then
             echo "Log files already exist, stopping workflow"
-            echo "should_continue=false" >> "$GITHUB_OUTPUT"
+            echo "should_continue=false" >> $GITHUB_OUTPUT
           else
             echo "No existing log files found, continuing workflow"
-            echo "should_continue=true" >> "$GITHUB_OUTPUT"
+            echo "should_continue=true" >> $GITHUB_OUTPUT
           fi
 
   generate-diff:
     needs: check-logs
     if: needs.check-logs.outputs.should_continue == 'true'
     runs-on: ubuntu-latest
-    env:
-      DATE: ${{ needs.check-logs.outputs.date }}
     steps:
+      - name: Set date
+        run: |
+          echo "DATE=${{ needs.check-logs.outputs.date }}" >> $GITHUB_ENV
+      - name: Debug date
+        run: |
+          echo "Date from previous job: ${{ needs.check-logs.outputs.date }}"
+          echo "Date from env: ${{ env.DATE }}"
       - name: Check out repository content
         uses: actions/checkout@v2
         with:

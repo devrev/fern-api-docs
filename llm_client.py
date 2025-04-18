@@ -9,6 +9,7 @@ def get_response(prompt):
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {auth}"}
         payload = {
             "model": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+            "temperature": 0,
             "messages": [
                 {
                     "role": "user",

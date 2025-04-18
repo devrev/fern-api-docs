@@ -32,7 +32,7 @@ def gen_prompt(oasdiff, links, version):
         oasdiff = infile.read()
 
     prompt = f"""
-Please provide an API changelog for the {version} API from the following OASDiff of OpenAPI spec changes. The output should be in markdown format grouping endpoints by use case/object type. For cases where some schema is modified, please also tell what endpoints it affects. Wherever an endpoint, property, or enum value is mentioned, surround it with backticks (`). Wherever an API is mentioned, include a hyperlink to the corresponding path from `<api_links>` section. Place the changelog in a `<changelog>` element in your response so I can parse it out.
+Please provide an API changelog for the {version} API from the following OASDiff of OpenAPI spec changes. The output should be in markdown format grouping endpoints by use case/object type. For cases where some schema is modified, please also tell what endpoints it affects. Wherever an endpoint, property, or enum value is mentioned, surround it with backticks (`). Use only H2 and H3 headings. Wherever an API is mentioned, include a hyperlink to the corresponding path from `<api_links>` section. Place the changelog in a `<changelog>` element in your response so I can parse it out.
 
 <oasdiff>
 {oasdiff}

@@ -95,7 +95,7 @@ keyring_types:
         # Optional: query parameters to be included in the verification request.
         query_params:
           <param_name>: <param_value> # optional: query parameters to be included in the verification request.
-      # Optional: fetching organization data if is_subdomain option is false.
+      # The organization_data section takes care of fetching organization data and is required if is_subdomain option is false.
       organization_data:
         type: "config"
         # The URL to which the request is sent to fetch organization data.

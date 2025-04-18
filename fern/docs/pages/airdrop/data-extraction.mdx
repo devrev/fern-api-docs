@@ -4,28 +4,29 @@ to retrieve all the items that should be synced with DevRev.
 If the current run is an initial sync, this means all the items should be extracted.
 Otherwise the extractor should retrieve all the items that were changed since the start of the last extraction.
 
-Each snap-in invocation is a separate runtime instance with a maximum execution time of 12 minutes. 
+Each snap-in invocation runs in a separate runtime instance with a maximum execution time of 13 minutes. 
+After 10 minutes, the Airdrop platform sends a message to the snap-in to gracefully exit.
+
 If a large amount of data needs to be extracted, it might not all be extracted within this time frame. 
 To handle such situations, the snap-in uses a state object. 
 This state object is shared across all invocations and keeps track of where the previous snap-in invocations ended in the extraction process.
 
 ## Triggering event
 
-Airdrop initiates data extraction by starting the snap-in with a message with event of type
+Airdrop initiates data extraction by starting the snap-in with a message with event type
 `EXTRACTION_DATA_START` when transitioning to the data extraction phase.
 
 During the data extraction phase, the snap-in extracts data from an external system,
 prepares batches of data and uploads them in the form of artifacts (files) to DevRev.
 
 The snap-in must respond to Airdrop with a message with event type of `EXTRACTION_DATA_PROGRESS`,
-together with an optional progress estimate and relevant list of artifacts
-when the maximum Airdrop snap-in runtime (12 minutes) has been reached.
+together with an optional progress estimate when the maximum Airdrop snap-in runtime (13 minutes) has been reached.
 
 If the extraction has been rate-limited by the external system and back-off is required, the snap-in
 must respond to Airdrop with a message with event type `EXTRACTION_DATA_DELAY` and specifying
-back-off time with `delay` attribute (in seconds).
+back-off time with `delay` attribute (in seconds as an integer).
 
-In both cases, Airdrop starts the snap-in with a message with event of type `EXTRACTION_DATA_CONTINUE`.
+In both cases, Airdrop starts the snap-in with a message with event type `EXTRACTION_DATA_CONTINUE`.
 In case of `EXTRACTION_DATA_PROGRESS` the restarting is immediate,
 meanwhile in case of `EXTRACTION_DATA_DELAY` the restarting is delayed for the given number of seconds.
 
@@ -38,9 +39,41 @@ message with event type `EXTRACTION_DATA_ERROR`.
 
 Data extraction should be implemented in the [data-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/data-extraction.ts) file.
 
+The snap-in must respond to Airdrop with a message, that signals either success:
+
+```typescript
+await adapter.emit(ExtractorEventType.ExtractionDataDone);
+```
+
+a delay:
+
+```typescript
+await adapter.emit(ExtractorEventType.ExtractionDataDelay, {
+  delay: "30",
+});
+```
+
+progress:
+
+```typescript
+await adapter.emit(ExtractorEventType.ExtractionDataProgress);
+```
+
+or an error:
+
+```typescript
+await adapter.emit(ExtractorEventType.ExtractionDataError, {
+  error: {
+    message: "Failed to extract data.",
+  },
+});
+```
+
+**The snap-in must always emit a single message.**
+
 ### Extracting and storing the data
 
-The SDK library includes a repository system for storing extracted items.
+The SDK library includes a repository system for handling extracted items.
 Each item type, such as users, tasks, or issues, has its own repository. 
 These are defined in the `repos` array as `itemType`. 
 The `itemType` name should match the `record_type` specified in the provided metadata.
@@ -73,11 +106,14 @@ processTask<ExtractorState>({
 });
 ```
 
-After initialization, items are retrieved from the external system and stored in the repository by calling the `push` function.
+After initialization of repositories using `initializeRepos`,
+items should be then retrieved from the external system and stored in the correct repository by calling the `push` function.
 
 ```typescript
 await adapter.getRepo('users')?.push(items);
 ```
+
+Behind the scenes, the SDK library stores items pushed to the repository and uploads them in batches to the Airdrop platform.
 
 ### Data normalization
 
@@ -177,7 +213,12 @@ echo '{}' | chef-cli fuzz-extracted -r issue -m external_domain_metadata.json > 
 
 To enable information passing between invocations and runs, a limited amount of data can be saved as the snap-in `state`. 
 Snap-in `state` persists between phases in one sync run as well as between multiple sync runs.
+
 You can access the `state` through SDK's `adapter` object.
+
+```typescript
+adapter.state['users'].completed = true;
+```
 
 A snap-in must consult its state to obtain information on when the last successful forward sync started.
 
@@ -190,7 +231,15 @@ Effective use of the state and breaking down the problem into smaller chunks are
 
 The snap-in starter template contains an [example](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/index.ts) of a simple state. Adding more data to the state can help with pagination and rate limiting by saving the point at which extraction was left off.
 
-To test the state in development, you can decrease the timeout between snap-in invocations.
+```typescript
+export const initialExtractorState: ExtractorState = {
+  todos: { completed: false },
+  users: { completed: false },
+  attachments: { completed: false },
+};
+```
+
+To test the state during snap-in development, you can pass in the option to decrease the timeout between snap-in invocations.
 
 ```typescript
 await spawn<DummyExtractorState>({

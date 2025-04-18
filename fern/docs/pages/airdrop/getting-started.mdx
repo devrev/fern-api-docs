@@ -69,7 +69,7 @@ It uses a **loader** function, to create or update data in the external system.
 The first sync is called the _initial sync_.
 It is triggered manually by the end user in DevRev's **Airdrops** UI.
 
-During the initial sync, all data from the external sync unit is extracted and loaded into DevRev. 
+During the initial sync, all data from the external sync unit is extracted from the external system and loaded into DevRev. 
 This process typically involves a large import and may take some time.
 
 An _initial import_ consists of the following phases:
@@ -79,28 +79,26 @@ An _initial import_ consists of the following phases:
 3. Data extraction
 4. Attachments extraction
 
-### 1-way (incremental) sync
+### 1-way (incremental sync)
 
 A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial sync run has been successfully completed.
-This can be a forward sync or a reverse sync.
-
-#### 1-way forward sync
 
 An extractor extracts data that was created or updated in the external system after the start
 of the latest successful forward sync.
-This includes any changes that happened during the previous sync, but were not picked up by it.
+This includes any changes that happened after the start of the previous sync, but were not picked up by it.
 
-A 1-way forward sync consists of the following phases:
+A 1-way sync consists of the following phases:
 
 1. Metadata extraction
 2. Data extraction
 3. Attachments extraction
 
-#### 1-way reverse sync
+#### 2-way sync
 
-The loader checks for any changes in DevRev after the latest successful reverse sync and updates the data in the external system.
+A _2-way sync_ is a reverse sync.
+The loader receives information about changes in DevRev since the last successful reverse sync and updates the data in the external system.
 
-A 1-way reverse sync consists of the following phases:
+A 2-way sync consists of the following phases:
 
 1. Data loading
 2. Attachments loading

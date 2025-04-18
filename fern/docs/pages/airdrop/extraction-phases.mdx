@@ -1,24 +1,30 @@
 Each snap-in must handle all the phases of Airdrop extraction. In a snap-in, you typically define a run
 function that iterates over events and invokes workers per extraction phase.
 
-The SDK library exports `processTask` to structure the work within each phase, and `onTimeout` function
-to handle timeouts.
-
 The Airdrop snap-in extraction lifecycle consists of four phases: 
-* External sync units extraction
+* External sync units extraction (only for initial sync)
 * Metadata extraction
 * Data extraction  
 * Attachments extraction
 
 Each phase is defined in a separate file and is responsible for fetching the respective data.
 
-The SDK library provides a repository management system to handle artifacts in batches.
-The `initializeRepos` function initializes the repositories, and the `push` function uploads the
-artifacts to the repositories. The `postState` function is used to post the state of the extraction task.
+<Note>
+  Snap-in development is an iterative process.
+  It typically begins with retrieving some data from the external system. 
+  The next step involves crafting an initial version of the external domain metadata and validating it through chef-cli. 
+  This metadata is used to prepare the initial domain mapping and checking for any possible issues.
+  API calls to the external system are then corrected to fetch the missing data.
+  Start by working with one item type (we recommend starting with users), and once it maps well to DevRev objects and imports as desired, proceed with other item types.
+</Note>
+
+The SDK library exports a `processTask` function, which takes an object parameter with two keys:
+* `task`: a function that implements the functionality for the given phase.
+* `onTimeout`: a function that handles timeouts, typically by simply emitting a message to the Airdrop platform.
 
 State management is crucial for snap-ins to maintain the state of the extraction task.
-The `postState` function is used to post the state of the extraction task.
-The state is stored in the adapter and can be retrieved using the `adapter.state` property.
+State is saved to the Airdrop backend by calling the `postState` function.
+During the extraction the state is stored in the adapter and can be retrieved using the `adapter.state` property.
 
 ```typescript
 import { AirdropEvent, EventType, spawn } from "@devrev/ts-adaas";

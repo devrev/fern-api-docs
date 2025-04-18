@@ -2,7 +2,14 @@ The load data phase manages the creation and updating of items in the external s
 
 ## Triggering event
 
-Airdrop initiates data loading by starting the snap-in with a message containing an event of type `START_LOADING_DATA`.
+Airdrop initiates data loading by sending a message with the event type `START_LOADING_DATA` to the snap-in.
+
+If the maximum Airdrop snap-in runtime (13 minutes) has been reached, 
+the snap-in must respond to Airdrop with a message with event type of `DATA_LOADING_PROGRESS`, together with an optional progress estimate.
+
+In case of `DATA_LOADING_PROGRESS`, Airdrop starts the snap-in with a message with event type `CONTINUE_LOADING_DATA`.
+
+Once the data extraction is done, the snap-in must respond to Airdrop with a message with event type `DATA_LOADING_DONE`.
 
 ## Implementation
 
@@ -12,7 +19,7 @@ Loading is performed by providing a list of item types to load (`itemTypesToLoad
 
 Each item type must provide `create` and `update` functions, which handle the denormalization of records to the schema of the external system and facilitate HTTP calls to the external system. Both loading functions must manage rate limiting for the external system and handle errors. The `create` and `update` functions should return an `id` of the record in the external system and optionally also `modifiedDate`. If a record cannot be created or updated, they indicate the rate-limiting offset or errors.
 
-Same as with extraction, the SDK library exports the `processTask` function to structure the work within each phase and the `onTimeout` function to handle timeouts.
+**The snap-in must always emit a single message.**
 
 ```typescript
 processTask<LoaderState>({

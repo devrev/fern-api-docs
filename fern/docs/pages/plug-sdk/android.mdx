@@ -514,25 +514,26 @@ The session recording feature is opt-out and is enabled by default.
 
 Here are the available methods to help you control the session recording feature:
 
-- Kotlin
-
-| Method                                 | Action                                                                 |
-|----------------------------------------|------------------------------------------------------------------------|
-| `DevRev.startRecording()`              | Starts the session recording.                                          |
-| `DevRev.stopRecording()`               | Stops the session recording and uploads it to the portal.              |
-| `DevRev.pauseRecording()`              | Pauses the ongoing session recording.                                  |
-| `DevRev.resumeRecording()`             | Resumes a paused session recording.                                    |
-| `DevRev.processAllOnDemandSessions()`  | Stops the ongoing user recording and uploads all offline sessions on demand, including the current one. |
-
-- Java
-
-| Method                                                                      | Action                                                                 |
-|-----------------------------------------------------------------------------|------------------------------------------------------------------------|
-| `DevRevObservabilityExtKt.startRecording(DevRev.INSTANCE, context);`         | Starts the session recording.                                          |
-| `DevRevObservabilityExtKt.stopRecording(DevRev.INSTANCE);`                   | Stops the session recording and uploads it to the portal.              |
-| `DevRevObservabilityExtKt.pauseRecording(DevRev.INSTANCE);`                  | Pauses the ongoing session recording.                                  |
-| `DevRevObservabilityExtKt.resumeRecording(DevRev.INSTANCE);`                 | Resumes a paused session recording.                                    |
-| `DevRevObservabilityExtKt.processAllOnDemandSessions(DevRev.INSTANCE);`      | Stops the ongoing user recording and uploads all offline sessions on demand, including the current one. |
+<Tabs>
+  <Tab title="Kotlin">
+  | Method                                 | Action                                                                 |
+  |----------------------------------------|------------------------------------------------------------------------|
+  | `DevRev.startRecording()`              | Starts the session recording.                                          |
+  | `DevRev.stopRecording()`               | Stops the session recording and uploads it to the portal.              |
+  | `DevRev.pauseRecording()`              | Pauses the ongoing session recording.                                  |
+  | `DevRev.resumeRecording()`             | Resumes a paused session recording.                                    |
+  | `DevRev.processAllOnDemandSessions()`  | Stops the ongoing user recording and uploads all offline sessions on demand, including the current one. |
+  </Tab>
+  <Tab title="Java">
+  | Method                                                                      | Action                                                                 |
+  |-----------------------------------------------------------------------------|------------------------------------------------------------------------|
+  | `DevRevObservabilityExtKt.startRecording(DevRev.INSTANCE, context);`         | Starts the session recording.                                          |
+  | `DevRevObservabilityExtKt.stopRecording(DevRev.INSTANCE);`                   | Stops the session recording and uploads it to the portal.              |
+  | `DevRevObservabilityExtKt.pauseRecording(DevRev.INSTANCE);`                  | Pauses the ongoing session recording.                                  |
+  | `DevRevObservabilityExtKt.resumeRecording(DevRev.INSTANCE);`                 | Resumes a paused session recording.                                    |
+  | `DevRevObservabilityExtKt.processAllOnDemandSessions(DevRev.INSTANCE);`      | Stops the ongoing user recording and uploads all offline sessions on demand, including the current one. |
+  </Tab>
+</Tabs>
 
 Using this property will return the status of the session recording:
 

@@ -16,6 +16,7 @@ jobs:
         PR_NUMBER: ${{ github.event.number }}
       run: |
         DATE=$(gh pr view --repo https://github.com/devrev/fern-api-docs ${{ env.PR_NUMBER }} --json createdAt --jq .[] | cut -d 'T' -f 1)
+        echo "Date PR opened is $DATE"
         echo "DATE=$DATE" >> $GITHUB_OUTPUT
     - name: Check out repository content
       uses: actions/checkout@v2

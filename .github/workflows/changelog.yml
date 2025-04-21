@@ -12,6 +12,7 @@ jobs:
     - name: Get current date
       id: date
       env:
+        GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.number }}
       run: |
         DATE=$(gh pr view ${{ env.PR_NUMBER }} --json createdAt --jq .[] | cut -d 'T' -f 1)

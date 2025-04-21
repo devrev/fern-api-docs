@@ -15,7 +15,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.number }}
       run: |
-        DATE=$(gh pr view ${{ env.PR_NUMBER }} --json createdAt --jq .[] | cut -d 'T' -f 1)
+        DATE=$(gh pr view --repo ${{ github.event.repository.name }} ${{ env.PR_NUMBER }} --json createdAt --jq .[] | cut -d 'T' -f 1)
         echo "DATE=$DATE" >> $GITHUB_OUTPUT
     - name: Check out repository content
       uses: actions/checkout@v2

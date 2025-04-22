@@ -16,17 +16,37 @@ def get_response(prompt):
                 }
             ]
         }
-
         try:
             r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
-                                headers=headers)
-            response = r.json()['choices'][0]['message']['content']
-            response = re.sub(r"^# .*\n?", '', response, flags=re.MULTILINE)
-            response = re.sub(r"^Here.*\n?", '', response, flags=re.MULTILINE)
-            response = re.sub(r"^Let me know.*\n?", '', response, flags=re.MULTILINE)
+                            headers=headers)
+            r.raise_for_status()
+
+            if not r.text:
+                raise ValueError("Empty response received from API")
+            json_response = r.json()
+            if not json_response.get('choices'):
+                raise ValueError("No 'choices' field in response")
+            if not json_response['choices'][0].get('message'):
+                raise ValueError("No 'message' field in response")
+            if not json_response['choices'][0]['message'].get('content'):
+                raise ValueError("No 'content' field in response")
+            
+            response = json_response['choices'][0]['message']['content']
+            
+            # Check if final response is empty
+            if not response:
+                raise ValueError("Empty content received from API")
+                
             return response
+
+        except requests.RequestException as e:
+            print(f"HTTP request failed. Error: {type(e)} {e}")
+            return None
+        except ValueError as e:
+            print(f"Invalid response received. Error: {e}")
+            return None
         except Exception as e:
-            print(f"Failed to generate changelog. Error: {type(e)} {e} {r}")
+            print(f"Failed to generate response. Error: {type(e)} {e}")
             return None
         
 def get_lines_between_tags(text, tag):

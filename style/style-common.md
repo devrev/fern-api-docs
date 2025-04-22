@@ -4,10 +4,11 @@ For the writing style, apply the following descriptive keywords to revising the 
 
 - Writing style: authoritative, comprehensive, helpful
 - Sentence structure: varied, complex, cohesive
-- Vocabulary choice: consistent, technical, no profanity
+- Vocabulary choice: consistent, technical
 - Grammar and syntax: structured, flawless, articulate
 - Descriptive language: clear, concise, informative
 - Language variant: standard technical/professional US American English; not British, Indian, or other variants
+- Prohibited: profanity, hate speech, non-inclusive words, or any other unprofessional expressions
 
 There are also some very specific style rules that need to be followed:
 

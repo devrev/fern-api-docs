@@ -42,29 +42,25 @@ domain object ID from the external system and the actor ID from the external sys
 The uploaded artifact is structured like a normal artifact containing extracted data in JSON Lines
 (JSONL) format and requires specifying `ssor_attachment` as the item type.
 
-The snap-in must respond to Airdrop with a message, that either signals success:
+The snap-in must respond to Airdrop with a message, that either signals success, a delay, or an error.
 
-```typescript
+```typescript Success
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsDone);
 ```
 
-a delay:
-
-```typescript
+```typescript Delay
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsDelay, {
   delay: "30",
 });
 ```
 
-or an error:
-
-```typescript
+```typescript Error
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsError, {
   error: "Informative error message",
 });
 ```
 
-**The snap-in must always emit a single message.**
+<Note>The snap-in must always emit a single message.</Note>
 
 ## Examples
 

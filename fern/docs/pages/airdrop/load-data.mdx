@@ -19,7 +19,7 @@ Loading is performed by providing a list of item types to load (`itemTypesToLoad
 
 Each item type must provide `create` and `update` functions, which handle the denormalization of records to the schema of the external system and facilitate HTTP calls to the external system. Both loading functions must manage rate limiting for the external system and handle errors. The `create` and `update` functions should return an `id` of the record in the external system and optionally also `modifiedDate`. If a record cannot be created or updated, they indicate the rate-limiting offset or errors.
 
-**The snap-in must always emit a single message.**
+<Note>The snap-in must always emit a single message.</Note>
 
 ```typescript
 processTask<LoaderState>({

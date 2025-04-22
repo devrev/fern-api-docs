@@ -39,29 +39,23 @@ message with event type `EXTRACTION_DATA_ERROR`.
 
 Data extraction should be implemented in the [data-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/data-extraction.ts) file.
 
-The snap-in must respond to Airdrop with a message, that signals either success:
+The snap-in must respond to Airdrop with a message, that signals either success, a delay, progress, or an error.
 
-```typescript
+```typescript Success
 await adapter.emit(ExtractorEventType.ExtractionDataDone);
 ```
 
-a delay:
-
-```typescript
+```typescript Delay
 await adapter.emit(ExtractorEventType.ExtractionDataDelay, {
   delay: "30",
 });
 ```
 
-progress:
-
-```typescript
+```typescript Progress
 await adapter.emit(ExtractorEventType.ExtractionDataProgress);
 ```
 
-or an error:
-
-```typescript
+```typescript Error
 await adapter.emit(ExtractorEventType.ExtractionDataError, {
   error: {
     message: "Failed to extract data.",
@@ -69,7 +63,7 @@ await adapter.emit(ExtractorEventType.ExtractionDataError, {
 });
 ```
 
-**The snap-in must always emit a single message.**
+<Note>The snap-in must always emit a single message.</Note>
 
 ### Extracting and storing the data
 
@@ -152,7 +146,7 @@ const repos = [
 
 For examples of normalization functions, refer to the [data-normalization.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/external-system/data-normalization.ts) file in the starter template.
 
-Each line of the file contains an `id`, `created_date` and `modified_date` fields
+Each line of the file contains `id`, `created_date`, and `modified_date` fields
 in the beginning of the record. These fields are required.
 All other fields are contained within the `data` attribute.
 
@@ -172,7 +166,7 @@ All other fields are contained within the `data` attribute.
 }
 ```
 
-If the item you are normalizing is a work item (e.g., a ticket, task, issue, or similar),
+If the item you are normalizing is a work item (a ticket, task, issue, or similar),
 it should also contain the `item_url_field` within the `data` attribute. 
 This field should be assigned a URL that points to the item in the external system.
 This link is visible in the airdropped item in the DevRev app, 

@@ -10,8 +10,8 @@ During the attachment extraction phase,
 the snap-in extracts attachments from the external system and uploads them as artifacts to DevRev.
 
 The snap-in must respond to Airdrop with a message with an event of type
-`EXTRACTION_ATTACHMENTS_PROGRESS` together with an optional progress estimate and relevant artifacts
-when it extracts some data and the maximum snap-in run time (12 minutes) has been reached.
+`EXTRACTION_ATTACHMENTS_PROGRESS` together with an optional progress estimate
+when the maximum snap-in runtime (13 minutes) has been reached.
 
 The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_ATTACHMENTS_DELAY`
 and specify a back-off time when the extraction has been rate-limited by the external system and
@@ -41,6 +41,26 @@ domain object ID from the external system and the actor ID from the external sys
 
 The uploaded artifact is structured like a normal artifact containing extracted data in JSON Lines
 (JSONL) format and requires specifying `ssor_attachment` as the item type.
+
+The snap-in must respond to Airdrop with a message, that either signals success, a delay, or an error.
+
+```typescript Success
+await adapter.emit(ExtractorEventType.ExtractionAttachmentsDone);
+```
+
+```typescript Delay
+await adapter.emit(ExtractorEventType.ExtractionAttachmentsDelay, {
+  delay: "30",
+});
+```
+
+```typescript Error
+await adapter.emit(ExtractorEventType.ExtractionAttachmentsError, {
+  error: "Informative error message",
+});
+```
+
+<Note>The snap-in must always emit a single message.</Note>
 
 ## Examples
 

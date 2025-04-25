@@ -1,12 +1,13 @@
 This section describes the process of integrating the DevRev SDK with your iOS app.
 
-## Requirements
+## Quickstart
+### Requirements
 
 - Xcode 16.0 or higher (latest stable version available on the App Store).
 - Swift 5.9 or later.
 - Set the minimum deployment target for your iOS application as iOS 15.
 
-## Integration
+### Integration
 
 The DevRev SDK can be integrated using either Swift Package Manager (SPM) or CocoaPods.
 
@@ -21,7 +22,7 @@ To integrate the DevRev SDK into your project using SPM:
 1. Open your project in Xcode and navigate to the **Add Package Dependency**.
 2. Enter the DevRev SDK URL under **Enter Package URL**:
 	- For HTTPS: https://github.com/devrev/devrev-sdk-ios
-	- For SSH: `git@github.com:devrev/devrev-sdk-ios.git` 
+	- For SSH: `git@github.com:devrev/devrev-sdk-ios.git`
 3. In the **Build Phases** section of your app target, locate the **Link Binary With Libraries** phase and confirm that `DevRevSDK` is linked. If not, add it by clicking **+** and selecting `DevRevSDK` from the list.
 
 Now you should be able to import and use the DevRev SDK in your project.
@@ -38,7 +39,7 @@ To integrate the DevRev SDK using CocoaPods:
 
 This will install the DevRev SDK in your project, making it ready for use.
 
-## Set up the DevRev SDK
+### Set up the DevRev SDK
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
 2. Under **PLuG settings** copy the value under **Your unique App ID**.
@@ -58,6 +59,11 @@ For example:
 DevRev.configure(appID: "abcdefg12345")
 ```
 
+Use this property to check whether the DevRev SDK has been configured:
+```swift
+await DevRev.isConfigured
+```
+
 - UIKit apps
 
 Configure the SDK in the `AppDelegate.application(_:didFinishLaunchingWithOptions:)` method.
@@ -65,8 +71,8 @@ Configure the SDK in the `AppDelegate.application(_:didFinishLaunchingWithOption
 - SwiftUI apps
 
 Depending on your app's architecture, configure the SDK at the app's entry point or initial view.
-
-## Identification
+## Features
+### Identification
 
 To access certain features of the DevRev SDK, user identification is required.
 
@@ -100,6 +106,13 @@ DevRev.identifyUnverifiedUser(_:)
 
 The function accepts the `DevRev.Identity` structure, where the user identifier (`userId`) is the only required property; all other properties are optional.
 
+#### Verified identification
+The verified identification method is used to identify the user with a unique identifier and verify the user's identity with the DevRev backend.
+
+```swift
+DevRev.identifyVerifiedUser(_:sessionToken:)
+```
+
 ### Update the user
 
 You can update the user's information using the following method:
@@ -120,6 +133,20 @@ The `userID` property cannot be updated.
 The identification functions are asynchronous. Ensure you wrap them in a `Task` when calling from synchronous contexts.
 </Callout>
 
+Use this property to check whether the user is identified in the current session:
+```swift
+await DevRev.isUserIdentified
+```
+
+### Logout
+You can perform a logout of the current user by calling the following method:
+
+```swift
+DevRev.logout(deviceID:)
+```
+
+The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
+
 For example:
 
 ```swift
@@ -133,7 +160,7 @@ await DevRev.identifyUnverifiedUser(Identity(userID: "user@example.org"))
 await DevRev.updateUser(Identity(organizationID: "organization-1337"))
 ```
 
-## PLuG support chat
+### PLuG support chat
 
 ### UIKit
 
@@ -175,6 +202,13 @@ To display the support chat screen in a SwiftUI app, you can use the following v
 DevRev.supportView
 ```
 
+#### Creating a new conversation
+You have the ability to create a new conversation from within your app. The method will show the support chat screen and create a new conversation at the same time.
+
+```swift
+DevRev.createSupportConversation()
+```
+
 #### New conversation closure
 
 You can receive a callback when a new conversation is created by setting the following closure:
@@ -193,7 +227,22 @@ DevRev.conversationCreatedCompletion = { conversationID in
 }
 ```
 
- ## Analytics
+### In-app link handling
+The DevRev SDK provides a mechanism to handle links opened from within any screen that is part of the DevRev SDK.
+
+You can fully customize the link handling behavior by setting the specialized in-app link handler. That way you can decide what should happen when a link is opened from within the app.
+
+```swift
+DevRev.inAppLinkHandler: ((URL) -> Void)?
+```
+
+You can further customize the behavior by setting the `shouldDismissModalsOnOpenLink` boolean flag. This flag controls whether the DevRev SDK should dismiss the top-most modal screen when a link is opened.
+
+```swift
+DevRev.shouldDismissModalsOnOpenLink: Bool
+```
+
+### Analytics
 
 The DevRev SDK allows you to send custom analytic events by using a name and a string dictionary. You can track these events using the following function:
 
@@ -207,7 +256,7 @@ For example:
 await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "message-1337"])
 ```
 
-## Session analytics
+### Session analytics
 
 The DevRev SDK offers session analytics features to help you understand how users interact with your app.
 
@@ -223,6 +272,11 @@ To opt back in, use the following method:
 
 ```swift
 DevRev.resumeAllMonitoring()
+```
+
+You can check whether session monitoring has been enabled by using this property:
+```swift
+DevRev.isMonitoringEnabled
 ```
 
 ### Session recording
@@ -241,6 +295,17 @@ The session recording feature includes the following methods to control the reco
 |`DevRev.stopRecording()`    | Ends the session recording and uploads it to the portal. |
 |`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
 |`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
+|`DevRev.processAllOnDemandSessions()`| Stops the ongoing user recording and sends all on-demand sessions along with the current recording. |
+
+Using this property will return the status of the session recording:
+```swift
+DevRev.isRecording
+```
+
+To check if on-demand sessions are enabled, use:
+```swift
+DevRev.areOnDemandSessionsEnabled
+```
 
 ### Session properties
 
@@ -250,7 +315,7 @@ You can add custom properties to the session recording to help you understand th
 DevRev.addSessionProperties(_:)
 ```
 
-To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method:
 
 ```swift
 DevRev.clearSessionProperties()
@@ -411,14 +476,14 @@ func userNotificationCenter(
 
 ## Troubleshooting
 
-- **Issue**: Can't import the SDK into my app.   
+- **Issue**: Can't import the SDK into my app.
 	**Solution**: Double-check the setup process and ensure that `DevRevSDK` is correctly linked to your application.
 
-- **Issue**: How does the DevRev SDK handle errors?   
+- **Issue**: How does the DevRev SDK handle errors?
 	**Solution**: The DevRev SDK reports all errors in the console using Apple's Unified Logging System. Look for error messages in the subsystem `ai.devrev.sdk`.
 
-- **Issue**: Support chat won't show.   
+- **Issue**: Support chat won't show.
 	**Solution**: Ensure you have correctly called one of the identification methods: `DevRev.identifyUnverifiedUser(...)` or `DevRev.identifyAnonymousUser(...)`.
 
-- **Issue**: Not receiving push notifications.   
+- **Issue**: Not receiving push notifications.
 	**Solution**: Ensure that your app is configured to receive push notifications and that your device is registered with the DevRev SDK.

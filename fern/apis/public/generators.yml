@@ -1,2 +1,3 @@
-api:
-  path: ./openapi-public.yaml
+api: 
+  specs:
+    - openapi: ./openapi-public.yaml

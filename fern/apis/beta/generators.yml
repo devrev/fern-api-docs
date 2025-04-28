@@ -1,5 +1,6 @@
-api:
-  path: ./openapi-beta.yaml
+api: 
+  specs:
+    - openapi: ./openapi-beta.yaml
 groups:
   ts-sdk:
     audiences:

@@ -282,7 +282,6 @@ navigation:
             path: ../docs/pages/airdrop/data-model/rich-text-fields.mdx
           - page: "Permissions"
             slug: permissions
-            hidden: true
             path: ../docs/pages/airdrop/data-model/permissions.mdx
           - page: "Mapping reasons"
             slug: mapping-reasons

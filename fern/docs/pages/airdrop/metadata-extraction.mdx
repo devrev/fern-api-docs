@@ -39,6 +39,8 @@ processTask({
 });
 ```
 
+<Note>The snap-in must always emit a single message.</Note>
+
 ## Validating metadata
 
 The extraction function of the snap-in must provide a valid metadata file.
@@ -243,7 +245,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
     A good practice is to retrieve the set of possible values for all enum fields from the external
     system's APIs in each sync run. You can mark specific enum values as deprecated using the `is_deprecated` property.
 
-    `ID` (primary key) of the record, `created_date`, and `modified_date` must not be declared.
+    **`ID` (primary key) of the record, `created_date`, and `modified_date` must not be declared.**
 
     Example:
 

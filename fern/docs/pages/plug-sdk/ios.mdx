@@ -15,29 +15,32 @@ The DevRev SDK can be integrated using either Swift Package Manager (SPM) or Coc
 We recommend integrating the DevRev SDK using SPM.
 </Callout>
 
-### Swift Package Manager
+<Tabs>
+  <Tab title="Swift Package Manager">
+  	To integrate the DevRev SDK into your project using SPM:
 
-To integrate the DevRev SDK into your project using SPM:
+	1. Open your project in Xcode and navigate to the **Add Package Dependency**.
+	2. Enter the DevRev SDK URL under **Enter Package URL**:
+		- For HTTPS: https://github.com/devrev/devrev-sdk-ios
+		- For SSH: `git@github.com:devrev/devrev-sdk-ios.git`
+	3. In the **Build Phases** section of your app target, locate the **Link Binary With Libraries** phase and confirm that `DevRevSDK` is linked. If not, add it by clicking **+** and selecting `DevRevSDK` from the list.
 
-1. Open your project in Xcode and navigate to the **Add Package Dependency**.
-2. Enter the DevRev SDK URL under **Enter Package URL**:
-	- For HTTPS: https://github.com/devrev/devrev-sdk-ios
-	- For SSH: `git@github.com:devrev/devrev-sdk-ios.git`
-3. In the **Build Phases** section of your app target, locate the **Link Binary With Libraries** phase and confirm that `DevRevSDK` is linked. If not, add it by clicking **+** and selecting `DevRevSDK` from the list.
+	Now you should be able to import and use the DevRev SDK in your project.
 
-Now you should be able to import and use the DevRev SDK in your project.
+  </Tab>
+  <Tab title="CocoaPods">
+   	To integrate the DevRev SDK using CocoaPods:
 
-### CocoaPods
+	1. Add the following to your Podfile:
+		```ruby
+		pod 'DevRevSDK', '~> 1.0.0'
+		```
+	2. Run `pod install` in your project directory.
 
-To integrate the DevRev SDK using CocoaPods:
+	This will install the DevRev SDK in your project, making it ready for use.
 
-1. Add the following to your Podfile:
-	```ruby
-	pod 'DevRevSDK', '~> 1.0.0'
-	```
-2. Run `pod install` in your project directory.
-
-This will install the DevRev SDK in your project, making it ready for use.
+  </Tab>
+</Tabs>
 
 ### Set up the DevRev SDK
 

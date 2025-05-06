@@ -21,6 +21,7 @@ def get_response(prompt):
             r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
                             headers=headers)
             r.raise_for_status()
+            print(r)
 
             if not r.text:
                 raise ValueError("Empty response received from API")

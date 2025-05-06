@@ -965,6 +965,22 @@ components:
         - session
       title: ai-agent-events-execute-async-response
       x-go-name: AiAgentEventsExecuteAsyncResponseBody
+    ai-agent-message-generation-started:
+      type: object
+      description: |
+        Additional metadata to indicate that the message generation has
+        started.
+      properties:
+        request_id:
+          type: string
+          description: |
+            The request ID contains an UUID to fetch the partial message
+            generation.
+          format: text
+          maxLength: 128
+      required:
+        - request_id
+      title: ai-agent-message-generation-started
     ai-agent-session-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -1120,6 +1136,9 @@ components:
             For completed metrics the time (in minutes) it took to complete
             them. (Taking into account the schedule if any).
           format: int32
+        in_policy:
+          type: boolean
+          description: If true, the metric is part of the applied policy.
         is_out_of_schedule:
           type: boolean
           description: |
@@ -1435,6 +1454,10 @@ components:
           type: string
           description: Language of the article.
           format: text
+        notify:
+          type: boolean
+          description: |
+            Whether to notify the users when the article is published.
         owned_by:
           type: array
           description: The users that own the article.
@@ -1452,6 +1475,10 @@ components:
           description: The published date of the article.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+        release_notes:
+          type: string
+          description: The release notes of the article.
+          format: text
         resource:
           $ref: '#/components/schemas/articles-create-request-resource'
         scope:
@@ -1714,6 +1741,10 @@ components:
           type: string
           description: Updates the language of the article.
           format: text
+        notify:
+          type: boolean
+          description: |
+            Whether to notify the users when the article is published.
         owned_by:
           $ref: '#/components/schemas/articles-update-request-owned-by'
         parent:
@@ -1724,6 +1755,10 @@ components:
         published_version:
           type: string
           description: Updates the the latest published version.
+          format: text
+        release_notes:
+          type: string
+          description: Updates the release notes of the article.
           format: text
         reorder:
           $ref: '#/components/schemas/articles-update-request-reorder'
@@ -1896,6 +1931,10 @@ components:
           type: string
           description: Name of the file.
           format: text
+        size:
+          type: integer
+          description: Size of the file in bytes.
+          format: int32
       title: artifact-file
     artifact-file-summary:
       type: object
@@ -1909,6 +1948,10 @@ components:
           type: string
           description: Name of the file.
           format: text
+        size:
+          type: integer
+          description: Size of the file in bytes.
+          format: int32
       title: artifact-file-summary
     artifact-search-summary:
       allOf:
@@ -2174,6 +2217,7 @@ components:
           incident: '#/components/schemas/incident'
           issue: '#/components/schemas/issue'
           link: '#/components/schemas/link'
+          linkable: '#/components/schemas/linkable'
           meeting: '#/components/schemas/meeting'
           object_member: '#/components/schemas/object-member'
           opportunity: '#/components/schemas/opportunity'
@@ -2181,6 +2225,7 @@ components:
           question_answer: '#/components/schemas/question-answer'
           rev_org: '#/components/schemas/rev-org'
           rev_user: '#/components/schemas/rev-user'
+          runnable: '#/components/schemas/runnable'
           service_account: '#/components/schemas/service-account'
           sla: '#/components/schemas/sla'
           sla_tracker: '#/components/schemas/sla-tracker'
@@ -2196,6 +2241,7 @@ components:
           uom: '#/components/schemas/uom'
           user_preferences: '#/components/schemas/user-preferences'
           webhook: '#/components/schemas/webhook'
+          widget: '#/components/schemas/widget'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account'
@@ -2217,6 +2263,7 @@ components:
         - $ref: '#/components/schemas/incident'
         - $ref: '#/components/schemas/issue'
         - $ref: '#/components/schemas/link'
+        - $ref: '#/components/schemas/linkable'
         - $ref: '#/components/schemas/meeting'
         - $ref: '#/components/schemas/object-member'
         - $ref: '#/components/schemas/opportunity'
@@ -2224,6 +2271,7 @@ components:
         - $ref: '#/components/schemas/question-answer'
         - $ref: '#/components/schemas/rev-org'
         - $ref: '#/components/schemas/rev-user'
+        - $ref: '#/components/schemas/runnable'
         - $ref: '#/components/schemas/service-account'
         - $ref: '#/components/schemas/sla'
         - $ref: '#/components/schemas/sla-tracker'
@@ -2239,6 +2287,7 @@ components:
         - $ref: '#/components/schemas/uom'
         - $ref: '#/components/schemas/user-preferences'
         - $ref: '#/components/schemas/webhook'
+        - $ref: '#/components/schemas/widget'
       properties:
         type:
           $ref: '#/components/schemas/atom-type'
@@ -2310,6 +2359,7 @@ components:
           incident: '#/components/schemas/incident-summary'
           issue: '#/components/schemas/issue-summary'
           link: '#/components/schemas/link-summary'
+          linkable: '#/components/schemas/linkable-summary'
           meeting: '#/components/schemas/meeting-summary'
           object_member: '#/components/schemas/object-member-summary'
           opportunity: '#/components/schemas/opportunity-summary'
@@ -2317,6 +2367,7 @@ components:
           question_answer: '#/components/schemas/question-answer-summary'
           rev_org: '#/components/schemas/rev-org-summary'
           rev_user: '#/components/schemas/rev-user-summary'
+          runnable: '#/components/schemas/runnable-summary'
           service_account: '#/components/schemas/service-account-summary'
           sla: '#/components/schemas/sla-summary'
           sla_tracker: '#/components/schemas/sla-tracker-summary'
@@ -2332,6 +2383,7 @@ components:
           uom: '#/components/schemas/uom-summary'
           user_preferences: '#/components/schemas/user-preferences-summary'
           webhook: '#/components/schemas/webhook-summary'
+          widget: '#/components/schemas/widget-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account-summary'
@@ -2353,6 +2405,7 @@ components:
         - $ref: '#/components/schemas/incident-summary'
         - $ref: '#/components/schemas/issue-summary'
         - $ref: '#/components/schemas/link-summary'
+        - $ref: '#/components/schemas/linkable-summary'
         - $ref: '#/components/schemas/meeting-summary'
         - $ref: '#/components/schemas/object-member-summary'
         - $ref: '#/components/schemas/opportunity-summary'
@@ -2360,6 +2413,7 @@ components:
         - $ref: '#/components/schemas/question-answer-summary'
         - $ref: '#/components/schemas/rev-org-summary'
         - $ref: '#/components/schemas/rev-user-summary'
+        - $ref: '#/components/schemas/runnable-summary'
         - $ref: '#/components/schemas/service-account-summary'
         - $ref: '#/components/schemas/sla-summary'
         - $ref: '#/components/schemas/sla-tracker-summary'
@@ -2375,6 +2429,7 @@ components:
         - $ref: '#/components/schemas/uom-summary'
         - $ref: '#/components/schemas/user-preferences-summary'
         - $ref: '#/components/schemas/webhook-summary'
+        - $ref: '#/components/schemas/widget-summary'
       properties:
         type:
           $ref: '#/components/schemas/atom-type'
@@ -2403,6 +2458,7 @@ components:
         - incident
         - issue
         - link
+        - linkable
         - meeting
         - object_member
         - opportunity
@@ -2410,6 +2466,7 @@ components:
         - question_answer
         - rev_org
         - rev_user
+        - runnable
         - service_account
         - sla
         - sla_tracker
@@ -2425,6 +2482,7 @@ components:
         - uom
         - user_preferences
         - webhook
+        - widget
     atoms-get-request:
       type: object
       properties:
@@ -3204,6 +3262,84 @@ components:
           type: boolean
           description: Manually set presence to away.
       title: availability-preferences-group
+    bar-visualization-x-axis:
+      type: object
+      description: The X-axis for a bar visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: bar-visualization-x-axis
+    bar-visualization-y-axis:
+      type: object
+      description: The Y-axis for a bar visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: bar-visualization-y-axis
+    bar-widget-visualization:
+      type: object
+      description: |
+        A bar chart visualization configuration. Includes metadata specific to
+        bar charts.
+      properties:
+        is_stacked:
+          type: boolean
+          description: Whether the bar should be stacked.
+        scrollbar:
+          $ref: '#/components/schemas/visualization-scrollbar'
+        show_data_labels:
+          type: boolean
+          description: Whether to show data labels.
+        x:
+          type: array
+          description: The configuration for the X-axis.
+          items:
+            $ref: '#/components/schemas/bar-visualization-x-axis'
+        "y":
+          type: array
+          description: The configuration for the Y-axes.
+          items:
+            $ref: '#/components/schemas/bar-visualization-y-axis'
+      required:
+        - x
+        - "y"
+      title: bar-widget-visualization
     boolean-expression:
       type: object
       description: Boolean expression.
@@ -3728,6 +3864,7 @@ components:
         - azure_devops
         - bitbucket
         - github
+        - gitlab
     code-change-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -3854,6 +3991,84 @@ components:
         - code_change
       title: code-changes-update-response
       x-go-name: CodeChangesUpdateResponseBody
+    column-visualization-x-axis:
+      type: object
+      description: The X-axis for a column visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: column-visualization-x-axis
+    column-visualization-y-axis:
+      type: object
+      description: The Y-axis for a column visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: column-visualization-y-axis
+    column-widget-visualization:
+      type: object
+      description: |
+        A column chart visualization configuration. Includes metadata specific
+        to column charts.
+      properties:
+        is_stacked:
+          type: boolean
+          description: Whether the columns should be stacked.
+        scrollbar:
+          $ref: '#/components/schemas/visualization-scrollbar'
+        show_data_labels:
+          type: boolean
+          description: Whether to show data labels.
+        x:
+          type: array
+          description: The configuration for the X-axis.
+          items:
+            $ref: '#/components/schemas/column-visualization-x-axis'
+        "y":
+          type: array
+          description: The configuration for the Y-axes.
+          items:
+            $ref: '#/components/schemas/column-visualization-y-axis'
+      required:
+        - x
+        - "y"
+      title: column-widget-visualization
     command:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -4406,6 +4621,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            actual_close_date:
+              type: string
+              description: Timestamp when the conversation was actually completed.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
             channels:
               type: array
               description: Channel IDs of the conversation.
@@ -4519,6 +4739,12 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/conversations-create-request-type-value'
+        channels:
+          type: array
+          description: Channel IDs of the conversation.
+          items:
+            type: string
+            format: id
         custom_fields:
           type: object
           description: Application-defined custom fields.
@@ -4644,6 +4870,14 @@ components:
             Filters for conversations belonging to any of the provided parts.
           example:
             - PROD-12345
+          items:
+            type: string
+            format: id
+        channels:
+          type: array
+          description: |
+            Filters for conversations that are associated with any of the
+            channels.
           items:
             type: string
             format: id
@@ -4802,6 +5036,14 @@ components:
           items:
             type: string
             format: id
+        channels:
+          type: array
+          description: |
+            Filters for conversations that are associated with any of the
+            channels.
+          items:
+            type: string
+            format: id
         cursor:
           type: string
           description: |
@@ -4948,6 +5190,8 @@ components:
       properties:
         applies_to_parts:
           $ref: '#/components/schemas/conversations-update-request-applies-to-parts'
+        channels:
+          $ref: '#/components/schemas/conversations-update-request-channels'
         custom_fields:
           type: object
           description: Application-defined custom fields.
@@ -5006,6 +5250,16 @@ components:
             type: string
             format: id
       title: conversations-update-request-applies-to-parts
+    conversations-update-request-channels:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the channel IDs of the conversation.
+          items:
+            type: string
+            format: id
+      title: conversations-update-request-channels
     conversations-update-request-members:
       type: object
       properties:
@@ -5542,6 +5796,26 @@ components:
         - $ref: '#/components/schemas/vista-base-summary'
       description: Static collection of Devrev objects.
       title: curated-vista-summary
+    custom-field-widget-column-projection:
+      type: object
+      description: A custom field widget column projection.
+      properties:
+        leaf_type:
+          type: string
+          description: The leaf type of the custom field.
+          format: text
+        name:
+          type: string
+          description: The name of the custom field.
+          format: text
+        subtype:
+          type: string
+          description: The subtype of the custom field.
+          format: text
+      required:
+        - leaf_type
+        - name
+      title: custom-field-widget-column-projection
     custom-link-type:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -6799,6 +7073,17 @@ components:
       additionalProperties: false
       description: Path component for rendering custom type lists in tree form.
       title: custom-type-path-component
+    dashboard:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+      title: dashboard
+    dashboard-filter:
+      type: object
+      additionalProperties: false
+      description: |
+        A dashboard filter is a filter that can be applied to tabs, sections,
+        and widgets.
+      title: dashboard-filter
     dashboard-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'
@@ -6813,6 +7098,13 @@ components:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
       title: dashboard-summary
+    data-source-join:
+      type: object
+      additionalProperties: false
+      description: |
+        A list of possible joins for the data source. Follows foreign key
+        semantics.
+      title: data-source-join
     date-filter:
       type: object
       description: Provides ways to specify date ranges on objects.
@@ -8191,6 +8483,73 @@ components:
           required:
             - users
       title: dm-summary
+    donut-visualization-x-axis:
+      type: object
+      description: The X-axis for a donut visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: donut-visualization-x-axis
+    donut-visualization-y-axis:
+      type: object
+      description: The Y-axis for a donut visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: donut-visualization-y-axis
+    donut-widget-visualization:
+      type: object
+      description: |
+        A donut chart visualization configuration. Includes metadata specific
+        to donut charts.
+      properties:
+        x:
+          type: array
+          description: The configuration for the X-axis.
+          items:
+            $ref: '#/components/schemas/donut-visualization-x-axis'
+        "y":
+          $ref: '#/components/schemas/donut-visualization-y-axis'
+      required:
+        - x
+        - "y"
+      title: donut-widget-visualization
     dynamic-group-info:
       type: object
       additionalProperties: false
@@ -8309,6 +8668,25 @@ components:
             - reply_to
             - to
       title: email-preview-widget
+    embed-links-create-request:
+      type: object
+      description: |
+        The request to create a new link embedded inside another create
+        request.
+      properties:
+        link_type:
+          $ref: '#/components/schemas/link-type'
+        source:
+          type: string
+          description: The ID of the source object.
+          format: id
+        target:
+          type: string
+          description: The ID of the target object.
+          format: id
+      required:
+        - link_type
+      title: embed-links-create-request
     empty:
       type: object
       additionalProperties: false
@@ -8694,6 +9072,12 @@ components:
               description: Actual start date for the object.
               example: "2023-01-01T12:00:00.000Z"
               format: date-time
+            stage_v2:
+              $ref: '#/components/schemas/stage'
+            state_v2:
+              type: string
+              description: State of the object based upon the stage.
+              format: text
             target_close_date:
               type: string
               description: Target close date for the object.
@@ -8705,6 +9089,13 @@ components:
               example: "2023-01-01T12:00:00.000Z"
               format: date-time
       title: enhancement
+    enhancement-rev-score-tier:
+      type: string
+      description: Rev Score tier of the enhancement.
+      enum:
+        - high
+        - low
+        - medium
     enhancement-summary:
       allOf:
         - $ref: '#/components/schemas/part-base-summary'
@@ -9615,6 +10006,7 @@ components:
           enum:
             - error
             - message
+            - message_generation_started
             - progress
         client_metadata:
           type: object
@@ -9627,6 +10019,8 @@ components:
           description: |
             The final response of asynchronous agent events execution.
           format: text
+        message_generation_started:
+          $ref: '#/components/schemas/ai-agent-message-generation-started'
         progress:
           $ref: '#/components/schemas/ai-agent-event-execute-progress'
         session:
@@ -9675,6 +10069,36 @@ components:
       required:
         - conversation
       title: event-conversation-updated
+    event-dashboard-created:
+      type: object
+      properties:
+        dashboard:
+          $ref: '#/components/schemas/dashboard'
+      required:
+        - dashboard
+      title: event-dashboard-created
+    event-dashboard-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the dashboard that was deleted.
+          format: id
+        old_dashboard:
+          $ref: '#/components/schemas/dashboard'
+      required:
+        - id
+      title: event-dashboard-deleted
+    event-dashboard-updated:
+      type: object
+      properties:
+        dashboard:
+          $ref: '#/components/schemas/dashboard'
+        old_dashboard:
+          $ref: '#/components/schemas/dashboard'
+      required:
+        - dashboard
+      title: event-dashboard-updated
     event-dev-user-created:
       type: object
       properties:
@@ -9958,6 +10382,8 @@ components:
           type: string
           description: The ID of the SLA tracker that was deleted.
           format: id
+        old_sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
       required:
         - id
       title: event-sla-tracker-deleted
@@ -10303,6 +10729,36 @@ components:
       required:
         - webhook
       title: event-webhook-updated
+    event-widget-created:
+      type: object
+      properties:
+        widget:
+          $ref: '#/components/schemas/widget'
+      required:
+        - widget
+      title: event-widget-created
+    event-widget-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the widget that was deleted.
+          format: id
+        old_widget:
+          $ref: '#/components/schemas/widget'
+      required:
+        - id
+      title: event-widget-deleted
+    event-widget-updated:
+      type: object
+      properties:
+        old_widget:
+          $ref: '#/components/schemas/widget'
+        widget:
+          $ref: '#/components/schemas/widget'
+      required:
+        - widget
+      title: event-widget-updated
     event-work-created:
       type: object
       properties:
@@ -10796,6 +11252,60 @@ components:
         notified.
       title: get-rev-users-personal-data-response
       x-go-name: GetRevUsersPersonalDataResponseBody
+    grid-layout:
+      type: object
+      description: |
+        Grid layout represents the organization of the elements within a
+        layout.
+      properties:
+        layout:
+          type: array
+          description: Layout of the elements within the current element.
+          items:
+            $ref: '#/components/schemas/grid-layout'
+        position:
+          $ref: '#/components/schemas/grid-position'
+        reference_id:
+          type: string
+          description: |
+            The reference ID for the element to be laid out. It should be an ID
+            of a tab, section, or widget.
+          format: text
+      required:
+        - reference_id
+      title: grid-layout
+    grid-position:
+      type: object
+      description: |
+        A grid position represents the location and size of a widget or section
+        within  its container (dashboard, tab, or section).
+      properties:
+        height:
+          type: integer
+          description: The height of the widget or section, in grid units.
+          format: int32
+        width:
+          type: integer
+          description: The width of the widget or section, in grid units.
+          format: int32
+        x:
+          type: integer
+          description: |
+            The x-coordinate of the top-left corner of the widget or section,
+            based on  a grid system.
+          format: int32
+        "y":
+          type: integer
+          description: |
+            The y-coordinate of the top-left corner of the widget or section,
+            based on  a grid system.
+          format: int32
+      required:
+        - height
+        - width
+        - x
+        - "y"
+      title: grid-position
     group:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -11166,6 +11676,102 @@ components:
         - group
       title: groups-update-response
       x-go-name: GroupsUpdateResponseBody
+    heatmap-visualization-x-axis:
+      type: object
+      description: The X-axis for a heatmap visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: heatmap-visualization-x-axis
+    heatmap-visualization-y-axis:
+      type: object
+      description: The Y-axis for a heatmap visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: heatmap-visualization-y-axis
+    heatmap-visualization-z-axis:
+      type: object
+      description: The Z-axis for a heatmap visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: heatmap-visualization-z-axis
+    heatmap-widget-visualization:
+      type: object
+      description: |
+        A heatmap chart visualization configuration. Includes metadata specific
+        to heatmap charts.
+      properties:
+        color:
+          type: string
+          description: Color for heatmap.
+          format: text
+        x:
+          $ref: '#/components/schemas/heatmap-visualization-x-axis'
+        "y":
+          $ref: '#/components/schemas/heatmap-visualization-y-axis'
+        z:
+          $ref: '#/components/schemas/heatmap-visualization-z-axis'
+      required:
+        - x
+        - "y"
+        - z
+      title: heatmap-widget-visualization
     impacted-customer-details:
       type: object
       description: Details of the impact due to the incident.
@@ -11489,6 +12095,10 @@ components:
             The cursor used to iterate preceding results in accordance to the
             sort order. If not set, then no prior elements exist.
           format: text
+        total:
+          type: integer
+          description: The total number of incidents in the group.
+          format: int32
       required:
         - incidents
         - key
@@ -12021,6 +12631,66 @@ components:
           description: The job title for the user.
           format: text
       title: job-history-item
+    kanban-visualization-card-attribute:
+      type: object
+      description: A card attribute in a kanban visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        order:
+          type: integer
+          description: |
+            The order in which the attribute should be displayed in a card.
+          format: int32
+        position:
+          $ref: '#/components/schemas/kanban-visualization-card-attribute-position'
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: kanban-visualization-card-attribute
+    kanban-visualization-card-attribute-position:
+      type: string
+      description: |
+        Whether the attribute should be placed in the body or footer of the
+        kanban.
+      enum:
+        - body
+        - footer
+    kanban-widget-visualization:
+      type: object
+      description: |
+        A kanban visualization configuration. Includes metadata specific to
+        kanban.
+      properties:
+        card_attributes:
+          type: array
+          description: The configuration for the card in the kanban.
+          items:
+            $ref: '#/components/schemas/kanban-visualization-card-attribute'
+        group_by:
+          type: array
+          description: The group_by configuration in the kanban.
+          items:
+            $ref: '#/components/schemas/widget-group-by-config'
+      required:
+        - card_attributes
+        - group_by
+      title: kanban-widget-visualization
     keyrings-create-callback-request:
       type: object
       properties:
@@ -12072,6 +12742,91 @@ components:
       required:
         - name
       title: legacy-stage-summary
+    line-visualization-x-axis:
+      type: object
+      description: The X-axis for a line visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: line-visualization-x-axis
+    line-visualization-y-axis:
+      type: object
+      description: The Y-axis for a line visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_area_filled:
+          type: boolean
+          description: Whether the area under the line should be filled.
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        is_spline:
+          type: boolean
+          description: Whether the line should be a spline.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        marker:
+          type: boolean
+          description: Whether the line have circular.
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: line-visualization-y-axis
+    line-widget-visualization:
+      type: object
+      description: |
+        A line chart visualization configuration. Includes metadata specific to
+        line charts.
+      properties:
+        is_stacked:
+          type: boolean
+          description: Whether the line should be stacked.
+        show_data_labels:
+          type: boolean
+          description: Whether to show data labels.
+        x:
+          type: array
+          description: The configuration for the X-axis.
+          items:
+            $ref: '#/components/schemas/line-visualization-x-axis'
+        "y":
+          type: array
+          description: The configuration for the Y-axes.
+          items:
+            $ref: '#/components/schemas/line-visualization-y-axis'
+      required:
+        - x
+        - "y"
+      title: line-widget-visualization
     lines-of-code:
       type: object
       description: Details of lines of code in this code change.
@@ -12134,13 +12889,16 @@ components:
           feature: '#/components/schemas/feature-summary'
           incident: '#/components/schemas/incident-summary'
           issue: '#/components/schemas/issue-summary'
+          linkable: '#/components/schemas/linkable-summary'
           meeting: '#/components/schemas/meeting-summary'
           opportunity: '#/components/schemas/opportunity-summary'
           product: '#/components/schemas/product-summary'
           rev_org: '#/components/schemas/rev-org-summary'
           rev_user: '#/components/schemas/rev-user-summary'
+          runnable: '#/components/schemas/runnable-summary'
           task: '#/components/schemas/task-summary'
           ticket: '#/components/schemas/ticket-summary'
+          widget: '#/components/schemas/widget-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/account-summary'
@@ -12153,13 +12911,16 @@ components:
         - $ref: '#/components/schemas/feature-summary'
         - $ref: '#/components/schemas/incident-summary'
         - $ref: '#/components/schemas/issue-summary'
+        - $ref: '#/components/schemas/linkable-summary'
         - $ref: '#/components/schemas/meeting-summary'
         - $ref: '#/components/schemas/opportunity-summary'
         - $ref: '#/components/schemas/product-summary'
         - $ref: '#/components/schemas/rev-org-summary'
         - $ref: '#/components/schemas/rev-user-summary'
+        - $ref: '#/components/schemas/runnable-summary'
         - $ref: '#/components/schemas/task-summary'
         - $ref: '#/components/schemas/ticket-summary'
+        - $ref: '#/components/schemas/widget-summary'
       properties:
         type:
           $ref: '#/components/schemas/link-endpoint-type'
@@ -12179,13 +12940,16 @@ components:
         - feature
         - incident
         - issue
+        - linkable
         - meeting
         - opportunity
         - product
         - rev_org
         - rev_user
+        - runnable
         - task
         - ticket
+        - widget
     link-rev-user-to-rev-org-request:
       type: object
       description: Request to link a Rev user to an existing Rev organization.
@@ -12290,6 +13054,14 @@ components:
         - is_part_of
         - is_related_to
         - serves
+    linkable:
+      allOf:
+        - $ref: '#/components/schemas/part-base'
+      title: linkable
+    linkable-summary:
+      allOf:
+        - $ref: '#/components/schemas/part-base-summary'
+      title: linkable-summary
     links-create-request:
       type: object
       description: The request to create a new link.
@@ -12451,6 +13223,65 @@ components:
       enum:
         - after
         - before
+    meerkat-widget-column-function:
+      type: object
+      description: A meerkat specific column function.
+      properties:
+        type:
+          $ref: '#/components/schemas/meerkat-widget-column-function-type'
+      required:
+        - type
+      title: meerkat-widget-column-function
+    meerkat-widget-column-function-type:
+      type: string
+      description: The type of the function.
+      enum:
+        - avg
+        - count
+        - count_distinct
+        - max
+        - median
+        - min
+        - sum
+    meerkat-widget-column-projection:
+      type: object
+      description: A meerkat specific column projection.
+      properties:
+        type:
+          $ref: '#/components/schemas/meerkat-widget-column-projection-type'
+        function:
+          $ref: '#/components/schemas/meerkat-widget-column-function'
+        sql_expression:
+          type: string
+          description: |
+            The SQL expression used to extract or transform the column from the
+            data source.
+          format: text
+        timestamp_rollup:
+          $ref: '#/components/schemas/meerkat-widget-column-projection-timestamp-rollup'
+      required:
+        - sql_expression
+        - type
+      title: meerkat-widget-column-projection
+    meerkat-widget-column-projection-timestamp-rollup:
+      type: string
+      description: The rollup granularity for the timestamp.
+      enum:
+        - day
+        - hour
+        - month
+        - week
+        - year
+    meerkat-widget-column-projection-type:
+      type: string
+      description: The data type of the column generated by the SQL expression.
+      enum:
+        - boolean
+        - number
+        - number_array
+        - string
+        - string_array
+        - time
     meeting:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -13353,6 +14184,47 @@ components:
         - metric_definition
       title: metric-definitions-update-response
       x-go-name: MetricDefinitionsUpdateResponseBody
+    metric-visualization-y-axis:
+      type: object
+      description: The y axis for a metric visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: metric-visualization-y-axis
+    metric-widget-visualization:
+      type: object
+      description: |
+        A metric visualization configuration. Includes metadata specific to
+        metrics.
+      properties:
+        pvp:
+          $ref: '#/components/schemas/widget-pvp-config'
+        "y":
+          type: array
+          description: The configuration for the Y-axis.
+          items:
+            $ref: '#/components/schemas/metric-visualization-y-axis'
+      required:
+        - "y"
+      title: metric-widget-visualization
     metrics-data:
       type: object
       properties:
@@ -14101,6 +14973,76 @@ components:
         - account
         - dev_org
         - rev_org
+    packed-bubble-visualization-x-axis:
+      type: object
+      description: The X-axis for a packed bubble visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: packed-bubble-visualization-x-axis
+    packed-bubble-visualization-y-axis:
+      type: object
+      description: The Y-axis for a packed bubble visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: packed-bubble-visualization-y-axis
+    packed-bubble-widget-visualization:
+      type: object
+      description: |
+        A Packed Bubble chart visualization configuration. Includes metadata
+        specific to packed bubble charts.
+      properties:
+        x:
+          type: array
+          description: The configuration for the X-axis.
+          items:
+            $ref: '#/components/schemas/packed-bubble-visualization-x-axis'
+        "y":
+          type: array
+          description: The configuration for the Y-axes.
+          items:
+            $ref: '#/components/schemas/packed-bubble-visualization-y-axis'
+      required:
+        - x
+        - "y"
+      title: packed-bubble-widget-visualization
     parent-part-filter:
       type: object
       description: The filter for specifying parent part.
@@ -14129,13 +15071,17 @@ components:
           capability: '#/components/schemas/capability'
           enhancement: '#/components/schemas/enhancement'
           feature: '#/components/schemas/feature'
+          linkable: '#/components/schemas/linkable'
           product: '#/components/schemas/product'
+          runnable: '#/components/schemas/runnable'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/capability'
         - $ref: '#/components/schemas/enhancement'
         - $ref: '#/components/schemas/feature'
+        - $ref: '#/components/schemas/linkable'
         - $ref: '#/components/schemas/product'
+        - $ref: '#/components/schemas/runnable'
       properties:
         type:
           $ref: '#/components/schemas/part-type'
@@ -14239,13 +15185,17 @@ components:
           capability: '#/components/schemas/capability-summary'
           enhancement: '#/components/schemas/enhancement-summary'
           feature: '#/components/schemas/feature-summary'
+          linkable: '#/components/schemas/linkable-summary'
           product: '#/components/schemas/product-summary'
+          runnable: '#/components/schemas/runnable-summary'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/capability-summary'
         - $ref: '#/components/schemas/enhancement-summary'
         - $ref: '#/components/schemas/feature-summary'
+        - $ref: '#/components/schemas/linkable-summary'
         - $ref: '#/components/schemas/product-summary'
+        - $ref: '#/components/schemas/runnable-summary'
       properties:
         type:
           $ref: '#/components/schemas/part-type'
@@ -14258,7 +15208,9 @@ components:
         - capability
         - enhancement
         - feature
+        - linkable
         - product
+        - runnable
     parts-create-request:
       type: object
       discriminator:
@@ -14266,13 +15218,17 @@ components:
           capability: '#/components/schemas/parts-create-request-capability'
           enhancement: '#/components/schemas/parts-create-request-enhancement'
           feature: '#/components/schemas/parts-create-request-feature'
+          linkable: '#/components/schemas/parts-create-request-linkable'
           product: '#/components/schemas/parts-create-request-product'
+          runnable: '#/components/schemas/parts-create-request-runnable'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/parts-create-request-capability'
         - $ref: '#/components/schemas/parts-create-request-enhancement'
         - $ref: '#/components/schemas/parts-create-request-feature'
+        - $ref: '#/components/schemas/parts-create-request-linkable'
         - $ref: '#/components/schemas/parts-create-request-product'
+        - $ref: '#/components/schemas/parts-create-request-runnable'
       properties:
         type:
           $ref: '#/components/schemas/part-type'
@@ -14301,6 +15257,11 @@ components:
           type: string
           description: Description of the part.
           format: text
+        links:
+          type: array
+          description: Links associated with the part.
+          items:
+            $ref: '#/components/schemas/embed-links-create-request'
         name:
           type: string
           description: Name of the part.
@@ -14357,6 +15318,11 @@ components:
             type: string
             format: id
           maxItems: 1
+        stage_v2:
+          type: string
+          description: |
+            Custom stage ID which will be used for creating the enhancement.
+          format: id
         target_close_date:
           type: string
           description: |
@@ -14388,10 +15354,46 @@ components:
       required:
         - parent_part
       title: parts-create-request-feature
+    parts-create-request-linkable:
+      type: object
+      properties:
+        code_inferred_surface_area:
+          type: array
+          description: Code Inferred surface area of the linkable.
+          items:
+            type: string
+            format: text
+        code_repo_paths:
+          type: string
+          description: Repo Path of the linkable.
+          format: text
+        code_repo_url:
+          type: string
+          description: Repo url of the linkable.
+          format: text
+      title: parts-create-request-linkable
     parts-create-request-product:
       type: object
       additionalProperties: false
       title: parts-create-request-product
+    parts-create-request-runnable:
+      type: object
+      properties:
+        code_inferred_surface_area:
+          type: array
+          description: Code Inferred surface area of the runnable.
+          items:
+            type: string
+            format: text
+        code_repo_paths:
+          type: string
+          description: Repo Path of the runnable.
+          format: text
+        code_repo_url:
+          type: string
+          description: Repo url of the runnable.
+          format: text
+      title: parts-create-request-runnable
     parts-create-response:
       type: object
       properties:
@@ -14417,6 +15419,66 @@ components:
       additionalProperties: false
       title: parts-delete-response
       x-go-name: PartsDeleteResponseBody
+    parts-filter-enhancement:
+      type: object
+      properties:
+        accounts:
+          type: array
+          description: Filters for enhancement by its accounts.
+          example:
+            - ACC-12345
+          items:
+            type: string
+            format: id
+        actual_close_date:
+          $ref: '#/components/schemas/date-time-filter'
+        actual_close_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        actual_start_date:
+          $ref: '#/components/schemas/date-time-filter'
+        actual_start_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        opportunities:
+          type: array
+          description: Filters for enhancement by its opportunities.
+          example:
+            - OPP-12345
+          items:
+            type: string
+            format: id
+        rev_score_tier:
+          type: array
+          description: Filters for enhancement by its rev score tier.
+          items:
+            $ref: '#/components/schemas/enhancement-rev-score-tier'
+        stage_v2:
+          type: array
+          description: |
+            List of IDs of the custom stages which will be used for filtering.
+          items:
+            type: string
+            format: id
+        state_v2:
+          type: array
+          description: Filters for part with any of the provided custom states.
+          items:
+            type: string
+            format: text
+        target_close_date:
+          $ref: '#/components/schemas/date-time-filter'
+        target_close_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        target_start_date:
+          $ref: '#/components/schemas/date-time-filter'
+        target_start_date_v2:
+          $ref: '#/components/schemas/date-filter'
+        tickets:
+          type: array
+          description: Filters for enhancement by its tickets.
+          items:
+            type: string
+            format: id
+      title: parts-filter-enhancement
     parts-get-request:
       type: object
       properties:
@@ -14462,6 +15524,8 @@ components:
         custom_fields:
           type: object
           description: Filters for custom fields.
+        enhancement:
+          $ref: '#/components/schemas/parts-filter-enhancement'
         limit:
           type: integer
           description: |
@@ -14525,15 +15589,19 @@ components:
           capability: '#/components/schemas/parts-update-request-capability'
           enhancement: '#/components/schemas/parts-update-request-enhancement'
           feature: '#/components/schemas/parts-update-request-feature'
+          linkable: '#/components/schemas/parts-update-request-linkable'
           none: '#/components/schemas/empty'
           product: '#/components/schemas/parts-update-request-product'
+          runnable: '#/components/schemas/parts-update-request-runnable'
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/empty'
         - $ref: '#/components/schemas/parts-update-request-capability'
         - $ref: '#/components/schemas/parts-update-request-enhancement'
         - $ref: '#/components/schemas/parts-update-request-feature'
+        - $ref: '#/components/schemas/parts-update-request-linkable'
         - $ref: '#/components/schemas/parts-update-request-product'
+        - $ref: '#/components/schemas/parts-update-request-runnable'
       properties:
         type:
           $ref: '#/components/schemas/part-type'
@@ -14598,6 +15666,11 @@ components:
     parts-update-request-enhancement:
       type: object
       properties:
+        stage_v2:
+          type: string
+          description: |
+            Custom stage ID which will be used for updating the enhancement.
+          format: id
         target_close_date:
           type: string
           description: Updates the target close date of the enhancement.
@@ -14617,6 +15690,24 @@ components:
       type: object
       additionalProperties: false
       title: parts-update-request-feature
+    parts-update-request-linkable:
+      type: object
+      properties:
+        code_inferred_surface_area:
+          type: array
+          description: Code Inferred surface area of the linkable.
+          items:
+            type: string
+            format: text
+        code_repo_paths:
+          type: string
+          description: Repo Path of the linkable.
+          format: text
+        code_repo_url:
+          type: string
+          description: Repo url of the linkable.
+          format: text
+      title: parts-update-request-linkable
     parts-update-request-owned-by:
       type: object
       properties:
@@ -14635,6 +15726,24 @@ components:
       type: object
       additionalProperties: false
       title: parts-update-request-product
+    parts-update-request-runnable:
+      type: object
+      properties:
+        code_inferred_surface_area:
+          type: array
+          description: Code Inferred surface area of the runnable.
+          items:
+            type: string
+            format: text
+        code_repo_paths:
+          type: string
+          description: Repo Path of the runnable.
+          format: text
+        code_repo_url:
+          type: string
+          description: Repo url of the runnable.
+          format: text
+      title: parts-update-request-runnable
     parts-update-request-tags:
       type: object
       properties:
@@ -14653,6 +15762,73 @@ components:
         - part
       title: parts-update-response
       x-go-name: PartsUpdateResponseBody
+    pie-visualization-x-axis:
+      type: object
+      description: The X-axis for a pie visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: pie-visualization-x-axis
+    pie-visualization-y-axis:
+      type: object
+      description: The Y-axis for a pie visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: pie-visualization-y-axis
+    pie-widget-visualization:
+      type: object
+      description: |
+        A pie chart visualization configuration. Includes metadata specific to
+        pie charts.
+      properties:
+        x:
+          type: array
+          description: The configuration for the X-axis.
+          items:
+            $ref: '#/components/schemas/pie-visualization-x-axis'
+        "y":
+          $ref: '#/components/schemas/pie-visualization-y-axis'
+      required:
+        - x
+        - "y"
+      title: pie-widget-visualization
     preferences:
       type: object
       discriminator:
@@ -14680,6 +15856,10 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/preferences-type'
+        language_code:
+          type: string
+          description: Language code for which to get the preferences for.
+          format: text
         object:
           type: string
           description: |
@@ -14715,6 +15895,10 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/preferences-type'
+        language_code:
+          type: string
+          description: Language code for which to update the preferences for.
+          format: text
         object:
           type: string
           description: |
@@ -15337,6 +16521,7 @@ components:
               format: text
             domain:
               type: string
+              deprecated: true
               description: Company's domain name. Example - 'devrev.ai'.
               format: text
             external_ref:
@@ -16354,6 +17539,14 @@ components:
         - rev_user
       title: rev-users-update-response
       x-go-name: RevUsersUpdateResponseBody
+    rich-text-widget-visualization:
+      type: object
+      description: The configuration for a rich text visualization.
+      properties:
+        content:
+          type: object
+          description: The content of the rich text.
+      title: rich-text-widget-visualization
     role:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -16464,6 +17657,14 @@ components:
         - role
       title: roles-create-response
       x-go-name: RolesCreateResponseBody
+    runnable:
+      allOf:
+        - $ref: '#/components/schemas/part-base'
+      title: runnable
+    runnable-summary:
+      allOf:
+        - $ref: '#/components/schemas/part-base-summary'
+      title: runnable-summary
     saml-connection-fields-map:
       type: object
       properties:
@@ -16480,6 +17681,76 @@ components:
             map to the user ID of the user.
           format: text
       title: saml-connection-fields-map
+    scatter-visualization-x-axis:
+      type: object
+      description: The X-axis for a scatter visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: scatter-visualization-x-axis
+    scatter-visualization-y-axis:
+      type: object
+      description: The Y-axis for a scatter visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+      required:
+        - reference_name
+      title: scatter-visualization-y-axis
+    scatter-widget-visualization:
+      type: object
+      description: |
+        A Scatter chart visualization configuration. Includes metadata specific
+        to scatter charts.
+      properties:
+        x:
+          type: array
+          description: The configuration for the X-axis.
+          items:
+            $ref: '#/components/schemas/scatter-visualization-x-axis'
+        "y":
+          type: array
+          description: The configuration for the Y-axes.
+          items:
+            $ref: '#/components/schemas/scatter-visualization-y-axis'
+      required:
+        - x
+        - "y"
+      title: scatter-widget-visualization
     schema-bool-field-descriptor:
       allOf:
         - $ref: '#/components/schemas/schema-field-descriptor-base'
@@ -16579,6 +17850,9 @@ components:
               type: string
               description: Default value.
               format: text
+            is_overridable:
+              type: boolean
+              description: Whether the enum is overridable.
             translated_values:
               type: object
               additionalProperties:
@@ -16605,6 +17879,9 @@ components:
               items:
                 type: string
                 format: text
+            is_overridable:
+              type: boolean
+              description: Whether the enum is overridable.
             translated_values:
               type: object
               additionalProperties:
@@ -17838,6 +19115,36 @@ components:
       allOf:
         - $ref: '#/components/schemas/user-base-summary'
       title: service-account-summary
+    service-accounts-create-request:
+      type: object
+      description: The request object to create a new service account.
+      properties:
+        display_name:
+          type: string
+          description: |
+            The service account's display name. A unique, human readable name
+            to identify a service account.
+          format: text
+        gen_keyring:
+          type: boolean
+          description: |
+            Indicates whether to generate a keyring along with the new service
+            account. The default is false.
+      required:
+        - display_name
+      title: service-accounts-create-request
+    service-accounts-create-response:
+      type: object
+      description: |
+        The response object to the corresponding create service account
+        request.
+      properties:
+        service_account:
+          $ref: '#/components/schemas/service-account'
+      required:
+        - service_account
+      title: service-accounts-create-response
+      x-go-name: ServiceAccountsCreateResponseBody
     service-accounts-get-request:
       type: object
       description: The request object to get a service account's information.
@@ -19532,6 +20839,26 @@ components:
         - result
       title: stock-schema-fragments-list-response
       x-go-name: StockSchemaFragmentsListResponseBody
+    sub-widget:
+      type: object
+      description: |
+        A sub-widget represents a data visualization unit contained within a
+        widget.
+      properties:
+        query:
+          $ref: '#/components/schemas/widget-query'
+        reference_id:
+          type: string
+          description: |
+            A reference ID for the sub-widget. It should be unique within the
+            widget.
+          format: text
+        visualization:
+          $ref: '#/components/schemas/widget-visualization'
+      required:
+        - reference_id
+        - visualization
+      title: sub-widget
     subtype:
       type: object
       properties:
@@ -19657,7 +20984,34 @@ components:
               format: id
             dispatched_channels:
               type: array
-              description: Source channels on which the survey is sent.
+              description: |
+                Source channels on which the survey is sent. Stock allowed values:
+                ```
+                  {
+                    "id": 1,
+                    "label": "plug",
+                    "ordinal": 1,
+                    "overridable": false
+                  },
+                  {
+                    "id": 2,
+                    "label": "portal",
+                    "ordinal": 2,
+                    "overridable": false
+                  },
+                  {
+                    "id": 3,
+                    "label": "email",
+                    "ordinal": 3,
+                    "overridable": false
+                  },
+                  {
+                    "id": 4,
+                    "label": "slack",
+                    "ordinal": 4,
+                    "overridable": false
+                  }
+                ```
               items:
                 $ref: '#/components/schemas/enum-value'
             object:
@@ -20491,6 +21845,102 @@ components:
         - sys_user
       title: sys-users-update-response
       x-go-name: SysUsersUpdateResponseBody
+    table-visualization-column:
+      type: object
+      description: A column in a table visualization.
+      properties:
+        color:
+          $ref: '#/components/schemas/visualization-axis-color'
+        drill_throughs:
+          type: array
+          description: The drill through configurations for the axis.
+          items:
+            $ref: '#/components/schemas/visualization-axis-drill-through'
+        is_hidden:
+          type: boolean
+          description: Whether the axis should be hidden.
+        is_movable:
+          type: boolean
+          description: Whether the column should be movable.
+        is_pinned:
+          type: boolean
+          description: |
+            Whether the column should be pinned, by default set to false.
+        is_resizable:
+          type: boolean
+          description: Whether the column should be resizable.
+        is_sortable:
+          type: boolean
+          description: Whether the column should be sortable.
+        is_visibility_togglable:
+          type: boolean
+          description: Whether the column visibility can be toggled.
+        label:
+          type: string
+          description: The label for the axis.
+          format: text
+        lock_position:
+          $ref: '#/components/schemas/table-visualization-column-lock-position'
+        max_width:
+          type: integer
+          description: The maximum width of the column.
+          format: int32
+        min_width:
+          type: integer
+          description: The minimum width of the column.
+          format: int32
+        order:
+          type: integer
+          description: The order in which the column should be displayed.
+          format: int32
+        pin_position:
+          $ref: '#/components/schemas/table-visualization-column-pin-position'
+        reference_name:
+          type: string
+          description: The reference name of the axis.
+          format: text
+        width:
+          type: integer
+          description: The width of the column in pixel.
+          format: int32
+      required:
+        - reference_name
+      title: table-visualization-column
+    table-visualization-column-lock-position:
+      type: string
+      description: |
+        Whether the column should be locked to the left or right side of the
+        table.
+      enum:
+        - left
+        - right
+    table-visualization-column-pin-position:
+      type: string
+      description: |
+        Whether the column should be pinned to the left or right side of the
+        table.
+      enum:
+        - left
+        - right
+    table-widget-visualization:
+      type: object
+      description: |
+        A table visualization configuration. Includes metadata specific to
+        tables.
+      properties:
+        columns:
+          type: array
+          description: The configuration for the columns in the table.
+          items:
+            $ref: '#/components/schemas/table-visualization-column'
+        group_by:
+          type: array
+          description: The group_by configuration in the table.
+          items:
+            $ref: '#/components/schemas/widget-group-by-config'
+      required:
+        - columns
+      title: table-widget-visualization
     tag:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -20972,6 +22422,13 @@ components:
               format: text
             body_type:
               $ref: '#/components/schemas/timeline-comment-body-type'
+            references:
+              type: array
+              description: |
+                Summary information about objects that are referenced in the
+                comment.
+              items:
+                $ref: '#/components/schemas/atom-summary'
             snap_kit_body:
               $ref: '#/components/schemas/timeline-snap-kit-body'
             snap_widget_body:
@@ -21459,11 +22916,13 @@ components:
         - feature
         - incident
         - issue
+        - linkable
         - meeting
         - opportunity
         - product
         - rev_org
         - rev_user
+        - runnable
         - snap_in
         - task
         - ticket
@@ -22724,6 +24183,59 @@ components:
         - curated
         - dynamic
         - grouped
+    visualization-axis-color:
+      type: object
+      description: |
+        The color for an axis. This can be a single color or a gradient.
+      properties:
+        type:
+          $ref: '#/components/schemas/visualization-axis-color-type'
+        key_lookup:
+          type: array
+          description: The key lookup color.
+          items:
+            $ref: '#/components/schemas/visualization-axis-color-key-lookup'
+        static:
+          type: string
+          description: The static color.
+          format: text
+      required:
+        - type
+      title: visualization-axis-color
+    visualization-axis-color-key-lookup:
+      type: object
+      description: |
+        The key lookup color for an axis. This is used to map a value to a
+        color.
+      properties:
+        key:
+          type: string
+          description: The key to map to a color.
+          format: text
+        value:
+          type: string
+          description: The color value.
+          format: text
+      required:
+        - key
+        - value
+      title: visualization-axis-color-key-lookup
+    visualization-axis-color-type:
+      type: string
+      description: The type of the color.
+      enum:
+        - key_lookup
+        - static
+    visualization-axis-drill-through:
+      type: object
+      additionalProperties: false
+      description: The drill through configuration for an axis.
+      title: visualization-axis-drill-through
+    visualization-scrollbar:
+      type: object
+      additionalProperties: false
+      description: The scrollbar configuration for chart.
+      title: visualization-scrollbar
     web-crawler-job:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -23081,6 +24593,12 @@ components:
           $ref: '#/components/schemas/event-conversation-deleted'
         conversation_updated:
           $ref: '#/components/schemas/event-conversation-updated'
+        dashboard_created:
+          $ref: '#/components/schemas/event-dashboard-created'
+        dashboard_deleted:
+          $ref: '#/components/schemas/event-dashboard-deleted'
+        dashboard_updated:
+          $ref: '#/components/schemas/event-dashboard-updated'
         dev_user_created:
           $ref: '#/components/schemas/event-dev-user-created'
         dev_user_deleted:
@@ -23195,6 +24713,12 @@ components:
           format: id
         webhook_updated:
           $ref: '#/components/schemas/event-webhook-updated'
+        widget_created:
+          $ref: '#/components/schemas/event-widget-created'
+        widget_deleted:
+          $ref: '#/components/schemas/event-widget-deleted'
+        widget_updated:
+          $ref: '#/components/schemas/event-widget-updated'
         work_created:
           $ref: '#/components/schemas/event-work-created'
         work_deleted:
@@ -23229,6 +24753,9 @@ components:
         - conversation_created
         - conversation_deleted
         - conversation_updated
+        - dashboard_created
+        - dashboard_deleted
+        - dashboard_updated
         - dev_user_created
         - dev_user_deleted
         - dev_user_updated
@@ -23281,6 +24808,9 @@ components:
         - webhook_created
         - webhook_deleted
         - webhook_updated
+        - widget_created
+        - widget_deleted
+        - widget_updated
         - work_created
         - work_deleted
         - work_fetched
@@ -23558,6 +25088,444 @@ components:
       additionalProperties: false
       description: The schedule for each week.
       title: weekly-org-schedule
+    widget:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            data_sources:
+              type: array
+              description: |
+                Data sources provide the backing data tables for the widget.
+              items:
+                $ref: '#/components/schemas/widget-data-source'
+            description:
+              type: string
+              description: |
+                A brief summary of what the widget displays or represents.
+              format: text
+            is_draft:
+              type: boolean
+              description: Whether the widget is a draft widget.
+            is_system:
+              type: boolean
+              description: Whether the widget is a system widget.
+            layout:
+              type: array
+              description: |
+                Layout of the widget. It determines the organization of the sub
+                widgets.
+              items:
+                $ref: '#/components/schemas/grid-layout'
+            name:
+              type: string
+              description: A unique identifying name for the widget (optional).
+              format: text
+            sub_widgets:
+              type: array
+              description: |
+                A list of sub-widgets that the widget contains. Each widget can
+                contain  multiple sub-widgets.
+              items:
+                $ref: '#/components/schemas/sub-widget'
+            title:
+              type: string
+              description: The title of the widget.
+              format: text
+          required:
+            - description
+            - layout
+            - sub_widgets
+            - title
+      title: widget
+    widget-api-data-source:
+      type: object
+      description: An API-backed data source.
+      properties:
+        include:
+          type: array
+          description: Object IDs to include in the data source.
+          items:
+            $ref: '#/components/schemas/work-summary'
+        is_custom_leaf_type:
+          type: boolean
+          description: Indicates if the leaf type is custom.
+        leaf_type:
+          type: string
+          description: The object's type.
+          format: text
+        subtypes:
+          type: array
+          description: The subtypes of the object.
+          items:
+            type: string
+            format: text
+      title: widget-api-data-source
+    widget-column-projection:
+      type: object
+      description: A widget column projection.
+      properties:
+        type:
+          $ref: '#/components/schemas/widget-column-projection-type'
+        custom_field:
+          $ref: '#/components/schemas/custom-field-widget-column-projection'
+        devrev_schema:
+          $ref: '#/components/schemas/schema-field-descriptor'
+        has_custom_expression:
+          type: boolean
+          description: Whether the column has a custom expression.
+        is_derived:
+          type: boolean
+          description: Whether the column is derived.
+        meerkat_schema:
+          $ref: '#/components/schemas/meerkat-widget-column-projection'
+        reference_name:
+          type: string
+          description: The reference name of the column.
+          format: text
+      required:
+        - devrev_schema
+        - reference_name
+      title: widget-column-projection
+    widget-column-projection-type:
+      type: string
+      description: The type of the column.
+      enum:
+        - custom_field
+        - native
+    widget-data-source:
+      type: object
+      description: A data source for a widget.
+      properties:
+        type:
+          $ref: '#/components/schemas/widget-data-source-type'
+        api:
+          $ref: '#/components/schemas/widget-api-data-source'
+        data_source:
+          type: string
+          description: |
+            The ID of the data source. Meant to be set when the type is
+            data_source.
+          format: text
+        dimensions:
+          type: array
+          description: |
+            The dimensions (or the extended dimensions) provided by the data
+            source.  These are the categories that can be used to group or
+            segment the measures.
+          items:
+            $ref: '#/components/schemas/widget-column-projection'
+        external_data_source:
+          $ref: '#/components/schemas/widget-data-source-reference'
+        joins:
+          type: array
+          description: |
+            A list of possible joins for the data source. Follows foreign key
+            semantics.
+          items:
+            $ref: '#/components/schemas/data-source-join'
+        measures:
+          type: array
+          description: |
+            The measures (or the extended measures) provided by the data
+            source.  These are the numerical values that can be analyzed.
+          items:
+            $ref: '#/components/schemas/widget-column-projection'
+        oasis:
+          $ref: '#/components/schemas/widget-oasis-data-source'
+        reference_name:
+          type: string
+          description: The reference name of the data source.
+          format: text
+      required:
+        - reference_name
+        - type
+      title: widget-data-source
+    widget-data-source-reference:
+      type: object
+      description: An referenced data source for a widget.
+      properties:
+        dataset_projections:
+          type: array
+          description: |
+            The column projections for the data source. These are the columns
+            that are  projected from the datasets.
+          items:
+            $ref: '#/components/schemas/widget-oasis-dataset-column-projection'
+        id:
+          type: string
+          description: The id of the data source.
+          format: text
+      required:
+        - id
+      title: widget-data-source-reference
+    widget-data-source-type:
+      type: string
+      description: The type of the data source.
+      enum:
+        - api
+        - data_source
+        - data_view
+        - external_data_source
+        - oasis
+    widget-group-by-config:
+      type: object
+      description: The configuration for group_by operation.
+      properties:
+        key:
+          type: string
+          description: The key on which group_by is applied.
+          format: text
+        limit:
+          type: integer
+          description: |
+            The maximum number of unique values that can be returned for the
+            key.
+          format: int32
+      title: widget-group-by-config
+    widget-oasis-data-source:
+      type: object
+      description: An oasis backed data source.
+      properties:
+        datasets:
+          type: array
+          description: List of datasets used by the data source.
+          items:
+            type: string
+            format: text
+        projections:
+          type: array
+          description: |
+            The column projections for the data source. These are the columns
+            that are  projected from the datasets.
+          items:
+            $ref: '#/components/schemas/widget-oasis-dataset-column-projection'
+        sql_query:
+          type: string
+          description: |
+            The base SQL query that constructs the view for the data source.
+            The SQL can reference the datasets using their aliases.
+          format: text
+      required:
+        - sql_query
+      title: widget-oasis-data-source
+    widget-oasis-dataset-column:
+      type: object
+      description: An oasis dataset column.
+      properties:
+        custom_field:
+          $ref: '#/components/schemas/custom-field-widget-column-projection'
+        name:
+          type: string
+          description: The name of the column.
+          format: text
+      required:
+        - name
+      title: widget-oasis-dataset-column
+    widget-oasis-dataset-column-projection:
+      type: object
+      description: An oasis dataset column projection.
+      properties:
+        columns:
+          type: array
+          description: The column name.
+          items:
+            $ref: '#/components/schemas/widget-oasis-dataset-column'
+        dataset:
+          type: string
+          description: The dataset ID.
+          format: text
+      required:
+        - columns
+        - dataset
+      title: widget-oasis-dataset-column-projection
+    widget-pvp-config:
+      type: object
+      description: |
+        Configuration settings for enabling and customizing PVP (past vs.
+        present) value in widgets.
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates whether PVP is enabled.
+        invert_correlation_color:
+          type: boolean
+          description: Specifies whether the color scheme for PVP is inverted.
+        percentage_precision:
+          type: integer
+          description: Decimal precision for percentage.
+          format: int32
+      title: widget-pvp-config
+    widget-query:
+      type: object
+      description: |
+        The query for a widget. This includes measures and dimensions to be
+        visualized.
+      properties:
+        dimensions:
+          type: array
+          description: |
+            The dimensions for the query, which are the categories to group or
+            segment the measures. Usually these are the X-axis values in a
+            visualization.
+          items:
+            type: string
+            format: text
+        filters:
+          type: array
+          description: |
+            Set of filters to apply on the widgets. These filters are applied
+            on top of the dashboard level filters.
+          items:
+            $ref: '#/components/schemas/dashboard-filter'
+        joins:
+          type: array
+          description: Join paths to use for the query.
+          items:
+            $ref: '#/components/schemas/widget-query-joins'
+        limit:
+          type: integer
+          description: |
+            The maximum number of records to return. This is used to limit the
+            amount of data  returned by the query.
+          format: int32
+        measures:
+          type: array
+          description: |
+            The measures for the query, which are the numerical values to be
+            analyzed. Usually these are the Y-axis values in a visualization.
+          items:
+            type: string
+            format: text
+        order_by:
+          type: array
+          description: |
+            The order in which the data should be returned. This is used to
+            sort the data returned by the query.
+          items:
+            $ref: '#/components/schemas/widget-query-order-by'
+      title: widget-query
+    widget-query-joins:
+      type: object
+      description: |
+        A list of possible joins for the data source. Follows foreign key
+        semantics.
+      properties:
+        path:
+          type: array
+          description: A list of joins.
+          items:
+            type: string
+            format: text
+      required:
+        - path
+      title: widget-query-joins
+    widget-query-order-by:
+      type: object
+      description: |
+        The order in which the data should be returned. This is used to sort
+        the data returned by the query.
+      properties:
+        direction:
+          $ref: '#/components/schemas/widget-query-order-by-direction'
+        reference_name:
+          type: string
+          description: The column to sort by.
+          format: text
+      required:
+        - direction
+        - reference_name
+      title: widget-query-order-by
+    widget-query-order-by-direction:
+      type: string
+      description: The direction of the sort.
+      enum:
+        - ascending
+        - descending
+    widget-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            title:
+              type: string
+              description: The title of the widget.
+              format: text
+          required:
+            - title
+      title: widget-summary
+    widget-visualization:
+      type: object
+      description: |
+        The visualization for a widget. This includes the type of visualization
+        and any  configuration specific to that type.
+      properties:
+        type:
+          $ref: '#/components/schemas/widget-visualization-type'
+        bar:
+          $ref: '#/components/schemas/bar-widget-visualization'
+        column:
+          $ref: '#/components/schemas/column-widget-visualization'
+        donut:
+          $ref: '#/components/schemas/donut-widget-visualization'
+        heatmap:
+          $ref: '#/components/schemas/heatmap-widget-visualization'
+        kanban:
+          $ref: '#/components/schemas/kanban-widget-visualization'
+        line:
+          $ref: '#/components/schemas/line-widget-visualization'
+        metric:
+          $ref: '#/components/schemas/metric-widget-visualization'
+        packed_bubble:
+          $ref: '#/components/schemas/packed-bubble-widget-visualization'
+        pie:
+          $ref: '#/components/schemas/pie-widget-visualization'
+        rich_text:
+          $ref: '#/components/schemas/rich-text-widget-visualization'
+        scatter:
+          $ref: '#/components/schemas/scatter-widget-visualization'
+        table:
+          $ref: '#/components/schemas/table-widget-visualization'
+      required:
+        - type
+      title: widget-visualization
+    widget-visualization-type:
+      type: string
+      description: The type of the visualization, such as line, bar, pie, etc.
+      enum:
+        - bar
+        - column
+        - donut
+        - heatmap
+        - kanban
+        - line
+        - metric
+        - packed_bubble
+        - pie
+        - rich_text
+        - scatter
+        - table
+    widgets-get-request:
+      type: object
+      description: The request to get a widget.
+      properties:
+        id:
+          type: string
+          description: The requested widget's ID.
+          format: text
+      required:
+        - id
+      title: widgets-get-request
+    widgets-get-response:
+      type: object
+      description: The response to a widget get request.
+      properties:
+        widget:
+          $ref: '#/components/schemas/widget'
+      required:
+        - widget
+      title: widgets-get-response
+      x-go-name: WidgetsGetResponseBody
     work:
       type: object
       discriminator:
@@ -23849,8 +25817,53 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: The sprint that the issue belongs to.
@@ -23890,8 +25903,74 @@ components:
           $ref: '#/components/schemas/opportunity-forecast-category'
         forecast_category_v2:
           type: integer
-          description: Forecast category enum ID of an opportunity.
+          description: |
+            Forecast category enum ID of an opportunity. The allowed ids can be
+            extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "Omitted",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "Pipeline",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "Upside",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "Strong Upside",
+                "ordinal": 4,
+                "overridable": true
+              },
+              {
+                "id": 5,
+                "label": "Commit",
+                "ordinal": 5,
+                "overridable": true
+              },
+              {
+                "id": 6,
+                "label": "Won",
+                "ordinal": 6,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: Omitted
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: Pipeline
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: Upside
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: Strong Upside
+              ordinal: 4
+              overridable: true
+            - id: 5
+              label: Commit
+              ordinal: 5
+              overridable: true
+            - id: 6
+              label: Won
+              ordinal: 6
+              overridable: true
         priority:
           $ref: '#/components/schemas/opportunity-priority'
         probability:
@@ -24506,8 +26585,53 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: Updates the sprint that the issue belongs to.
@@ -24559,8 +26683,74 @@ components:
           nullable: true
         forecast_category_v2:
           type: integer
-          description: Forecast category enum ID of an opportunity.
+          description: |
+            Forecast category enum ID of an opportunity. The allowed ids can be
+            extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "Omitted",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "Pipeline",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "Upside",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "Strong Upside",
+                "ordinal": 4,
+                "overridable": true
+              },
+              {
+                "id": 5,
+                "label": "Commit",
+                "ordinal": 5,
+                "overridable": true
+              },
+              {
+                "id": 6,
+                "label": "Won",
+                "ordinal": 6,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: Omitted
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: Pipeline
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: Upside
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: Strong Upside
+              ordinal: 4
+              overridable: true
+            - id: 5
+              label: Commit
+              ordinal: 5
+              overridable: true
+            - id: 6
+              label: Won
+              ordinal: 6
+              overridable: true
         probability:
           type: number
           description: |
@@ -24724,8 +26914,64 @@ components:
           nullable: true
         sentiment:
           type: integer
-          description: The enum ID for the sentiment of the ticket.
+          description: |
+            The enum ID for the sentiment of the ticket. The allowed ids can be
+            extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "Delighted",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "Happy",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "Neutral",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "Unhappy",
+                "ordinal": 4,
+                "overridable": true
+              },
+              {
+                "id": 5,
+                "label": "Frustrated",
+                "ordinal": 5,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: Delighted
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: Happy
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: Neutral
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: Unhappy
+              ordinal: 4
+              overridable: true
+            - id: 5
+              label: Frustrated
+              ordinal: 5
+              overridable: true
         sentiment_modified_date:
           type: string
           description: Timestamp at which sentiment was last modified.
@@ -28030,6 +30276,17 @@ paths:
             items:
               type: string
               format: id
+        - description: |
+            Filters for conversations that are associated with any of the
+            channels.
+          explode: false
+          in: query
+          name: channels
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for custom fields.
           explode: false
           in: query
@@ -28368,6 +30625,17 @@ paths:
             type: array
             example:
               - PROD-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for conversations that are associated with any of the
+            channels.
+          explode: false
+          in: query
+          name: channels
+          schema:
+            type: array
             items:
               type: string
               format: id
@@ -34578,6 +36846,140 @@ paths:
           name: custom_fields
           schema:
             type: object
+        - description: Filters for enhancement by its accounts.
+          explode: false
+          in: query
+          name: enhancement.accounts
+          schema:
+            type: array
+            example:
+              - ACC-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_close_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_close_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_start_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.actual_start_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: Filters for enhancement by its opportunities.
+          explode: false
+          in: query
+          name: enhancement.opportunities
+          schema:
+            type: array
+            example:
+              - OPP-12345
+            items:
+              type: string
+              format: id
+        - description: Filters for enhancement by its rev score tier.
+          explode: false
+          in: query
+          name: enhancement.rev_score_tier
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/enhancement-rev-score-tier'
+        - description: |
+            List of IDs of the custom stages which will be used for filtering.
+          explode: false
+          in: query
+          name: enhancement.stage_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for part with any of the provided custom states.
+          explode: false
+          in: query
+          name: enhancement.state_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_close_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_close_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created after the provided timestamp (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_start_date.after
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          explode: false
+          in: query
+          name: enhancement.target_start_date.before
+          schema:
+            type: string
+            example: "2023-01-01T12:00:00.000Z"
+            format: date-time
+        - description: Filters for enhancement by its tickets.
+          explode: false
+          in: query
+          name: enhancement.tickets
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: |
             The maximum number of parts to return. The default is '50'.
           explode: false
@@ -34776,6 +37178,13 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/preferences-type'
+        - description: Language code for which to get the preferences for.
+          explode: false
+          in: query
+          name: language_code
+          schema:
+            type: string
+            format: text
       responses:
         "200":
           content:
@@ -37819,6 +40228,43 @@ paths:
       summary: Hybrid Search (POST)
       tags:
         - search
+      x-fern-audiences:
+        - docs
+        - sdks
+  /service-accounts.create:
+    post:
+      description: Creates a service account.
+      operationId: service-accounts-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service-accounts-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/service-accounts-create-response'
+          description: |
+            The response object to the corresponding create service account
+            request.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Service Account
+      tags:
+        - service-accounts
       x-fern-audiences:
         - docs
         - sdks
@@ -41848,6 +44294,78 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /widgets.get:
+    get:
+      description: Returns the requested widget.
+      operationId: widgets-get
+      parameters:
+        - description: The requested widget's ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: text
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/widgets-get-response'
+          description: The response to a widget get request.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Widget
+      tags:
+        - widgets
+      x-fern-audiences:
+        - docs
+      x-request-name: WidgetsGetQuery
+    post:
+      description: Returns the requested widget.
+      operationId: widgets-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/widgets-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/widgets-get-response'
+          description: The response to a widget get request.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Widget (POST)
+      tags:
+        - widgets
+      x-fern-audiences:
+        - docs
+        - sdks
   /works.create:
     post:
       description: |
@@ -43023,6 +45541,8 @@ tags:
     name: web-crawler-job
   - description: Webhook event APIs.
     name: webhooks
+  - description: Widgets APIs.
+    name: widgets
   - description: DevRev work interactions.
     name: works
 x-fern-version:

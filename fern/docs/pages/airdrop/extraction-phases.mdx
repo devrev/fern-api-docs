@@ -1,107 +1,78 @@
-Airdrop extractions are done in _sync runs_.
-A sync run is one execution of an import or sync.
-If you do an initial import from the external system to DevRev, that import will be one sync run.
-If you then decide to do a reverse sync from DevRev to the external system, that would be another
-sync run.
+Each snap-in must handle all the phases of Airdrop extraction. In a snap-in, you typically define a run
+function that iterates over events and invokes workers per extraction phase.
 
-Each sync run is comprised out of phases.
-Phases follow sequentially, and each can consist of one or more invocations of the snap-in.
+The Airdrop snap-in extraction lifecycle consists of four phases: 
+* External sync units extraction (only for initial sync)
+* Metadata extraction
+* Data extraction  
+* Attachments extraction
 
-```mermaid
-sequenceDiagram
-%%{init: {
-    'theme': 'base',
-    'themeVariables': {
-        'fontFamily': 'Segoe UI',
-        'signalColor': '#7d7f7c',
-        'signalTextColor': '#7d7f7c'
-}}}%%
-  actor user as User
-  participant gw as REST API Gateway
-  participant ad as Airdrop components
-  participant ee as External extractor
+Each phase is defined in a separate file and is responsible for fetching the respective data.
 
-	note over gw,ad: Extract External Sync Units
-	user ->> gw: Select import connection
-	gw ->> ad: Start External Sync Unit extraction
-	ad ->> ee: Start External Sync Unit extraction
-	ee -->> gw: List of External Sync Units
-	gw ->> ad: List of External Sync Units
-	ad ->> gw: List of External Sync Units
-	gw -->> user: Show available External Sync Units
+<Note>
+  Snap-in development is an iterative process.
+  It typically begins with retrieving some data from the external system. 
+  The next step involves crafting an initial version of the external domain metadata and validating it through chef-cli. 
+  This metadata is used to prepare the initial domain mapping and checking for any possible issues.
+  API calls to the external system are then corrected to fetch the missing data.
+  Start by working with one item type (we recommend starting with users), and once it maps well to DevRev objects and imports as desired, proceed with other item types.
+</Note>
 
+The SDK library exports a `processTask` function, which takes an object parameter with two keys:
+* `task`: a function that implements the functionality for the given phase.
+* `onTimeout`: a function that handles timeouts, typically by simply emitting a message to the Airdrop platform.
 
-	note over gw,ad: Extract Metadata
-	ad ->> ee: Start Metadata extraction
-	ee -->> gw: List of extracted metadata artifacts
-	gw ->> ad: List of extracted metadata artifacts
+State management is crucial for snap-ins to maintain the state of the extraction task.
+State is saved to the Airdrop backend by calling the `postState` function.
+During the extraction the state is stored in the adapter and can be retrieved using the `adapter.state` property.
 
-	note over gw,ad: Extract data
-	ad ->> ee: Start data extraction
-	ee -->> gw: List of extracted data artifacts
-	gw ->> ad: List of extracted data artifacts
+```typescript
+import { AirdropEvent, EventType, spawn } from "@devrev/ts-adaas";
 
-	note over ad: Transform and import data into DevRev
+export interface ExtractorState {
+  todos: { completed: boolean };
+  users: { completed: boolean };
+  attachments: { completed: boolean };
+}
 
-	note over gw,ad: Extract attachments
-	ad ->> ee: Start attachment extraction
-	ee -->> gw: List of extracted attachments
-	gw ->> ad: List of extracted attachments
+export const initialState: ExtractorState = {
+  todos: { completed: false },
+  users: { completed: false },
+  attachments: { completed: false },
+};
 
-	ad -->> gw: Finished import
-	gw -->> user: Show finished import and report
+function getWorkerPerExtractionPhase(event: AirdropEvent) {
+  let path;
+  switch (event.payload.event_type) {
+    case EventType.ExtractionExternalSyncUnitsStart:
+      path = __dirname + '/workers/external-sync-units-extraction';
+      break;
+    case EventType.ExtractionMetadataStart:
+      path = __dirname + '/workers/metadata-extraction';
+      break;
+    case EventType.ExtractionDataStart:
+    case EventType.ExtractionDataContinue:
+      path = __dirname + '/workers/data-extraction';
+      break;
+    case EventType.ExtractionAttachmentsStart:
+    case EventType.ExtractionAttachmentsContinue:
+      path = __dirname + '/workers/attachments-extraction';
+      break;
+  }
+  return path;
+}
 
-	note over gw,ad: Delete data
-	user ->> gw: Delete import
-	gw ->> ad: Delete import
-	ad ->> ee: Delete data
-	ee -->> gw: Finished deleting data
-	gw ->> ad: Finished deleting data
+const run = async (events: AirdropEvent[]) => {
+  for (const event of events) {
+    const file = getWorkerPerExtractionPhase(event);
+    await spawn<ExtractorState>({
+      event,
+      initialState,
+      workerPath: file,
+      // options: {},
+    });
+  }
+};
 
-	note over gw,ad: Delete attachments
-	ad ->> ee: Delete attachments
-	ee -->> gw: Finished deleting attachments
-	gw ->> ad: Finished deleting attachments
-	note over ad: Deletes internal data
-	ad -->> gw: Finished deleting import
-	gw -->> user: Import deleted
+export default run;
 ```
-
-## Sync modes
-
-### Initial import
-
-An _initial import_ is the first import of data from the external system to DevRev.
-It is triggered manually by the end user in DevRev's **Imports** UI.
-
-An _initial import_ consists of the following phases:
-1. External sync units extraction
-2. Metadata extraction
-3. Data extraction
-4. Attachments extraction
-
-
-### 1-way sync
-
-A _1-way sync_ refers to any extraction after the initial import has been successfully completed.
-An extractor extracts data that was created or updated in the external system after the start
-of the latest successful forward sync, including any changes that occurred during the forward sync,
-but were not picked up by it.
-
-A snap-in must consult its state to get information on when the last successful forward sync started.
-Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
-as well as between sync runs.
-
-A 1-way sync consists of the following phases:
-1. Metadata extraction
-2. Data extraction
-3. Attachments extraction
-
-A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
-
-
-### Deletion mode
-
-A _deletion_ consists of the following phases:
-1. Data deletion
-2. Attachments deletion

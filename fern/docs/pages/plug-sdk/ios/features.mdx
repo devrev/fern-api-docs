@@ -71,6 +71,12 @@ await DevRev.updateUser(Identity(organizationID: "organization-1337"))
 
 ### UIKit
 
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance or use a default theme configured in the DevRev portal.
+
+```swift
+DevRev.prefersSystemTheme: Bool
+```
+
 The support chat feature can be shown as a modal screen from a specific view controller or the top-most one, or can be pushed onto a navigation stack. 
 
 To show the support chat screen in your app, you can use the following overloaded method:
@@ -92,6 +98,10 @@ await DevRev.showSupport(isAnimated:)
 For example:
 
 ```swift
+// When set to true (default), the DevRev UI will adapt theme dynamically to the system appearance.
+// Set this flag to false to force the DevRev UI to use the default theme configured in the DevRev portal.
+DevRev.prefersSystemTheme: Bool
+
 // Push the support chat screen to a navigation stack.
 await DevRev.showSupport(from: mainNavigationController)
 

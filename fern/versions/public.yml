@@ -276,11 +276,10 @@ navigation:
         path: ../docs/pages/airdrop/supported-object-types.mdx
       - section: Data model
         slug: data-model
-        hidden: true
         contents:
-          - page: "Rich text"
-            slug: rich-text
-            path: ../docs/pages/airdrop/data-model/rich-text.mdx
+          - page: "Rich text fields"
+            slug: rich-text-fields
+            path: ../docs/pages/airdrop/data-model/rich-text-fields.mdx
           - page: "Permissions"
             slug: permissions
             path: ../docs/pages/airdrop/data-model/permissions.mdx

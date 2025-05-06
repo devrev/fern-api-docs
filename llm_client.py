@@ -24,19 +24,20 @@ def get_response(prompt):
 
             if not r.text:
                 raise ValueError("Empty response received from API")
-            json_response = r.json()
-            if not json_response.get('choices'):
+            else:
+                response = r.json()
+
+            if not response.get('choices'):
                 raise ValueError("No 'choices' field in response")
-            if not json_response['choices'][0].get('message'):
+            if not response['choices'][0].get('message'):
                 raise ValueError("No 'message' field in response")
-            if not json_response['choices'][0]['message'].get('content'):
+            if not response['choices'][0]['message'].get('content'):
                 raise ValueError("No 'content' field in response")
+            else:
+                response = response['choices'][0]['message']['content']
             
-            response = json_response['choices'][0]['message']['content']
-            
-            # Check if final response is empty
             if not response:
-                raise ValueError("Empty content received from API")
+                raise ValueError("Empty content received from LLM.")
             else:
                 print("Response received from LLM.")
                 return response

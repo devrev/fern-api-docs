@@ -321,12 +321,24 @@ components:
           items:
             type: string
             format: id
+        subtype:
+          type: array
+          description: Subtypes of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         tags:
           type: array
           description: List of tags to be filtered.
           items:
             type: string
             format: tag-filter
+        tier:
+          type: array
+          description: Tier of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         websites:
           type: array
           description: Array of websites of accounts to be filtered.
@@ -393,12 +405,24 @@ components:
           items:
             type: string
             format: id
+        subtype:
+          type: array
+          description: Subtypes of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         tags:
           type: array
           description: List of tags to be filtered.
           items:
             type: string
             format: tag-filter
+        tier:
+          type: array
+          description: Tier of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         websites:
           type: array
           description: Array of websites of accounts to be filtered.
@@ -496,12 +520,24 @@ components:
           items:
             type: string
             format: id
+        subtype:
+          type: array
+          description: Subtypes of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         tags:
           type: array
           description: List of tags to be filtered.
           items:
             type: string
             format: tag-filter
+        tier:
+          type: array
+          description: Tier of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         websites:
           type: array
           description: Array of websites of accounts to be filtered.
@@ -1274,6 +1310,40 @@ components:
           required:
             - owned_by
       title: article
+    article-content-format:
+      type: string
+      description: Content format of the article.
+      enum:
+        - drdfv2
+        - rt
+    article-data-source-create:
+      type: object
+      properties:
+        is_custom_leaf_type:
+          type: boolean
+          description: Indicates if the leaf type is custom.
+        is_default:
+          type: boolean
+          description: Indicates if the data source is default.
+        leaf_type:
+          type: string
+          description: The object's type.
+          format: text
+        object:
+          type: string
+          description: The ID of the object powering article.
+          format: id
+        reference_id:
+          type: string
+          description: The reference ID of the data source.
+          format: text
+      required:
+        - is_custom_leaf_type
+        - is_default
+        - leaf_type
+        - object
+        - reference_id
+      title: article-data-source-create
     article-search-summary:
       allOf:
         - $ref: '#/components/schemas/search-summary-base'
@@ -1422,7 +1492,6 @@ components:
           items:
             type: string
             format: id
-          minItems: 1
         article_type:
           $ref: '#/components/schemas/article-type'
         authored_by:
@@ -1433,11 +1502,18 @@ components:
           items:
             type: string
             format: id
+        content_format:
+          $ref: '#/components/schemas/article-content-format'
         custom_fields:
           type: object
           description: Application-defined custom fields.
         custom_schema_spec:
           $ref: '#/components/schemas/custom-schema-spec'
+        data_sources:
+          type: array
+          description: Data sources provide the backing data for the article.
+          items:
+            $ref: '#/components/schemas/article-data-source-create'
         description:
           type: string
           description: Description for the article.
@@ -1503,7 +1579,6 @@ components:
           description: Name of the article.
           format: text
       required:
-        - applies_to_parts
         - owned_by
         - resource
         - title
@@ -1719,11 +1794,15 @@ components:
           $ref: '#/components/schemas/articles-update-request-authored-by'
         content_blocks:
           $ref: '#/components/schemas/articles-update-request-content-blocks'
+        content_format:
+          $ref: '#/components/schemas/article-content-format'
         custom_fields:
           type: object
           description: Application-defined custom fields.
         custom_schema_spec:
           $ref: '#/components/schemas/custom-schema-spec'
+        data_sources:
+          $ref: '#/components/schemas/articles-update-request-article-data-source-update'
         description:
           type: string
           description: |
@@ -1805,6 +1884,16 @@ components:
             type: string
             format: id
       title: articles-update-request-applies-to-parts
+    articles-update-request-article-data-source-update:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Updates data sources provide the backing data for the article.
+          items:
+            $ref: '#/components/schemas/article-data-source-create'
+      title: articles-update-request-article-data-source-update
     articles-update-request-artifacts:
       type: object
       properties:
@@ -2019,6 +2108,27 @@ components:
         - version
       title: artifacts-get-response
       x-go-name: ArtifactsGetResponseBody
+    artifacts-hard-delete-version-request:
+      type: object
+      description: The request to permnanently delete an artifact's version.
+      properties:
+        id:
+          type: string
+          description: The ID of the artifact to delete the version for.
+          example: ARTIFACT-12345
+          format: id
+        version:
+          type: string
+          description: The version of the artifact that needs to be deleted.
+          format: text
+      required:
+        - id
+      title: artifacts-hard-delete-version-request
+    artifacts-hard-delete-version-response:
+      type: object
+      additionalProperties: false
+      title: artifacts-hard-delete-version-response
+      x-go-name: ArtifactsHardDeleteVersionResponseBody
     artifacts-list-request:
       type: object
       description: The request to list artifacts attached to an object.
@@ -3404,6 +3514,153 @@ components:
         - not
         - or
         - primitive
+    brand:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            description:
+              type: string
+              description: The description of the brand.
+              format: text
+            name:
+              type: string
+              description: The name of the brand.
+              format: text
+      title: brand
+    brands-create-request:
+      type: object
+      description: Request object to create a new brand.
+      properties:
+        description:
+          type: string
+          description: Description of the brand to be created.
+          format: text
+          maxLength: 65536
+        name:
+          type: string
+          description: Name of the brand to be created.
+          format: text
+          maxLength: 50
+          minLength: 1
+      required:
+        - name
+      title: brands-create-request
+    brands-create-response:
+      type: object
+      description: Response object for creating a new brand.
+      properties:
+        brand:
+          $ref: '#/components/schemas/brand'
+      required:
+        - brand
+      title: brands-create-response
+      x-go-name: BrandsCreateResponseBody
+    brands-delete-request:
+      type: object
+      description: Request object to delete a brand.
+      properties:
+        id:
+          type: string
+          description: The ID of the brand to be deleted.
+          format: id
+      required:
+        - id
+      title: brands-delete-request
+    brands-delete-response:
+      type: object
+      additionalProperties: false
+      title: brands-delete-response
+      x-go-name: BrandsDeleteResponseBody
+    brands-get-request:
+      type: object
+      description: Request object to get a brands information.
+      properties:
+        id:
+          type: string
+          description: The ID of the brand to be retrieved.
+          format: id
+      required:
+        - id
+      title: brands-get-request
+    brands-get-response:
+      type: object
+      description: Response object for getting a brand.
+      properties:
+        brand:
+          $ref: '#/components/schemas/brand'
+      required:
+        - brand
+      title: brands-get-response
+      x-go-name: BrandsGetResponseBody
+    brands-list-request:
+      type: object
+      description: Request object to list brands.
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          format: text
+      title: brands-list-request
+    brands-list-response:
+      type: object
+      description: Response object for listing all brands.
+      properties:
+        brands:
+          type: array
+          description: List of brands.
+          items:
+            $ref: '#/components/schemas/brand'
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          format: text
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          format: text
+      required:
+        - brands
+      title: brands-list-response
+      x-go-name: BrandsListResponseBody
+    brands-update-request:
+      type: object
+      description: Request object to update a brand.
+      properties:
+        description:
+          type: string
+          description: Description of the brand to be updated.
+          format: text
+          maxLength: 65536
+        id:
+          type: string
+          description: The ID of the brand to be updated.
+          format: id
+        name:
+          type: string
+          description: Name of the brand to be updated.
+          format: text
+          maxLength: 255
+          minLength: 1
+      required:
+        - id
+      title: brands-update-request
+    brands-update-response:
+      type: object
+      description: Response object for updating a brand.
+      properties:
+        brand:
+          $ref: '#/components/schemas/brand'
+      required:
+        - brand
+      title: brands-update-response
+      x-go-name: BrandsUpdateResponseBody
     capability:
       allOf:
         - $ref: '#/components/schemas/part-base'
@@ -4236,9 +4493,11 @@ components:
       description: Objects types on which a command can be invoked.
       enum:
         - account
+        - ai_assistant_chat
         - article
         - conversation
         - custom_object
+        - dm
         - engagement
         - flow
         - incident
@@ -4864,6 +5123,8 @@ components:
     conversations-export-request:
       type: object
       properties:
+        actual_close_date:
+          $ref: '#/components/schemas/date-filter'
         applies_to_parts:
           type: array
           description: |
@@ -4966,6 +5227,13 @@ components:
             format: text
         stage:
           $ref: '#/components/schemas/stage-filter'
+        state:
+          type: array
+          description: |
+            Filters for conversations with any of the provided states.
+          items:
+            type: string
+            format: text
         subtype:
           type: array
           description: |
@@ -5027,6 +5295,8 @@ components:
       description: |
         The request to get information about a list of conversations.
       properties:
+        actual_close_date:
+          $ref: '#/components/schemas/date-filter'
         applies_to_parts:
           type: array
           description: |
@@ -5136,6 +5406,13 @@ components:
             format: text
         stage:
           $ref: '#/components/schemas/stage-filter'
+        state:
+          type: array
+          description: |
+            Filters for conversations with any of the provided states.
+          items:
+            type: string
+            format: text
         subtype:
           type: array
           description: |
@@ -5284,15 +5561,12 @@ components:
       properties:
         set:
           type: array
-          description: |
-            Sets the owner IDs to the provided user IDs. This must not be
-            empty.
+          description: Sets the owner IDs to the provided user IDs.
           example:
             - DEVU-12345
           items:
             type: string
             format: id
-          minItems: 1
       title: conversations-update-request-owned-by
     conversations-update-request-tags:
       type: object
@@ -5991,6 +6265,10 @@ components:
         - result
       title: custom-link-type-list-response
       x-go-name: CustomLinkTypeListResponseBody
+    custom-link-type-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: custom-link-type-summary
     custom-link-type-update-request:
       type: object
       properties:
@@ -6698,6 +6976,8 @@ components:
           items:
             type: string
             format: text
+        drop:
+          $ref: '#/components/schemas/custom-schema-spec-drop'
         subtype:
           type: string
           description: Name of the subtype.
@@ -6709,6 +6989,23 @@ components:
           type: boolean
           description: Whether to enforce required fields validation.
       title: custom-schema-spec
+    custom-schema-spec-drop:
+      type: object
+      properties:
+        apps:
+          type: array
+          description: |
+            List of apps to be dropped from the object. Note: The apps field in
+            the custom schema specifier should not contain any of these apps.
+          items:
+            type: string
+            format: text
+        subtype:
+          type: boolean
+          description: |
+            Whether the subtype is to be dropped. Note: If set, the subtype
+            field in the custom schema specifier should be nil
+      title: custom-schema-spec-drop
     custom-stage:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -10387,6 +10684,34 @@ components:
       required:
         - id
       title: event-sla-tracker-deleted
+    event-sla-tracker-fetched:
+      type: object
+      discriminator:
+        mapping:
+          forbidden: '#/components/schemas/empty'
+          not_found: '#/components/schemas/empty'
+          ok: '#/components/schemas/event-sla-tracker-fetched-ok'
+        propertyName: result
+      oneOf:
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/event-sla-tracker-fetched-ok'
+      properties:
+        id:
+          type: string
+          description: The ID of the SLA tracker that was fetched.
+          format: id
+        result:
+          $ref: '#/components/schemas/event-fetched-result'
+      required:
+        - id
+        - result
+      title: event-sla-tracker-fetched
+    event-sla-tracker-fetched-ok:
+      type: object
+      properties:
+        sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
+      title: event-sla-tracker-fetched-ok
     event-sla-tracker-updated:
       type: object
       properties:
@@ -11569,6 +11894,12 @@ components:
       type: object
       description: A request to get information about a list of groups.
       properties:
+        created_by:
+          type: array
+          description: Filters the groups on the basis of creator.
+          items:
+            type: string
+            format: id
         cursor:
           type: string
           description: |
@@ -11600,12 +11931,20 @@ components:
             $ref: '#/components/schemas/group-member-type'
         mode:
           $ref: '#/components/schemas/list-mode'
+        name:
+          type: array
+          description: Filters the groups on the basis of group name.
+          items:
+            type: string
+            format: text
         sort_by:
           type: array
           description: Comma-separated fields to sort the groups by.
           items:
             type: string
             format: sort-by
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
       title: groups-list-request
     groups-list-response:
       type: object
@@ -12793,7 +13132,7 @@ components:
           format: text
         marker:
           type: boolean
-          description: Whether the line have circular.
+          description: Whether the line have circular marker.
         reference_name:
           type: string
           description: The reference name of the axis.
@@ -12815,7 +13154,7 @@ components:
           description: Whether to show data labels.
         x:
           type: array
-          description: The configuration for the X-axis.
+          description: The configuration for the X-axes.
           items:
             $ref: '#/components/schemas/line-visualization-x-axis'
         "y":
@@ -12853,6 +13192,8 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            custom_link_type:
+              $ref: '#/components/schemas/custom-link-type-summary'
             link_type:
               $ref: '#/components/schemas/link-type'
             source:
@@ -13212,6 +13553,40 @@ components:
         - links
       title: links-list-response
       x-go-name: LinksListResponseBody
+    links-replace-request:
+      type: object
+      description: The request to replace a link.
+      properties:
+        id:
+          type: string
+          description: The ID of the link to be replaced.
+          format: id
+        link_type:
+          $ref: '#/components/schemas/link-type'
+        source:
+          type: string
+          description: The ID of the source object.
+          format: id
+        target:
+          type: string
+          description: The ID of the target object.
+          format: id
+      required:
+        - id
+        - link_type
+        - source
+        - target
+      title: links-replace-request
+    links-replace-response:
+      type: object
+      description: The response to replacing a link.
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+      required:
+        - link
+      title: links-replace-response
+      x-go-name: LinksReplaceResponseBody
     list-mode:
       type: string
       description: |
@@ -13355,6 +13730,8 @@ components:
               type: string
               description: Subtype corresponding to the custom type fragment.
               format: text
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata'
             tags:
               type: array
               description: Tags associated with the meeting.
@@ -13394,6 +13771,10 @@ components:
     meeting-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            sync_metadata:
+              $ref: '#/components/schemas/sync-metadata-summary'
       title: meeting-summary
     meetings-count-request:
       type: object
@@ -14184,6 +14565,44 @@ components:
         - metric_definition
       title: metric-definitions-update-response
       x-go-name: MetricDefinitionsUpdateResponseBody
+    metric-tracker:
+      type: object
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          $ref: '#/components/schemas/metric-tracker-type'
+      required:
+        - type
+      title: metric-tracker
+    metric-tracker-type:
+      type: string
+    metric-trackers-get-request:
+      type: object
+      properties:
+        metric:
+          type: string
+          description: The ID of the metric that is being tracked.
+          format: id
+        object:
+          type: string
+          description: |
+            The ID of the underlying object on which the metric is being
+            tracked.
+          format: id
+      required:
+        - metric
+        - object
+      title: metric-trackers-get-request
+    metric-trackers-get-response:
+      type: object
+      properties:
+        metric_tracker:
+          $ref: '#/components/schemas/metric-tracker'
+      required:
+        - metric_tracker
+      title: metric-trackers-get-response
+      x-go-name: MetricTrackersGetResponseBody
     metric-visualization-y-axis:
       type: object
       description: The y axis for a metric visualization.
@@ -14371,6 +14790,11 @@ components:
               $ref: '#/components/schemas/account-summary'
             annual_contract_value:
               $ref: '#/components/schemas/money'
+            contacts:
+              type: array
+              description: Contacts involved in the opportunity.
+              items:
+                $ref: '#/components/schemas/user-summary'
             forecast_category_v2:
               $ref: '#/components/schemas/enum-value'
             value:
@@ -16782,6 +17206,7 @@ components:
       properties:
         account:
           type: string
+          deprecated: true
           description: New account ID to associate with this Rev organization.
           example: ACC-12345
           format: id
@@ -21549,6 +21974,12 @@ components:
             $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
         sync_date:
           $ref: '#/components/schemas/date-filter'
+        sync_history:
+          type: array
+          description: Filters for works modified with selected sync history.
+          items:
+            type: string
+            format: id
         sync_unit:
           type: array
           description: Filters for works modified with selected sync units.
@@ -21573,6 +22004,12 @@ components:
             $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
         sync_date:
           $ref: '#/components/schemas/date-filter'
+        sync_history:
+          type: array
+          description: Filters for works modified with selected sync history.
+          items:
+            type: string
+            format: id
         sync_unit:
           type: array
           description: Filters for works modified with selected sync units.
@@ -24659,6 +25096,8 @@ components:
           $ref: '#/components/schemas/event-sla-tracker-created'
         sla_tracker_deleted:
           $ref: '#/components/schemas/event-sla-tracker-deleted'
+        sla_tracker_fetched:
+          $ref: '#/components/schemas/event-sla-tracker-fetched'
         sla_tracker_updated:
           $ref: '#/components/schemas/event-sla-tracker-updated'
         survey_created:
@@ -24787,6 +25226,7 @@ components:
         - rev_user_updated
         - sla_tracker_created
         - sla_tracker_deleted
+        - sla_tracker_fetched
         - sla_tracker_updated
         - survey_created
         - survey_deleted
@@ -25351,10 +25791,6 @@ components:
         invert_correlation_color:
           type: boolean
           description: Specifies whether the color scheme for PVP is inverted.
-        percentage_precision:
-          type: integer
-          description: Decimal precision for percentage.
-          format: int32
       title: widget-pvp-config
     widget-query:
       type: object
@@ -25495,6 +25931,7 @@ components:
       enum:
         - bar
         - column
+        - combination
         - donut
         - heatmap
         - kanban
@@ -27216,6 +27653,15 @@ paths:
             items:
               type: string
               format: id
+        - description: Subtypes of the accounts to be filtered.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: List of tags to be filtered.
           explode: false
           in: query
@@ -27225,6 +27671,15 @@ paths:
             items:
               type: string
               format: tag-filter
+        - description: Tier of the accounts to be filtered.
+          explode: false
+          in: query
+          name: tier
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Array of websites of accounts to be filtered.
           explode: false
           in: query
@@ -27509,6 +27964,15 @@ paths:
             items:
               type: string
               format: id
+        - description: Subtypes of the accounts to be filtered.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: List of tags to be filtered.
           explode: false
           in: query
@@ -27518,6 +27982,15 @@ paths:
             items:
               type: string
               format: tag-filter
+        - description: Tier of the accounts to be filtered.
+          explode: false
+          in: query
+          name: tier
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Array of websites of accounts to be filtered.
           explode: false
           in: query
@@ -28736,6 +29209,41 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /artifacts.versions.delete:
+    post:
+      description: Permanently deletes a version of an artifact.
+      operationId: artifacts-hard-delete-version
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/artifacts-hard-delete-version-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-hard-delete-version-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Delete Artifacts Version
+      tags:
+        - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
   /artifacts.versions.prepare:
     post:
       description: |
@@ -29286,6 +29794,266 @@ paths:
       summary: Update Auth Token
       tags:
         - auth-tokens
+      x-fern-audiences:
+        - docs
+        - sdks
+  /brands.create:
+    post:
+      description: Creates a new brand.
+      operationId: brands-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/brands-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brands-create-response'
+          description: Response object for creating a new brand.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "409":
+          $ref: '#/components/responses/conflict'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Brand
+      tags:
+        - brands
+      x-fern-audiences:
+        - docs
+        - sdks
+  /brands.delete:
+    post:
+      description: Deletes a brand by its ID.
+      operationId: brands-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/brands-delete-request'
+        required: true
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brands-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Delete Brand
+      tags:
+        - brands
+      x-fern-audiences:
+        - docs
+        - sdks
+  /brands.get:
+    get:
+      description: Gets a brand by its ID.
+      operationId: brands-get
+      parameters:
+        - description: The ID of the brand to be retrieved.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brands-get-response'
+          description: Response object for getting a brand.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Brand
+      tags:
+        - brands
+      x-fern-audiences:
+        - docs
+      x-request-name: BrandsGetQuery
+    post:
+      description: Gets a brand by its ID.
+      operationId: brands-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/brands-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brands-get-response'
+          description: Response object for getting a brand.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Brand (POST)
+      tags:
+        - brands
+      x-fern-audiences:
+        - docs
+        - sdks
+  /brands.list:
+    get:
+      description: Lists all brands.
+      operationId: brands-list
+      parameters:
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brands-list-response'
+          description: Response object for listing all brands.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Brands
+      tags:
+        - brands
+      x-fern-audiences:
+        - docs
+      x-request-name: BrandsListQuery
+    post:
+      description: Lists all brands.
+      operationId: brands-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/brands-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brands-list-response'
+          description: Response object for listing all brands.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Brands (POST)
+      tags:
+        - brands
+      x-fern-audiences:
+        - docs
+        - sdks
+  /brands.update:
+    post:
+      description: Updates a brand by its ID.
+      operationId: brands-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/brands-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brands-update-response'
+          description: Response object for updating a brand.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Brand
+      tags:
+        - brands
       x-fern-audiences:
         - docs
         - sdks
@@ -30437,6 +31205,15 @@ paths:
             items:
               type: string
               format: text
+        - description: Filters for conversations with any of the provided states.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: |
             Filters for conversation with any of the provided subtypes.
           explode: false
@@ -30800,6 +31577,15 @@ paths:
           explode: false
           in: query
           name: stage.name
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for conversations with any of the provided states.
+          explode: false
+          in: query
+          name: state
           schema:
             type: array
             items:
@@ -33356,6 +34142,15 @@ paths:
       description: Lists the available groups.
       operationId: groups-list
       parameters:
+        - description: Filters the groups on the basis of creator.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: |
             The cursor to resume iteration from. If not provided, then iteration
             starts from the beginning.
@@ -33411,6 +34206,15 @@ paths:
           name: mode
           schema:
             $ref: '#/components/schemas/list-mode'
+        - description: Filters the groups on the basis of group name.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Comma-separated fields to sort the groups by.
           explode: false
           in: query
@@ -33420,6 +34224,77 @@ paths:
             items:
               type: string
               format: sort-by
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for issues synced from this specific origin system.
+          explode: false
+          in: query
+          name: sync_metadata.origin_system
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
       responses:
         "200":
           content:
@@ -34034,6 +34909,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -34051,6 +34935,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -34318,6 +35211,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -34335,6 +35237,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -35130,6 +36041,41 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       summary: List Links (POST)
+      tags:
+        - links
+      x-fern-audiences:
+        - docs
+        - sdks
+  /links.replace:
+    post:
+      description: Replaces a link.
+      operationId: links-replace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/links-replace-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/links-replace-response'
+          description: The response to replacing a link.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Replace Links
       tags:
         - links
       x-fern-audiences:
@@ -36040,6 +36986,91 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       summary: Update Metric Definition
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /metric-trackers.get:
+    get:
+      description: Gets a metric tracker.
+      operationId: metric-trackers-get
+      parameters:
+        - description: The ID of the metric that is being tracked.
+          explode: false
+          in: query
+          name: metric
+          required: true
+          schema:
+            type: string
+            format: id
+        - description: |
+            The ID of the underlying object on which the metric is being tracked.
+          explode: false
+          in: query
+          name: object
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-trackers-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Metric Tracker
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: MetricTrackersGetQuery
+    post:
+      description: Gets a metric tracker.
+      operationId: metric-trackers-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-trackers-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-trackers-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Metric Tracker (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -44666,6 +45697,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -44683,6 +45723,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -45190,6 +46239,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -45207,6 +46265,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -45463,6 +46530,8 @@ tags:
     name: auth-connections
   - description: Security token interactions.
     name: auth-tokens
+  - description: Brand management APIs.
+    name: brands
   - description: DevRev chat APIs.
     name: chats
   - description: Code change interactions.

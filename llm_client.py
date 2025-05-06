@@ -37,18 +37,22 @@ def get_response(prompt):
             # Check if final response is empty
             if not response:
                 raise ValueError("Empty content received from API")
-                
-            return response
+            else:
+                print("Response received from LLM.")
+                return response
 
         except requests.RequestException as e:
-            print(f"HTTP request failed. Error: {type(e)} {e}")
-            return None
+            msg = f"HTTP request failed. Error: {type(e)} {e}"
+            print(msg)
+            return msg
         except ValueError as e:
-            print(f"Invalid response received. Error: {e}")
-            return None
+            msg = f"Invalid response received. Error: {e}"
+            print(msg)
+            return msg
         except Exception as e:
-            print(f"Failed to generate response. Error: {type(e)} {e}")
-            return None
+            msg = f"Failed to generate response. Error: {type(e)} {e}"
+            print(msg)
+            return msg
         
 def get_lines_between_tags(text, tag):
   pattern = r'<' + tag + r'>(.*?)<\/' + tag + r'>'

@@ -69,12 +69,6 @@ await DevRev.updateUser(Identity(organizationID: "organization-1337"))
 
 ## PLuG support chat
 
-The DevRev SDK allows you to configure the theme dynamically based on the system appearance or use a default theme configured in the DevRev portal.
-
-```swift
-DevRev.prefersSystemTheme: Bool
-```
-
 ### UIKit
 
 The support chat feature can be shown as a modal screen from a specific view controller or the top-most one, or can be pushed onto a navigation stack. 
@@ -98,10 +92,6 @@ await DevRev.showSupport(isAnimated:)
 For example:
 
 ```swift
-// When set to true (default), the DevRev UI will adapt theme dynamically to the system appearance.
-// Set this flag to false to force the DevRev UI to use the default theme configured in the DevRev portal.
-DevRev.prefersSystemTheme: Bool
-
 // Push the support chat screen to a navigation stack.
 await DevRev.showSupport(from: mainNavigationController)
 
@@ -165,6 +155,14 @@ You can further customize the behavior by setting the `shouldDismissModalsOnOpen
 
 ```swift
 DevRev.shouldDismissModalsOnOpenLink: Bool
+```
+
+## Dynamic Theme Configuration
+
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+
+```swift
+DevRev.prefersSystemTheme: Bool
 ```
 
 ## Session analytics

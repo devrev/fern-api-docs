@@ -229,6 +229,7 @@ DevRev.conversationCreatedCompletion = { conversationID in
 ```
 
 ### In-app link handling
+
 The DevRev SDK provides a mechanism to handle links opened from within any screen that is part of the DevRev SDK.
 
 You can fully customize the link handling behavior by setting the specialized in-app link handler. That way you can decide what should happen when a link is opened from within the app.
@@ -241,6 +242,14 @@ You can further customize the behavior by setting the `shouldDismissModalsOnOpen
 
 ```swift
 DevRev.shouldDismissModalsOnOpenLink: Bool
+```
+
+### Dynamic Theme Configuration
+
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+
+```swift
+DevRev.prefersSystemTheme: Bool
 ```
 
 ### Analytics

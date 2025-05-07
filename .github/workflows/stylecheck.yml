@@ -33,7 +33,7 @@ jobs:
         id: stylecheck
         env:
           GITHUB_TOKEN: ${{ secrets.STYLECHECK }}
-          LLM_JWT: ${{ secrets.LLM_JWT }} 
+          LLM_TOKEN: ${{ secrets.LLM_TOKEN }} 
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

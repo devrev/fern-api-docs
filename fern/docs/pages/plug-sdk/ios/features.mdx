@@ -32,7 +32,15 @@ The unverified identification method identifies users with a unique identifier, 
 DevRev.identifyUnverifiedUser(_:)
 ```
 
-The function accepts the `DevRev.Identity` structure, where the user identifier (`userId`) is the only required property; all other properties are optional.
+The function accepts the `DevRev.Identity` structure, with the user identifier (`userID`) as the only required property, all other properties are optional.
+
+### Verified identification
+
+The verified identification method is used to identify the user with a unique identifier and verify the user's identity with the DevRev backend.
+
+```swift
+DevRev.identifyVerifiedUser(_:sessionToken:)
+```
 
 ### Update the user
 
@@ -54,6 +62,22 @@ The `userID` property cannot be updated.
 The identification functions are asynchronous. Ensure you wrap them in a `Task` when calling from synchronous contexts.
 </Callout>
 
+Use this property to check whether the user is identified in the current session:
+
+```swift
+await DevRev.isUserIdentified
+```
+
+#### Logout
+
+You can perform a logout of the current user by calling the following method:
+
+```swift
+DevRev.logout(deviceID:)
+```
+
+The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
+
 For example:
 
 ```swift
@@ -63,8 +87,14 @@ await DevRev.identifyAnonymousUser()
 // Identify an unverified user using their email address as the user identifier.
 await DevRev.identifyUnverifiedUser(Identity(userID: "user@example.org"))
 
+// Identify a verified user using their email address as the user identifier.
+await DevRev.identifyVerifiedUser("foo@example.org", sessionToken: "bar-1337")
+
 // Update the user's information.
 await DevRev.updateUser(Identity(organizationID: "organization-1337"))
+
+// Logout the identified user.
+await DevRev.logout(deviceID: "dvc32423")
 ```
 
 ## PLuG support chat
@@ -127,20 +157,6 @@ DevRev.conversationCreatedCompletion = { conversationID in
 }
 ```
 
- ## Analytics
-
-The DevRev SDK allows you to send custom analytic events by using a name and a string dictionary. You can track these events using the following function:
-
-```swift
-DevRev.trackEvent(name:properties:)
-```
-
-For example:
-
-```swift
-await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "message-1337"])
-```
-
 ## In-app link handling
 
 The DevRev SDK provides a mechanism to handle links opened from within any screen that is part of the DevRev SDK.
@@ -163,6 +179,20 @@ The DevRev SDK allows you to configure the theme dynamically based on the system
 
 ```swift
 DevRev.prefersSystemTheme: Bool
+```
+
+ ## Analytics
+
+The DevRev SDK allows you to send custom analytic events by using a name and a string dictionary. You can track these events using the following function:
+
+```swift
+DevRev.trackEvent(name:properties:)
+```
+
+For example:
+
+```swift
+await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "message-1337"])
 ```
 
 ## Session analytics
@@ -234,7 +264,7 @@ DevRev.unmarkSensitiveViews(_:)
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
 
-The mechanism utilizes balanced start and stop methods, both of which accept a timer name and an optional dictionary of properties.
+The mechanism works using balanced start and stop methods that both accept a timer name and an optional dictionary of properties.
 
 To start a timer, use the following method:
 
@@ -276,18 +306,18 @@ DevRev.trackScreenName("profile-screen")
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to alert users about new messages in the PLuG support chat.
+The DevRev backend sends push notifications to your app to notify users about new messages in the PLuG support chat.
 
 ### Configuration
 
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](https://developer.devrev.ai/public/sdks/mobile/push-notification) section.
 
 You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNs).
 
 ### Register for push notifications
 
 <Callout intent="note">
-Push notifications require SDK configuration and user identification, whether unverified or anonymous, to ensure delivery to the correct user.
+Push notifications require that the SDK has been configured and the user has been identified (unverified and anonymous users). The user identification is required to send the push notification to the correct user.
 </Callout>
 
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
@@ -350,11 +380,15 @@ Task {
 
 ### Handle push notifications
 
-To properly handle push notifications, implement the following method, typically in either the `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)` or `UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`:
+Push notifications coming to the DevRev SDK need to be handled manually. To properly handle them, implement the following method, typically in either the `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)` or `UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`:
 
 ```swift
 DevRev.processPushNotification(_:)
 ```
+
+<Callout intent="note">
+For convenience, this method provides two overloads that accept `userInfo` as either `[AnyHashable: Any]` or `[String: any Sendable]` dictionary types.
+</Callout>
 
 For example:
 

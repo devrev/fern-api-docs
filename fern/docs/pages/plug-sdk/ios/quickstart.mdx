@@ -57,3 +57,17 @@ Configure the SDK in the `AppDelegate.application(_:didFinishLaunchingWithOption
 - SwiftUI apps
 
 Depending on your app's architecture, configure the SDK at the app's entry point or initial view.
+
+## Sample app
+A sample app with use cases for both UIKit and SwiftUI has been provided as part of this repository.
+
+Before you start using the sample app you will need to configure it to be used with your Apple Developer team and your DevRev credentials. For your convenience the code has been marked with compiler error directives (`#error`) at the places that need attention.
+
+1. Add your credentials to `ContentView.swift` (SwiftUI) or `AppDelegate.swift` (UIKit).
+   - After you have added the credentials, delete or comment out the compiler error lines in the respective files.
+1. Configure the code signing for the sample target:
+	- Open the project settings (1),
+	- Select the appropriate target (2),
+	- Go to the Signing & Capabilities section (3), and
+	- Select your development team under Team (4).
+	<img src="docs/screenshots/screenshot-xcode-signing.png" width="400" />

@@ -390,6 +390,10 @@ hints:
 * `placeholder`: The placeholder text for the field.
 * `is_sortable`: Whether the field is sortable. Requires `is_filterable` to be true.
 * `is_groupable`: Whether the field is groupable. Requires `is_filterable` to be true.
+* `order`: The order in which the field appears in the side panel.
+* `group_name`: The group title under which field(s) appear in the side panel. In the example below, the fields are grouped under groups titled **Group 1** and **Group 2**.
+
+  ![customization-group_name-ui-hint](../img/customization-group_name-ui-hint.png)
 
 <Callout intent="tip">
 `is_filterable` is not a UI hint but a top level field property.
@@ -651,3 +655,7 @@ The `effects` array contains the list of effects of the condition. The following
 `don:core:dvrv-us-1:devo/test:stage/5` is the ID of the _completed_ stage. The
 stage display name is not used in the expression because it is liable to change.
 </Callout>
+
+Constraints on stock fields can only be strengthened.
+For example, a required stock field cannot be made optional, and a hidden stock
+field cannot be made visible.

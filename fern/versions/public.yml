@@ -72,7 +72,7 @@ navigation:
     slug: sdks
     path: ../docs/pages/sdks/index.mdx
     contents:
-      - section: PLuG SDK for Web
+      - section: PLuG Web SDK
         slug: web
         icon: fa-globe
         contents:

@@ -30,14 +30,17 @@ consider gathering the following information:
 - **Error handling**: Learn about error response formats and codes. Knowing this helps in
   handling errors and exceptions in your integration.
 
-## Terminology
+## Basic concepts
 
 ### Sync unit
 
-A _sync unit_ is one self encompassing unit of data that is synced to an external system. Examples:
-- Jira project
-- SalesForce
-- Zendesk
+A _sync unit_ is one self-encompassing unit of data that is synced to an external system. For example:
+- A project in Jira.
+- An account in SalesForce.
+- An organization Zendesk.
+
+In Jira, users often have multiple projects. Each project acts as an individual sync unit. 
+In contrast, Zendesk operates with a single large pool of tickets and agents. Here, the entire Zendesk instance can be synced in a single airdrop.
 
 ### Sync run
 
@@ -61,13 +64,13 @@ An **extractor** function in the snap-in is responsible for extracting data from
 A _reverse sync_ is a sync run from DevRev to an external system.
 It uses a **loader** function, to create or update data in the external system.
 
-### Initial import
+### Initial sync
 
-An _initial import_ is the first import of data from the external system to DevRev.
+The first sync is called the _initial sync_.
 It is triggered manually by the end user in DevRev's **Airdrops** UI.
 
-In initial import all data needs to be extracted to create a baseline (while in incremental runs only
-updated objects need to be extracted).
+During the initial sync, all data from the external sync unit is extracted from the external system and loaded into DevRev. 
+This process typically involves a large import and may take some time.
 
 An _initial import_ consists of the following phases:
 
@@ -76,16 +79,13 @@ An _initial import_ consists of the following phases:
 3. Data extraction
 4. Attachments extraction
 
-### 1-way (incremental) sync
+### 1-way (incremental sync)
 
 A _1-way sync_ (or _incremental sync_) refers to any extraction after the initial sync run has been successfully completed.
-An extractor extracts data that was created or updated in the external system after the start
-of the latest successful forward sync, including any changes that occurred during the forward sync,
-but were not picked up by it.
 
-A snap-in must consult its state to get information on when the last successful forward sync started.
-Airdrop snap-ins must maintain their own states that persists between phases in a sync run,
-as well as between sync runs.
+An extractor extracts data that was created or updated in the external system after the start
+of the latest successful forward sync.
+This includes any changes that happened after the start of the previous sync, but were not picked up by it.
 
 A 1-way sync consists of the following phases:
 
@@ -93,4 +93,12 @@ A 1-way sync consists of the following phases:
 2. Data extraction
 3. Attachments extraction
 
-A 1-way sync extracts only the domain objects updated or created since the previous successful sync run.
+### 2-way sync
+
+A _2-way sync_ is a reverse sync.
+The loader receives information about changes in DevRev since the last successful reverse sync and updates the data in the external system.
+
+A 2-way sync consists of the following phases:
+
+1. Data loading
+2. Attachments loading

@@ -46,18 +46,18 @@ Ensure that `extractor_function` and `loader_function` names correspond with tho
 
 ## Establish a connection to the external system
 
-_Keyrings_ are a collection of authentication information, used by a snap-in to authenticate to the external system in API calls. This can include a key (for example, a PAT token or API key), its type, the organization ID for which a key is valid, and in some cases the organization name.
+_Keyrings_ provide a secure way to store and manage credentials within your DevRev snap-in. 
 
-Keyrings provide a secure way to store and manage credentials within your DevRev snap-in.
-This eliminates the need to expose sensitive information like passwords or access tokens directly
-within your code or configuration files, enhancing overall security.
-They also provide a valid token by abstracting OAuth token renewal from the end user.
+Keyrings are a collection of authentication information, used by a snap-in to authenticate to the external system in API calls. 
+This can include a key (for example, a PAT token or API key), its type and the organization ID for which a key is valid.
 
-They are called **Connections** in the DevRev app.
+This eliminates the need to expose sensitive information like passwords or access tokens directly within your code or configuration files. They also provide a valid token by abstracting OAuth token renewal from the end user, so less work is needed on the developer's side.
+
+Keyrings are called **Connections** in the DevRev app.
 
 ### Configure a keyring
 
-Keyrings are configured in the `manifest.yaml` by configuring a `keyring_type`, like in the [example](https://github.com/devrev/adaas-template/blob/main/manifest.yaml).
+Keyrings are configured in the `manifest.yaml` by configuring a `keyring_type`, like in the [example](https://github.com/devrev/airdrop-template/blob/main/manifest.yaml):
 
 ```yaml
 keyring_types:
@@ -67,8 +67,7 @@ keyring_types:
     # The kind field specifies the type of keyring.
     kind: <"secret"/"oauth2">
     # is_subdomain field specifies whether the keyring contains a subdomain.
-    # Enabling this field allows the keyring to get the subdomain from the user during creation.
-    # This is useful when the keyring requires a subdomain as part of the configuration.
+    # Enabling this field allows the keyring to get the subdomain from the user during keyring creation.
     # Default is false.
     is_subdomain: <true/false>
     # Name of the external system you are importing from.
@@ -96,7 +95,7 @@ keyring_types:
         # Optional: query parameters to be included in the verification request.
         query_params:
           <param_name>: <param_value> # optional: query parameters to be included in the verification request.
-      # Fetching Organization Data: This allows you to retrieve additional information about the user's organization.
+      # The organization_data section takes care of fetching organization data and is required if is_subdomain option is false.
       organization_data:
         type: "config"
         # The URL to which the request is sent to fetch organization data.
@@ -106,7 +105,16 @@ keyring_types:
         headers:
           <header_name>: <header_value>
         # The jq filter used to extract the organization data from the response.
+        # It should provide an object with id and name, depending on what the external system returns.
+        # For example "{id: .data[0].id, name: .data[0].name }".
         response_jq: <jq_filter>
 ```
+There are some options to consider:
 
-You can find more information about keyrings and keyring types [here](/snapin-development/references/keyrings/keyring-intro).
+* `kind`  
+  The `kind` option can be either "secret" or "oauth2". The "secret" option is intended for storing various tokens, such as a PAT token. Use of OAuth2 is encouraged when possible. More information is available for [secret](/public/snapin-development/references/keyrings/secret-configuration) and [oauth2](/oauth-configuration).
+
+* `is_subdomain`  
+  The `is_subdomain` field relates to the API endpoints being called. When the endpoints for fetching data from an external system include a slug representing the organization—such as for example `https://subdomain.freshdesk.com/api/v2/tickets`—set this key to "true". In this scenario, users creating a new connection are prompted to insert the subdomain.
+
+  If no subdomain is present in the endpoint URL, set this key to "false". In this case, provide the `organization_data` part of the configuration. Specify the endpoint in the `url` field to fetch organization data. Users creating a new connection are prompted to select the organization from a list of options, as retrieved from the `organization_data.url` value.

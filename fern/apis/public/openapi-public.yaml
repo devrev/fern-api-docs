@@ -4658,8 +4658,8 @@ components:
           enum:
             - error
             - message
+            - message_generation_started
             - progress
-            - started
         client_metadata:
           type: object
           description: |
@@ -4671,6 +4671,8 @@ components:
           description: |
             The final response of asynchronous agent events execution.
           format: text
+        message_generation_started:
+          $ref: '#/components/schemas/ai-agent-message-generation-started'
         progress:
           $ref: '#/components/schemas/ai-agent-event-execute-progress'
         session:
@@ -4683,8 +4685,6 @@ components:
           type: string
           description: An identifier of the session with the AI agent.
           format: text
-        started:
-          $ref: '#/components/schemas/ai-agent-message-generation-started'
       required:
         - agent
         - session
@@ -7593,6 +7593,9 @@ components:
               type: string
               description: Default value.
               format: text
+            is_overridable:
+              type: boolean
+              description: Whether the enum is overridable.
             translated_values:
               type: object
               additionalProperties:
@@ -7619,6 +7622,9 @@ components:
               items:
                 type: string
                 format: text
+            is_overridable:
+              type: boolean
+              description: Whether the enum is overridable.
             translated_values:
               type: object
               additionalProperties:
@@ -8250,6 +8256,36 @@ components:
       allOf:
         - $ref: '#/components/schemas/user-base-summary'
       title: service-account-summary
+    service-accounts-create-request:
+      type: object
+      description: The request object to create a new service account.
+      properties:
+        display_name:
+          type: string
+          description: |
+            The service account's display name. A unique, human readable name
+            to identify a service account.
+          format: text
+        gen_keyring:
+          type: boolean
+          description: |
+            Indicates whether to generate a keyring along with the new service
+            account. The default is false.
+      required:
+        - display_name
+      title: service-accounts-create-request
+    service-accounts-create-response:
+      type: object
+      description: |
+        The response object to the corresponding create service account
+        request.
+      properties:
+        service_account:
+          $ref: '#/components/schemas/service-account'
+      required:
+        - service_account
+      title: service-accounts-create-response
+      x-go-name: ServiceAccountsCreateResponseBody
     service-accounts-get-request:
       type: object
       description: The request object to get a service account's information.
@@ -9264,7 +9300,34 @@ components:
               format: id
             dispatched_channels:
               type: array
-              description: Source channels on which the survey is sent.
+              description: |
+                Source channels on which the survey is sent. Stock allowed values:
+                ```
+                  {
+                    "id": 1,
+                    "label": "plug",
+                    "ordinal": 1,
+                    "overridable": false
+                  },
+                  {
+                    "id": 2,
+                    "label": "portal",
+                    "ordinal": 2,
+                    "overridable": false
+                  },
+                  {
+                    "id": 3,
+                    "label": "email",
+                    "ordinal": 3,
+                    "overridable": false
+                  },
+                  {
+                    "id": 4,
+                    "label": "slack",
+                    "ordinal": 4,
+                    "overridable": false
+                  }
+                ```
               items:
                 $ref: '#/components/schemas/enum-value'
             object:
@@ -9993,6 +10056,13 @@ components:
               format: text
             body_type:
               $ref: '#/components/schemas/timeline-comment-body-type'
+            references:
+              type: array
+              description: |
+                Summary information about objects that are referenced in the
+                comment.
+              items:
+                $ref: '#/components/schemas/atom-summary'
             snap_kit_body:
               $ref: '#/components/schemas/timeline-snap-kit-body'
             snap_widget_body:
@@ -11159,8 +11229,53 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: The sprint that the issue belongs to.
@@ -11670,8 +11785,53 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: Updates the sprint that the issue belongs to.
@@ -11815,8 +11975,64 @@ components:
           nullable: true
         sentiment:
           type: integer
-          description: The enum ID for the sentiment of the ticket.
+          description: |
+            The enum ID for the sentiment of the ticket. The allowed ids can be
+            extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "Delighted",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "Happy",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "Neutral",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "Unhappy",
+                "ordinal": 4,
+                "overridable": true
+              },
+              {
+                "id": 5,
+                "label": "Frustrated",
+                "ordinal": 5,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: Delighted
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: Happy
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: Neutral
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: Unhappy
+              ordinal: 4
+              overridable: true
+            - id: 5
+              label: Frustrated
+              ordinal: 5
+              overridable: true
         sentiment_modified_date:
           type: string
           description: Timestamp at which sentiment was last modified.
@@ -16660,6 +16876,43 @@ paths:
       summary: Update Rev User
       tags:
         - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /service-accounts.create:
+    post:
+      description: Creates a service account.
+      operationId: service-accounts-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service-accounts-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/service-accounts-create-response'
+          description: |
+            The response object to the corresponding create service account
+            request.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Service Account
+      tags:
+        - service-accounts
       x-fern-audiences:
         - docs
         - sdks

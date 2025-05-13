@@ -8,6 +8,7 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
+import Plug from './components/plug'
 
 import { getPageData } from './modules/sanity/utils'
 
@@ -94,6 +95,25 @@ const render = async () => {
       if (footer) footer.style.display = 'block'
     },
   )
+
+  // Add Plug component directly to body
+  if (!document.getElementById('plug-platform')) {
+    const plugScript = document.createElement('script')
+    plugScript.setAttribute('type', 'text/javascript')
+    plugScript.setAttribute('id', 'plug-platform')
+    plugScript.setAttribute('src', 'https://plug-platform.devrev.ai/static/plug.js')
+    document.body.appendChild(plugScript)
+    
+    // Initialize Plug SDK after script loads
+    plugScript.onload = () => {
+      if ((window as any).plugSDK) {
+        (window as any).plugSDK?.init?.({
+          app_id: process.env.PLUG_APP_ID,
+          enable_session_recording: true,
+        })
+      }
+    }
+  }
 }
 
 let observations = 0

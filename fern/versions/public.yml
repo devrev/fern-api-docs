@@ -126,13 +126,16 @@ navigation:
           - page: Troubleshooting
             slug: troubleshooting
             path: ../docs/pages/sdks/mobile/ios/troubleshooting.mdx
-      - section: DevRev SDK for React Native
+      - section: DevRev SDK for React Native and Expo
         slug: react-native
         icon: fa-brands fa-react
         contents:
-          - page: Quickstart guide
+          - page: Quickstart guide React Native
             slug: quickstart
             path: ../docs/pages/sdks/mobile/react-native/quickstart.mdx
+          - page: Quickstart guide Expo
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/react-native/quickstart-expo.mdx
           - page: Features
             slug: features
             path: ../docs/pages/sdks/mobile/react-native/features.mdx

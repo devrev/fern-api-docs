@@ -70,7 +70,7 @@ navigation:
         path: ../docs/pages/timeline-entries.mdx
   - section: SDKs
     slug: sdks
-    path: ../docs/pages/plug-sdk/index.mdx
+    path: ../docs/pages/sdks/index.mdx
     contents:
       - section: PLuG SDK for Web
         slug: web
@@ -78,37 +78,41 @@ navigation:
         contents:
           - page: Install the Web SDK
             slug: installation
-            path: ../docs/pages/plug-sdk/web/install.mdx
+            path: ../docs/pages/sdks/web/install.mdx
           - page: Install PLuG search
             slug: install-search
-            path: ../docs/pages/plug-sdk/web/search.mdx
+            path: ../docs/pages/sdks/web/search.mdx
           - page: Identify your users with PLuG
             slug: user-identity
-            path: ../docs/pages/plug-sdk/web/user-identity.mdx
+            path: ../docs/pages/sdks/web/user-identity.mdx
           - page: Track events
             slug: track-events
-            path: ../docs/pages/plug-sdk/web/track-events.mdx
+            path: ../docs/pages/sdks/web/track-events.mdx
           - page: Methods
             slug: methods
-            path: ../docs/pages/plug-sdk/web/methods.mdx
+            path: ../docs/pages/sdks/web/methods.mdx
           - page: Custom implementation
             slug: customize
-            path: ../docs/pages/plug-sdk/web/customize.mdx
+            path: ../docs/pages/sdks/web/customize.mdx
       - page: DevRev SDK for Android
         slug: android
         icon: fa-brands fa-android
-        path: ../docs/pages/plug-sdk/android.mdx
+        path: ../docs/pages/sdks/mobile/android/android.mdx
       - page: DevRev SDK for iOS
         slug: ios
         icon: fa-brands fa-apple
-        path: ../docs/pages/plug-sdk/ios.mdx
+        path: ../docs/pages/sdks/mobile/ios/ios.mdx
       - page: DevRev SDK for React Native
         slug: react-native
         icon: fa-brands fa-react
-        path: ../docs/pages/plug-sdk/react-native.mdx
+        path: ../docs/pages/sdks/mobile/react-native/react-native.mdx
+      - page: DevRev SDK for Cordova
+        slug: cordova
+        icon: fa-solid fa-robot
+        path: ../docs/pages/sdks/mobile/cordova/cordova.mdx
       - page: Push notifications for mobile
         slug: push-notification
-        path: ../docs/pages/plug-sdk/push-notification.mdx
+        path: ../docs/pages/sdks/mobile/push-notification.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

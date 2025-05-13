@@ -8,7 +8,6 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
-import Plug from './components/plug'
 
 import { getPageData } from './modules/sanity/utils'
 

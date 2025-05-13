@@ -98,7 +98,7 @@ navigation:
         slug: android
         icon: fa-brands fa-android
         contents:
-          - page: Quick start guide
+          - page: Quickstart guide
             slug: quickstart
             path: ../docs/pages/sdks/mobile/android/quickstart.mdx
           - page: Features
@@ -114,7 +114,7 @@ navigation:
         slug: ios
         icon: fa-brands fa-apple
         contents:
-          - page: Quick start guide
+          - page: Quickstart guide
             slug: quickstart
             path: ../docs/pages/sdks/mobile/ios/quickstart.mdx
           - page: Features
@@ -130,7 +130,7 @@ navigation:
         slug: react-native
         icon: fa-brands fa-react
         contents:
-          - page: Quick start guide
+          - page: Quickstart guide
             slug: quickstart
             path: ../docs/pages/sdks/mobile/react-native/quickstart.mdx
           - page: Features
@@ -146,7 +146,7 @@ navigation:
         slug: cordova
         icon: fa-solid fa-robot
         contents:
-          - page: Quick start guide
+          - page: Quickstart guide
             slug: quickstart
             path: ../docs/pages/sdks/mobile/cordova/quickstart.mdx
           - page: Features

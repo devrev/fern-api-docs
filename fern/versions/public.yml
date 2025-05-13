@@ -94,13 +94,13 @@ navigation:
           - page: Custom implementation
             slug: customize
             path: ../docs/pages/sdks/web/customize.mdx
-      - page: DevRev SDK for Android
+      - section: DevRev SDK for Android
         slug: android
         icon: fa-brands fa-android
         contents:
           - page: Quick start guide
-            slug: quick-start
-            path: ../docs/pages/sdks/mobile/android/quick-start.mdx
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/android/quickstart.mdx
           - page: Features
             slug: features
             path: ../docs/pages/sdks/mobile/android/features.mdx
@@ -110,13 +110,13 @@ navigation:
           - page: Troubleshooting
             slug: troubleshooting
             path: ../docs/pages/sdks/mobile/android/troubleshooting.mdx
-      - page: DevRev SDK for iOS
+      - section: DevRev SDK for iOS
         slug: ios
         icon: fa-brands fa-apple
         contents:
           - page: Quick start guide
-            slug: quick-start
-            path: ../docs/pages/sdks/mobile/ios/quick-start.mdx
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/ios/quickstart.mdx
           - page: Features
             slug: features
             path: ../docs/pages/sdks/mobile/ios/features.mdx
@@ -126,13 +126,13 @@ navigation:
           - page: Troubleshooting
             slug: troubleshooting
             path: ../docs/pages/sdks/mobile/ios/troubleshooting.mdx
-      - page: DevRev SDK for React Native
+      - section: DevRev SDK for React Native
         slug: react-native
         icon: fa-brands fa-react
         contents:
           - page: Quick start guide
-            slug: quick-start
-            path: ../docs/pages/sdks/mobile/react-native/quick-start.mdx
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/react-native/quickstart.mdx
           - page: Features
             slug: features
             path: ../docs/pages/sdks/mobile/react-native/features.mdx
@@ -142,13 +142,13 @@ navigation:
           - page: Troubleshooting
             slug: troubleshooting
             path: ../docs/pages/sdks/mobile/react-native/troubleshooting.mdx
-      - page: DevRev SDK for Cordova
+      - section: DevRev SDK for Cordova
         slug: cordova
         icon: fa-solid fa-robot
         contents:
           - page: Quick start guide
-            slug: quick-start
-            path: ../docs/pages/sdks/mobile/cordova/quick-start.mdx
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/cordova/quickstart.mdx
           - page: Features
             slug: features
             path: ../docs/pages/sdks/mobile/cordova/features.mdx

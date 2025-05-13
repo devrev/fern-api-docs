@@ -134,7 +134,7 @@ navigation:
             slug: quickstart
             path: ../docs/pages/sdks/mobile/react-native/quickstart.mdx
           - page: Quickstart guide Expo
-            slug: quickstart
+            slug: quickstart-expo
             path: ../docs/pages/sdks/mobile/react-native/quickstart-expo.mdx
           - page: Features
             slug: features

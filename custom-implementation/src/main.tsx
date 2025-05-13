@@ -22,8 +22,10 @@ const render = async () => {
    */
 
   const data = await getPageData()
+
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
+
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
@@ -96,7 +98,6 @@ const render = async () => {
 
 let observations = 0
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('DOMContentLoaded')
   await render()
   new MutationObserver(async (e, o) => {
     await render()

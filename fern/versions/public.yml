@@ -130,10 +130,10 @@ navigation:
         slug: react-native
         icon: fa-brands fa-react
         contents:
-          - page: Quickstart guide React Native
+          - page: Quickstart guide (React Native)
             slug: quickstart
             path: ../docs/pages/sdks/mobile/react-native/quickstart.mdx
-          - page: Quickstart guide Expo
+          - page: Quickstart guide (Expo)
             slug: quickstart-expo
             path: ../docs/pages/sdks/mobile/react-native/quickstart-expo.mdx
           - page: Features

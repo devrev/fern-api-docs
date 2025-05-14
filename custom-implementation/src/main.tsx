@@ -8,6 +8,7 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
+import { Search } from './components/search'
 
 import { getPageData } from './modules/sanity/utils'
 
@@ -26,6 +27,7 @@ const render = async () => {
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
 
+  const searchButton = document.querySelector('button.fern-search-button')
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
@@ -33,6 +35,21 @@ const render = async () => {
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
     sidenav.appendChild(wrapper)
+    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+  }
+
+  // Replace search button with React Search component
+  if (searchButton && !document.getElementById('search-component-wrapper') && !document.getElementById('theme-switch')) {
+    const searchWrapper = document.createElement('div')
+    searchWrapper.setAttribute('id', 'search-component-wrapper')
+    searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
+    searchButton.parentNode?.replaceChild(searchWrapper, searchButton)
+
+    const wrapper = document.createElement('div')
+    wrapper.setAttribute('id', 'theme-switch')
+    sidenav.appendChild(wrapper)
+    
+    ReactDOM.render(React.createElement(Search), searchWrapper)
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
 

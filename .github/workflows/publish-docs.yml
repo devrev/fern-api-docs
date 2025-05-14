@@ -21,7 +21,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
-          PLUG_APP_ID: ${{secrets.PLUG_APP_ID}}
+          
 
       - name: Download Fern
         run: npm install -g fern-api

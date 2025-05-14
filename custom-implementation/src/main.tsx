@@ -31,14 +31,18 @@ const render = async () => {
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
   if (!document.getElementById('theme-switch') && !document.getElementById('search-component')) {
+    const sidenavHeaderWrapper = document.createElement('div')
+    sidenavHeaderWrapper.setAttribute('id', 'sidenav-header-wrapper')
+    sidenav.appendChild(sidenavHeaderWrapper)
+
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
-    sidenav.appendChild(wrapper)
+    sidenavHeaderWrapper.appendChild(wrapper)
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
 
     const search = document.createElement('div')
     search.setAttribute('id', 'search-component')
-    sidenav.appendChild(search)
+    sidenavHeaderWrapper.appendChild(search)
     ReactDOM.render(React.createElement(Search), search)
   }
 

@@ -35,15 +35,15 @@ const render = async () => {
     sidenavHeaderWrapper.setAttribute('id', 'sidenav-header-wrapper')
     sidenav.appendChild(sidenavHeaderWrapper)
 
-    const wrapper = document.createElement('div')
-    wrapper.setAttribute('id', 'theme-switch')
-    sidenavHeaderWrapper.appendChild(wrapper)
-    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
-
     const search = document.createElement('div')
     search.setAttribute('id', 'search-component')
     sidenavHeaderWrapper.appendChild(search)
     ReactDOM.render(React.createElement(Search), search)
+
+    const wrapper = document.createElement('div')
+    wrapper.setAttribute('id', 'theme-switch')
+    sidenavHeaderWrapper.appendChild(wrapper)
+    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
 
     sidenav.replaceWith(sidenavHeaderWrapper)
   }

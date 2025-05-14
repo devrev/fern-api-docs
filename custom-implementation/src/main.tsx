@@ -7,8 +7,8 @@ import React from 'react'
 
 import Header from './components/header'
 import Footer from './components/footer'
-// import { ThemeSwitch } from './components/theme-switch'
-// import { Search } from './components/search'
+import { ThemeSwitch } from './components/theme-switch'
+import { Search } from './components/search'
 
 import { getPageData } from './modules/sanity/utils'
 
@@ -24,28 +24,39 @@ const render = async () => {
 
   const data = await getPageData()
 
-  const sidenavHeaderContainer = document.querySelector('button.fern-search-button')?.parentElement
+  const sidenav = document.querySelector('button.fern-search-bar')
+    ?.parentElement as HTMLElement
+
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
-  // Replace search button with React Search component
-  if (sidenavHeaderContainer) {
-    const searchWrapper = document.createElement('div')
-    searchWrapper.setAttribute('id', 'search-component-wrapper')
-    searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
-
-    // const wrapper = document.createElement('div')
-    // wrapper.setAttribute('id', 'theme-switch')
-    // searchWrapper.appendChild(wrapper)
-
-    // const search = document.createElement('div')
-    // search.setAttribute('id', 'search-component')
-    // searchWrapper.appendChild(search)
-
-    // ReactDOM.render(React.createElement(Search), search)
-    // ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
-
-    sidenavHeaderContainer.replaceWith(searchWrapper)
+  if (!document.getElementById('theme-switch')) {
+    const wrapper = document.createElement('div')
+    wrapper.setAttribute('id', 'theme-switch')
+    sidenav.appendChild(wrapper)
+    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
   }
+
+  // if(!document.getElementById('search-component-wrapper')) {
+  //   const searchWrapper = document.createElement('div')
+  //   searchWrapper.setAttribute('id', 'search-component-wrapper')
+  //   searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
+  //   sidenav.appendChild(searchWrapper)
+  // }
+
+  // Replace search button with React Search component
+  // if (searchButton && !document.getElementById('search-component-wrapper') && !document.getElementById('theme-switch')) {
+  //   const searchWrapper = document.createElement('div')
+  //   searchWrapper.setAttribute('id', 'search-component-wrapper')
+  //   searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
+  //   searchButton.parentNode?.replaceChild(searchWrapper, searchButton)
+
+  //   const wrapper = document.createElement('div')
+  //   wrapper.setAttribute('id', 'theme-switch')
+  //   sidenav.appendChild(wrapper)
+    
+  //   ReactDOM.render(React.createElement(Search), searchWrapper)
+  //   ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+  // }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
   const devrevHeaderId = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)

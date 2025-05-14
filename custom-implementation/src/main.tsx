@@ -8,7 +8,7 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
-// import { Search } from './components/search'
+import { Search } from './components/search'
 
 import { getPageData } from './modules/sanity/utils'
 
@@ -35,10 +35,10 @@ const render = async () => {
     sidenav.appendChild(wrapper)
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
 
-    // const search = document.createElement('div')
-    // search.setAttribute('id', 'search-component')
-    // sidenav.appendChild(search)
-    // ReactDOM.render(React.createElement(Search), search)
+    const search = document.createElement('div')
+    search.setAttribute('id', 'search-component')
+    sidenav.appendChild(search)
+    ReactDOM.render(React.createElement(Search), search)
   }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)

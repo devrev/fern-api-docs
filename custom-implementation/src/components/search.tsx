@@ -1,16 +1,4 @@
-import { useEffect, useState } from 'react'
-
 export const Search = () => {
-  const isMac =
-    typeof window !== 'undefined'
-      ? navigator.userAgent.toUpperCase().indexOf('MAC') >= 0
-      : false
-
-  const [isClient, setIsClient] = useState<any>(false)
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
   return (
     <button
       id="fern-search-button"
@@ -43,9 +31,7 @@ export const Search = () => {
         </svg>
         <span>Search...</span>
       </span>
-      <kbd className="keyboard-shortcut-hint">
-        {!isMac && isClient ? 'CTRL' : 'CMD'}&nbsp;+&nbsp; +
-      </kbd>
+      <kbd className="keyboard-shortcut-hint">/</kbd>
     </button>
   )
 }

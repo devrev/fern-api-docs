@@ -32,18 +32,10 @@ DevRev SDK, used for integrating DevRev services into your Expo app.
 
 ## Set up the DevRev SDK
 
-### Step 1: Credentials
 
-1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai).
-1. Go to the **Settings** page.
-1. Then open the **PLuG Settings** page, and copy the value under **Your Unique App ID**.
-
-### Step 2: Configuration
-
-> [!IMPORTANT]
-> The SDK must be configured before you can use any of its features.
-
-Once you have the credentials, you can configure the DevRev SDK in your app. The SDK will be ready to use once you have called the configuration method:
+1. In the DevRev app, go to **Settings** > **PLuG Settings**.
+1. Copy the value under **Your Unique App ID**.
+1. Configure the DevRev SDK in your app by calling the configuration method:
 
 ```typescript
 DevRevSDK.configure(appID: string)

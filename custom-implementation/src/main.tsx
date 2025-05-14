@@ -24,15 +24,14 @@ const render = async () => {
 
   const data = await getPageData()
 
-  const searchButton = document.querySelector('button.fern-search-button')
+  const sidenavHeaderContainer = document.querySelector('button.fern-search-button')?.parentElement
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
   // Replace search button with React Search component
-  if (searchButton && !document.getElementById('search-component-wrapper')) {
+  if (sidenavHeaderContainer && !document.getElementById('search-component-wrapper')) {
     const searchWrapper = document.createElement('div')
     searchWrapper.setAttribute('id', 'search-component-wrapper')
     searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
-    searchButton.parentNode?.replaceChild(searchWrapper, searchButton)
 
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
@@ -41,9 +40,11 @@ const render = async () => {
     const search = document.createElement('div')
     search.setAttribute('id', 'search-component')
     searchWrapper.appendChild(search)
-    
+
     ReactDOM.render(React.createElement(Search), search)
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+
+    sidenavHeaderContainer.replaceWith(searchWrapper)
   }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)

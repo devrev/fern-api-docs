@@ -107,7 +107,7 @@ const render = async () => {
     plugScript.onload = () => {
       if ((window as any).plugSDK) {
         (window as any).plugSDK?.init?.({
-          app_id: process.env.PLUG_APP_ID,
+          app_id: data?.plug?.id,
           enable_session_recording: true,
         })
       }

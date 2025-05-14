@@ -142,7 +142,7 @@ const render = async () => {
             case "ON_PLUG_WIDGET_READY":
               (window as any).plugSDK.initSearchAgent();
               document.addEventListener("keydown", function (event) {
-                if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+                if (event.key === "/") {
                   event.preventDefault();
                   (window as any).plugSDK.toggleSearchAgent();
                 }

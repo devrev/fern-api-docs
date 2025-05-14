@@ -9,6 +9,7 @@ import Header from './components/header'
 import Footer from './components/footer'
 
 import { Search } from './components/search'
+import { Widget } from './components/widget'
 import { ThemeSwitch } from './components/theme-switch'
 
 import { getPageData } from './modules/sanity/utils'
@@ -101,40 +102,14 @@ const render = async () => {
     },
   )
 
-  // Add Plug component directly to body
-  if (!document.getElementById('plug-platform')) {
-    const plugScript = document.createElement('script')
-    plugScript.setAttribute('type', 'text/javascript')
-    plugScript.setAttribute('id', 'plug-platform')
-    plugScript.setAttribute('src', 'https://plug-platform.devrev.ai/static/plug.js')
-    document.body.appendChild(plugScript)
-    
-    // Initialize Plug SDK after script loads
-    plugScript.onload = () => {
-      if ((window as any).plugSDK) {
-        (window as any).plugSDK?.init?.({
-          app_id: data?.plug?.id,
-          enable_session_recording: true,
-        })
-        (window as any).plugSDK.onEvent((payload: any) => {
-          switch (payload.type) {
-            case "ON_PLUG_WIDGET_READY":
-              console.log("ON_PLUG_WIDGET_READY");
-              (window as any).plugSDK.initSearchAgent();
-              document.addEventListener("keydown", function (event) {
-                if (event.key === "/") {
-                  console.log("KEYDOWN");
-                  event.preventDefault();
-                  (window as any).plugSDK.toggleSearchAgent();
-                }
-              });
-              break;
-            default:
-              break;
-          }
-        }); 
-      }
-    }
+  // Add Widget component to body
+  if (!document.getElementById('widget-container')) {
+    const widgetContainer = document.createElement('div')
+    widgetContainer.setAttribute('id', 'widget-container')
+    document.body.appendChild(widgetContainer)
+    ReactDOM.render(React.createElement(Widget, {
+      ...data.plug
+    }), widgetContainer)
   }
 }
 

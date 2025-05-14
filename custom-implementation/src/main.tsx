@@ -119,20 +119,22 @@ const render = async () => {
         (window as any).plugSDK?.init?.({
           app_id: data?.plug?.id,
           enable_session_recording: true,
-        })
+        });
+        
+        // Wait for the widget to be ready before adding event listeners
         (window as any).plugSDK.onEvent((payload: any) => {
-          switch (payload.type) {
-            case "ON_PLUG_WIDGET_READY":
-              (window as any).plugSDK.initSearchAgent();
-              document.addEventListener("keydown", function (event) {
-                if (event.key === "/") {
-                  event.preventDefault();
-                  (window as any).plugSDK.toggleSearchAgent();
-                }
-              });
-              break;
-            default:
-              break;
+          if(payload.type === "ON_PLUG_WIDGET_READY") {
+            // Initialize search agent after widget is ready
+            (window as any).plugSDK.initSearchAgent();
+            
+            // Add keyboard shortcut for search agent
+            document.addEventListener("keydown", function(event) {
+              // Check if event.key is defined before accessing it
+              if (event && event.key === "/") {
+                event.preventDefault();
+                (window as any).plugSDK.toggleSearchAgent();
+              }
+            });
           }
         }); 
       }

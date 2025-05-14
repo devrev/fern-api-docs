@@ -119,9 +119,11 @@ const render = async () => {
         (window as any).plugSDK.onEvent((payload: any) => {
           switch (payload.type) {
             case "ON_PLUG_WIDGET_READY":
+              console.log("ON_PLUG_WIDGET_READY");
               (window as any).plugSDK.initSearchAgent();
               document.addEventListener("keydown", function (event) {
                 if (event.key === "/") {
+                  console.log("KEYDOWN");
                   event.preventDefault();
                   (window as any).plugSDK.toggleSearchAgent();
                 }

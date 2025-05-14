@@ -24,9 +24,6 @@ const render = async () => {
 
   const data = await getPageData()
 
-  const sidenav = document.querySelector('button.fern-search-bar')
-    ?.parentElement as HTMLElement
-
   const searchButton = document.querySelector('button.fern-search-button')
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 

@@ -137,6 +137,21 @@ const render = async () => {
           app_id: data?.plug?.id,
           enable_session_recording: true,
         })
+        (window as any).plugSDK.onEvent((payload: any) => {
+          switch (payload.type) {
+            case "ON_PLUG_WIDGET_READY":
+              (window as any).plugSDK.initSearchAgent();
+              document.addEventListener("keydown", function (event) {
+                if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+                  event.preventDefault();
+                  (window as any).plugSDK.toggleSearchAgent();
+                }
+              });
+              break;
+            default:
+              break;
+          }
+        }); 
       }
     }
   }

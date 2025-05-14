@@ -8,7 +8,7 @@ import React from 'react'
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeSwitch } from './components/theme-switch'
-import { Search } from './components/search'
+// import { Search } from './components/search'
 
 import { getPageData } from './modules/sanity/utils'
 
@@ -35,33 +35,11 @@ const render = async () => {
     sidenav.appendChild(wrapper)
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
 
-    const search = document.createElement('div')
-    search.setAttribute('id', 'search-component')
-    sidenav.appendChild(search)
-    ReactDOM.render(React.createElement(Search), search)
+    // const search = document.createElement('div')
+    // search.setAttribute('id', 'search-component')
+    // sidenav.appendChild(search)
+    // ReactDOM.render(React.createElement(Search), search)
   }
-
-  // if(!document.getElementById('search-component-wrapper')) {
-  //   const searchWrapper = document.createElement('div')
-  //   searchWrapper.setAttribute('id', 'search-component-wrapper')
-  //   searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
-  //   sidenav.appendChild(searchWrapper)
-  // }
-
-  // Replace search button with React Search component
-  // if (searchButton && !document.getElementById('search-component-wrapper') && !document.getElementById('theme-switch')) {
-  //   const searchWrapper = document.createElement('div')
-  //   searchWrapper.setAttribute('id', 'search-component-wrapper')
-  //   searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
-  //   searchButton.parentNode?.replaceChild(searchWrapper, searchButton)
-
-  //   const wrapper = document.createElement('div')
-  //   wrapper.setAttribute('id', 'theme-switch')
-  //   sidenav.appendChild(wrapper)
-    
-  //   ReactDOM.render(React.createElement(Search), searchWrapper)
-  //   ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
-  // }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
   const devrevHeaderId = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)

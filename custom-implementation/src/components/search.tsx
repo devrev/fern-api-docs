@@ -2,7 +2,7 @@ export const Search = () => {
   return (
     <button
       id="fern-search-button"
-      className="fern-search-bar w-full"
+      className="fern-search-bar w-full mb-1"
       onClick={() => {
         if ((window as any).plugSDK) {
           (window as any).plugSDK.toggleSearchAgent()

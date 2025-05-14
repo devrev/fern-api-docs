@@ -30,7 +30,7 @@ const render = async () => {
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
-  if (!document.getElementById('theme-switch') && !document.getElementById('search-component')) {
+  if (!document.getElementById('sidenav-header-wrapper')) {
     const sidenavHeaderWrapper = document.createElement('div')
     sidenavHeaderWrapper.setAttribute('id', 'sidenav-header-wrapper')
     sidenav.appendChild(sidenavHeaderWrapper)
@@ -44,6 +44,8 @@ const render = async () => {
     search.setAttribute('id', 'search-component')
     sidenavHeaderWrapper.appendChild(search)
     ReactDOM.render(React.createElement(Search), search)
+
+    sidenav.replaceWith(sidenavHeaderWrapper)
   }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)

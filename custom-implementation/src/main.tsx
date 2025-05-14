@@ -31,12 +31,19 @@ const render = async () => {
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
-  if (!document.getElementById('theme-switch')) {
-    const wrapper = document.createElement('div')
-    wrapper.setAttribute('id', 'theme-switch')
-    sidenav.appendChild(wrapper)
-    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
-  }
+  // if (!document.getElementById('theme-switch')) {
+  //   const wrapper = document.createElement('div')
+  //   wrapper.setAttribute('id', 'theme-switch')
+  //   sidenav.appendChild(wrapper)
+  //   ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+  // }
+
+  // if(!document.getElementById('search-component-wrapper')) {
+  //   const searchWrapper = document.createElement('div')
+  //   searchWrapper.setAttribute('id', 'search-component-wrapper')
+  //   searchWrapper.setAttribute('class', 'fern-sidebar-searchbar-container')
+  //   sidenav.appendChild(searchWrapper)
+  // }
 
   // Replace search button with React Search component
   if (searchButton && !document.getElementById('search-component-wrapper') && !document.getElementById('theme-switch')) {

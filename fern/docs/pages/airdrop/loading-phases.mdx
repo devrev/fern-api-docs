@@ -36,6 +36,9 @@ const run = async (events: AirdropEvent[]) => {
       event,
       initialState: initialLoaderState,
       workerPath: file,
+      initialDomainMapping: {
+        /* your initial domain mapping JSON here */
+      },
       // options: {},
     });
   }
@@ -55,3 +58,9 @@ Access to the `state` is available through the SDK's `adapter` object.
 ## Creating items in DevRev
 
 To create an item in DevRev and sync it with the external system, start by creating an item with a **subtype** that was established during the initial sync. After selecting the subtype, fill out the necessary details for the item.
+
+<Note>
+  You must pass the <code>initialDomainMapping</code> parameter to{" "}
+  <code>spawn</code> when running loading phases. This ensures the correct
+  domain mapping is installed and used by the snap-in.
+</Note>

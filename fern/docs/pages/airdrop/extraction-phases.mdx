@@ -69,10 +69,21 @@ const run = async (events: AirdropEvent[]) => {
       event,
       initialState,
       workerPath: file,
+      initialDomainMapping: {
+        /* your initial domain mapping JSON here */
+      },
       // options: {},
     });
   }
 };
 
 export default run;
+```
+
+<Note>
+  You must pass the <code>initialDomainMapping</code> parameter to{" "}
+  <code>spawn</code> when running extraction phases. This ensures the correct
+  domain mapping is installed and used by the snap-in.
+</Note>
+
 ```

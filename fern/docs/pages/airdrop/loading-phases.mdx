@@ -47,6 +47,12 @@ const run = async (events: AirdropEvent[]) => {
 export default run;
 ```
 
+<Note>
+  You must pass the <code>initialDomainMapping</code> parameter to{" "}
+  <code>spawn</code> when running loading phases. This ensures the correct
+  domain mapping is installed and used by the snap-in.
+</Note>
+
 ## State handling
 
 Loading phases run as separate runtime instances, similar to extraction phases, with a maximum execution time of 13 minutes. 
@@ -58,9 +64,3 @@ Access to the `state` is available through the SDK's `adapter` object.
 ## Creating items in DevRev
 
 To create an item in DevRev and sync it with the external system, start by creating an item with a **subtype** that was established during the initial sync. After selecting the subtype, fill out the necessary details for the item.
-
-<Note>
-  You must pass the <code>initialDomainMapping</code> parameter to{" "}
-  <code>spawn</code> when running loading phases. This ensures the correct
-  domain mapping is installed and used by the snap-in.
-</Note>

@@ -1,6 +1,6 @@
 During the attachments extraction phase, the snap-in retrieves attachments from the external system and uploads them to DevRev. This phase occurs after data extraction, transformation, and loading are completed.
 
-## Event Flow
+## Triggering event
 
 ```mermaid
 sequenceDiagram
@@ -32,7 +32,7 @@ sequenceDiagram
     end
 ```
 
-### Events Explained
+### Event types
 
 | Event | Direction | Description |
 |-------|-----------|-------------|
@@ -45,18 +45,14 @@ sequenceDiagram
 
 ## Implementation
 
-### Default Implementation
+### Default implementation
 
 The SDK provides a default implementation for attachments extraction. If the default behavior (iterating through attachment metadata and uploading from saved URLs) meets your needs, **no additional implementation is required**.
 
-### Custom Implementation
+### Custom implementation
 
-If you need to customize the attachments extraction:
-
-1. Modify the implementation in `attachments-extraction.ts`
-2. Use the `streamAttachments` function from the WorkerAdapter class
-
-#### Using `streamAttachments`
+If you need to customize the attachments extraction, modify the implementation in `attachments-extraction.ts`.
+Use the `streamAttachments` function from the `WorkerAdapter` class, which handles most of functionality needed for this phase:
 
 ```typescript
 const response = await adapter.streamAttachments({
@@ -71,7 +67,7 @@ Parameters:
 
 Increasing the batch size (from the default 1) can significantly improve performance. But be mindful of lambda memory constraints and external system rate limits when choosing batch size. A batch size between 10 and 50 typically provides good results.
 
-#### Example `stream` Function
+#### Example `stream` function
 
 ```typescript
 async function getFileStream({
@@ -106,17 +102,17 @@ async function getFileStream({
 }
 ```
 
-## Emitting Responses
+## Emitting responses
 
 The snap-in must send exactly one response to Airdrop when extraction is complete:
 
-### Success Response
+### Success response
 
 ```typescript
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsDone);
 ```
 
-### Delay Response (for rate limiting)
+### Delay response (for rate limiting)
 
 ```typescript
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsDelay, {
@@ -124,7 +120,7 @@ await adapter.emit(ExtractorEventType.ExtractionAttachmentsDelay, {
 });
 ```
 
-### Error Response
+### Error response
 
 ```typescript
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsError, {

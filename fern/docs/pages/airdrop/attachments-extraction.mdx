@@ -1,94 +1,135 @@
-In the attachment extraction phase, the snap-in has to upload each attachment to DevRev and associate it with its parent data object.
+During the attachments extraction phase, the snap-in retrieves attachments from the external system and uploads them to DevRev. This phase occurs after data extraction, transformation, and loading are completed.
 
-## Triggering event
+## Event Flow
 
-Airdrop initiates the attachment extraction by starting the snap-in with a message with an event of
-type `EXTRACTION_ATTACHMENTS_START`.
-This is done after the data extraction, transformation, and loading into DevRev are completed.
+```mermaid
+sequenceDiagram
+    participant Airdrop
+    participant Snap-in
+    participant ExternalSystem
+    
+    Airdrop->>Snap-in: EXTRACTION_ATTACHMENTS_START
+    
+    alt Success path
+        Snap-in->>ExternalSystem: Request attachments
+        ExternalSystem->>Snap-in: Return attachments
+        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_DONE
+    
+    else Runtime limit reached
+        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_PROGRESS
+        Airdrop->>Snap-in: EXTRACTION_ATTACHMENTS_CONTINUE
+        Note over Snap-in,Airdrop: Process continues where it left off
+    
+    else Rate limiting required
+        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_DELAY (with back-off time)
+        Note over Airdrop: Waits for specified time
+        Airdrop->>Snap-in: EXTRACTION_ATTACHMENTS_CONTINUE
+        Note over Snap-in,Airdrop: Process resumes after delay
+    
+    else Error occurs
+        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_ERROR
+        Note over Snap-in,Airdrop: Process terminates
+    end
+```
 
-During the attachment extraction phase,
-the snap-in extracts attachments from the external system and uploads them as artifacts to DevRev.
+### Events Explained
 
-The snap-in must respond to Airdrop with a message with an event of type
-`EXTRACTION_ATTACHMENTS_PROGRESS` together with an optional progress estimate
-when the maximum snap-in runtime (13 minutes) has been reached.
-
-The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_ATTACHMENTS_DELAY`
-and specify a back-off time when the extraction has been rate-limited by the external system and
-back-off is required.
-
-In both cases, Airdrop starts the snap-in with a message with an event of type
-`EXTRACTION_ATTACHMENTS_CONTINUE`.
-The restart is immediate in case of `EXTRACTION_ATTACHMENTS_PROGRESS`, or delayed in case of
-`EXTRACTION_ATTACHMENTS_DELAY`.
-
-Once the attachment extraction phase is done, the snap-in must respond to Airdrop with a message
-with an event of type `EXTRACTION_ATTACHMENTS_DONE`.
-
-If attachment extraction fails the snap-in must respond to Airdrop with a message with an event of
-type `EXTRACTION_ATTACHMENTS_ERROR`.
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| `EXTRACTION_ATTACHMENTS_START` | Airdrop → Snap-in | Initiates the attachments extraction |
+| `EXTRACTION_ATTACHMENTS_PROGRESS` | Snap-in → Airdrop | Indicates process is ongoing but runtime limit (13 minutes) reached |
+| `EXTRACTION_ATTACHMENTS_DELAY` | Snap-in → Airdrop | Requests a delay due to rate limiting from external system |
+| `EXTRACTION_ATTACHMENTS_CONTINUE` | Airdrop → Snap-in | Resumes the extraction process after progress update or delay |
+| `EXTRACTION_ATTACHMENTS_DONE` | Snap-in → Airdrop | Signals successful completion of attachments extraction |
+| `EXTRACTION_ATTACHMENTS_ERROR` | Snap-in → Airdrop | Indicates that an error occurred during extraction |
 
 ## Implementation
 
-Attachments extraction is already provided by SDK, but if you need to customize it for your use case,
-it should be implemented in the [attachments-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/attachments-extraction.ts) file.
+### Default Implementation
 
-After uploading an attachment or a batch of attachments, the extractor also has to prepare and
-upload a file specifying the extracted and uploaded attachments.
+The SDK provides a default implementation for attachments extraction. If the default behavior (iterating through attachment metadata and uploading from saved URLs) meets your needs, **no additional implementation is required**.
 
-It should contain the DevRev IDs of the extracted and uploaded attachments, along with the parent
-domain object ID from the external system and the actor ID from the external system.
+### Custom Implementation
 
-The uploaded artifact is structured like a normal artifact containing extracted data in JSON Lines
-(JSONL) format and requires specifying `ssor_attachment` as the item type.
+If you need to customize the attachments extraction:
 
-The snap-in must respond to Airdrop with a message, that either signals success, a delay, or an error.
+1. Modify the implementation in `attachments-extraction.ts`
+2. Use the `streamAttachments` function from the WorkerAdapter class
 
-```typescript Success
-await adapter.emit(ExtractorEventType.ExtractionAttachmentsDone);
-```
+#### Using `streamAttachments`
 
-```typescript Delay
-await adapter.emit(ExtractorEventType.ExtractionAttachmentsDelay, {
-  delay: "30",
+```typescript
+const response = await adapter.streamAttachments({
+  stream: getFileStream,
+  batchSize: 10
 });
 ```
 
-```typescript Error
+Parameters:
+- `stream`: (Required) Function that handles downloading attachments from the external system
+- `batchSize`: (Optional) Number of attachments to process simultaneously (default: 1)
+
+Increasing the batch size (from the default 1) can significantly improve performance. But be mindful of lambda memory constraints and external system rate limits when choosing batch size. A batch size between 10 and 50 typically provides good results.
+
+#### Example `stream` Function
+
+```typescript
+async function getFileStream({
+  item,
+}: ExternalSystemAttachmentStreamingParams): Promise<ExternalSystemAttachmentStreamingResponse> {
+  const { id, url } = item;
+
+  try {
+    const fileStreamResponse = await axiosClient.get(url, {
+      responseType: 'stream',
+      headers: {
+        'Accept-Encoding': 'identity',
+      },
+    });
+
+    return { httpStream: fileStreamResponse };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.warn(`Error while fetching attachment ${id} from URL.`, serializeAxiosError(error));
+      console.warn('Failed attachment metadata', item);
+    } else {
+      console.warn(`Error while fetching attachment ${id} from URL.`, error);
+      console.warn('Failed attachment metadata', item);
+    }
+
+    return {
+      error: {
+        message: `Failed to fetch attachment ${id} from URL.`,
+      },
+    };
+  }
+}
+```
+
+## Emitting Responses
+
+The snap-in must send exactly one response to Airdrop when extraction is complete:
+
+### Success Response
+
+```typescript
+await adapter.emit(ExtractorEventType.ExtractionAttachmentsDone);
+```
+
+### Delay Response (for rate limiting)
+
+```typescript
+await adapter.emit(ExtractorEventType.ExtractionAttachmentsDelay, {
+  delay: "30",  // Delay in seconds
+});
+```
+
+### Error Response
+
+```typescript
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsError, {
   error: "Informative error message",
 });
 ```
 
-<Note>The snap-in must always emit a single message.</Note>
-
-## Examples
-
-Here is an example of an SSOR attachment file:
-
-```json lines
-{
-  "id": {
-    "devrev": "don:core:dvrv-us-1:devo/1:artifact/1", // DON of the artifact, that S3interact returned
-    "external": "111" // ID of the artifact in the external service
-  },
-  "parent_id": {
-    "external": "1111" // ID of the parent object in the external service
-  },
-  "actor_id": {
-    "external": "11111" // ID of the actor that uploaded/modified the artifact in the external service
-  }
-}
-{
-  "id": {
-    "devrev": "don:core:dvrv-us-1:devo/1:artifact/2",
-    "external": "222"
-  },
-  "parent_id": {
-    "external": "2222"
-  },
-  "actor_id": {
-    "external": "22222"
-  }
-}
-```
+<Note>The snap-in must always emit exactly one response event.</Note>

@@ -67,7 +67,7 @@ Parameters:
 
 Increasing the batch size (from the default 1) can significantly improve performance. But be mindful of lambda memory constraints and external system rate limits when choosing batch size. A batch size between 10 and 50 typically provides good results.
 
-```typescript Example `stream` function
+```typescript Example 'stream' function
 async function getFileStream({
   item,
 }: ExternalSystemAttachmentStreamingParams): Promise<ExternalSystemAttachmentStreamingResponse> {

@@ -10,7 +10,7 @@ Snap-in developers interact with DevRev objects through APIs, get updates on Dev
 
 ## Snap-in package
 
-A snap-in package is a collection of DevRev objects and their relationships that describe the functionality of the developed snap-in. 
+A snap-in package is a collection of DevRev objects and their relationships that describe the functionality of the developed snap-in.
 It doesn't reference an object within the installer's dev org. It's a parent object collecting snap-in versions. A good analogy for a snap-in package is an Andriod/iOS app which can house different versions of the code.
 
 ## Snap-in version
@@ -87,7 +87,7 @@ Snap-in resources are user-level objects like keyrings, event sources, and input
 
 The [marketplace](https://marketplace.devrev.ai/marketplace) is a portal where DevRev and external developers can publish snap-ins and other extensions.
 
-Similarly, developers can use private marketplaces to publish their own custom snap-ins that are scoped to their dev org.
+In case the developers want to make their snap-ins available to only their dev org and/or some external ones, they can publish them to marketplace with `restricted` access.
 
 ## Personas
 
@@ -98,3 +98,4 @@ The developer's dev org is responsible for publishing the snap-in to the marketp
 ### Installer
 
 Installers install the snap-in, provide configuration inputs, set up the necessary keyrings, and configure webhooks for external apps.
+

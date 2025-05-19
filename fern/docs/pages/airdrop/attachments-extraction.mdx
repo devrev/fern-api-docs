@@ -67,9 +67,7 @@ Parameters:
 
 Increasing the batch size (from the default 1) can significantly improve performance. But be mindful of lambda memory constraints and external system rate limits when choosing batch size. A batch size between 10 and 50 typically provides good results.
 
-#### Example `stream` function
-
-```typescript
+```typescript Example `stream` function
 async function getFileStream({
   item,
 }: ExternalSystemAttachmentStreamingParams): Promise<ExternalSystemAttachmentStreamingResponse> {
@@ -106,23 +104,17 @@ async function getFileStream({
 
 The snap-in must send exactly one response to Airdrop when extraction is complete:
 
-### Success response
-
-```typescript
+```typescript Success response
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsDone);
 ```
 
-### Delay response (for rate limiting)
-
-```typescript
+```typescript Delay response (for rate limiting)
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsDelay, {
   delay: "30",  // Delay in seconds
 });
 ```
 
-### Error response
-
-```typescript
+```typescript Error response
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsError, {
   error: "Informative error message",
 });

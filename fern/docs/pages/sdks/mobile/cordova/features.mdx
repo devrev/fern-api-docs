@@ -91,13 +91,13 @@ The DevRev SDK provides a mechanism to handle links opened from within any scree
 You can fully customize the link handling behavior by setting the specialized in-app link handler. That way you can decide what should happen when a link is opened from within the app.
 
 ```javascript
-DevRevSDK.setInAppLinkHandler(handler, successCallback, errorCallback)
+DevRev.setInAppLinkHandler(handler, successCallback, errorCallback)
 ```
 
 You can further customize the behavior by setting the `setShouldDismissModalsOnOpenLink` boolean flag. This flag controls whether the DevRev SDK should dismiss the top-most modal screen when a link is opened.
 
 ```javascript
-DevRevSDK.setShouldDismissModalsOnOpenLink(value, successCallback, errorCallback)
+DevRev.setShouldDismissModalsOnOpenLink(value, successCallback, errorCallback)
 ```
 
 ## Analytics

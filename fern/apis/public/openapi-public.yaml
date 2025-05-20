@@ -230,6 +230,12 @@ components:
           items:
             type: string
             format: id
+        tier:
+          type: array
+          description: Tier of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         websites:
           type: array
           description: Array of websites of accounts to be filtered.
@@ -281,6 +287,12 @@ components:
           items:
             type: string
             format: id
+        tier:
+          type: array
+          description: Tier of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         websites:
           type: array
           description: Array of websites of accounts to be filtered.
@@ -363,6 +375,12 @@ components:
           items:
             type: string
             format: id
+        tier:
+          type: array
+          description: Tier of the accounts to be filtered.
+          items:
+            type: string
+            format: text
         websites:
           type: array
           description: Array of websites of accounts to be filtered.
@@ -730,6 +748,40 @@ components:
           required:
             - owned_by
       title: article
+    article-content-format:
+      type: string
+      description: Content format of the article.
+      enum:
+        - drdfv2
+        - rt
+    article-data-source-create:
+      type: object
+      properties:
+        is_custom_leaf_type:
+          type: boolean
+          description: Indicates if the leaf type is custom.
+        is_default:
+          type: boolean
+          description: Indicates if the data source is default.
+        leaf_type:
+          type: string
+          description: The object's type.
+          format: text
+        object:
+          type: string
+          description: The ID of the object powering article.
+          format: id
+        reference_id:
+          type: string
+          description: The reference ID of the data source.
+          format: text
+      required:
+        - is_custom_leaf_type
+        - is_default
+        - leaf_type
+        - object
+        - reference_id
+      title: article-data-source-create
     article-status:
       type: string
       description: Status of the article.
@@ -765,7 +817,6 @@ components:
           items:
             type: string
             format: id
-          minItems: 1
         article_type:
           $ref: '#/components/schemas/article-type'
         authored_by:
@@ -776,11 +827,18 @@ components:
           items:
             type: string
             format: id
+        content_format:
+          $ref: '#/components/schemas/article-content-format'
         custom_fields:
           type: object
           description: Application-defined custom fields.
         custom_schema_spec:
           $ref: '#/components/schemas/custom-schema-spec'
+        data_sources:
+          type: array
+          description: Data sources provide the backing data for the article.
+          items:
+            $ref: '#/components/schemas/article-data-source-create'
         description:
           type: string
           description: Description for the article.
@@ -846,7 +904,6 @@ components:
           description: Name of the article.
           format: text
       required:
-        - applies_to_parts
         - owned_by
         - resource
         - title
@@ -1062,11 +1119,15 @@ components:
           $ref: '#/components/schemas/articles-update-request-authored-by'
         content_blocks:
           $ref: '#/components/schemas/articles-update-request-content-blocks'
+        content_format:
+          $ref: '#/components/schemas/article-content-format'
         custom_fields:
           type: object
           description: Application-defined custom fields.
         custom_schema_spec:
           $ref: '#/components/schemas/custom-schema-spec'
+        data_sources:
+          $ref: '#/components/schemas/articles-update-request-article-data-source-update'
         description:
           type: string
           description: |
@@ -1148,6 +1209,16 @@ components:
             type: string
             format: id
       title: articles-update-request-applies-to-parts
+    articles-update-request-article-data-source-update:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Updates data sources provide the backing data for the article.
+          items:
+            $ref: '#/components/schemas/article-data-source-create'
+      title: articles-update-request-article-data-source-update
     articles-update-request-artifacts:
       type: object
       properties:
@@ -1352,6 +1423,27 @@ components:
         - version
       title: artifacts-get-response
       x-go-name: ArtifactsGetResponseBody
+    artifacts-hard-delete-version-request:
+      type: object
+      description: The request to permnanently delete an artifact's version.
+      properties:
+        id:
+          type: string
+          description: The ID of the artifact to delete the version for.
+          example: ARTIFACT-12345
+          format: id
+        version:
+          type: string
+          description: The version of the artifact that needs to be deleted.
+          format: text
+      required:
+        - id
+      title: artifacts-hard-delete-version-request
+    artifacts-hard-delete-version-response:
+      type: object
+      additionalProperties: false
+      title: artifacts-hard-delete-version-response
+      x-go-name: ArtifactsHardDeleteVersionResponseBody
     artifacts-list-request:
       type: object
       description: The request to list artifacts attached to an object.
@@ -1461,6 +1553,51 @@ components:
         - key
         - value
       title: artifacts-prepare-response-form-data
+    artifacts-versions-prepare-request:
+      type: object
+      description: The request to prepare a new version of an artifact.
+      properties:
+        id:
+          type: string
+          description: The ID of the artifact to prepare a new version for.
+          example: ARTIFACT-12345
+          format: id
+      required:
+        - id
+      title: artifacts-versions-prepare-request
+    artifacts-versions-prepare-response:
+      type: object
+      description: The response to preparing a new artifact version.
+      properties:
+        form_data:
+          type: array
+          description: The POST policy form data.
+          items:
+            $ref: '#/components/schemas/artifacts-versions-prepare-response-form-data'
+        url:
+          type: string
+          description: The URL that the file's data should be uploaded to.
+          format: text
+      required:
+        - form_data
+        - url
+      title: artifacts-versions-prepare-response
+      x-go-name: ArtifactsVersionsPrepareResponseBody
+    artifacts-versions-prepare-response-form-data:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key of the form field.
+          format: text
+        value:
+          type: string
+          description: Value corresponding to the key.
+          format: text
+      required:
+        - key
+        - value
+      title: artifacts-versions-prepare-response-form-data
     atom:
       type: object
       discriminator:
@@ -2593,6 +2730,8 @@ components:
       description: |
         The request to get information about a list of conversations.
       properties:
+        actual_close_date:
+          $ref: '#/components/schemas/date-filter'
         applies_to_parts:
           type: array
           description: |
@@ -2699,6 +2838,13 @@ components:
             format: text
         stage:
           $ref: '#/components/schemas/stage-filter'
+        state:
+          type: array
+          description: |
+            Filters for conversations with any of the provided states.
+          items:
+            type: string
+            format: text
         tags:
           type: array
           deprecated: true
@@ -2840,15 +2986,12 @@ components:
       properties:
         set:
           type: array
-          description: |
-            Sets the owner IDs to the provided user IDs. This must not be
-            empty.
+          description: Sets the owner IDs to the provided user IDs.
           example:
             - DEVU-12345
           items:
             type: string
             format: id
-          minItems: 1
       title: conversations-update-request-owned-by
     conversations-update-request-tags:
       type: object
@@ -4658,8 +4801,8 @@ components:
           enum:
             - error
             - message
+            - message_generation_started
             - progress
-            - started
         client_metadata:
           type: object
           description: |
@@ -4671,6 +4814,8 @@ components:
           description: |
             The final response of asynchronous agent events execution.
           format: text
+        message_generation_started:
+          $ref: '#/components/schemas/ai-agent-message-generation-started'
         progress:
           $ref: '#/components/schemas/ai-agent-event-execute-progress'
         session:
@@ -4683,8 +4828,6 @@ components:
           type: string
           description: An identifier of the session with the AI agent.
           format: text
-        started:
-          $ref: '#/components/schemas/ai-agent-message-generation-started'
       required:
         - agent
         - session
@@ -5039,6 +5182,34 @@ components:
       required:
         - id
       title: event-sla-tracker-deleted
+    event-sla-tracker-fetched:
+      type: object
+      discriminator:
+        mapping:
+          forbidden: '#/components/schemas/empty'
+          not_found: '#/components/schemas/empty'
+          ok: '#/components/schemas/event-sla-tracker-fetched-ok'
+        propertyName: result
+      oneOf:
+        - $ref: '#/components/schemas/empty'
+        - $ref: '#/components/schemas/event-sla-tracker-fetched-ok'
+      properties:
+        id:
+          type: string
+          description: The ID of the SLA tracker that was fetched.
+          format: id
+        result:
+          $ref: '#/components/schemas/event-fetched-result'
+      required:
+        - id
+        - result
+      title: event-sla-tracker-fetched
+    event-sla-tracker-fetched-ok:
+      type: object
+      properties:
+        sla_tracker:
+          $ref: '#/components/schemas/sla-tracker'
+      title: event-sla-tracker-fetched-ok
     event-sla-tracker-updated:
       type: object
       properties:
@@ -5580,6 +5751,12 @@ components:
       type: object
       description: A request to get information about a list of groups.
       properties:
+        created_by:
+          type: array
+          description: Filters the groups on the basis of creator.
+          items:
+            type: string
+            format: id
         cursor:
           type: string
           description: |
@@ -5611,12 +5788,20 @@ components:
             $ref: '#/components/schemas/group-member-type'
         mode:
           $ref: '#/components/schemas/list-mode'
+        name:
+          type: array
+          description: Filters the groups on the basis of group name.
+          items:
+            type: string
+            format: text
         sort_by:
           type: array
           description: Comma-separated fields to sort the groups by.
           items:
             type: string
             format: sort-by
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
       title: groups-list-request
     groups-list-response:
       type: object
@@ -6120,6 +6305,40 @@ components:
         - links
       title: links-list-response
       x-go-name: LinksListResponseBody
+    links-replace-request:
+      type: object
+      description: The request to replace a link.
+      properties:
+        id:
+          type: string
+          description: The ID of the link to be replaced.
+          format: id
+        link_type:
+          $ref: '#/components/schemas/link-type'
+        source:
+          type: string
+          description: The ID of the source object.
+          format: id
+        target:
+          type: string
+          description: The ID of the target object.
+          format: id
+      required:
+        - id
+        - link_type
+        - source
+        - target
+      title: links-replace-request
+    links-replace-response:
+      type: object
+      description: The response to replacing a link.
+      properties:
+        link:
+          $ref: '#/components/schemas/link'
+      required:
+        - link
+      title: links-replace-response
+      x-go-name: LinksReplaceResponseBody
     list-mode:
       type: string
       description: |
@@ -6272,6 +6491,44 @@ components:
         - metric_definitions
       title: metric-definitions-list-response
       x-go-name: MetricDefinitionsListResponseBody
+    metric-tracker:
+      type: object
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          $ref: '#/components/schemas/metric-tracker-type'
+      required:
+        - type
+      title: metric-tracker
+    metric-tracker-type:
+      type: string
+    metric-trackers-get-request:
+      type: object
+      properties:
+        metric:
+          type: string
+          description: The ID of the metric that is being tracked.
+          format: id
+        object:
+          type: string
+          description: |
+            The ID of the underlying object on which the metric is being
+            tracked.
+          format: id
+      required:
+        - metric
+        - object
+      title: metric-trackers-get-request
+    metric-trackers-get-response:
+      type: object
+      properties:
+        metric_tracker:
+          $ref: '#/components/schemas/metric-tracker'
+      required:
+        - metric_tracker
+      title: metric-trackers-get-response
+      x-go-name: MetricTrackersGetResponseBody
     org-base:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -6954,6 +7211,11 @@ components:
         Request object to create a new Rev organization in the Dev
         organization.
       properties:
+        account:
+          type: string
+          description: Account Id to associate with this Rev organization.
+          example: ACC-12345
+          format: id
         description:
           type: string
           description: Description of the Rev organization.
@@ -6981,6 +7243,7 @@ components:
           description: The tier of the RevOrg.
           format: text
       required:
+        - account
         - display_name
       title: rev-orgs-create-request
     rev-orgs-create-response:
@@ -7593,6 +7856,9 @@ components:
               type: string
               description: Default value.
               format: text
+            is_overridable:
+              type: boolean
+              description: Whether the enum is overridable.
             translated_values:
               type: object
               additionalProperties:
@@ -7619,6 +7885,9 @@ components:
               items:
                 type: string
                 format: text
+            is_overridable:
+              type: boolean
+              description: Whether the enum is overridable.
             translated_values:
               type: object
               additionalProperties:
@@ -8250,6 +8519,36 @@ components:
       allOf:
         - $ref: '#/components/schemas/user-base-summary'
       title: service-account-summary
+    service-accounts-create-request:
+      type: object
+      description: The request object to create a new service account.
+      properties:
+        display_name:
+          type: string
+          description: |
+            The service account's display name. A unique, human readable name
+            to identify a service account.
+          format: text
+        gen_keyring:
+          type: boolean
+          description: |
+            Indicates whether to generate a keyring along with the new service
+            account. The default is false.
+      required:
+        - display_name
+      title: service-accounts-create-request
+    service-accounts-create-response:
+      type: object
+      description: |
+        The response object to the corresponding create service account
+        request.
+      properties:
+        service_account:
+          $ref: '#/components/schemas/service-account'
+      required:
+        - service_account
+      title: service-accounts-create-response
+      x-go-name: ServiceAccountsCreateResponseBody
     service-accounts-get-request:
       type: object
       description: The request object to get a service account's information.
@@ -9264,7 +9563,34 @@ components:
               format: id
             dispatched_channels:
               type: array
-              description: Source channels on which the survey is sent.
+              description: |
+                Source channels on which the survey is sent. Stock allowed values:
+                ```
+                  {
+                    "id": 1,
+                    "label": "plug",
+                    "ordinal": 1,
+                    "overridable": false
+                  },
+                  {
+                    "id": 2,
+                    "label": "portal",
+                    "ordinal": 2,
+                    "overridable": false
+                  },
+                  {
+                    "id": 3,
+                    "label": "email",
+                    "ordinal": 3,
+                    "overridable": false
+                  },
+                  {
+                    "id": 4,
+                    "label": "slack",
+                    "ordinal": 4,
+                    "overridable": false
+                  }
+                ```
               items:
                 $ref: '#/components/schemas/enum-value'
             object:
@@ -9464,6 +9790,12 @@ components:
             $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
         sync_date:
           $ref: '#/components/schemas/date-filter'
+        sync_history:
+          type: array
+          description: Filters for works modified with selected sync history.
+          items:
+            type: string
+            format: id
         sync_unit:
           type: array
           description: Filters for works modified with selected sync units.
@@ -9488,6 +9820,12 @@ components:
             $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
         sync_date:
           $ref: '#/components/schemas/date-filter'
+        sync_history:
+          type: array
+          description: Filters for works modified with selected sync history.
+          items:
+            type: string
+            format: id
         sync_unit:
           type: array
           description: Filters for works modified with selected sync units.
@@ -9993,6 +10331,13 @@ components:
               format: text
             body_type:
               $ref: '#/components/schemas/timeline-comment-body-type'
+            references:
+              type: array
+              description: |
+                Summary information about objects that are referenced in the
+                comment.
+              items:
+                $ref: '#/components/schemas/atom-summary'
             snap_kit_body:
               $ref: '#/components/schemas/timeline-snap-kit-body'
             snap_widget_body:
@@ -10617,6 +10962,8 @@ components:
           $ref: '#/components/schemas/event-sla-tracker-created'
         sla_tracker_deleted:
           $ref: '#/components/schemas/event-sla-tracker-deleted'
+        sla_tracker_fetched:
+          $ref: '#/components/schemas/event-sla-tracker-fetched'
         sla_tracker_updated:
           $ref: '#/components/schemas/event-sla-tracker-updated'
         survey_created:
@@ -10745,6 +11092,7 @@ components:
         - rev_user_updated
         - sla_tracker_created
         - sla_tracker_deleted
+        - sla_tracker_fetched
         - sla_tracker_updated
         - survey_created
         - survey_deleted
@@ -11159,8 +11507,53 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: The sprint that the issue belongs to.
@@ -11670,8 +12063,53 @@ components:
         priority_v2:
           type: integer
           description: |
-            Priority enum id of the work based upon impact and criticality.
+            Priority enum id of the work based upon impact and criticality. The
+            allowed ids can be extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "P0",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "P1",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "P2",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "P3",
+                "ordinal": 4,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: P0
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: P1
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: P2
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: P3
+              ordinal: 4
+              overridable: true
         sprint:
           type: string
           description: Updates the sprint that the issue belongs to.
@@ -11815,8 +12253,64 @@ components:
           nullable: true
         sentiment:
           type: integer
-          description: The enum ID for the sentiment of the ticket.
+          description: |
+            The enum ID for the sentiment of the ticket. The allowed ids can be
+            extended by the user. Stock allowed values:
+            ```
+              {
+                "id": 1,
+                "label": "Delighted",
+                "ordinal": 1,
+                "overridable": true
+              },
+              {
+                "id": 2,
+                "label": "Happy",
+                "ordinal": 2,
+                "overridable": true
+              },
+              {
+                "id": 3,
+                "label": "Neutral",
+                "ordinal": 3,
+                "overridable": true
+              },
+              {
+                "id": 4,
+                "label": "Unhappy",
+                "ordinal": 4,
+                "overridable": true
+              },
+              {
+                "id": 5,
+                "label": "Frustrated",
+                "ordinal": 5,
+                "overridable": true
+              }
+            ```
           format: int64
+          x-devrev-uenum-overridable: true
+          x-devrev-uenum-values:
+            - id: 1
+              label: Delighted
+              ordinal: 1
+              overridable: true
+            - id: 2
+              label: Happy
+              ordinal: 2
+              overridable: true
+            - id: 3
+              label: Neutral
+              ordinal: 3
+              overridable: true
+            - id: 4
+              label: Unhappy
+              ordinal: 4
+              overridable: true
+            - id: 5
+              label: Frustrated
+              ordinal: 5
+              overridable: true
         sentiment_modified_date:
           type: string
           description: Timestamp at which sentiment was last modified.
@@ -12037,6 +12531,15 @@ paths:
             items:
               type: string
               format: id
+        - description: Tier of the accounts to be filtered.
+          explode: false
+          in: query
+          name: tier
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Array of websites of accounts to be filtered.
           explode: false
           in: query
@@ -12297,6 +12800,15 @@ paths:
             items:
               type: string
               format: id
+        - description: Tier of the accounts to be filtered.
+          explode: false
+          in: query
+          name: tier
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Array of websites of accounts to be filtered.
           explode: false
           in: query
@@ -13069,6 +13581,78 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /artifacts.versions.delete:
+    post:
+      description: Permanently deletes a version of an artifact.
+      operationId: artifacts-hard-delete-version
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/artifacts-hard-delete-version-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-hard-delete-version-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Delete Artifacts Version
+      tags:
+        - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
+  /artifacts.versions.prepare:
+    post:
+      description: |
+        Prepares a new version for an artifact, returning the URL and form data
+        to upload the updated file.
+      operationId: artifacts-versions-prepare
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/artifacts-versions-prepare-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-versions-prepare-response'
+          description: The response to preparing a new artifact version.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Prepare Artifacts Versions
+      tags:
+        - artifacts
+      x-fern-audiences:
+        - docs
+        - sdks
   /atoms.get:
     get:
       description: Gets the specified object.
@@ -13802,6 +14386,15 @@ paths:
           explode: false
           in: query
           name: stage.name
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for conversations with any of the provided states.
+          explode: false
+          in: query
+          name: state
           schema:
             type: array
             items:
@@ -14705,6 +15298,15 @@ paths:
       description: Lists the available groups.
       operationId: groups-list
       parameters:
+        - description: Filters the groups on the basis of creator.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: |
             The cursor to resume iteration from. If not provided, then iteration
             starts from the beginning.
@@ -14760,6 +15362,15 @@ paths:
           name: mode
           schema:
             $ref: '#/components/schemas/list-mode'
+        - description: Filters the groups on the basis of group name.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Comma-separated fields to sort the groups by.
           explode: false
           in: query
@@ -14769,6 +15380,77 @@ paths:
             items:
               type: string
               format: sort-by
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for issues synced from this specific origin system.
+          explode: false
+          in: query
+          name: sync_metadata.origin_system
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
       responses:
         "200":
           content:
@@ -15396,6 +16078,41 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+  /links.replace:
+    post:
+      description: Replaces a link.
+      operationId: links-replace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/links-replace-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/links-replace-response'
+          description: The response to replacing a link.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Replace Links
+      tags:
+        - links
+      x-fern-audiences:
+        - docs
+        - sdks
   /metric-definitions.list:
     get:
       description: Lists metric definitions matching a filter.
@@ -15522,6 +16239,91 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       summary: List Metric Definitions (POST)
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+        - sdks
+  /metric-trackers.get:
+    get:
+      description: Gets a metric tracker.
+      operationId: metric-trackers-get
+      parameters:
+        - description: The ID of the metric that is being tracked.
+          explode: false
+          in: query
+          name: metric
+          required: true
+          schema:
+            type: string
+            format: id
+        - description: |
+            The ID of the underlying object on which the metric is being tracked.
+          explode: false
+          in: query
+          name: object
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-trackers-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Metric Tracker
+      tags:
+        - slas
+      x-fern-audiences:
+        - docs
+      x-request-name: MetricTrackersGetQuery
+    post:
+      description: Gets a metric tracker.
+      operationId: metric-trackers-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/metric-trackers-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metric-trackers-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Metric Tracker (POST)
       tags:
         - slas
       x-fern-audiences:
@@ -16660,6 +17462,43 @@ paths:
       summary: Update Rev User
       tags:
         - rev-users
+      x-fern-audiences:
+        - docs
+        - sdks
+  /service-accounts.create:
+    post:
+      description: Creates a service account.
+      operationId: service-accounts-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service-accounts-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/service-accounts-create-response'
+          description: |
+            The response object to the corresponding create service account
+            request.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Service Account
+      tags:
+        - service-accounts
       x-fern-audiences:
         - docs
         - sdks
@@ -18812,6 +19651,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -18829,6 +19677,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -19260,6 +20117,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query
@@ -19277,6 +20143,15 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for works modified with selected sync units.
           explode: false
           in: query

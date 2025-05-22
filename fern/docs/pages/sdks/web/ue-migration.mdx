@@ -9,18 +9,20 @@ NPM package support is discontinued.
 ## Installation
 
 Ensure to update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
-
-Previous implementation:
-
-   ```
+ 
+<Tabs>
+  <Tab title="Previous implementation">
+    ```
    <script src="https://unpkg.com/user-experior-web@latest/bundle/ue-web-bundle.js"></script>
    ```
+  </Tab>
+  <Tab title="Replace with">
+   ```
+   <script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
+   ```
+  </Tab>
+</Tabs>
 
-Replace with:
-
- ```
-<script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
- ```
 ## Initialisation
 
 Update your initialization code to work with the DevRev PLuG SDK, ensuring session recording is enabled and handling events appropriately.

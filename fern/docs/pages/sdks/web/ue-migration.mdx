@@ -1,0 +1,127 @@
+# UserExperior Migration
+
+The DevRev PLuG SDK serves as a direct replacement for the legacy UserExperior Web SDK. This section outlines the steps to facilitate a seamless migration from UserExperior to DevRev PLuG.
+
+<Callout intent="note">
+NPM package support is discontinued.
+</Callout>
+
+## Installation
+
+Ensure to update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
+
+Previous implementation:
+
+   ```
+   <script src="https://unpkg.com/user-experior-web@latest/bundle/ue-web-bundle.js"></script>
+   ```
+
+Replace with:
+
+ ```
+<script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
+ ```
+## Initialisation
+
+Update your initialization code to work with the DevRev PLuG SDK, ensuring session recording is enabled and handling events appropriately.
+
+Previous implementation:
+
+```
+const ue = new UserExperior.init();
+ue.startRecording("<your_unique_app_id>")
+.then(() => {
+  // code you want to execute after recording starts
+  // you can call the setUserIdentifer method here
+})
+.catch((error) => {
+  // code you want to execute if recording fails
+});
+```
+
+Replace with:
+
+```
+window.plugSDK.init({
+   app_id: "<your_unique_app_id>",
+   enable_session_recording: true,
+});
+window.plugSDK.onEvent((payload) => {
+	if (payload.type === 'ON_OBSERVABILITY_READY') {
+    // code you want to execute after recording starts
+	}
+});
+```
+
+## Recording options
+
+Previous implementation:
+
+```
+ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
+	sessionReplay: {
+		// To mask all the input fields pass the following.
+		maskAllInputs: true,
+		
+		// Available Mask Input Options:
+		maskInputOptions: {
+		    color: boolean,
+		    date: boolean,
+		    'datetime-local': boolean,
+		    month: boolean,
+		    number: boolean,
+		    range: boolean,
+		    search: boolean,
+		    text: boolean,
+		    time: boolean,
+		    url: boolean,
+		    week: boolean,
+		    textarea: boolean
+		},
+		
+		// Mouse moves are also ignored by default by the SDK to avoid unnecessary events increasing the payload size. To enable mouse move capture  
+		// you need to specify the following option to capture the mouse movements:
+		captureMouseMove: true 
+		
+		// By default we track network log in session. To disable network log tracking you can specify the following option:
+		captureNetworkLogs: false 
+		
+		// By default we track console errors in session. To disable console tracking you can specify the following option:
+		captureConsoleLogs: false 
+	}
+});
+```
+
+Replace with:
+
+```
+window.plugSDK.init({
+    app_id: "<your_unique_app_id>",
+    session_recording_options: {
+			sessionReplay: {
+				maskAllInputs?: boolean;
+				maskInputOptions?: {
+					color: boolean;
+					date: boolean;
+					'datetime-local': boolean;
+					email: boolean;
+					month: boolean;
+					number: boolean;
+					range: boolean;
+					search: boolean;
+					tel: boolean;
+					text: boolean;
+					time: boolean;
+					url: boolean;
+					week: boolean;
+					textarea: boolean;
+					select: boolean;
+				};
+				captureMouseMove?: boolean;
+				captureNetworkLogs?: boolean;
+				captureConsoleLogs?: boolean;
+			}
+    },
+    enable_session_recording: true,
+})
+```

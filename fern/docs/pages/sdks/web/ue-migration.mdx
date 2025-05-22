@@ -1,4 +1,4 @@
-# UserExperior Migration
+# UserExperior migration
 
 The DevRev PLuG SDK serves as a direct replacement for the legacy UserExperior Web SDK. This section outlines the steps to facilitate a seamless migration from UserExperior to DevRev PLuG.
 
@@ -27,8 +27,8 @@ Ensure to update your script tags as shown to migrate successfully to the DevRev
 
 Update your initialization code to work with the DevRev PLuG SDK, ensuring session recording is enabled and handling events appropriately.
 
-Previous implementation:
-
+<Tabs>
+  <Tab title="Previous implementation">
 ```
 const ue = new UserExperior.init();
 ue.startRecording("<your_unique_app_id>")
@@ -40,9 +40,8 @@ ue.startRecording("<your_unique_app_id>")
   // code you want to execute if recording fails
 });
 ```
-
-Replace with:
-
+  </Tab>
+  <Tab title="Replace with">
 ```
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
@@ -54,11 +53,14 @@ window.plugSDK.onEvent((payload) => {
 	}
 });
 ```
+  </Tab>
+ 
+</Tabs>
 
 ## Recording options
 
-Previous implementation:
-
+<Tabs>
+  <Tab title="Previous implementation">
 ```
 ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 	sessionReplay: {
@@ -93,10 +95,9 @@ ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 	}
 });
 ```
-
-Replace with:
-
-```
+</Tab>
+  <Tab title="Replace with">
+  ```
 window.plugSDK.init({
     app_id: "<your_unique_app_id>",
     session_recording_options: {
@@ -127,3 +128,10 @@ window.plugSDK.init({
     enable_session_recording: true,
 })
 ```
+  </Tab>
+ 
+</Tabs>
+
+
+
+

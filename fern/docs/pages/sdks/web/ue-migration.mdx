@@ -132,6 +132,131 @@ window.plugSDK.init({
  
 </Tabs>
 
+## Masking
+
+The same CSS classes from UserExperior are compatible with the DevRev PLuG SDK without modifications.
+
+**Specific HTML Elements**
+
+To mask a div:
+ ```
+<div class="ue-mask">Hello World</div>
+ ```
+
+**Input Elements**
+
+To mask input text:
+
+ ```
+<input class="ue-input-mask"/>
+ ```
+
+To completely block the input element:
+
+ ```
+<input class="ue-block"/>
+ ```
+
+These classes ensure elements are masked or blocked as required.
+
+## User identification
+
+UserExperior:
+
+ ```
+// Setting a user identifier
+ue.setUserIdentifier('unique-user-identifier');
+
+// Passing user properties
+ue.setUserIdentifier('unique-user-identifier', {
+  key1: value1,
+  key2: value2,
+  // ...
+});
+ ```
+
+DevRev PLuG:
+
+DevRev introduces the concept of a `RevUser` object for enhanced user identity management. Use this to associate sessions with users and attach properties. For more details, refer to the [DevRev user identity](https://developer.devrev.ai/sdks/web/user-identity).
+
+## Logging custom events
+
+This approach facilitates custom event tracking, similar to the process in UserExperior, with additional capabilities.
+
+<Tabs>
+  <Tab title="Previous implementation">
+``` 
+ue.logEvent("YOUR_EVENT", {
+    key1: value1,
+    key2: value2,
+    ...
+})
+```
+  </Tab>
+  <Tab title="Replace with">
+```
+window.plugSDK.trackEvent("YOUR_EVENT", {
+    key1: value1,
+    key2: value2,
+    ...
+})
+```
+  </Tab>
+ 
+</Tabs>
+
+For more details, see the [Track events](https://developer.devrev.ai/sdks/web/track-events).
+
+## Session attributes (User properties)
+
+UserExperior allowed setting session-level properties but didn’t have a global user object. DevRev utilizes the `RevUser` object and `addSessionProperties()` for enhanced functionality.
+
+For setting user properties, refer to the [User Identification](https://developer.devrev.ai/sdks/web/user-identity).
+
+<Tabs>
+  <Tab title="Previous implementation">
+```
+ue.setUserProperties({
+    key1: value1,
+    key2: value2,
+    ...
+})
+```
+  </Tab>
+  <Tab title="Replace with">
+``` 
+window.plugSDK.addSessionProperties({
+    key1: value1,
+    key2: value2,
+    ...
+})
+```
+  </Tab>
+ 
+</Tabs>
+
+## Restart a session
+
+Terminate the current session recording and start a new one.
+
+<Tabs>
+  <Tab title="Previous implementation">
+```
+ ue.restartSession();
+```  
+</Tab>
+  <Tab title="Replace with">
+```
+window.plugSDK.shutdown();
+window.plugSDK.init({
+   app_id: "<your_unique_app_id>",
+   enable_session_recording: true,
+});
+```
+  </Tab>
+ 
+</Tabs>
+
 
 
 

@@ -260,7 +260,7 @@ Terminate the current session recording and start a new one.
   <Tab title="Replace with PLuG">
 ```jsx
 
-window.plugSDK.shutdown();
+await window.plugSDK.shutdown();
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
    enable_session_recording: true,

@@ -11,12 +11,12 @@ NPM package support is discontinued.
 Ensure to update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
  
 <Tabs>
-  <Tab title="Previous implementation">
+  <Tab title="Previous UserExperior implementation">
     ```
    <script src="https://unpkg.com/user-experior-web@latest/bundle/ue-web-bundle.js"></script>
    ```
   </Tab>
-  <Tab title="Replace with">
+  <Tab title="Replace with PLuG">
    ```
    <script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
    ```
@@ -28,7 +28,7 @@ Ensure to update your script tags as shown to migrate successfully to the DevRev
 Update your initialization code to work with the DevRev PLuG SDK, ensuring session recording is enabled and handling events appropriately.
 
 <Tabs>
-  <Tab title="Previous implementation">
+  <Tab title="Previous UserExperior implementation">
 ```
 const ue = new UserExperior.init();
 ue.startRecording("<your_unique_app_id>")
@@ -41,7 +41,7 @@ ue.startRecording("<your_unique_app_id>")
 });
 ```
   </Tab>
-  <Tab title="Replace with">
+  <Tab title="Replace with PLuG">
 ```
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
@@ -60,7 +60,7 @@ window.plugSDK.onEvent((payload) => {
 ## Recording options
 
 <Tabs>
-  <Tab title="Previous implementation">
+  <Tab title="Previous UserExperior implementation">
 ```
 ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 	sessionReplay: {
@@ -96,7 +96,7 @@ ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 });
 ```
 </Tab>
-  <Tab title="Replace with">
+  <Tab title="Replace with PLuG">
   ```
 window.plugSDK.init({
     app_id: "<your_unique_app_id>",
@@ -184,7 +184,7 @@ DevRev introduces the concept of a `RevUser` object for enhanced user identity m
 This approach facilitates custom event tracking, similar to the process in UserExperior, with additional capabilities.
 
 <Tabs>
-  <Tab title="Previous implementation">
+  <Tab title="Previous UserExperior implementation">
 ``` 
 ue.logEvent("YOUR_EVENT", {
     key1: value1,
@@ -193,7 +193,7 @@ ue.logEvent("YOUR_EVENT", {
 })
 ```
   </Tab>
-  <Tab title="Replace with">
+  <Tab title="Replace with PLuG">
 ```
 window.plugSDK.trackEvent("YOUR_EVENT", {
     key1: value1,
@@ -214,7 +214,7 @@ UserExperior allowed setting session-level properties but didn’t have a global
 For setting user properties, refer to the [User Identification](https://developer.devrev.ai/sdks/web/user-identity).
 
 <Tabs>
-  <Tab title="Previous implementation">
+  <Tab title="Previous UserExperior implementation">
 ```
 ue.setUserProperties({
     key1: value1,
@@ -223,7 +223,7 @@ ue.setUserProperties({
 })
 ```
   </Tab>
-  <Tab title="Replace with">
+  <Tab title="Replace with PLuG">
 ``` 
 window.plugSDK.addSessionProperties({
     key1: value1,
@@ -240,12 +240,12 @@ window.plugSDK.addSessionProperties({
 Terminate the current session recording and start a new one.
 
 <Tabs>
-  <Tab title="Previous implementation">
+  <Tab title="Previous UserExperior implementation">
 ```
  ue.restartSession();
 ```  
 </Tab>
-  <Tab title="Replace with">
+  <Tab title="Replace with PLuG">
 ```
 window.plugSDK.shutdown();
 window.plugSDK.init({

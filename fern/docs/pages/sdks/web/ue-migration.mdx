@@ -12,12 +12,14 @@ Ensure to update your script tags as shown to migrate successfully to the DevRev
  
 <Tabs>
   <Tab title="Previous UserExperior implementation">
-    ```
+    ```jsx
+
    <script src="https://unpkg.com/user-experior-web@latest/bundle/ue-web-bundle.js"></script>
    ```
   </Tab>
   <Tab title="Replace with PLuG">
-   ```
+   ```jsx
+
    <script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
    ```
   </Tab>
@@ -29,7 +31,8 @@ Update your initialization code to work with the DevRev PLuG SDK, ensuring sessi
 
 <Tabs>
   <Tab title="Previous UserExperior implementation">
-```
+```jsx
+
 const ue = new UserExperior.init();
 ue.startRecording("<your_unique_app_id>")
 .then(() => {
@@ -42,7 +45,8 @@ ue.startRecording("<your_unique_app_id>")
 ```
   </Tab>
   <Tab title="Replace with PLuG">
-```
+```jsx
+
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
    enable_session_recording: true,
@@ -61,7 +65,8 @@ window.plugSDK.onEvent((payload) => {
 
 <Tabs>
   <Tab title="Previous UserExperior implementation">
-```
+```jsx
+
 ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 	sessionReplay: {
 		// To mask all the input fields pass the following.
@@ -97,7 +102,8 @@ ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 ```
 </Tab>
   <Tab title="Replace with PLuG">
-  ```
+  ```jsx
+
 window.plugSDK.init({
     app_id: "<your_unique_app_id>",
     session_recording_options: {
@@ -163,7 +169,8 @@ These classes ensure elements are masked or blocked as required.
 
 UserExperior:
 
- ```
+ ```jsx
+
 // Setting a user identifier
 ue.setUserIdentifier('unique-user-identifier');
 
@@ -185,7 +192,8 @@ This approach facilitates custom event tracking, similar to the process in UserE
 
 <Tabs>
   <Tab title="Previous UserExperior implementation">
-``` 
+```jsx
+
 ue.logEvent("YOUR_EVENT", {
     key1: value1,
     key2: value2,
@@ -194,7 +202,8 @@ ue.logEvent("YOUR_EVENT", {
 ```
   </Tab>
   <Tab title="Replace with PLuG">
-```
+```jsx
+
 window.plugSDK.trackEvent("YOUR_EVENT", {
     key1: value1,
     key2: value2,
@@ -215,7 +224,8 @@ For setting user properties, refer to the [User Identification](https://develope
 
 <Tabs>
   <Tab title="Previous UserExperior implementation">
-```
+```jsx
+
 ue.setUserProperties({
     key1: value1,
     key2: value2,
@@ -224,7 +234,8 @@ ue.setUserProperties({
 ```
   </Tab>
   <Tab title="Replace with PLuG">
-``` 
+```jsx
+ 
 window.plugSDK.addSessionProperties({
     key1: value1,
     key2: value2,
@@ -241,12 +252,14 @@ Terminate the current session recording and start a new one.
 
 <Tabs>
   <Tab title="Previous UserExperior implementation">
-```
+```jsx
+
  ue.restartSession();
 ```  
 </Tab>
   <Tab title="Replace with PLuG">
-```
+```jsx
+
 window.plugSDK.shutdown();
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",

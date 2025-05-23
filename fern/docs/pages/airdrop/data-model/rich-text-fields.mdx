@@ -23,7 +23,7 @@ Mention objects represents any mention (user, issue, etc.) in rich text and have
 | Field                  | Type   | Required | Description                                                                                                                          |
 | ---------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                   | String | Yes      | Identifier of the mentioned item (user ID, etc.) in the format used by the source system.                                            |
-| `ref_type`             | String | Yes      | Type of the mentioned item (for example, "issue", "comment"). It should match the record type defined in external domain metadata. The recipe converts this based on user mappings.                             |
+| `ref_type`             | String | Yes      | Type of the mentioned item (for example, `issue`, `comment`). It must match the record type defined in external domain metadata. The recipe converts this based on user mappings.                             |
 | `fallback_record_name` | String | No       | Display text if the mention cannot be resolved (user display name, ticket title, etc.).                                              |
 
 In reverse, the loader should expect the following structure:

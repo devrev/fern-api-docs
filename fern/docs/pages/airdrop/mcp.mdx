@@ -1,6 +1,7 @@
 The Model Context Protocol (MCP) is an open protocol that enables large language models to interact with applications through standardized interfaces.
 
-Chef-cli provides MCP integration through the `chef-cli mcp initial-mapping` subcommand. This integration allows AI assistants to programmatically edit and test initial domain mapping files.
+Chef-cli provides MCP integration through the `chef-cli mcp initial-mapping` subcommand. 
+This integration allows AI assistants to programmatically edit and test initial domain mapping files.
 
 ## Prerequisites
 
@@ -31,12 +32,14 @@ Create a `.mcp.json` file with the following content:
 1. Provide `.cursor/mcp.json` in your project root.
 2. Using the editor Agent mode point the AI to the initial domain mapping file.
 3. Use the editor to guide the AI to create the initial domain mappings.
+4. Use `initial-mapping check` to test the initial domain mapping file against the local metadata file, simulating how it would behave in an import.
 
 ### Claude Code setup
 
 1. Provide `.mcp.json` in your project root.
 2. Using the editor point the AI to the initial domain mapping file.
 3. Use the editor to guide the AI to create the initial domain mappings.
+4. Use `initial-mapping check` to test the initial domain mapping file against the local metadata file, simulating how it would behave in an import.
 
 ## Usage guidelines
 
@@ -48,7 +51,9 @@ When asked to perform airdrop initial mapping:
 - Refer to the `metadata.json` for the external domain metadata.
 - Use `mappings.json` as your initial domain mapping file.
 - Call 'use_mapping' to test out how the initial mapping behaves on the current metadata
-- Use MCP tools to manipulate the initial mapping when adding and removing record type mappings, or unmapping fields or mapping simple fields. For more complex field mappings you may edit the mapping file directly. Refer to the `initial_mappings_schema.yaml` for its proper format.
+- Use MCP tools to manipulate the initial mapping when adding and removing record type mappings, or unmapping fields or mapping simple fields. 
+    For more complex field mappings you may edit the mapping file directly. 
+    Refer to the `initial_mappings_schema.yaml` for its proper format.
     - If doing so, always use 'use_mapping' to verify the mapping file is still valid.
 ```
 
@@ -62,6 +67,7 @@ The MCP server provides tools for:
 - Adding and removing record type mappings
 - Field mapping and unmapping operations
 - Validation of mapping file structure
+- Testing initial domain mapping files against local metadata files
 
 ## Limitations
 
@@ -69,4 +75,4 @@ The MCP server provides tools for:
 MCP integration is experimental. Functionality may vary across different AI models and MCP clients.
 </Warning>
 
-Testing shows good results with Cursor 0.47 and Claude Code. The AI can prepare initial mappings with significant autonomy, though developer oversight remains essential.
+Testing shows good results with Cursor and Claude Code. The AI can prepare initial mappings with significant autonomy, though developer oversight remains essential.

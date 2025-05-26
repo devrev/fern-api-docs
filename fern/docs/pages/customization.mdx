@@ -15,6 +15,17 @@ to:
 
 ## Concepts
 
+### DevRev object
+
+DevRev objects are the core entities in DevRev that represent real-world items such as
+issues, tickets and incidents. Each object type has a set of fields that describe the
+object. The keyword `leaf_type` refers to a DevRev object type.
+
+<Callout intent="tip">
+When you see `leaf_type` in the documentation or API, it simply refers to the type of
+DevRev object you're working with (like _issue_ or _ticket_).
+</Callout>
+
 ### Schema fragment
 
 DevRev objects are customized using _schema fragments_. A fragment is a building block
@@ -42,7 +53,10 @@ Subtypes are defined using a schema fragment of type `custom_type_fragment`.
 
 ## Customizing a DevRev object
 <Callout intent="note">
-You want to track bugs across various environments in your organization.
+Your team needs to track software bugs. You want to know:
+- Which environments are affected (development, testing, production)
+- Whether it's a regression (a bug in previously working code)
+- The root cause analysis (RCA) of the bug
 </Callout>
 
 First, create a schema fragment defining the fields for the _bug_ subtype.
@@ -60,13 +74,6 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
     "subtype_display_name": "Bug",
     "fields": [
         {
-            "name": "regression",
-            "field_type": "bool",
-            "ui": {
-                "display_name": "Regression",
-            }
-        },
-        {
             "name": "impacted_environments",
             "field_type": "array",
             "base_type": "enum",
@@ -74,6 +81,13 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
             "is_filterable": true,
             "ui": {
                 "display_name": "Impacted Environments",
+            }
+        },
+        {
+            "name": "regression",
+            "field_type": "bool",
+            "ui": {
+                "display_name": "Regression",
             }
         },
         {
@@ -107,8 +121,8 @@ curl --location 'https://api.devrev.ai/works.create' \
         "subtype": "bug"
     },
     "custom_fields": {
-        "ctype__regression": true,
         "ctype__impacted_environments": [ "QA", "Prod" ]
+        "ctype__regression": true,
     }
 }'
 ```

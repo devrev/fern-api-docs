@@ -9,9 +9,10 @@ framework, you can extend these objects with custom fields that reflect your pro
 This guide provides an overview of the customization framework and walks you through the
 process of tracking bugs in your organization. By the end of this guide, you'll be able
 to:
-1. Customize DevRev objects such as _issue_ and _ticket_.
+1. Customize DevRev objects such as _issue_ and _ticket_ by adding custom fields.
 1. Create custom stages and stage transition diagrams for your objects.
 1. Create dependent fields for your objects.
+1. Override default field settings of DevRev objects.
 
 ## Concepts
 
@@ -230,7 +231,7 @@ The following custom field types are supported -
 The list variants of all the supported custom field types are also supported.
 In the example above, the `impacted_environments` field is a list of enum values.
 
-## Filtering
+## Filtering DevRev objects
 
 <Callout intent="note">
 To demonstrate filtering capabilities, consider finding all bugs in the production

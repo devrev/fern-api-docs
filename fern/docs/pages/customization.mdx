@@ -214,9 +214,14 @@ The list variants of all the supported custom field types are also supported.
 In the example above, the `impacted_environments` field is a list of enum values.
 
 ## Filtering
-Let's say you want to find all regressions in the Prod environment. This translates to
-filtering _issue_ objects with subtype _bug_, _regression_ set to true and
-_impacted_environments_ containing "Prod".
+
+<Callout intent="note">
+To demonstrate filtering capabilities, consider finding all bugs in the production
+environment that had a customer impact.
+</Callout>
+
+This translates to filtering _issue_ objects with subtype _bug_, _customer_impact_ set
+to `true` and _impacted_environments_ containing `"Prod"`.
 
 ```curl
 curl --location 'https://api.devrev.ai/works.list' \
@@ -228,11 +233,14 @@ curl --location 'https://api.devrev.ai/works.list' \
         "subtype": [ "bug" ]
     },
     "custom_fields": {
-        "ctype__regression": [ true ],
+        "ctype__customer_impact": [ true ],
         "ctype__impacted_environments": [ "Prod" ]
     }
 }'
 ```
+
+Note that both _customer_impact_ and _impacted_environments_ are filterable fields,
+marked with `is_filterable: true` above.
 
 ## Schema fragment versioning
 
@@ -281,6 +289,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
         {
             "name": "customer_impact",
             "field_type": "bool",
+            "is_filterable": true,
             "ui": {
                 "display_name": "Customer Impact",
             }

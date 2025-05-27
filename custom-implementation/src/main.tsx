@@ -1,5 +1,5 @@
 import './main.css'
-import '@devrev/marketing-shared-components/dist/cjs/index.css'
+// import '@devrev/marketing-shared-components/dist/cjs/index.css'
 
 import ReactDOM from 'react-dom'
 

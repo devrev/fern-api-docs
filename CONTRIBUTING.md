@@ -1,4 +1,4 @@
-# Welcome to DevRev developer docs's contributing guide!
+# Welcome to DevRev developer docs contributing guide!
 
 > _For help, support, feature requests, and product questions - head to our [DevRev's Discord Community](https://discord.gg/c6JuJAT4Aa)🤖_
 

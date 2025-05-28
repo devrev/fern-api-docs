@@ -12,7 +12,7 @@ If you spot a problem within a repository, [search if an issue already exists](h
 -   Thoughtful
 -   Organized
 
-We recommend adding as many relevant links, minimal reproductions of the issue, and other materials that will help our team solve the issue fast.
+Include as many relevant links, minimal reproductions of the issue, and other materials that will help our team solve the issue fast.
 
 ### Solve an issue
 

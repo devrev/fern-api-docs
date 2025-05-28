@@ -11,7 +11,7 @@ NPM package support is discontinued.
 Update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
  
 <Tabs>
-  <Tab title="Previous UserExperior implementation">
+  <Tab title="UserExperior implementation">
     ```jsx
 
    <script src="https://unpkg.com/user-experior-web@latest/bundle/ue-web-bundle.js"></script>
@@ -30,7 +30,7 @@ Update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
 Update your initialization code to work with the DevRev PLuG SDK, ensuring session recording is enabled and handling events appropriately.
 
 <Tabs>
-  <Tab title="Previous UserExperior implementation">
+  <Tab title="UserExperior implementation">
 ```jsx
 
 const ue = new UserExperior.init();
@@ -64,7 +64,7 @@ window.plugSDK.onEvent((payload) => {
 ## Recording options
 
 <Tabs>
-  <Tab title="Previous UserExperior implementation">
+  <Tab title="UserExperior implementation">
 ```jsx
 
 ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
@@ -167,8 +167,8 @@ These classes ensure elements are masked or blocked as required.
 
 ## User identification
 
-UserExperior:
-
+<Tabs>
+  <Tab title="UserExperior">
  ```jsx
 
 // Setting a user identifier
@@ -181,17 +181,18 @@ ue.setUserIdentifier('unique-user-identifier', {
   // ...
 });
  ```
-
-DevRev PLuG:
-
-DevRev introduces the concept of a `RevUser` object for enhanced user identity management. Use this to associate sessions with users and attach properties. For more details, refer to the [DevRev user identity](https://developer.devrev.ai/sdks/web/user-identity).
+</Tab>
+<Tab title="DevRev PLuG">
+  DevRev introduces the concept of a `RevUser` object for enhanced user identity management. Use this to associate sessions with users and attach properties. For more details, refer to the [DevRev user identity](https://developer.devrev.ai/sdks/web/user-identity).
+</Tab>
+</Tabs>
 
 ## Logging custom events
 
 This approach facilitates custom event tracking, similar to the process in UserExperior, with additional capabilities.
 
 <Tabs>
-  <Tab title="Previous UserExperior implementation">
+  <Tab title="UserExperior implementation">
 ```jsx
 
 ue.logEvent("YOUR_EVENT", {
@@ -223,7 +224,7 @@ UserExperior allowed setting session-level properties but didn’t have a global
 For setting user properties, refer to the [User Identification](https://developer.devrev.ai/sdks/web/user-identity).
 
 <Tabs>
-  <Tab title="Previous UserExperior implementation">
+  <Tab title="UserExperior implementation">
 ```jsx
 
 ue.setUserProperties({
@@ -251,7 +252,7 @@ window.plugSDK.addSessionProperties({
 Terminate the current session recording and start a new one.
 
 <Tabs>
-  <Tab title="Previous UserExperior implementation">
+  <Tab title="UserExperior implementation">
 ```jsx
 
  ue.restartSession();

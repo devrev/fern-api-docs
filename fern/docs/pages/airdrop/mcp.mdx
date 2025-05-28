@@ -3,6 +3,14 @@ The Model Context Protocol (MCP) is an open protocol that enables large language
 Chef-cli provides MCP integration through the `chef-cli mcp initial-mapping` subcommand. 
 This integration allows AI assistants to programmatically edit and test initial domain mapping files.
 
+## Limitations
+
+<Warning>
+MCP integration is experimental. Functionality may vary across different AI models and MCP clients.
+</Warning>
+
+Testing shows good results with Cursor and Claude Code. The AI can prepare initial mappings with significant autonomy, though developer oversight remains essential.
+
 ## Prerequisites
 
 - Chef-cli installed and configured
@@ -73,10 +81,3 @@ The MCP server provides tools for:
 - Validation of mapping file structure
 - Testing initial domain mapping files against local metadata files
 
-## Limitations
-
-<Warning>
-MCP integration is experimental. Functionality may vary across different AI models and MCP clients.
-</Warning>
-
-Testing shows good results with Cursor and Claude Code. The AI can prepare initial mappings with significant autonomy, though developer oversight remains essential.

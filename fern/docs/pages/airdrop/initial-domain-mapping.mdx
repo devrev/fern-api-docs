@@ -115,6 +115,13 @@ Use the chef-cli UI to map record types and fields.
 The UI will show you the record types that are available in the org and allow you to map them to the external record types.
 You should map one record type at a time.
 
+### Specify fallback mappings
+
+For most required DevRev fields we require a fallback. This is used on object creation if the extractor doesn't provide a value.
+
+The fallback should be a DevRev value that is valid for the field. 
+For enum fields, the fallback should be the enum **value** as specified in [Supported object types](./supported-object-types.mdx).
+
 ### Install the blueprint
 
 Click **Install in this org** to access the initial domain mapping creation screen.
@@ -122,7 +129,7 @@ Follow the instructions to create your initial domain mapping.
 
 ### Merge configurations
 
-You can repeat steps 1-2 for different record types and fields to create multiple mappings.
+You can repeat the process for different record types and fields to create multiple mappings.
 In the install screen, you can merge your mappings with existing initial mappings.
 
 ### Export the mapping file

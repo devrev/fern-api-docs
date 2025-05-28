@@ -129,6 +129,12 @@ You can also pass the identifiers in the `plugSDK.init` option without generatin
 This frontend user identification, by its nature, is not secure as the data is transmitted through the client side. It is recommended to use the session token method to securely identify users.
 </Callout>
 
+<Callout intent="warning">
+This method is currently in beta and comes with the following limitations:
+- Unverified users cannot be converted or merged into verified users.
+- An external reference used by an unverified user cannot be reused for any other user.
+</Callout>
+
 ```jsx
 window.plugSDK.init({
   app_id: '<your_unique_app_id>',

@@ -100,29 +100,52 @@ You can now use the chef-cli web UI to create initial domain mappings.
 
 ## Use the local UI to create initial domain mappings
 
-The final artifact of the recipe creation process is the `initial_domain_mapping.json`, which has to be embedded in the extractor.
+The chef-cli UI generates an `initial_domain_mapping.json` file that must be embedded in your extractor. This defines the options that the end-user will see when they are mapping the data.
 
-This mapping, unlike the recipe blueprint of a concrete import, can contain multiple options for each external record type from which the end-user might choose (for example, allow *task* from an external system to map either to *issue* or *ticket* in DevRev), and it can also contain mappings that apply to a record type category. 
-When the user runs a new import, and the extractor reports in its metadata record types belonging to this category that are not directly mapped in the initial domain mappings, the recipe manager applies the per-category default to them.
+Initial domain mappings differ from user mappings in two key ways:
 
-After the blueprint of the test import is completed, the *Install in this org* button takes you to the initial domain mapping creation screen, where you can *merge* the blueprint to the existing initial mappings of the org.
+1. **Multiple mapping options**: The developer can choose how external record types map to DevRev records (e.g., external *task* can map to either *issue* or *ticket*).
+2. **Category-based defaults**: Mappings can apply to entire record type categories, automatically handling new record types.
 
-By repeating this process (run a new import, create a different configuration, merge to the initial mappings), you can create an initial mapping that contains multiple options for the user to choose from.
+<Steps>
 
-Finally, when all the fields are mapped without deficiencies and the blueprint is installed, the Export button allows you to retrieve the `initial_domain_mapping.json`.
+### Map record types and fields
 
-<Tip>
-You can also provide a local metadata file to the command using the `-m` flag, for example: 
+Use the chef-cli UI to map record types and fields.
+The UI will show you the record types that are available in the org and allow you to map them to the external record types.
+You should map one record type at a time.
+
+### Install the blueprint
+
+Click **Install in this org** to access the initial domain mapping creation screen.
+Follow the instructions to create your initial domain mapping.
+
+### Merge configurations
+
+You can repeat steps 1-2 for different record types and fields to create multiple mappings.
+In the install screen, you can merge your mappings with existing initial mappings.
+
+### Export the mapping file
+
+When all fields are mapped correctly, click **Export** to download `initial_domain_mapping.json`.
+
+</Steps>
+
+### Advanced configuration
+
+You can provide a local metadata file for enhanced functionality:
+
 ```bash
 chef-cli configure-mappings --env prod -m metadata.json
 ```
 
-This enables the following features:
-- Raw jq transformations using an external field as input (experimental feature).
-- Filling in example input data for trying out the transformation.
+This enables:
+- Raw jq transformations using external fields as input (experimental)
+- Example input data for testing transformations
 
-In this case, it's not validated that the local file is the same as the one submitted by the snap-in.
-</Tip>
+<Warning>
+The local metadata file is not validated against the snap-in submission.
+</Warning>
 
 ### Test an import with initial mapping using the in-app UI
 

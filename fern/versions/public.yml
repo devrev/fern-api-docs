@@ -323,7 +323,7 @@ navigation:
       - page: "Publish to the marketplace"
         slug: publish-to-marketplace
         path: ../docs/pages/airdrop/publish-to-marketplace.mdx
-      - page: "Model Context Protocol integration"
+      - page: "MCP integration"
         slug: mcp
         path: ../docs/pages/airdrop/mcp.mdx
       - page: "Common issues"

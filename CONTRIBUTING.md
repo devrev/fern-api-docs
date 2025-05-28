@@ -16,7 +16,7 @@ We recommend adding as many relevant links, minimal reproductions of the issue, 
 
 ### Solve an issue
 
-If you're interested in solving an issue in our repository, start by scanning through it's exisiting issues to find one that you're interested in working on. If you find an issue to work on, you are welcome to open a PR with a fix. See the following sections below for more information on contributing for specific sections.
+If you're interested in solving an issue in our repository, start by scanning through existing issues to find one that you're interested in working on. If you find an issue to work on, you are welcome to open a PR with a fix. See the following sections below for more information on contributing for specific sections.
 
 ## Contributing
 

@@ -94,6 +94,9 @@ navigation:
           - page: Custom implementation
             slug: customize
             path: ../docs/pages/sdks/web/customize.mdx
+          - page: UserExperior migration
+            slug: migration
+            path: ../docs/pages/sdks/web/ue-migration.mdx
       - section: DevRev SDK for Android
         slug: android
         icon: fa-brands fa-android
@@ -323,6 +326,9 @@ navigation:
       - page: "Publish to the marketplace"
         slug: publish-to-marketplace
         path: ../docs/pages/airdrop/publish-to-marketplace.mdx
+      - page: "MCP integration"
+        slug: mcp
+        path: ../docs/pages/airdrop/mcp.mdx
       - page: "Common issues"
         slug: faq
         path: ../docs/pages/airdrop/faq.mdx

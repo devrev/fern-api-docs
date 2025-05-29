@@ -13,6 +13,7 @@ Update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
     ```jsx
 
 {" "}
+
 <script src="https://unpkg.com/user-experior-web@latest/bundle/ue-web-bundle.js"></script>
 
 ````
@@ -58,12 +59,12 @@ window.plugSDK.onEvent((payload) => {
 	}
 });
 
-````
-
-(Note: To enable recordings in this method, you need to go to Settings > Support > Session Replays to enabled recordings for desired platforms)
+<Note>
+To enable session recordings, navigate to Settings > Support > Session Replays and enable recordings for your desired platforms.
+</Note>
 
   </Tab>
- 
+
 </Tabs>
 
 ## Recording options
@@ -91,7 +92,7 @@ url: boolean,
 week: boolean,
 textarea: boolean
 },
-// Mouse moves are also ignored by default by the SDK to avoid unnecessary events increasing the payload size. To enable mouse move capture  
+// Mouse moves are also ignored by default by the SDK to avoid unnecessary events increasing the payload size. To enable mouse move capture
  // you need to specify the following option to capture the mouse movements:
 captureMouseMove: true
 // By default we track network log in session. To disable network log tracking you can specify the following option:
@@ -102,43 +103,45 @@ captureConsoleLogs: false
 });
 
 ````
+
 </Tab>
   <Tab title="Replace with PLuG">
   ```jsx
 
 window.plugSDK.init({
-    app_id: "<your_unique_app_id>",
-    session_recording_options: {
-			sessionReplay: {
-				maskAllInputs?: boolean;
-				maskInputOptions?: {
-					color: boolean;
-					date: boolean;
-					'datetime-local': boolean;
-					email: boolean;
-					month: boolean;
-					number: boolean;
-					range: boolean;
-					search: boolean;
-					tel: boolean;
-					text: boolean;
-					time: boolean;
-					url: boolean;
-					week: boolean;
-					textarea: boolean;
-					select: boolean;
-				};
-				captureMouseMove?: boolean;
-				captureNetworkLogs?: boolean;
-				captureConsoleLogs?: boolean;
-			}
-    },
-    enable_session_recording: true,
+app_id: "<your_unique_app_id>",
+session_recording_options: {
+sessionReplay: {
+maskAllInputs?: boolean;
+maskInputOptions?: {
+color: boolean;
+date: boolean;
+'datetime-local': boolean;
+email: boolean;
+month: boolean;
+number: boolean;
+range: boolean;
+search: boolean;
+tel: boolean;
+text: boolean;
+time: boolean;
+url: boolean;
+week: boolean;
+textarea: boolean;
+select: boolean;
+};
+captureMouseMove?: boolean;
+captureNetworkLogs?: boolean;
+captureConsoleLogs?: boolean;
+}
+},
+enable_session_recording: true,
 })
+
 ````
 
   </Tab>
- 
+
 </Tabs>
 
 ## Masking
@@ -186,6 +189,7 @@ key2: value2,
 });
 
 ````
+
 </Tab>
 <Tab title="Replace with PLuG">
  DevRev introduces the concept of a `RevUser` object for enhanced user identity management. Use this to associate sessions with users and attach properties. For more details, refer to the [DevRev user identity](https://developer.devrev.ai/sdks/web/user-identity).
@@ -201,10 +205,11 @@ This approach facilitates custom event tracking, similar to the process in UserE
 ```jsx
 
 ue.logEvent("YOUR_EVENT", {
-   key1: value1,
-   key2: value2,
-   ...
+key1: value1,
+key2: value2,
+...
 })
+
 ````
 
   </Tab>
@@ -218,6 +223,7 @@ key2: value2,
 })
 
 ````
+
   </Tab>
 
 </Tabs>
@@ -235,16 +241,17 @@ For setting user properties, refer to the [User Identification](https://develope
 ```jsx
 
 ue.setUserProperties({
-    key1: value1,
-    key2: value2,
-    ...
+key1: value1,
+key2: value2,
+...
 })
+
 ````
 
   </Tab>
   <Tab title="Replace with PLuG">
 ```jsx
- 
+
 window.plugSDK.addSessionProperties({
     key1: value1,
     key2: value2,
@@ -252,7 +259,7 @@ window.plugSDK.addSessionProperties({
 })
 ```
   </Tab>
- 
+
 </Tabs>
 
 ## Restart a session
@@ -266,17 +273,20 @@ Terminate the current session recording and start a new one.
 ue.restartSession();
 
 ````
+
 </Tab>
   <Tab title="Replace with PLuG">
 ```jsx
 
 await window.plugSDK.shutdown();
 window.plugSDK.init({
-   app_id: "<your_unique_app_id>",
-   enable_session_recording: true,
+app_id: "<your_unique_app_id>",
+enable_session_recording: true,
 });
-````
+
+```
 
   </Tab>
- 
+
 </Tabs>
+```

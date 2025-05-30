@@ -100,11 +100,11 @@ You can now use the chef-cli web UI to create initial domain mappings.
 
 ## Use the local UI to create initial domain mappings
 
-The chef-cli UI generates an `initial_domain_mapping.json` file that must be embedded in your extractor. This defines the options that the end-user will see when they are mapping the data.
+The chef-cli UI generates an `initial_domain_mapping.json` file that must be embedded in your extractor. This defines the options that the end-user sees when they are mapping the data.
 
 Initial domain mappings differ from user mappings in two key ways:
 
-1. **Multiple mapping options**: The developer can choose how external record types map to DevRev records (e.g., external *task* can map to either *issue* or *ticket*).
+1. **Multiple mapping options**: The developer can choose how external record types map to DevRev records (for example, external *task* can map to either *issue* or *ticket*).
 2. **Category-based defaults**: Mappings can apply to entire record type categories, automatically handling new record types.
 
 <Steps>
@@ -112,12 +112,12 @@ Initial domain mappings differ from user mappings in two key ways:
 ### Map record types and fields
 
 Use the chef-cli UI to map record types and fields.
-The UI will show you the record types that are available in the org and allow you to map them to the external record types.
+The UI shows you the record types that are available in the org and allows you to map them to the external record types.
 You should map one record type at a time.
 
 ### Specify fallback mappings
 
-For most required DevRev fields we require a fallback. This is used on object creation if the extractor doesn't provide a value.
+For most required DevRev fields a fallback is required. This is used on object creation if the extractor doesn't provide a value.
 
 The fallback should be a DevRev value that is valid for the field. 
 For enum fields, the fallback should be the enum **value** as specified in [Supported object types](./supported-object-types.mdx).

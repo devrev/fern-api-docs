@@ -1,6 +1,6 @@
 # Supported DevRev object types for Airdrop
 
-Last updated: _2025-04_
+Last updated: _2025-05_
 
 This document contains the list of all DevRev object types that are supported for Airdrop.
 
@@ -8,6 +8,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 | Object Type | Object Hierarchy | Loading | Extraction | Subtype | AppFragment | Comment |
 |-------|-------------|:-------:|:----------:|:-------:|:----------:|-------------|
+| [A new custom object type](#a new custom object type) | custom_object | ✔︎ | ✔︎ | ✔︎ |  |  |
 | [account](#account) | account | ✔︎ |  |  |  |  |
 | [airdrop_authorization_policy](#airdrop_authorization_policy) | airdrop_authorization_policy | ✔︎ |  |  |  | _Airdrop authorization policy object type is the intermediate object type for creating MFZ object types: role, role_set, object_member, and access_control_entry._ |
 | [airdrop_platform_group](#airdrop_platform_group) | airdrop_platform_group | ✔︎ |  |  |  | _Airdrop platform group object type is the representation of the default DevRev groups._ |
@@ -39,7 +40,6 @@ This document contains the list of all DevRev object types that are supported fo
 | [sysu](#sysu) | sys_user | ✔︎ |  |  |  |  |
 | [tag](#tag) | tag | ✔︎ |  |  |  |  |
 | [task](#task) | work->task | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [test_custom_type](#test_custom_type) | custom_object | ✔︎ |  | ✔︎ |  | _Test custom object type for testing purposes. Available only for old mappings._ |
 | [ticket](#ticket) | work->ticket | ✔︎ | ✔︎ | ✔︎ |  |  |
 
 ## Key Capabilities
@@ -50,6 +50,32 @@ This document contains the list of all DevRev object types that are supported fo
 | Can Extract | Indicates that the object type can be synced out to external systems. |
 | Can Subtype | Indicates that the object type supports [subtype](https://developer.devrev.ai/beta/guides/object-customization#subtype) creation. |
 | Can App Fragment | Indicates that the object type supports application fragments. |
+
+## A new custom object type
+
+**Resource Type:** `custom_object`
+
+**Capabilities:** Can Extract, Can Load, Can Subtype
+
+### Fixed Fields
+
+| Field | Value |
+|-------|-------|
+| `leaf_type` | get_leaf |
+
+### Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
+| `item_url_field` | text |  | Link to the item in the origin system |
+| `modified_by_id` | reference -> [#category:user] |  | User ID of the user that last modified the object |
+| `title` | text |  | Title of the custom object |
+
+
+[ ▲ top](#summary)
+
+---
 
 ## account
 
@@ -72,6 +98,24 @@ This document contains the list of all DevRev object types that are supported fo
 | `state` | enum | ✔︎ | State of the Organization. |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with an object. |
 | `websites` | text (collection) |  | Websites |
+
+#### Enum Values
+
+**environment**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `PRODUCTION` | PRODUCTION | - |
+| `STAGING` | STAGING | - |
+| `TEST` | TEST | - |
+
+**state**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `ACTIVE` | ACTIVE | - |
+| `INACTIVE` | INACTIVE | - |
+| `LOCKED` | LOCKED | - |
 
 ### Structs
 
@@ -106,6 +150,17 @@ This document contains the list of all DevRev object types that are supported fo
 | `targets` | type_key (collection) | ✔︎ | Target object types the role applies to. |
 | `users` | reference (collection) -> [#record:devu #record:revu] |  | Users this role applies to. |
 
+#### Enum Values
+
+**privileges**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `create` | create | - |
+| `delete` | delete | - |
+| `read` | read | - |
+| `update` | update | - |
+
 
 [ ▲ top](#summary)
 
@@ -122,6 +177,16 @@ This document contains the list of all DevRev object types that are supported fo
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `key` | enum | ✔︎ | Key of the platform provided group. |
+
+#### Enum Values
+
+**key**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `dev_users` | Dev users | "Dynamic dev users group created by DevRev" |
+| `none` | No group | "No group selected" |
+| `rev_users` | Rev users | "Dynamic rev users group created by DevRev" |
 
 
 [ ▲ top](#summary)
@@ -147,7 +212,6 @@ This document contains the list of all DevRev object types that are supported fo
 | `content_filetype` | enum |  |  |
 | `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
 | `description` | rich_text |  | Description of the article. |
-| `extracted_content` | reference (collection) -> [#record:artifact] |  | Extracted content of the article. |
 | `extracted_plain_text` | text |  | Extracted Plain Text |
 | `item_url_field` | text |  | Link to the item in the origin system |
 | `language` | text |  | Language of the article for i18n support. |
@@ -167,6 +231,68 @@ This document contains the list of all DevRev object types that are supported fo
 | `title` | text | ✔︎ | Title of the article. |
 | `type` | enum |  | Type of the article. |
 | `visible_to` | enum |  |  |
+
+#### Enum Values
+
+**access_level**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `EXTERNAL` | - | - |
+| `INTERNAL` | - | - |
+| `PRIVATE` | - | - |
+| `PUBLIC` | - | - |
+| `RESTRICTED` | - | - |
+
+**content_filetype**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `application/json` | - | - |
+| `devrev/rt` | - | - |
+| `image/avif` | - | - |
+| `image/gif` | - | - |
+| `image/jpeg` | - | - |
+| `image/png` | - | - |
+| `image/svg+xml` | - | - |
+| `image/webp` | - | - |
+| `paligo/html` | - | - |
+| `text/css; charset=utf-8` | - | - |
+| `text/html; charset=utf-8` | - | - |
+| `text/javascript; charset=utf-8` | - | - |
+| `text/plain` | - | - |
+| `text/xml; charset=utf-8` | - | - |
+
+**scope**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `1` | internal | - |
+| `2` | external | - |
+
+**status**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `archived` | archived | - |
+| `draft` | draft | - |
+| `published` | published | - |
+| `review_needed` | review_needed | - |
+
+**type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `article` | article | - |
+| `content_block` | content_block | - |
+
+**visible_to**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `customer_admins` | - | - |
+| `customers` | - | - |
+| `verified_customers` | - | - |
 
 ### Structs
 
@@ -212,10 +338,19 @@ This document contains the list of all DevRev object types that are supported fo
 | `name` | text | ✔︎ | Name of the part |
 | `owned_by_ids` | reference (collection) -> [#record:devu] | ✔︎ | User IDs of the users that own the part |
 | `parent_part` | reference -> [#category:part] | ✔︎ | Parent of this part |
-| `part_of_part_id` | reference -> [#category:part] |  | Product ID of this Capability |
 | `pm_owner_id` | reference -> [#record:devu] |  | User ID of the PM owner of the part |
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
+
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
 
 
 [ ▲ top](#summary)
@@ -243,6 +378,19 @@ This document contains the list of all DevRev object types that are supported fo
 | `name` | text |  | The name of the channel. If provided, this will be unique across all channels in the Dev org. It's case insensitive and must contain the characters [A-Za-z0-9_-]. |
 | `title` | text |  | The title given to the chat. |
 
+#### Enum Values
+
+**access_level**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `EXTERNAL` | EXTERNAL | - |
+| `INTERNAL` | INTERNAL | - |
+| `PRIVATE` | PRIVATE | - |
+| `PUBLIC` | PUBLIC | - |
+| `RESTRICTED` | RESTRICTED | - |
+| `UNKNOWN` | UNKNOWN | - |
+
 
 [ ▲ top](#summary)
 
@@ -262,13 +410,24 @@ This document contains the list of all DevRev object types that are supported fo
 | `created_by_id` | reference -> [#category:user] | ✔︎ | User ID of the user that created the object |
 | `creator_display_name` | text |  | Creator display name |
 | `external_ref` | text |  | The external reference to associate with the entry. This must be unique across the entry's siblings, i.e. all children of its parent. |
-| `grandparent_object_id` | reference -> [#category:chat #category:part #category:work #record:account #record:conversation #record:incident #record:revu] |  | The object this relates to |
+| `grandparent_object_id` | reference -> [#category:chat #category:custom_object #category:part #category:work #record:account #record:conversation #record:incident #record:revu] |  | The object this relates to |
 | `grandparent_object_type` | text |  | The object type this relates to |
 | `item_url_field` | text |  | Link to the item in the origin system |
 | `modified_by_id` | reference -> [#category:user] | ✔︎ | User ID of the user that last modified the object |
-| `parent_object_id` | reference -> [#category:chat #category:part #category:work #record:account #record:comment #record:conversation #record:incident #record:revu] | ✔︎ | The object this relates to |
+| `parent_object_id` | reference -> [#category:chat #category:custom_object #category:part #category:work #record:account #record:comment #record:conversation #record:incident #record:revu] | ✔︎ | The object this relates to |
 | `parent_object_type` | text |  | The object type this relates to |
 | `visibility` | enum |  | Visibility of the comment |
+
+#### Enum Values
+
+**visibility**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `Visibility_EXTERNAL` | Visibility_EXTERNAL | - |
+| `Visibility_INTERNAL` | Visibility_INTERNAL | - |
+| `Visibility_PRIVATE` | Visibility_PRIVATE | - |
+| `Visibility_PUBLIC` | Visibility_PUBLIC | - |
 
 
 [ ▲ top](#summary)
@@ -305,6 +464,16 @@ This document contains the list of all DevRev object types that are supported fo
 | `qa_owner_id` | reference -> [#record:devu] |  | User ID of the QA owner of the part |
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
+
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
 
 
 [ ▲ top](#summary)
@@ -355,6 +524,34 @@ This document contains the list of all DevRev object types that are supported fo
 | `turing_active` | bool |  | Whether Turing is active on the conversation. Will be true when Turing is active and false when it stops responding or when a dev user responds to the conversation. |
 | `user_sessions` | reference (collection) -> [#record:user_session] |  | User sessions associated with the conversation. |
 
+#### Enum Values
+
+**conversation_type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `support` | Support | - |
+
+**priority**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `P0` | P0 | - |
+| `P1` | P1 | - |
+| `P2` | P2 | - |
+
+**stage**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `archived` | Archived | - |
+| `hold` | Hold | - |
+| `needs_response` | Needs Response | - |
+| `new` | New | - |
+| `resolved` | Resolved | - |
+| `suspended` | Suspended | - |
+| `waiting_on_user` | Waiting On User | - |
+
 
 [ ▲ top](#summary)
 
@@ -378,8 +575,19 @@ This document contains the list of all DevRev object types that are supported fo
 |-------|------|----------|-------------|
 | `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
 | `link_type_id` | enum | ✔︎ | Link Type |
-| `source_id` | reference -> [#record:account #record:capability #record:enhancement #record:feature #record:incident #record:issue #record:opportunity #record:product #record:project #record:revu #record:task #record:ticket] | ✔︎ | Source object ID |
-| `target_id` | reference -> [#record:account #record:capability #record:enhancement #record:feature #record:incident #record:issue #record:opportunity #record:product #record:project #record:revu #record:task #record:ticket] | ✔︎ | Target object ID |
+| `source_id` | reference -> [#category:custom_object #record:account #record:capability #record:enhancement #record:feature #record:incident #record:issue #record:opportunity #record:product #record:project #record:revu #record:task #record:ticket] | ✔︎ | Source object ID |
+| `target_id` | reference -> [#category:custom_object #record:account #record:capability #record:enhancement #record:feature #record:incident #record:issue #record:opportunity #record:product #record:project #record:revu #record:task #record:ticket] | ✔︎ | Target object ID |
+
+#### Enum Values
+
+**link_type_id**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `is_dependent_on` | Is Dependent On | - |
+| `is_duplicate_of` | Is Duplicate Of | - |
+| `is_parent_of` | Is Parent Of | - |
+| `is_related_to` | Is Related To | - |
 
 
 [ ▲ top](#summary)
@@ -414,6 +622,16 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
+
 
 [ ▲ top](#summary)
 
@@ -433,7 +651,6 @@ This document contains the list of all DevRev object types that are supported fo
 | `email` | text |  | Email address of the user. |
 | `external_identities` | struct (collection) |  | IDs of the Dev User outside the DevRev SOR. |
 | `full_name` | text |  | Full name of the user. |
-| `state` | enum |  | State of the user. |
 
 
 [ ▲ top](#summary)
@@ -450,7 +667,6 @@ This document contains the list of all DevRev object types that are supported fo
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `body` | reference -> [#record:artifact] |  | Body of the directory |
 | `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
 | `description` | rich_text |  | Description of the directory |
 | `icon` | text |  | Icon of the directory |
@@ -460,7 +676,6 @@ This document contains the list of all DevRev object types that are supported fo
 | `published` | bool | ✔︎ | Whether the directory is published |
 | `rank` | text |  | Rank of the directory |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the directory |
-| `thumbnail` | reference -> [#record:artifact] |  | Thumbnail of the directory |
 | `title` | text | ✔︎ | Title of the directory |
 
 
@@ -486,6 +701,7 @@ This document contains the list of all DevRev object types that are supported fo
 |-------|------|----------|-------------|
 | `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
 | `is_default` | bool |  | Whether this is the default DM for messaging the constituent users. If true, then this DM is always returned when opening a DM for the users. Note only one DM may be the default for a given set of users. |
+| `modified_by_id` | reference -> [#category:user] |  | User ID of the user that last modified the object |
 | `record_ids` | text (collection) |  | The associated records for this DM. |
 | `title` | text |  | The title given to the chat. |
 | `user_ids` | reference (collection) -> [#category:user] | ✔︎ | The users in the direct message. Only these users have access the chat's history and can send new messages. |
@@ -527,11 +743,44 @@ This document contains the list of all DevRev object types that are supported fo
 | `release_notes` | text |  | Release notes of the enhancement |
 | `rev_score` | float |  | Rev Score of the enhancement |
 | `rev_score_tier` | enum |  | Rev Score tier of the enhancement |
-| `stage` | enum |  | Stage of the part |
+| `stage` | enum | ✔︎ | Stage of the part |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 | `target_close_date` | timestamp |  | Target close date for the object |
 | `target_start_date` | timestamp |  | Target start date for the object |
 | `ticket_ids` | reference (collection) -> [#category:work] |  | Tickets associated with the enhancement |
+
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
+
+**rev_score_tier**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `high` | high | - |
+| `low` | low | - |
+| `medium` | medium | - |
+
+**stage**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `deprecated` | Deprecated | - |
+| `deprioritized` | Deprioritized | - |
+| `general_availability` | General Availability | - |
+| `ideation` | Ideation | - |
+| `in_development` | In Development | - |
+| `in_testing` | In testing | - |
+| `limited_availability` | Limited Availability | - |
+| `prioritized` | Prioritized | - |
+| `ux_design` | UX Design | - |
+| `wont_do` | Won't do | - |
 
 
 [ ▲ top](#summary)
@@ -569,11 +818,20 @@ This document contains the list of all DevRev object types that are supported fo
 | `name` | text | ✔︎ | Name of the part |
 | `owned_by_ids` | reference (collection) -> [#record:devu] | ✔︎ | User IDs of the users that own the part |
 | `parent_part` | reference -> [#category:part] | ✔︎ | Parent of this part |
-| `part_of_part_id` | reference -> [#category:part] |  | Capability ID or Parent Feature ID of this feature |
 | `pm_owner_id` | reference -> [#record:devu] |  | User ID of the PM owner of the part |
 | `qa_owner_id` | reference -> [#record:devu] |  | User ID of the QA owner of the part |
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
+
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
 
 
 [ ▲ top](#summary)
@@ -597,6 +855,23 @@ This document contains the list of all DevRev object types that are supported fo
 | `name` | text | ✔︎ | Name of the group |
 | `owner` | reference -> [#record:devu] |  | Owner of the group |
 | `type` | enum |  | Type of the group |
+
+#### Enum Values
+
+**member_type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `dev_user` | dev_user | - |
+| `rev_user` | rev_user | - |
+| `svc_acc` | svc_acc | - |
+
+**type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `dynamic` | dynamic | - |
+| `static` | static | - |
 
 
 [ ▲ top](#summary)
@@ -630,6 +905,37 @@ This document contains the list of all DevRev object types that are supported fo
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object. |
 | `target_close_date` | timestamp |  | Timestamp when the work is expected to be complete |
 | `title` | text | ✔︎ | Title of the work object |
+
+#### Enum Values
+
+**reported_by**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `1` | Customer | - |
+| `2` | Internal Users | - |
+| `3` | System | - |
+
+**severity**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `1` | sev-0 | - |
+| `2` | sev-1 | - |
+| `3` | sev-2 | - |
+| `4` | sev-3 | - |
+
+**stage**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `acknowledged` | Acknowledged | - |
+| `canceled` | Canceled | - |
+| `duplicate` | Duplicate | - |
+| `fixing` | Fixing | - |
+| `mitigated` | Mitigated | - |
+| `resolved` | Resolved | - |
+| `triage` | Triage | - |
 
 
 [ ▲ top](#summary)
@@ -677,6 +983,32 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_start_date` | timestamp |  | Target start date for the object |
 | `title` | text | ✔︎ | Title of the work object |
 
+#### Enum Values
+
+**priority**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `P0` | P0 | - |
+| `P1` | P1 | - |
+| `P2` | P2 | - |
+| `P3` | P3 | - |
+
+**stage**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `backlog` | Backlog | - |
+| `completed` | Completed | - |
+| `duplicate` | Duplicate | - |
+| `in_deployment` | In Deployment | - |
+| `in_development` | In Development | - |
+| `in_review` | In Review | - |
+| `in_testing` | In Testing | - |
+| `prioritized` | Prioritized | - |
+| `triage` | Triage | - |
+| `wont_fix` | Won't Fix | - |
+
 
 [ ▲ top](#summary)
 
@@ -699,6 +1031,33 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_id` | reference -> [#category:work #record:incident] | ✔︎ | Target object ID |
 | `target_object_type` | enum |  | Target object type |
 | `transformed_from_id` | text |  |  |
+
+#### Enum Values
+
+**link_type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `is_dependent_on` | Is Dependent On | - |
+| `is_duplicate_of` | Is Duplicate Of | - |
+| `is_parent_of` | Is Parent Of | - |
+| `is_related_to` | Is Related To | - |
+
+**source_object_type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `conversation` | - | - |
+| `incident` | - | - |
+| `work` | - | - |
+
+**target_object_type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `conversation` | - | - |
+| `incident` | - | - |
+| `work` | - | - |
 
 
 [ ▲ top](#summary)
@@ -737,6 +1096,23 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
+
+**kind**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `component` | component | - |
+| `library` | library | - |
+
 
 [ ▲ top](#summary)
 
@@ -768,6 +1144,40 @@ This document contains the list of all DevRev object types that are supported fo
 | `state` | enum | ✔︎ | The state of meeting. |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the meeting. |
 | `title` | text | ✔︎ | Title of the meeting object. |
+
+#### Enum Values
+
+**channel**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `amazon_connect` | amazon_connect | - |
+| `devrev` | devrev | - |
+| `google_meet` | google_meet | - |
+| `offline` | offline | - |
+| `other` | other | - |
+| `teams` | teams | - |
+| `zoom` | zoom | - |
+
+**parent_object_type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `account` | - | - |
+| `work` | - | - |
+
+**state**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `canceled` | canceled | - |
+| `completed` | completed | - |
+| `no_show` | no_show | - |
+| `ongoing` | ongoing | - |
+| `rejected` | rejected | - |
+| `rescheduled` | rescheduled | - |
+| `scheduled` | scheduled | - |
+| `waiting` | waiting | - |
 
 
 [ ▲ top](#summary)
@@ -805,6 +1215,16 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
+
 
 [ ▲ top](#summary)
 
@@ -820,14 +1240,24 @@ This document contains the list of all DevRev object types that are supported fo
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `conditional_role_id` | reference -> [#record:conditional_role] |  | Conditional Role that entails the permissions of the member |
+| `add_member_ids` | reference (collection) -> [#category:user] |  | Add or update user IDs in the group |
 | `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
-| `member_id` | reference -> [#category:user] | ✔︎ | ID of the user or group |
+| `member_id` | reference -> [#category:user] |  | ID of the user or group |
 | `object_id` | reference -> [#record:group] | ✔︎ | Globally unique DevRev Object Name (DON) for the object where the member is being added. |
+| `remove_member_ids` | reference (collection) -> [#category:user] |  | Remove user IDs from the group |
 | `role_id` | reference -> [#record:role] |  | Role that entails the permissions of the member |
 | `target_object_type` | enum | ✔︎ | Type of target object |
 | `valid_from_date` | timestamp | ✔︎ | Timestamp when this membership is valid |
 | `valid_to_date` | timestamp |  | Timestamp when this membership expires |
+
+#### Enum Values
+
+**target_object_type**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `dashboard` | - | - |
+| `group` | - | - |
 
 
 [ ▲ top](#summary)
@@ -852,14 +1282,11 @@ This document contains the list of all DevRev object types that are supported fo
 |-------|------|----------|-------------|
 | `account_id` | reference -> [#record:account] |  | ID of the account that the opportunity is related to. |
 | `actual_close_date` | timestamp |  | Timestamp when the work was actually completed |
-| `amount` | float |  | Total opportunity amount. |
 | `annual_contract_value` | struct |  | Annual contract value of the opportunity. |
-| `annual_recurring_revenue` | float |  | Annual recurring revenue of the opportunity. |
 | `body` | rich_text |  | Body of the work object |
 | `budget` | struct |  | Budget of the opportunity. |
 | `contact_ids` | reference (collection) -> [#record:revu] |  | Contacts involved in the opportunity. |
 | `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
-| `customer_budget` | float |  | Budget of the customer. |
 | `fallback_parts` | reference -> [#category:part] |  | Other values that could serve as part if apples_to_part_id is found to be invalid. |
 | `forecast_category` | enum | ✔︎ | Forecast category of the opportunity. |
 | `item_url_field` | text |  | Link to the item in the origin system |
@@ -873,6 +1300,40 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_close_date` | timestamp |  | Timestamp when the work is expected to be complete |
 | `title` | text | ✔︎ | Title of the work object |
 | `value` | struct |  | Value of the opportunity. |
+
+#### Enum Values
+
+**forecast_category**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `commit` | commit | - |
+| `omitted` | omitted | - |
+| `pipeline` | pipeline | - |
+| `strong_upside` | strong_upside | - |
+| `upside` | upside | - |
+| `won` | won | - |
+
+**priority**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `P0` | P0 | - |
+| `P1` | P1 | - |
+| `P2` | P2 | - |
+| `P3` | P3 | - |
+
+**stage**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `closed_lost` | Closed Lost | - |
+| `closed_won` | Closed Won | - |
+| `contract` | Contract | - |
+| `negotiation` | Negotiation | - |
+| `qualification` | Qualification | - |
+| `stalled` | Stalled | - |
+| `validation` | Validation | - |
 
 ### Structs
 
@@ -918,6 +1379,23 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
+
+**product_delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+
 
 [ ▲ top](#summary)
 
@@ -937,15 +1415,12 @@ This document contains the list of all DevRev object types that are supported fo
 | `description` | rich_text |  | Description of the Rev user. |
 | `display_handle` | text |  | The user's display handle. This field is deprecated now. Use display_name field instead. |
 | `display_name` | text | ✔︎ | The user's display name. The name is non-unique and mutable. |
-| `display_picture` | reference -> [#record:artifact] |  | Artifact ID of the user's display picture |
 | `email` | text |  | Email address of the user. |
 | `external_uid` | text |  | External ref is a mutable unique identifier for a user within the Rev organization from your primary customer record. If none is available, a good alternative is the email address/phone number which could uniquely identify the user. If none is specified, a system-generated identifier will be assigned to the user. |
 | `full_name` | text |  | Full name of the user. |
 | `phone_numbers` | text (collection) |  | Phone numbers of the user. |
 | `rev_org` | reference -> [#record:account #record:revo] |  | The ID of the parent Rev Organization. |
-| `state` | enum |  | State of the user. |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
-| `user_type` | enum |  | Type of the user. |
 
 
 [ ▲ top](#summary)
@@ -984,6 +1459,25 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
+#### Enum Values
+
+**delivered_as**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `goods` | goods | - |
+| `service` | service | - |
+| `software` | software | - |
+
+**kind**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `ecr_image` | ecr_image | - |
+| `lambda` | lambda | - |
+| `microservice` | microservice | - |
+| `service` | service | - |
+
 
 [ ▲ top](#summary)
 
@@ -1001,7 +1495,6 @@ This document contains the list of all DevRev object types that are supported fo
 |-------|------|----------|-------------|
 | `display_name` | text | ✔︎ | The user's display name. The name is non-unique and mutable. |
 | `full_name` | text |  | Full name of the user. |
-| `state` | enum |  | State of the user. |
 
 
 [ ▲ top](#summary)
@@ -1023,6 +1516,17 @@ This document contains the list of all DevRev object types that are supported fo
 | `description` | rich_text |  | Description of the tag |
 | `name` | text | ✔︎ | Name of the tag |
 | `style` | text |  | hex color of in the format #RRGGBB |
+
+#### Enum Values
+
+**access_level**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `internal` | internal | - |
+| `private` | private | - |
+| `public` | public | - |
+| `restricted` | restricted | - |
 
 
 [ ▲ top](#summary)
@@ -1065,30 +1569,24 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_close_date` | timestamp |  | Timestamp when the work is expected to be complete |
 | `title` | text | ✔︎ | Title of the work object |
 
+#### Enum Values
 
-[ ▲ top](#summary)
+**priority**
 
----
+| Value | Name | Description |
+|-----|------|-------------|
+| `P0` | P0 | - |
+| `P1` | P1 | - |
+| `P2` | P2 | - |
+| `P3` | P3 | - |
 
-## test_custom_type
+**stage**
 
-**Resource Type:** `custom_object`
-
-**Capabilities:** Can Load, Can Subtype
-
-### Fixed Fields
-
-| Field | Value |
-|-------|-------|
-| `leaf_type` | "test_custom_type" |
-
-### Fields
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `created_by_id` | reference -> [#category:user] |  | User ID of the user that created the object |
-| `modified_by_id` | reference -> [#category:user] |  | User ID of the user that last modified the object |
-| `title` | text |  | Title of the custom object |
+| Value | Name | Description |
+|-----|------|-------------|
+| `in_development` | In Development | - |
+| `open` | Open | - |
+| `resolved` | Resolved | - |
 
 
 [ ▲ top](#summary)
@@ -1140,6 +1638,45 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_close_date` | timestamp |  | Timestamp when the work is expected to be complete |
 | `title` | text | ✔︎ | Title of the work object |
 | `visibility` | enum |  | The visibility of the object. If 'internal', the object is visible within the Dev organization. If 'external', it is visible to both the Dev organization and Rev users. If not set, the default visibility is 'external'. |
+
+#### Enum Values
+
+**channels**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `email` | - | - |
+| `plug` | - | - |
+| `slack` | - | - |
+
+**severity**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `blocker` | Blocker | - |
+| `high` | High | - |
+| `low` | Low | - |
+| `medium` | Medium | - |
+
+**stage**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `awaiting_customer_response` | Awaiting Customer Response | - |
+| `awaiting_development` | Awaiting Development | - |
+| `awaiting_product_assist` | Awaiting Product Assist | - |
+| `canceled` | Canceled | - |
+| `in_development` | In Development | - |
+| `queued` | Queued | - |
+| `resolved` | Resolved | - |
+| `work_in_progress` | Work In Progress | - |
+
+**visibility**
+
+| Value | Name | Description |
+|-----|------|-------------|
+| `1` | internal | - |
+| `2` | external | - |
 
 
 [ ▲ top](#summary)

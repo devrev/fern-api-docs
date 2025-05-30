@@ -42,7 +42,7 @@ This document contains the list of all DevRev object types that are supported fo
 | [task](#task) | work->task | ✔︎ | ✔︎ | ✔︎ |  |  |
 | [ticket](#ticket) | work->ticket | ✔︎ | ✔︎ | ✔︎ |  |  |
 
-## Key Capabilities
+## Key capabilities
 
 | Capability | Description |
 |-------|-------------|
@@ -57,7 +57,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -99,7 +99,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with an object. |
 | `websites` | text (collection) |  | Websites |
 
-#### Enum Values
+#### Enum values
 
 **environment**
 
@@ -150,7 +150,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `targets` | type_key (collection) | ✔︎ | Target object types the role applies to. |
 | `users` | reference (collection) -> [#record:devu #record:revu] |  | Users this role applies to. |
 
-#### Enum Values
+#### Enum values
 
 **privileges**
 
@@ -178,7 +178,7 @@ This document contains the list of all DevRev object types that are supported fo
 |-------|------|----------|-------------|
 | `key` | enum | ✔︎ | Key of the platform provided group. |
 
-#### Enum Values
+#### Enum values
 
 **key**
 
@@ -232,7 +232,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `type` | enum |  | Type of the article. |
 | `visible_to` | enum |  |  |
 
-#### Enum Values
+#### Enum values
 
 **access_level**
 
@@ -318,7 +318,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -342,7 +342,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -363,7 +363,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Load
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -378,7 +378,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `name` | text |  | The name of the channel. If provided, this will be unique across all channels in the Dev org. It's case insensitive and must contain the characters [A-Za-z0-9_-]. |
 | `title` | text |  | The title given to the chat. |
 
-#### Enum Values
+#### Enum values
 
 **access_level**
 
@@ -418,7 +418,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `parent_object_type` | text |  | The object type this relates to |
 | `visibility` | enum |  | Visibility of the comment |
 
-#### Enum Values
+#### Enum values
 
 **visibility**
 
@@ -440,7 +440,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -465,7 +465,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -524,7 +524,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `turing_active` | bool |  | Whether Turing is active on the conversation. Will be true when Turing is active and false when it stops responding or when a dev user responds to the conversation. |
 | `user_sessions` | reference (collection) -> [#record:user_session] |  | User sessions associated with the conversation. |
 
-#### Enum Values
+#### Enum values
 
 **conversation_type**
 
@@ -563,7 +563,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -578,7 +578,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `source_id` | reference -> [#category:custom_object #record:account #record:capability #record:enhancement #record:feature #record:incident #record:issue #record:opportunity #record:product #record:project #record:revu #record:task #record:ticket] | ✔︎ | Source object ID |
 | `target_id` | reference -> [#category:custom_object #record:account #record:capability #record:enhancement #record:feature #record:incident #record:issue #record:opportunity #record:product #record:project #record:revu #record:task #record:ticket] | ✔︎ | Target object ID |
 
-#### Enum Values
+#### Enum values
 
 **link_type_id**
 
@@ -600,7 +600,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -622,7 +622,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -689,7 +689,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Load
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -717,7 +717,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -749,7 +749,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_start_date` | timestamp |  | Target start date for the object |
 | `ticket_ids` | reference (collection) -> [#category:work] |  | Tickets associated with the enhancement |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -793,7 +793,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -823,7 +823,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -856,7 +856,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `owner` | reference -> [#record:devu] |  | Owner of the group |
 | `type` | enum |  | Type of the group |
 
-#### Enum Values
+#### Enum values
 
 **member_type**
 
@@ -906,7 +906,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_close_date` | timestamp |  | Timestamp when the work is expected to be complete |
 | `title` | text | ✔︎ | Title of the work object |
 
-#### Enum Values
+#### Enum values
 
 **reported_by**
 
@@ -948,7 +948,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -983,7 +983,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_start_date` | timestamp |  | Target start date for the object |
 | `title` | text | ✔︎ | Title of the work object |
 
-#### Enum Values
+#### Enum values
 
 **priority**
 
@@ -1032,7 +1032,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_object_type` | enum |  | Target object type |
 | `transformed_from_id` | text |  |  |
 
-#### Enum Values
+#### Enum values
 
 **link_type**
 
@@ -1070,7 +1070,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -1096,7 +1096,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -1145,7 +1145,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the meeting. |
 | `title` | text | ✔︎ | Title of the meeting object. |
 
-#### Enum Values
+#### Enum values
 
 **channel**
 
@@ -1190,7 +1190,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -1215,7 +1215,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -1250,7 +1250,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `valid_from_date` | timestamp | ✔︎ | Timestamp when this membership is valid |
 | `valid_to_date` | timestamp |  | Timestamp when this membership expires |
 
-#### Enum Values
+#### Enum values
 
 **target_object_type**
 
@@ -1270,7 +1270,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -1301,7 +1301,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `title` | text | ✔︎ | Title of the work object |
 | `value` | struct |  | Value of the opportunity. |
 
-#### Enum Values
+#### Enum values
 
 **forecast_category**
 
@@ -1355,7 +1355,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -1379,7 +1379,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -1433,7 +1433,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -1459,7 +1459,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `ref_url` | text |  | URL to the part details (git url, website, etc.) |
 | `tags` | reference (collection) -> [#record:tag] |  | Tags associated with the object |
 
-#### Enum Values
+#### Enum values
 
 **delivered_as**
 
@@ -1517,7 +1517,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `name` | text | ✔︎ | Name of the tag |
 | `style` | text |  | hex color of in the format #RRGGBB |
 
-#### Enum Values
+#### Enum values
 
 **access_level**
 
@@ -1539,7 +1539,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -1569,7 +1569,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `target_close_date` | timestamp |  | Timestamp when the work is expected to be complete |
 | `title` | text | ✔︎ | Title of the work object |
 
-#### Enum Values
+#### Enum values
 
 **priority**
 
@@ -1599,7 +1599,7 @@ This document contains the list of all DevRev object types that are supported fo
 
 **Capabilities:** Can Extract, Can Load, Can Subtype
 
-### Fixed Fields
+### Fixed fields
 
 | Field | Value |
 |-------|-------|
@@ -1639,7 +1639,7 @@ This document contains the list of all DevRev object types that are supported fo
 | `title` | text | ✔︎ | Title of the work object |
 | `visibility` | enum |  | The visibility of the object. If 'internal', the object is visible within the Dev organization. If 'external', it is visible to both the Dev organization and Rev users. If not set, the default visibility is 'external'. |
 
-#### Enum Values
+#### Enum values
 
 **channels**
 

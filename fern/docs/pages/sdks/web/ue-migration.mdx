@@ -45,11 +45,15 @@ ue.startRecording("<your_unique_app_id>")
 ```
   </Tab>
   <Tab title="Replace with PLuG">
+
+ <Callout intent="note">
+  To enable session recordings, go to **Settings** > **Support** > **Session Replays** and enable recordings for your desired platforms.
+  </Callout>
+
 ```jsx
 
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
-   enable_session_recording: true,
 });
 window.plugSDK.onEvent((payload) => {
 	if (payload.type === 'ON_OBSERVABILITY_READY') {

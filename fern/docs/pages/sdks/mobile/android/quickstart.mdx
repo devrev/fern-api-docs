@@ -45,6 +45,14 @@ To integrate the latest version of our SDK into your app, follow these steps:
 </Tab>
 </Tabs>
 
+### Proguard rules
+
+If you are using Proguard in your project, you must add the following lines to your configuration:
+   ```bash
+   -keep class ai.devrev.** { *; }
+   -keep class com.userexperior.* { *; }
+   ```
+
 ## Set up the DevRev SDK
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.

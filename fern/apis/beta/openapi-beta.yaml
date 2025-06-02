@@ -106,6 +106,8 @@ components:
               description: List of Dev user IDs owning this Account.
               items:
                 $ref: '#/components/schemas/user-summary'
+            primary_account:
+              $ref: '#/components/schemas/account-summary'
             stock_schema_fragment:
               type: string
               description: Stock schema fragment.
@@ -739,6 +741,8 @@ components:
           items:
             type: string
             format: id
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec-for-read'
         is_custom_leaf_type:
           type: boolean
           description: Whether the leaf type corresponds to a custom object.
@@ -757,8 +761,6 @@ components:
           type: string
           description: The stock schema fragment which is to be aggregated.
           format: id
-      required:
-        - custom_schema_fragment_ids
       title: aggregated-schema-get-request
     aggregated-schema-get-response:
       type: object
@@ -888,6 +890,11 @@ components:
         args:
           type: object
           description: The arguments for the skill call.
+        metadata:
+          type: object
+          description: |
+            The metadata of the skill call. The fields depend on the skill that
+            was executed.
         output:
           type: object
           description: The output of the skill call.
@@ -953,6 +960,18 @@ components:
       required:
         - event_source
       title: ai-agent-event-source-target
+    ai-agent-event-suggestions:
+      type: object
+      description: A list of suggestions generated for the AI agent event.
+      properties:
+        suggestions:
+          type: array
+          description: The suggestions generated for the AI agent event.
+          items:
+            $ref: '#/components/schemas/ai-agent-suggestion'
+      required:
+        - suggestions
+      title: ai-agent-event-suggestions
     ai-agent-events-execute-async-request:
       type: object
       description: |
@@ -1021,6 +1040,17 @@ components:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
       title: ai-agent-session-summary
+    ai-agent-suggestion:
+      type: object
+      description: A suggestion generated for the AI agent event.
+      properties:
+        suggestion:
+          type: string
+          description: The text of the suggestion.
+          format: text
+      required:
+        - suggestion
+      title: ai-agent-suggestion
     ai-agent-webhook-target:
       type: object
       description: |
@@ -1367,6 +1397,8 @@ components:
         - $ref: '#/components/schemas/atom-base-summary'
         - type: object
           properties:
+            article_type:
+              $ref: '#/components/schemas/article-type'
             resource:
               $ref: '#/components/schemas/resource-summary'
             sync_metadata:
@@ -1382,6 +1414,7 @@ components:
       enum:
         - article
         - content_block
+        - page
     articles-count-request:
       type: object
       properties:
@@ -1411,6 +1444,13 @@ components:
             Filters for articles authored by any of the provided users.
           example:
             - DEVU-12345
+          items:
+            type: string
+            format: id
+        brands:
+          type: array
+          description: |
+            Filters for articles belonging to any of the provided brands.
           items:
             type: string
             format: id
@@ -1502,6 +1542,10 @@ components:
           items:
             type: string
             format: id
+        brand:
+          type: string
+          description: The brand associated with the article.
+          format: id
         content_format:
           $ref: '#/components/schemas/article-content-format'
         custom_fields:
@@ -1642,6 +1686,11 @@ components:
       type: object
       description: The request to get an article.
       properties:
+        dev_org:
+          type: string
+          description: Optional Dev Org ID for the unauthenticated user.
+          example: DEV-AbCdEfGh
+          format: id
         id:
           type: string
           description: The ID of the required article.
@@ -1689,6 +1738,13 @@ components:
           items:
             type: string
             format: id
+        brands:
+          type: array
+          description: |
+            Filters for articles belonging to any of the provided brands.
+          items:
+            type: string
+            format: id
         created_by:
           type: array
           description: |
@@ -1704,6 +1760,11 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
+        dev_org:
+          type: string
+          description: Optional Dev Org ID for the unauthenticated user.
+          example: DEV-AbCdEfGh
+          format: id
         limit:
           type: integer
           description: |
@@ -1792,6 +1853,11 @@ components:
           $ref: '#/components/schemas/articles-update-request-artifacts'
         authored_by:
           $ref: '#/components/schemas/articles-update-request-authored-by'
+        brand:
+          type: string
+          description: The updated brand of the article.
+          format: id
+          nullable: true
         content_blocks:
           $ref: '#/components/schemas/articles-update-request-content-blocks'
         content_format:
@@ -2008,6 +2074,25 @@ components:
             file:
               $ref: '#/components/schemas/artifact-file'
       title: artifact
+    artifact-configuration-set:
+      type: string
+      description: |
+        Represents a set of configuration to be used with the artifacts object.
+      enum:
+        - article_media
+        - default
+        - email_media
+        - job_data
+        - marketplace_listing_icon
+        - marketplace_media
+        - org_logo
+        - plug_setting
+        - plug_setting_banner_card
+        - portal_css
+        - snap_in_functions_code
+        - snap_widget
+        - user_profile_picture
+        - work
     artifact-file:
       type: object
       description: Defines a file object.
@@ -2188,6 +2273,8 @@ components:
       type: object
       description: The request to prepare a URL to upload a file.
       properties:
+        configuration_set:
+          $ref: '#/components/schemas/artifact-configuration-set'
         file_name:
           type: string
           description: The name of the file that's being uploaded.
@@ -3905,6 +3992,83 @@ components:
         - chat
       title: chats-get-response
       x-go-name: ChatsGetResponseBody
+    chats-update-request:
+      type: object
+      discriminator:
+        mapping:
+          dm: '#/components/schemas/chats-update-request-dm'
+          none: '#/components/schemas/empty'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/chats-update-request-dm'
+        - $ref: '#/components/schemas/empty'
+      properties:
+        type:
+          $ref: '#/components/schemas/chat-type'
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
+        id:
+          type: string
+          description: The chat's ID.
+          example: CHAN-AbCdEfGh
+          format: id
+        title:
+          type: string
+          description: |
+            The updated title for the chat, or unchanged if not provided.
+          format: text
+      required:
+        - id
+      title: chats-update-request
+    chats-update-request-dm:
+      type: object
+      properties:
+        records:
+          $ref: '#/components/schemas/chats-update-request-dm-records'
+        users:
+          $ref: '#/components/schemas/chats-update-request-dm-users'
+      title: chats-update-request-dm
+    chats-update-request-dm-records:
+      type: object
+      properties:
+        set:
+          type: array
+          description: The associated records to set for this DM.
+          items:
+            type: string
+            format: id
+          maxItems: 16
+      title: chats-update-request-dm-records
+    chats-update-request-dm-users:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            The updated list of users to send direct messages to. The
+            authenticated user must be included in this list.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
+          maxItems: 16
+          minItems: 1
+      required:
+        - set
+      title: chats-update-request-dm-users
+    chats-update-response:
+      type: object
+      properties:
+        chat:
+          $ref: '#/components/schemas/chat'
+      required:
+        - chat
+      title: chats-update-response
+      x-go-name: ChatsUpdateResponseBody
     client-context:
       type: object
       description: Properties of client to be used in track API.
@@ -4998,6 +5162,10 @@ components:
       properties:
         type:
           $ref: '#/components/schemas/conversations-create-request-type-value'
+        brand:
+          type: string
+          description: The brand associated with the conversation.
+          format: id
         channels:
           type: array
           description: Channel IDs of the conversation.
@@ -5045,6 +5213,10 @@ components:
           type: string
           description: Whether the conversation is from a source channel.
           format: text
+        source_channel_v2:
+          type: string
+          description: Source channel ID of the conversation.
+          format: id
         stage:
           $ref: '#/components/schemas/stage-init'
         tags:
@@ -5134,6 +5306,13 @@ components:
           items:
             type: string
             format: id
+        brand:
+          type: array
+          description: |
+            Filters for tickets that are associated with any of the brands.
+          items:
+            type: string
+            format: id
         channels:
           type: array
           description: |
@@ -5217,6 +5396,14 @@ components:
           items:
             type: string
             format: text
+        source_channel_v2:
+          type: array
+          description: |
+            Filters for conversations that are associated with the source
+            channel.
+          items:
+            type: string
+            format: id
         source_channels:
           type: array
           deprecated: true
@@ -5303,6 +5490,13 @@ components:
             Filters for conversations belonging to any of the provided parts.
           example:
             - PROD-12345
+          items:
+            type: string
+            format: id
+        brand:
+          type: array
+          description: |
+            Filters for tickets that are associated with any of the brands.
           items:
             type: string
             format: id
@@ -5396,6 +5590,14 @@ components:
           items:
             type: string
             format: text
+        source_channel_v2:
+          type: array
+          description: |
+            Filters for conversations that are associated with the source
+            channel.
+          items:
+            type: string
+            format: id
         source_channels:
           type: array
           deprecated: true
@@ -5467,6 +5669,10 @@ components:
       properties:
         applies_to_parts:
           $ref: '#/components/schemas/conversations-update-request-applies-to-parts'
+        brand:
+          type: string
+          description: The brand associated with the conversation.
+          format: id
         channels:
           $ref: '#/components/schemas/conversations-update-request-channels'
         custom_fields:
@@ -5498,6 +5704,10 @@ components:
           $ref: '#/components/schemas/conversations-update-request-metadata'
         owned_by:
           $ref: '#/components/schemas/conversations-update-request-owned-by'
+        source_channel_v2:
+          type: string
+          description: Source channel ID of the conversation.
+          format: id
         stage:
           $ref: '#/components/schemas/stage-update'
         status:
@@ -6147,11 +6357,15 @@ components:
           format: text
         deprecated:
           type: boolean
+          deprecated: true
           description: Whether the link type is deprecated.
         forward_name:
           type: string
           description: The name of the link in the forward direction.
           format: text
+        is_deprecated:
+          type: boolean
+          description: Whether the link type is deprecated.
         name:
           type: string
           description: The name of the custom link type.
@@ -6216,6 +6430,10 @@ components:
           format: text
         deprecated:
           type: boolean
+          deprecated: true
+          description: Whether only deprecated link types should be filtered.
+        is_deprecated:
+          type: boolean
           description: Whether only deprecated link types should be filtered.
         limit:
           type: integer
@@ -6236,10 +6454,16 @@ components:
           items:
             type: string
             format: sort-by
-        source_types:
-          $ref: '#/components/schemas/link-descriptor-filter'
-        target_types:
-          $ref: '#/components/schemas/link-descriptor-filter'
+        source_types_v2:
+          type: array
+          description: Types from which a link can be made.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
+        target_types_v2:
+          type: array
+          description: Types to which a link can be made.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
       title: custom-link-type-list-request
     custom-link-type-list-response:
       type: object
@@ -6278,6 +6502,7 @@ components:
           format: text
         deprecated:
           type: boolean
+          deprecated: true
           description: Whether the link type is deprecated.
         forward_name:
           type: string
@@ -6287,14 +6512,23 @@ components:
           type: string
           description: The ID of the custom link type to update.
           format: id
+        is_deprecated:
+          type: boolean
+          description: Whether the link type is deprecated.
         name:
           type: string
           description: The updated name of the custom link type.
           format: text
-        source_types:
-          $ref: '#/components/schemas/update-link-target-descriptor-list'
-        target_types:
-          $ref: '#/components/schemas/update-link-target-descriptor-list'
+        source_types_v2:
+          type: array
+          description: Types from which a link can be made.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
+        target_types_v2:
+          type: array
+          description: Types to which a link can be made.
+          items:
+            $ref: '#/components/schemas/link-target-descriptor'
         tooltip:
           type: string
           description: The updated tooltip of the custom link type.
@@ -6473,6 +6707,10 @@ components:
           type: array
           description: List of filters to apply.
           items: {}
+        filters:
+          type: array
+          description: List of filters to apply.
+          items: {}
         leaf_type:
           type: string
           description: Leaf type to filter.
@@ -6606,6 +6844,12 @@ components:
                 $ref: '#/components/schemas/schema-field-descriptor'
             fragment_type:
               $ref: '#/components/schemas/custom-schema-fragment-fragment-type'
+            is_deprecated:
+              type: boolean
+              description: |
+                Indicates if the fragment is deprecated. Modifications to this
+                field are done in-place and don't result in creation of a new
+                fragment in chain.
             leaf_type:
               type: string
               description: Leaf type this fragment applies to.
@@ -6740,10 +6984,14 @@ components:
           format: text
         deprecated:
           type: boolean
+          deprecated: true
           description: Whether only deprecated fragments should be filtered.
         is_custom_leaf_type:
           type: boolean
           description: Whether the leaf type corresponds to a custom object
+        is_deprecated:
+          type: boolean
+          description: Whether the fragment has been deprecated.
         leaf_type:
           type: array
           description: The list of leaf types.
@@ -6844,6 +7092,7 @@ components:
             format: text
         deprecated:
           type: boolean
+          deprecated: true
           description: Whether this fragment has been deprecated.
         description:
           type: string
@@ -6857,6 +7106,9 @@ components:
         is_custom_leaf_type:
           type: boolean
           description: Whether the leaf type corresponds to a custom object
+        is_deprecated:
+          type: boolean
+          description: Whether this fragment has been deprecated.
         leaf_type:
           type: string
           description: The leaf type this fragment applies to.
@@ -7006,6 +7258,21 @@ components:
             Whether the subtype is to be dropped. Note: If set, the subtype
             field in the custom schema specifier should be nil
       title: custom-schema-spec-drop
+    custom-schema-spec-for-read:
+      type: object
+      description: Custom schemas described using identifiers
+      properties:
+        apps:
+          type: array
+          description: List of apps.
+          items:
+            type: string
+            format: text
+        subtype:
+          type: string
+          description: Name of the subtype.
+          format: text
+      title: custom-schema-spec-for-read
     custom-stage:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -8552,6 +8819,11 @@ components:
       type: object
       description: The request to get a directory.
       properties:
+        dev_org:
+          type: string
+          description: Optional Dev Org ID for the unauthenticated user.
+          example: DEV-AbCdEfGh
+          format: id
         id:
           type: string
           description: The ID of the requested directory.
@@ -8588,6 +8860,11 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
+        dev_org:
+          type: string
+          description: Optional Dev Org ID for the unauthenticated user.
+          example: DEV-AbCdEfGh
+          format: id
         limit:
           type: integer
           description: |
@@ -10305,6 +10582,7 @@ components:
             - message
             - message_generation_started
             - progress
+            - suggestions
         client_metadata:
           type: object
           description: |
@@ -10330,6 +10608,8 @@ components:
           type: string
           description: An identifier of the session with the AI agent.
           format: text
+        suggestions:
+          $ref: '#/components/schemas/ai-agent-event-suggestions'
       required:
         - agent
         - session
@@ -13205,17 +13485,6 @@ components:
             - source
             - target
       title: link
-    link-descriptor-filter:
-      type: object
-      properties:
-        link_descriptors:
-          type: array
-          description: List of link descriptors.
-          items:
-            $ref: '#/components/schemas/link-target-descriptor'
-      required:
-        - link_descriptors
-      title: link-descriptor-filter
     link-endpoint-summary:
       type: object
       discriminator:
@@ -13407,6 +13676,10 @@ components:
       type: object
       description: The request to create a new link.
       properties:
+        custom_link_type:
+          type: string
+          description: The ID of the custom link type.
+          format: id
         link_type:
           $ref: '#/components/schemas/link-type'
         source:
@@ -13940,7 +14213,6 @@ components:
       required:
         - channel
         - members
-        - scheduled_date
         - state
         - title
       title: meetings-create-request
@@ -15957,6 +16229,14 @@ components:
           format: int32
         mode:
           $ref: '#/components/schemas/list-mode'
+        modified_by:
+          type: array
+          description: Filters for parts modified by any of these users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
         name:
           type: array
           description: Filters for parts of the provided name(s).
@@ -15973,6 +16253,12 @@ components:
             format: id
         parent_part:
           $ref: '#/components/schemas/parent-part-filter'
+        subtype:
+          type: array
+          description: Filters for subtypes.
+          items:
+            type: string
+            format: text
         tags:
           type: array
           description: Filters for part with any of the provided tags.
@@ -16857,6 +17143,104 @@ components:
       additionalProperties: false
       title: reactions-update-response
       x-go-name: ReactionsUpdateResponseBody
+    record-template:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            custom_fields:
+              type: array
+              description: |
+                Custom Fields of the object that the record template is associated
+                with.
+              items:
+                $ref: '#/components/schemas/record-template-field-values'
+            description:
+              type: string
+              description: Description of the record template.
+              format: text
+            leaf_type:
+              type: string
+              description: |
+                Type of object that the record template is associated with.
+              format: text
+            name:
+              type: string
+              description: Name of the record template.
+              format: text
+            shared_with:
+              type: array
+              description: Shared with membership.
+              items:
+                $ref: '#/components/schemas/shared-with-membership'
+            state:
+              $ref: '#/components/schemas/record-template-state'
+            stock_fields:
+              type: array
+              description: |
+                Stock Fields of the object that the record template is associated
+                with.
+              items:
+                $ref: '#/components/schemas/record-template-field-values'
+            subtype:
+              type: string
+              description: |
+                Subtype of the object that the record template is associated with.
+              format: text
+      title: record-template
+    record-template-field-values:
+      type: object
+      description: Information about the field values.
+      properties:
+        field_name:
+          type: string
+          description: The field's name.
+          format: text
+        field_value:
+          description: Value of the given field.
+      title: record-template-field-values
+    record-template-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the record template.
+          format: id
+      required:
+        - id
+      title: record-template-get-request
+    record-template-get-response:
+      type: object
+      properties:
+        record_template_info:
+          $ref: '#/components/schemas/record-template-info'
+      required:
+        - record_template_info
+      title: record-template-get-response
+      x-go-name: RecordTemplateGetResponseBody
+    record-template-info:
+      type: object
+      properties:
+        record_template:
+          $ref: '#/components/schemas/record-template'
+        stale_fields:
+          type: array
+          description: |
+            List of fields that do not conform to the expected schema of the
+            underlying leaf type of the template object.
+          items:
+            $ref: '#/components/schemas/record-template-field-values'
+      required:
+        - record_template
+      title: record-template-info
+    record-template-state:
+      type: string
+      description: State of the record template.
+      enum:
+        - active
+        - draft
+        - inactive
+        - needs_attention
     remove-tag-with-value:
       type: object
       properties:
@@ -16956,6 +17340,8 @@ components:
                 is specified, a system-generated identifier will be assigned to the
                 organization.
               format: text
+            primary_rev_org:
+              $ref: '#/components/schemas/org-summary'
             stock_schema_fragment:
               type: string
               description: Stock schema fragment.
@@ -19593,6 +19979,35 @@ components:
         - service_account
       title: service-accounts-get-response
       x-go-name: ServiceAccountsGetResponseBody
+    service-accounts-update-request:
+      type: object
+      description: The request object to update a service account.
+      properties:
+        display_name:
+          type: string
+          description: |
+            The service account's display name to be updated. A unique, human
+            readable name to identify a service account.
+          format: text
+        id:
+          type: string
+          description: The ID of the requested service account.
+          format: id
+      required:
+        - id
+      title: service-accounts-update-request
+    service-accounts-update-response:
+      type: object
+      description: |
+        The response object that carries the updated service account's
+        information.
+      properties:
+        service_account:
+          $ref: '#/components/schemas/service-account'
+      required:
+        - service_account
+      title: service-accounts-update-response
+      x-go-name: ServiceAccountsUpdateResponseBody
     set-issue-selector:
       type: object
       properties:
@@ -21284,6 +21699,86 @@ components:
         - reference_id
         - visualization
       title: sub-widget
+    subscribers-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          format: text
+        id:
+          type: string
+          description: The object's ID.
+          example: ISS-12345
+          format: id
+        limit:
+          type: integer
+          description: |
+            The maximum number of subscribers to return. If not set or `<= 0`,
+            then this defaults to `50`.
+          format: int32
+      required:
+        - id
+      title: subscribers-list-request
+    subscribers-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor that should be used to iterate the next sequence of
+            results, otherwise if not set, then no elements exist after.
+          format: text
+        users:
+          type: array
+          description: The list of subscribers on the object.
+          items:
+            $ref: '#/components/schemas/user-summary'
+      required:
+        - users
+      title: subscribers-list-response
+      x-go-name: SubscribersListResponseBody
+    subscribers-update-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The object's ID.
+          example: ISS-12345
+          format: id
+        subscribers:
+          $ref: '#/components/schemas/subscribers-update-request-subscribers'
+      required:
+        - id
+      title: subscribers-update-request
+    subscribers-update-request-subscribers:
+      type: object
+      properties:
+        add:
+          type: array
+          description: The list of users to add as subscribers on the object.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
+        remove:
+          type: array
+          description: |
+            The list of users to remove as subscribers on the object.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
+      title: subscribers-update-request-subscribers
+    subscribers-update-response:
+      type: object
+      additionalProperties: false
+      title: subscribers-update-response
+      x-go-name: SubscribersUpdateResponseBody
     subtype:
       type: object
       properties:
@@ -21529,6 +22024,25 @@ components:
       additionalProperties: false
       title: surveys-delete-response
       x-go-name: SurveysDeleteResponseBody
+    surveys-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the survey to get.
+          format: id
+      required:
+        - id
+      title: surveys-get-request
+    surveys-get-response:
+      type: object
+      properties:
+        survey:
+          $ref: '#/components/schemas/survey'
+      required:
+        - survey
+      title: surveys-get-response
+      x-go-name: SurveysGetResponseBody
     surveys-list-request:
       type: object
       properties:
@@ -24184,17 +24698,6 @@ components:
           items:
             $ref: '#/components/schemas/update-tag-with-value'
       title: update-incident-tags
-    update-link-target-descriptor-list:
-      type: object
-      properties:
-        link_descriptors:
-          type: array
-          description: List of link descriptors.
-          items:
-            $ref: '#/components/schemas/link-target-descriptor'
-      required:
-        - link_descriptors
-      title: update-link-target-descriptor-list
     update-stage:
       type: object
       description: Update object for Stage.
@@ -24398,6 +24901,8 @@ components:
               items:
                 type: string
                 format: text
+            primary_identity:
+              $ref: '#/components/schemas/user-summary'
             state:
               $ref: '#/components/schemas/user-state'
       title: user-base
@@ -24761,6 +25266,10 @@ components:
               items:
                 type: string
                 format: text
+            user_agent:
+              type: string
+              description: User agent to use for crawling websites in this job.
+              format: text
       title: web-crawler-job
     web-crawler-job-state:
       type: string
@@ -24890,6 +25399,11 @@ components:
           items:
             type: string
             format: text
+        user_agent:
+          type: string
+          description: User agent to use for crawling websites in this job.
+          format: text
+          maxLength: 1024
       required:
         - applies_to_parts
       title: web-crawler-jobs-create-request
@@ -26474,6 +26988,10 @@ components:
           type: string
           description: The source channel of the ticket.
           format: text
+        source_channel_v2:
+          type: string
+          description: Source channel ID of the ticket.
+          format: id
       title: works-create-request-ticket
     works-create-response:
       type: object
@@ -26539,6 +27057,14 @@ components:
           format: int32
         issue:
           $ref: '#/components/schemas/works-filter-issue'
+        modified_by:
+          type: array
+          description: Filters for work modified by any of these users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
         modified_date:
           $ref: '#/components/schemas/date-filter'
         opportunity:
@@ -26693,6 +27219,13 @@ components:
     works-filter-ticket:
       type: object
       properties:
+        brand:
+          type: array
+          description: |
+            Filters for tickets that are associated with any of the brands.
+          items:
+            type: string
+            format: id
         channels:
           type: array
           description: Filters for tickets with any of the provided channels.
@@ -26744,6 +27277,14 @@ components:
           items:
             type: string
             format: text
+        source_channel_v2:
+          type: array
+          description: |
+            Filters for tickets that are associated with any of the source
+            channels.
+          items:
+            type: string
+            format: id
         subtype:
           type: array
           description: Filters for tickets with any of the provided subtypes.
@@ -26819,6 +27360,14 @@ components:
           format: int32
         mode:
           $ref: '#/components/schemas/list-mode'
+        modified_by:
+          type: array
+          description: Filters for work modified by any of these users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
         modified_date:
           $ref: '#/components/schemas/date-filter'
         opportunity:
@@ -27420,6 +27969,11 @@ components:
           format: text
         severity:
           $ref: '#/components/schemas/ticket-severity'
+        source_channel_v2:
+          type: string
+          description: Updates the source channel of the ticket.
+          format: id
+          nullable: true
       title: works-update-request-ticket
     works-update-request-ticket-channels:
       type: object
@@ -27494,6 +28048,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /accounts.delete:
     post:
       description: Deletes an account.
@@ -27531,6 +28086,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /accounts.export:
     get:
       description: Exports a collection of accounts.
@@ -27713,6 +28269,7 @@ paths:
         - accounts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: AccountsExportQuery
     post:
       description: Exports a collection of accounts.
@@ -27748,6 +28305,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /accounts.get:
     get:
       description: Retrieves an account's information.
@@ -27788,6 +28346,7 @@ paths:
         - accounts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: AccountsGetQuery
     post:
       description: Retrieves an account's information.
@@ -27825,6 +28384,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /accounts.list:
     get:
       description: Gets a list of accounts.
@@ -28027,6 +28587,7 @@ paths:
         - accounts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: AccountsListQuery
     post:
       description: Gets a list of accounts.
@@ -28065,6 +28626,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /accounts.merge:
     post:
       description: Merges two accounts.
@@ -28102,6 +28664,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /accounts.update:
     post:
       description: Updates an account's information.
@@ -28141,6 +28704,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /ai-agents.events.execute-async:
     post:
       description: Execute an AI agent input event asynchronously.
@@ -28178,6 +28742,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /airdrop.sync-units.get:
     get:
       description: Gets a single sync unit's information.
@@ -28215,6 +28780,7 @@ paths:
         - airdrop
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: AirdropSyncUnitsGetQuery
     post:
       description: Gets a single sync unit's information.
@@ -28250,6 +28816,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /airdrop.sync-units.history:
     get:
       description: Gets a list of sync unit historical records.
@@ -28342,6 +28909,7 @@ paths:
         - airdrop
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: AirdropSyncUnitsHistoryQuery
     post:
       description: Gets a list of sync unit historical records.
@@ -28377,6 +28945,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /articles.count:
     get:
       description: Get count of articles matching given filter.
@@ -28420,6 +28989,16 @@ paths:
             type: array
             example:
               - DEVU-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for articles belonging to any of the provided brands.
+          explode: false
+          in: query
+          name: brands
+          schema:
+            type: array
             items:
               type: string
               format: id
@@ -28515,6 +29094,7 @@ paths:
         - articles
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: ArticlesCountQuery
     post:
       description: Get count of articles matching given filter.
@@ -28550,6 +29130,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /articles.create:
     post:
       description: |
@@ -28588,6 +29169,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /articles.delete:
     post:
       description: Deletes an article.
@@ -28625,6 +29207,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /articles.get:
     get:
       description: Gets an article.
@@ -28638,6 +29221,14 @@ paths:
           schema:
             type: string
             example: ARTICLE-12345
+            format: id
+        - description: Optional Dev Org ID for the unauthenticated user.
+          explode: false
+          in: query
+          name: dev_org
+          schema:
+            type: string
+            example: DEV-AbCdEfGh
             format: id
       responses:
         "200":
@@ -28665,6 +29256,7 @@ paths:
         - articles
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: GetArticleQuery
     post:
       description: Gets an article.
@@ -28702,6 +29294,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /articles.list:
     get:
       description: Lists a collection of articles.
@@ -28741,6 +29334,16 @@ paths:
             items:
               type: string
               format: id
+        - description: |
+            Filters for articles belonging to any of the provided brands.
+          explode: false
+          in: query
+          name: brands
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for articles created by any of the provided users.
           explode: false
           in: query
@@ -28761,6 +29364,14 @@ paths:
           schema:
             type: string
             format: text
+        - description: Optional Dev Org ID for the unauthenticated user.
+          explode: false
+          in: query
+          name: dev_org
+          schema:
+            type: string
+            example: DEV-AbCdEfGh
+            format: id
         - description: |
             The maximum number of articles to return. The default is '50'.
           explode: false
@@ -28858,6 +29469,7 @@ paths:
         - articles
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ListArticlesQuery
     post:
       description: Lists a collection of articles.
@@ -28893,6 +29505,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /articles.update:
     post:
       description: Updates an article.
@@ -28930,6 +29543,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /artifacts.get:
     get:
       description: Gets the requested artifact's information.
@@ -28977,6 +29591,7 @@ paths:
         - artifacts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ArtifactsGetQuery
     post:
       description: Gets the requested artifact's information.
@@ -29014,6 +29629,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /artifacts.list:
     get:
       description: List the artifacts attached to an object.
@@ -29052,6 +29668,7 @@ paths:
         - artifacts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ArtifactsListQuery
     post:
       description: List the artifacts attached to an object.
@@ -29089,6 +29706,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /artifacts.locate:
     get:
       description: Gets the download URL for the artifact.
@@ -29136,6 +29754,7 @@ paths:
         - artifacts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ArtifactsLocateQuery
     post:
       description: Gets the download URL for the artifact.
@@ -29173,6 +29792,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /artifacts.prepare:
     post:
       description: |
@@ -29209,6 +29829,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /artifacts.versions.delete:
     post:
       description: Permanently deletes a version of an artifact.
@@ -29244,6 +29865,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /artifacts.versions.prepare:
     post:
       description: |
@@ -29281,6 +29903,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /atoms.get:
     get:
       description: Gets the specified object.
@@ -29318,6 +29941,7 @@ paths:
         - atoms
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: AtomsGetQuery
     post:
       description: Gets the specified object.
@@ -29353,6 +29977,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /audit-logs.fetch:
     post:
       description: Retrieves audit logs.
@@ -29392,6 +30017,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /auth-tokens.create:
     post:
       description: |
@@ -29433,6 +30059,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /auth-tokens.delete:
     post:
       description: |
@@ -29468,6 +30095,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /auth-tokens.get:
     get:
       description: |
@@ -29510,6 +30138,7 @@ paths:
         - auth-tokens
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: AuthTokensGetQuery
     post:
       description: |
@@ -29549,6 +30178,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /auth-tokens.info:
     get:
       description: |
@@ -29583,6 +30213,7 @@ paths:
         - auth-tokens
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: AuthTokensInfoQuery
     post:
       description: |
@@ -29624,6 +30255,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /auth-tokens.list:
     get:
       description: |
@@ -29684,6 +30316,7 @@ paths:
         - auth-tokens
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: AuthTokensListQuery
     post:
       description: |
@@ -29723,6 +30356,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /auth-tokens.self.delete:
     post:
       description: |
@@ -29758,6 +30392,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /auth-tokens.update:
     post:
       description: |
@@ -29797,6 +30432,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /brands.create:
     post:
       description: Creates a new brand.
@@ -29834,6 +30470,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /brands.delete:
     post:
       description: Deletes a brand by its ID.
@@ -29871,6 +30508,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /brands.get:
     get:
       description: Gets a brand by its ID.
@@ -29910,6 +30548,7 @@ paths:
         - brands
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: BrandsGetQuery
     post:
       description: Gets a brand by its ID.
@@ -29947,6 +30586,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /brands.list:
     get:
       description: Lists all brands.
@@ -29985,6 +30625,7 @@ paths:
         - brands
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: BrandsListQuery
     post:
       description: Lists all brands.
@@ -30020,6 +30661,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /brands.update:
     post:
       description: Updates a brand by its ID.
@@ -30057,6 +30699,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /chats.create:
     post:
       description: Creates a new chat, or optionally opens an existing one.
@@ -30092,6 +30735,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /chats.get:
     get:
       description: Gets a chat's information.
@@ -30131,6 +30775,7 @@ paths:
         - chats
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ChatsGetQuery
     post:
       description: Gets a chat's information.
@@ -30168,6 +30813,45 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
+  /chats.update:
+    post:
+      description: Updates a chat's information.
+      operationId: chats-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/chats-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/chats-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Chat
+      tags:
+        - chats
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
   /code-changes.create:
     post:
       description: Creates a code change object.
@@ -30203,6 +30887,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /code-changes.delete:
     post:
       description: Deletes a code change object.
@@ -30238,6 +30923,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /code-changes.get:
     get:
       description: Gets a code change object.
@@ -30275,6 +30961,7 @@ paths:
         - code-changes
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: CodeChangesGetQuery
     post:
       description: Gets a code change object.
@@ -30310,6 +30997,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /code-changes.list:
     get:
       description: Lists code change objects.
@@ -30365,6 +31053,7 @@ paths:
         - code-changes
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: CodeChangesListQuery
     post:
       description: Lists code change objects.
@@ -30400,6 +31089,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /code-changes.update:
     post:
       description: Updates a code change object.
@@ -30435,6 +31125,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /commands.create:
     post:
       description: Creates a command.
@@ -30472,6 +31163,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /commands.get:
     get:
       description: Gets a command.
@@ -30511,6 +31203,7 @@ paths:
         - commands
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: CommandsGetQuery
     post:
       description: Gets a command.
@@ -30548,6 +31241,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /commands.list:
     get:
       description: Lists commands for a Dev organization.
@@ -30646,6 +31340,7 @@ paths:
         - commands
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: CommandsListQuery
     post:
       description: Lists commands for a Dev organization.
@@ -30681,6 +31376,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /commands.update:
     post:
       description: Updates a command.
@@ -30718,6 +31414,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /content-template.create:
     post:
       description: Create the content template.
@@ -30753,6 +31450,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /content-template.get:
     get:
       description: Get the content template.
@@ -30790,6 +31488,7 @@ paths:
         - notifications
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: ContentTemplateGetQuery
     post:
       description: Get the content template.
@@ -30825,6 +31524,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /content-template.list:
     get:
       description: Lists the content templates.
@@ -30920,6 +31620,7 @@ paths:
         - notifications
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: ContentTemplateListQuery
     post:
       description: Lists the content templates.
@@ -30955,6 +31656,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /conversations.create:
     post:
       description: Creates a conversation.
@@ -30990,6 +31692,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /conversations.delete:
     post:
       description: Deletes the requested conversation.
@@ -31027,6 +31730,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /conversations.export:
     get:
       description: Exports a collection of conversation items.
@@ -31041,6 +31745,16 @@ paths:
             type: array
             example:
               - PROD-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for tickets that are associated with any of the brands.
+          explode: false
+          in: query
+          name: brand
+          schema:
+            type: array
             items:
               type: string
               format: id
@@ -31140,7 +31854,8 @@ paths:
             items:
               type: string
               format: id
-        - description: |
+        - deprecated: true
+          description: |
             Filters for conversations that are associated with any of the
             provided Rev organizations.
           explode: false
@@ -31186,6 +31901,18 @@ paths:
               type: string
               format: text
         - description: |
+            Filters for conversations that are associated with the source
+            channel.
+          explode: false
+          in: query
+          name: source_channel_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - deprecated: true
+          description: |
             Filters for conversations with any of the provided source channels.
           explode: false
           in: query
@@ -31224,7 +31951,8 @@ paths:
             items:
               type: string
               format: text
-        - description: Filters for conversations with any of the provided tags.
+        - deprecated: true
+          description: Filters for conversations with any of the provided tags.
           explode: false
           in: query
           name: tags
@@ -31277,6 +32005,7 @@ paths:
         - conversations
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: ConversationsExportQuery
     post:
       description: Exports a collection of conversation items.
@@ -31312,6 +32041,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /conversations.get:
     get:
       description: Gets the requested conversation's information.
@@ -31351,6 +32081,7 @@ paths:
         - conversations
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ConversationsGetQuery
     post:
       description: Gets the requested conversation's information.
@@ -31388,6 +32119,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /conversations.list:
     get:
       description: Lists the available conversations.
@@ -31402,6 +32134,16 @@ paths:
             type: array
             example:
               - PROD-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for tickets that are associated with any of the brands.
+          explode: false
+          in: query
+          name: brand
+          schema:
+            type: array
             items:
               type: string
               format: id
@@ -31517,7 +32259,8 @@ paths:
             items:
               type: string
               format: id
-        - description: |
+        - deprecated: true
+          description: |
             Filters for conversations that are associated with any of the
             provided Rev organizations.
           explode: false
@@ -31563,6 +32306,18 @@ paths:
               type: string
               format: text
         - description: |
+            Filters for conversations that are associated with the source
+            channel.
+          explode: false
+          in: query
+          name: source_channel_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - deprecated: true
+          description: |
             Filters for conversations with any of the provided source channels.
           explode: false
           in: query
@@ -31601,7 +32356,8 @@ paths:
             items:
               type: string
               format: text
-        - description: Filters for conversations with any of the provided tags.
+        - deprecated: true
+          description: Filters for conversations with any of the provided tags.
           explode: false
           in: query
           name: tags
@@ -31654,6 +32410,7 @@ paths:
         - conversations
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ConversationsListQuery
     post:
       description: Lists the available conversations.
@@ -31689,6 +32446,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /conversations.update:
     post:
       description: Updates the requested conversation.
@@ -31726,6 +32484,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /custom-objects.count:
     get:
       description: Counts custom objects.
@@ -31770,6 +32529,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomObjectsCountQuery
     post:
       description: Counts custom objects.
@@ -31805,6 +32565,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /custom-objects.create:
     post:
       description: Creates a custom object.
@@ -31840,6 +32601,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /custom-objects.delete:
     post:
       description: Deletes a custom object.
@@ -31877,6 +32639,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /custom-objects.get:
     get:
       description: Gets a custom object.
@@ -31915,6 +32678,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomObjectsGetQuery
     post:
       description: Gets a custom object.
@@ -31952,6 +32716,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /custom-objects.list:
     get:
       description: Lists custom objects.
@@ -31978,6 +32743,13 @@ paths:
           explode: false
           in: query
           name: filter
+          schema:
+            type: array
+            items: {}
+        - description: List of filters to apply.
+          explode: false
+          in: query
+          name: filters
           schema:
             type: array
             items: {}
@@ -32032,6 +32804,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomObjectsListQuery
     post:
       description: Lists custom objects.
@@ -32069,6 +32842,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /custom-objects.update:
     post:
       description: Updates a custom object.
@@ -32106,6 +32880,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /dev-orgs.auth-connections.create:
     post:
       description: |
@@ -32149,6 +32924,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-orgs.auth-connections.delete:
     post:
       description: |
@@ -32186,6 +32962,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-orgs.auth-connections.get:
     get:
       description: Retrieves the details for an authentication connection.
@@ -32228,6 +33005,7 @@ paths:
         - dev-orgs
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DevOrgAuthConnectionsGetQuery
     post:
       description: Retrieves the details for an authentication connection.
@@ -32268,6 +33046,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-orgs.auth-connections.list:
     get:
       description: |
@@ -32303,6 +33082,7 @@ paths:
         - dev-orgs
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DevOrgAuthConnectionsListQuery
     post:
       description: |
@@ -32345,6 +33125,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-orgs.auth-connections.toggle:
     post:
       description: |
@@ -32382,6 +33163,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-orgs.auth-connections.update:
     post:
       description: Updates an authentication connection.
@@ -32422,6 +33204,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-orgs.get:
     get:
       description: |
@@ -32453,6 +33236,7 @@ paths:
         - dev-orgs
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DevOrgsGetQuery
     post:
       description: |
@@ -32491,6 +33275,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.activate:
     post:
       description: Activates the requested user.
@@ -32528,6 +33313,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.create:
     post:
       description: Creates a Dev user for a Dev organization.
@@ -32565,6 +33351,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.deactivate:
     post:
       description: Deactivates the requested user.
@@ -32602,6 +33389,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.get:
     get:
       description: Gets the requested user's information.
@@ -32641,6 +33429,7 @@ paths:
         - dev-users
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DevUsersGetQuery
     post:
       description: Gets the requested user's information.
@@ -32678,6 +33467,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.identities.link:
     post:
       description: Links an external/secondary identity to the Dev user.
@@ -32716,6 +33506,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.identities.unlink:
     post:
       description: Unlinks an external/secondary identity from the Dev user.
@@ -32755,6 +33546,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.list:
     get:
       description: Lists users within your organization.
@@ -32856,6 +33648,7 @@ paths:
         - dev-users
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DevUsersListQuery
     post:
       description: Lists users within your organization.
@@ -32891,6 +33684,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.merge:
     post:
       description: |
@@ -32933,6 +33727,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.self:
     get:
       description: Gets the authenticated user's information.
@@ -32962,6 +33757,7 @@ paths:
         - dev-users
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DevUsersSelfQuery
     post:
       description: Gets the authenticated user's information.
@@ -32998,6 +33794,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.self.update:
     post:
       description: Updates the authenticated user.
@@ -33033,6 +33830,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /dev-users.update:
     post:
       description: Updates the user corresponding to the input Id.
@@ -33068,6 +33866,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /directories.count:
     get:
       description: Get count of directories matching given filter.
@@ -33121,6 +33920,7 @@ paths:
         - directory
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DirectoriesCountQuery
     post:
       description: Get count of directories matching given filter.
@@ -33156,6 +33956,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /directories.create:
     post:
       description: Creates a directory for the specified inputs.
@@ -33191,6 +33992,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /directories.delete:
     post:
       description: Delete the specified directory.
@@ -33228,6 +34030,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /directories.get:
     get:
       description: Gets the specified directory.
@@ -33240,6 +34043,14 @@ paths:
           required: true
           schema:
             type: string
+            format: id
+        - description: Optional Dev Org ID for the unauthenticated user.
+          explode: false
+          in: query
+          name: dev_org
+          schema:
+            type: string
+            example: DEV-AbCdEfGh
             format: id
       responses:
         "200":
@@ -33267,6 +34078,7 @@ paths:
         - directory
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DirectoriesGetQuery
     post:
       description: Gets the specified directory.
@@ -33304,6 +34116,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /directories.list:
     get:
       description: Lists directories matching the request.
@@ -33330,6 +34143,14 @@ paths:
           schema:
             type: string
             format: text
+        - description: Optional Dev Org ID for the unauthenticated user.
+          explode: false
+          in: query
+          name: dev_org
+          schema:
+            type: string
+            example: DEV-AbCdEfGh
+            format: id
         - description: |
             The maximum number of directories to return. The default is '50'.
           explode: false
@@ -33382,6 +34203,7 @@ paths:
         - directory
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: DirectoriesListQuery
     post:
       description: Lists directories matching the request.
@@ -33417,6 +34239,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /directories.update:
     post:
       description: Updates the specified directory.
@@ -33454,6 +34277,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /engagements.count:
     get:
       description: Counts the engagement records.
@@ -33522,6 +34346,7 @@ paths:
         - engagements
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: EngagementsCountQuery
     post:
       description: Counts the engagement records.
@@ -33557,6 +34382,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /engagements.create:
     post:
       description: Creates a new engagement record.
@@ -33592,6 +34418,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /engagements.delete:
     post:
       description: Deletes the engagement record.
@@ -33629,6 +34456,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /engagements.get:
     get:
       description: Gets the engagement record.
@@ -33668,6 +34496,7 @@ paths:
         - engagements
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: EngagementsGetQuery
     post:
       description: Gets the engagement record.
@@ -33705,6 +34534,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /engagements.list:
     get:
       description: Lists the engagement records.
@@ -33807,6 +34637,7 @@ paths:
         - engagements
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: EngagementsListQuery
     post:
       description: Lists the engagement records.
@@ -33842,6 +34673,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /engagements.update:
     post:
       description: Updates the engagement record.
@@ -33879,6 +34711,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /event-sources.get:
     get:
       description: Gets an event source.
@@ -33918,6 +34751,7 @@ paths:
         - event-sources
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: EventSourcesGetQuery
     post:
       description: Gets an event source.
@@ -33955,6 +34789,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /event-sources.schedule:
     post:
       description: |
@@ -33993,6 +34828,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /event-sources.unschedule:
     post:
       description: Deletes an event scheduled for the specified event source.
@@ -34026,6 +34862,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /groups.create:
     post:
       description: Creates a new group. A group is a collection of users.
@@ -34061,6 +34898,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /groups.get:
     get:
       description: Gets the requested group.
@@ -34100,6 +34938,7 @@ paths:
         - groups
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: GroupsGetQuery
     post:
       description: Gets the requested group.
@@ -34137,6 +34976,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /groups.list:
     get:
       description: Lists the available groups.
@@ -34319,6 +35159,7 @@ paths:
         - groups
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: GroupsListQuery
     post:
       description: Lists the available groups.
@@ -34354,6 +35195,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /groups.members.add:
     post:
       description: Adds a member to a group.
@@ -34391,6 +35233,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /groups.members.list:
     get:
       description: Lists the members in a group.
@@ -34454,6 +35297,7 @@ paths:
         - groups
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: GroupMembersListQuery
     post:
       description: Lists the members in a group.
@@ -34489,6 +35333,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /groups.members.remove:
     post:
       description: Removes a member from a group.
@@ -34526,6 +35371,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /groups.update:
     post:
       description: Updates the requested group.
@@ -34563,6 +35409,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /incidents.create:
     post:
       description: Creates an incident.
@@ -34598,6 +35445,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /incidents.delete:
     post:
       description: Deletes an incident.
@@ -34635,6 +35483,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /incidents.get:
     get:
       description: Gets an incident.
@@ -34674,6 +35523,7 @@ paths:
         - incidents
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: IncidentsGetQuery
     post:
       description: Gets an incident.
@@ -34711,6 +35561,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /incidents.group:
     get:
       description: Lists collections of incidents by groups.
@@ -34858,7 +35709,8 @@ paths:
             items:
               type: string
               format: sort-by
-        - description: Filters for incidents with any of the provided sources.
+        - deprecated: true
+          description: Filters for incidents with any of the provided sources.
           explode: false
           in: query
           name: source
@@ -34996,6 +35848,7 @@ paths:
         - incidents
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: IncidentsGroupQuery
     post:
       description: Lists collections of incidents by groups.
@@ -35031,6 +35884,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /incidents.list:
     get:
       description: Lists incidents.
@@ -35160,7 +36014,8 @@ paths:
             items:
               type: string
               format: sort-by
-        - description: Filters for incidents with any of the provided sources.
+        - deprecated: true
+          description: Filters for incidents with any of the provided sources.
           explode: false
           in: query
           name: source
@@ -35298,6 +36153,7 @@ paths:
         - incidents
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: IncidentsListQuery
     post:
       description: Lists incidents.
@@ -35333,6 +36189,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /incidents.update:
     post:
       description: Updates an incident.
@@ -35370,6 +36227,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /keyrings.authorize:
     get:
       description: OAuth2 authorization callback.
@@ -35412,6 +36270,7 @@ paths:
         - keyrings
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: KeyringsCreateCallbackQuery
     post:
       description: OAuth2 authorization callback.
@@ -35443,6 +36302,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /link-types.custom.create:
     post:
       description: Creates a custom link type.
@@ -35478,6 +36338,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /link-types.custom.get:
     get:
       description: Gets a custom link type.
@@ -35517,6 +36378,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomLinkTypeGetQuery
     post:
       description: Gets a custom link type.
@@ -35554,6 +36416,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /link-types.custom.list:
     get:
       description: Lists custom link types.
@@ -35568,10 +36431,18 @@ paths:
           schema:
             type: string
             format: text
-        - description: Whether only deprecated link types should be filtered.
+        - deprecated: true
+          description: Whether only deprecated link types should be filtered.
           explode: false
           in: query
           name: deprecated
+          schema:
+            type: boolean
+            deprecated: true
+        - description: Whether only deprecated link types should be filtered.
+          explode: false
+          in: query
+          name: is_deprecated
           schema:
             type: boolean
         - description: The maximum number of items.
@@ -35611,7 +36482,7 @@ paths:
         - description: True when the descriptor describes a custom leaf type.
           explode: false
           in: query
-          name: source_types.link_descriptors.is_custom_leaf_type
+          name: source_types_v2.is_custom_leaf_type
           schema:
             type: boolean
         - description: |
@@ -35619,27 +36490,27 @@ paths:
             allowed as a link target.
           explode: false
           in: query
-          name: source_types.link_descriptors.leaf_only
+          name: source_types_v2.leaf_only
           schema:
             type: boolean
         - description: Leaf type of the target objects.
           explode: false
           in: query
-          name: source_types.link_descriptors.leaf_type
+          name: source_types_v2.leaf_type
           schema:
             type: string
             format: text
         - description: Specific subtype of the target objects.
           explode: false
           in: query
-          name: source_types.link_descriptors.subtype
+          name: source_types_v2.subtype
           schema:
             type: string
             format: text
         - description: True when the descriptor describes a custom leaf type.
           explode: false
           in: query
-          name: target_types.link_descriptors.is_custom_leaf_type
+          name: target_types_v2.is_custom_leaf_type
           schema:
             type: boolean
         - description: |
@@ -35647,20 +36518,20 @@ paths:
             allowed as a link target.
           explode: false
           in: query
-          name: target_types.link_descriptors.leaf_only
+          name: target_types_v2.leaf_only
           schema:
             type: boolean
         - description: Leaf type of the target objects.
           explode: false
           in: query
-          name: target_types.link_descriptors.leaf_type
+          name: target_types_v2.leaf_type
           schema:
             type: string
             format: text
         - description: Specific subtype of the target objects.
           explode: false
           in: query
-          name: target_types.link_descriptors.subtype
+          name: target_types_v2.subtype
           schema:
             type: string
             format: text
@@ -35688,6 +36559,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomLinkTypeListQuery
     post:
       description: Lists custom link types.
@@ -35723,6 +36595,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /link-types.custom.update:
     post:
       description: Updates a custom link type.
@@ -35760,6 +36633,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /links.create:
     post:
       description: |
@@ -35796,6 +36670,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /links.delete:
     post:
       description: Deletes a link.
@@ -35833,6 +36708,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /links.get:
     get:
       description: Gets the requested link's information.
@@ -35872,6 +36748,7 @@ paths:
         - links
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: LinksGetQuery
     post:
       description: Gets the requested link's information.
@@ -35909,6 +36786,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /links.list:
     get:
       description: Lists the available links.
@@ -35976,7 +36854,8 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/link-endpoint-type'
-        - description: |
+        - deprecated: true
+          description: |
             The link types to filter for, otherwise if not present, all link
             types are included.
           explode: false
@@ -36011,6 +36890,7 @@ paths:
         - links
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: LinksListQuery
     post:
       description: Lists the available links.
@@ -36046,6 +36926,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /links.replace:
     post:
       description: Replaces a link.
@@ -36081,6 +36962,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /meetings.count:
     get:
       description: Counts the meeting records.
@@ -36160,7 +37042,8 @@ paths:
             items:
               type: string
               format: id
-        - description: Filters for meetings with the provided parent.
+        - deprecated: true
+          description: Filters for meetings with the provided parent.
           explode: false
           in: query
           name: parent
@@ -36213,6 +37096,7 @@ paths:
         - meetings
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: MeetingsCountQuery
     post:
       description: Counts the meeting records.
@@ -36248,6 +37132,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /meetings.create:
     post:
       description: Creates a new meeting record.
@@ -36283,6 +37168,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /meetings.delete:
     post:
       description: Deletes the meeting record.
@@ -36320,6 +37206,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /meetings.get:
     get:
       description: Gets the meeting record.
@@ -36359,6 +37246,7 @@ paths:
         - meetings
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: MeetingsGetQuery
     post:
       description: Gets the meeting record.
@@ -36396,6 +37284,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /meetings.list:
     get:
       description: Lists the meeting records.
@@ -36499,7 +37388,8 @@ paths:
             items:
               type: string
               format: id
-        - description: Filters for meetings with the provided parent.
+        - deprecated: true
+          description: Filters for meetings with the provided parent.
           explode: false
           in: query
           name: parent
@@ -36562,6 +37452,7 @@ paths:
         - meetings
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: MeetingsListQuery
     post:
       description: Lists the meeting records.
@@ -36597,6 +37488,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /meetings.update:
     post:
       description: Updates the meeting record.
@@ -36634,6 +37526,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metric-action.execute:
     post:
       description: Executes the metric action on the given object.
@@ -36671,6 +37564,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metric-definitions.create:
     post:
       description: Creates a custom metric definition
@@ -36706,6 +37600,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metric-definitions.delete:
     post:
       description: Deletes a custom metric definition
@@ -36743,6 +37638,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metric-definitions.get:
     get:
       description: Gets a custom metric definition
@@ -36788,6 +37684,7 @@ paths:
         - slas
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: MetricDefinitionsGetQuery
     post:
       description: Gets a custom metric definition
@@ -36823,6 +37720,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metric-definitions.list:
     get:
       description: Lists metric definitions matching a filter.
@@ -36919,6 +37817,7 @@ paths:
         - slas
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: MetricDefinitionsListQuery
     post:
       description: Lists metric definitions matching a filter.
@@ -36954,6 +37853,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metric-definitions.update:
     post:
       description: Updates a custom metric definition
@@ -36991,6 +37891,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metric-trackers.get:
     get:
       description: Gets a metric tracker.
@@ -37039,6 +37940,7 @@ paths:
         - slas
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: MetricTrackersGetQuery
     post:
       description: Gets a metric tracker.
@@ -37076,6 +37978,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /metrics.devrev.ingest:
     post:
       description: Ingest endpoint for DevRev metrics data from clients.
@@ -37107,6 +38010,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /notifications.send:
     post:
       description: Generate a notification.
@@ -37142,6 +38046,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /org-schedule-fragments.create:
     post:
       description: Creates an organization schedule fragment.
@@ -37177,6 +38082,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedule-fragments.get:
     get:
       description: Gets an organization schedule fragment.
@@ -37214,6 +38120,7 @@ paths:
         - schedules
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: OrgScheduleFragmentsGetQuery
     post:
       description: Gets an organization schedule fragment.
@@ -37249,6 +38156,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedule-fragments.transition:
     post:
       description: Changes stage of an organization schedule fragment.
@@ -37284,6 +38192,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedules.create:
     post:
       description: |
@@ -37321,6 +38230,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedules.evaluate:
     get:
       description: Evaluates an organization's schedule at specified instants.
@@ -37371,6 +38281,7 @@ paths:
         - schedules
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: OrgSchedulesEvaluateQuery
     post:
       description: Evaluates an organization's schedule at specified instants.
@@ -37406,6 +38317,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedules.get:
     get:
       description: Gets an organization schedule.
@@ -37443,6 +38355,7 @@ paths:
         - schedules
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: OrgSchedulesGetQuery
     post:
       description: Gets an organization schedule.
@@ -37478,6 +38391,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedules.list:
     get:
       description: Gets list of organization schedules.
@@ -37550,6 +38464,7 @@ paths:
         - schedules
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: OrgSchedulesListQuery
     post:
       description: Gets list of organization schedules.
@@ -37585,6 +38500,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedules.set-future:
     post:
       description: |
@@ -37622,6 +38538,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedules.transition:
     post:
       description: Publishes or archives an organization schedule.
@@ -37657,6 +38574,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /org-schedules.update:
     post:
       description: Updates an organization schedule.
@@ -37694,6 +38612,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /parts.create:
     post:
       description: Creates new [part](https://devrev.ai/docs/product/parts).
@@ -37729,6 +38648,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /parts.delete:
     post:
       description: Deletes a [part](https://devrev.ai/docs/product/parts).
@@ -37766,6 +38686,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /parts.get:
     get:
       description: |
@@ -37807,6 +38728,7 @@ paths:
         - parts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: PartsGetQuery
     post:
       description: |
@@ -37845,6 +38767,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /parts.list:
     get:
       description: |
@@ -38027,6 +38950,17 @@ paths:
           name: mode
           schema:
             $ref: '#/components/schemas/list-mode'
+        - description: Filters for parts modified by any of these users.
+          explode: false
+          in: query
+          name: modified_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+              format: id
         - description: Filters for parts of the provided name(s).
           explode: false
           in: query
@@ -38069,6 +39003,15 @@ paths:
               type: string
               format: id
             minItems: 1
+        - description: Filters for subtypes.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Filters for part with any of the provided tags.
           explode: false
           in: query
@@ -38112,6 +39055,7 @@ paths:
         - parts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: PartsListQuery
     post:
       description: |
@@ -38148,6 +39092,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /parts.update:
     post:
       description: |
@@ -38186,6 +39131,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /preferences.get:
     get:
       description: Get the preferences object.
@@ -38242,6 +39188,7 @@ paths:
         - preferences
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: PreferencesGetQuery
     post:
       description: Get the preferences object.
@@ -38279,6 +39226,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /preferences.update:
     post:
       description: Updates the preference for a particular object.
@@ -38316,6 +39264,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /question-answers.create:
     post:
       description: Creates a question-answer.
@@ -38351,6 +39300,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /question-answers.delete:
     post:
       description: Deletes a question-answer.
@@ -38384,6 +39334,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /question-answers.get:
     get:
       description: Gets a question-answer.
@@ -38423,6 +39374,7 @@ paths:
         - question-answers
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: GetQuestionAnswerQuery
     post:
       description: Gets a question-answer.
@@ -38460,6 +39412,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /question-answers.list:
     get:
       description: Lists a collection of question-answers.
@@ -38564,6 +39517,7 @@ paths:
         - question-answers
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: ListQuestionAnswersQuery
     post:
       description: Lists a collection of question-answers.
@@ -38599,6 +39553,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /question-answers.update:
     post:
       description: Updates a question-answer.
@@ -38636,6 +39591,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /reactions.list:
     get:
       description: Lists the reactors for an object.
@@ -38701,6 +39657,7 @@ paths:
         - works
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ReactionsListQuery
     post:
       description: Lists the reactors for an object.
@@ -38737,6 +39694,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /reactions.update:
     post:
       description: Updates a reaction for an object.
@@ -38773,6 +39731,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /recommendations.chat.completions:
     post:
       description: Returns a response for the chat conversation.
@@ -38808,6 +39767,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
       x-fern-streaming:
         format: sse
   /recommendations.get-reply:
@@ -38845,6 +39805,85 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
+  /record-templates.get:
+    get:
+      description: Gets a record template object.
+      operationId: record-template-get
+      parameters:
+        - description: The ID of the record template.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/record-template-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Record Template
+      tags:
+        - record-templates
+      x-fern-audiences:
+        - docs
+      x-fern-availability: beta
+      x-request-name: RecordTemplateGetQuery
+    post:
+      description: Gets a record template object.
+      operationId: record-template-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/record-template-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/record-template-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Record Template (POST)
+      tags:
+        - record-templates
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: beta
   /rev-orgs.create:
     post:
       description: |
@@ -38885,6 +39924,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-orgs.delete:
     post:
       description: Deletes the Rev organization.
@@ -38922,6 +39962,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-orgs.get:
     get:
       description: Retrieves the Rev organization's information.
@@ -38971,6 +40012,7 @@ paths:
         - rev-orgs
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: RevOrgsGetQuery
     post:
       description: Retrieves the Rev organization's information.
@@ -39008,6 +40050,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-orgs.list:
     get:
       description: |
@@ -39181,6 +40224,7 @@ paths:
         - rev-orgs
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: RevOrgsListQuery
     post:
       description: |
@@ -39222,6 +40266,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-orgs.update:
     post:
       description: Updates the Rev organization's information.
@@ -39261,6 +40306,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-users.associations.add:
     post:
       description: |
@@ -39300,6 +40346,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /rev-users.associations.list:
     get:
       description: Returns a list of associations on a Rev user.
@@ -39365,6 +40412,7 @@ paths:
         - rev-users
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: RevUsersAssociationsListQuery
     post:
       description: Returns a list of associations on a Rev user.
@@ -39402,6 +40450,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /rev-users.associations.remove:
     post:
       description: |
@@ -39441,6 +40490,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /rev-users.create:
     post:
       description: |
@@ -39481,6 +40531,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-users.delete:
     post:
       description: Deletes a Rev user.
@@ -39518,6 +40569,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-users.delete-personal-data:
     post:
       description: Deletes data of a contact.
@@ -39558,6 +40610,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /rev-users.get:
     get:
       description: Returns the Rev user of a Rev organization by its ID.
@@ -39597,6 +40650,7 @@ paths:
         - rev-users
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: RevUsersGetQuery
     post:
       description: Returns the Rev user of a Rev organization by its ID.
@@ -39634,6 +40688,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-users.link:
     post:
       deprecated: true
@@ -39673,6 +40728,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: deprecated
   /rev-users.list:
     get:
       description: |
@@ -39870,6 +40926,7 @@ paths:
         - rev-users
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: RevUsersListQuery
     post:
       description: |
@@ -39910,6 +40967,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-users.merge:
     post:
       description: Merges the secondary Rev user into the primary Rev user.
@@ -39949,6 +41007,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-users.personal-data:
     post:
       description: Retrieves data of a contact.
@@ -39989,6 +41048,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /rev-users.scan:
     get:
       description: Scans through all Rev users.
@@ -40157,6 +41217,7 @@ paths:
         - rev-users
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: RevUsersScanQuery
     post:
       description: Scans through all Rev users.
@@ -40194,6 +41255,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /rev-users.unlink:
     post:
       deprecated: true
@@ -40233,6 +41295,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: deprecated
   /rev-users.update:
     post:
       description: Updates a Rev user.
@@ -40272,6 +41335,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /roles.apply:
     post:
       description: Assigns or revokes roles of a principal.
@@ -40309,6 +41373,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /roles.create:
     post:
       description: Creates a new role.
@@ -40344,6 +41409,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.aggregated.get:
     get:
       description: Gets the aggregated schema.
@@ -40354,12 +41420,27 @@ paths:
           explode: false
           in: query
           name: custom_schema_fragment_ids
-          required: true
           schema:
             type: array
             items:
               type: string
               format: id
+        - description: List of apps.
+          explode: false
+          in: query
+          name: custom_schema_spec.apps
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Name of the subtype.
+          explode: false
+          in: query
+          name: custom_schema_spec.subtype
+          schema:
+            type: string
+            format: text
         - description: Whether the leaf type corresponds to a custom object.
           explode: false
           in: query
@@ -40408,6 +41489,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: AggregatedSchemaGetQuery
     post:
       description: Gets the aggregated schema.
@@ -40445,6 +41527,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.custom.get:
     get:
       description: Gets a custom schema fragment.
@@ -40484,6 +41567,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomSchemaFragmentsGetQuery
     post:
       description: Gets a custom schema fragment.
@@ -40521,6 +41605,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.custom.list:
     get:
       description: Lists custom schema fragments.
@@ -40544,16 +41629,24 @@ paths:
           schema:
             type: string
             format: text
-        - description: Whether only deprecated fragments should be filtered.
+        - deprecated: true
+          description: Whether only deprecated fragments should be filtered.
           explode: false
           in: query
           name: deprecated
           schema:
             type: boolean
+            deprecated: true
         - description: Whether the leaf type corresponds to a custom object
           explode: false
           in: query
           name: is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: Whether the fragment has been deprecated.
+          explode: false
+          in: query
+          name: is_deprecated
           schema:
             type: boolean
         - description: The list of leaf types.
@@ -40641,6 +41734,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomSchemaFragmentsListQuery
     post:
       description: Lists custom schema fragments.
@@ -40676,6 +41770,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.custom.set:
     post:
       description: Creates or updates a custom schema fragment.
@@ -40711,6 +41806,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.stock.get:
     get:
       description: Gets a stock schema fragment.
@@ -40756,6 +41852,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: StockSchemaFragmentsGetQuery
     post:
       description: Gets a stock schema fragment.
@@ -40793,6 +41890,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.stock.list:
     get:
       description: Lists stock schema fragments.
@@ -40883,6 +41981,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: StockSchemaFragmentsListQuery
     post:
       description: Lists stock schema fragments.
@@ -40918,12 +42017,14 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.subtypes.list:
     get:
       description: Lists subtypes.
       operationId: subtypes-list
       parameters:
-        - description: Leaf type for which subtypes are required.
+        - deprecated: true
+          description: Leaf type for which subtypes are required.
           explode: false
           in: query
           name: leaf_type
@@ -40964,6 +42065,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: SubtypesListQuery
     post:
       description: Lists subtypes.
@@ -40999,6 +42101,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /schemas.subtypes.prepare-update:
     post:
       description: |
@@ -41037,6 +42140,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /search.core:
     get:
       description: Searches for records based on a given query.
@@ -41123,6 +42227,7 @@ paths:
         - search
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: SearchCoreQuery
     post:
       description: Searches for records based on a given query.
@@ -41158,6 +42263,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /search.hybrid:
     get:
       description: |
@@ -41226,6 +42332,7 @@ paths:
         - search
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: SearchHybridQuery
     post:
       description: |
@@ -41262,6 +42369,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /service-accounts.create:
     post:
       description: Creates a service account.
@@ -41299,6 +42407,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /service-accounts.get:
     get:
       description: Gets a service account.
@@ -41340,6 +42449,7 @@ paths:
         - service-accounts
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ServiceAccountsGetQuery
     post:
       description: Gets a service account.
@@ -41379,6 +42489,47 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
+  /service-accounts.update:
+    post:
+      description: Updates a service account.
+      operationId: service-accounts-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service-accounts-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/service-accounts-update-response'
+          description: |
+            The response object that carries the updated service account's
+            information.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Service Account
+      tags:
+        - service-accounts
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: beta
   /sla-trackers.get:
     get:
       description: Gets an SLA tracker.
@@ -41418,6 +42569,7 @@ paths:
         - slas
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: SlaTrackersGetQuery
     post:
       description: Gets an SLA tracker.
@@ -41455,6 +42607,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /sla-trackers.list:
     get:
       description: Lists SLA trackers matching a filter.
@@ -41575,6 +42728,7 @@ paths:
         - slas
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: SlaTrackersListQuery
     post:
       description: Lists SLA trackers matching a filter.
@@ -41610,6 +42764,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /sla-trackers.remove-metric:
     post:
       description: Removes a metric from the given object's SLA.
@@ -41647,6 +42802,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /slas.assign:
     post:
       description: ' Assigns the SLA to a set of Rev organizations.'
@@ -41684,6 +42840,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /slas.create:
     post:
       description: Creates an SLA in draft status.
@@ -41719,6 +42876,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /slas.get:
     get:
       description: Gets an SLA.
@@ -41758,6 +42916,7 @@ paths:
         - slas
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: SlasGetQuery
     post:
       description: Gets an SLA.
@@ -41795,6 +42954,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /slas.list:
     get:
       description: Lists SLAs matching a filter.
@@ -41889,6 +43049,7 @@ paths:
         - slas
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: SlasListQuery
     post:
       description: Lists SLAs matching a filter.
@@ -41924,6 +43085,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /slas.transition:
     post:
       description: Changes the status of an SLA.
@@ -41961,6 +43123,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /slas.update:
     post:
       description: Updates a draft SLA.
@@ -41998,6 +43161,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /snap-ins.resources:
     get:
       description: Gets snap-in resources for a user in a snap-in.
@@ -42043,6 +43207,7 @@ paths:
         - snap-ins
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: SnapInsResourcesQuery
     post:
       description: Gets snap-in resources for a user in a snap-in.
@@ -42078,6 +43243,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /snap-ins.update:
     post:
       description: Updates a snap-in.
@@ -42115,6 +43281,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /snap-kit-action.execute.deferred:
     post:
       description: Executes deferred snap-kit actions.
@@ -42150,6 +43317,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /snap-widgets.create:
     post:
       description: Create a snap widget object.
@@ -42185,6 +43353,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /stage-diagrams.create:
     post:
       description: Creates a stage diagram.
@@ -42220,6 +43389,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /stage-diagrams.get:
     get:
       description: Gets a stage diagram.
@@ -42275,6 +43445,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: StageDiagramsGetQuery
     post:
       description: Gets a stage diagram.
@@ -42312,6 +43483,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /stage-diagrams.list:
     get:
       description: Lists stage diagrams.
@@ -42392,6 +43564,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: StageDiagramsListQuery
     post:
       description: Lists stage diagrams.
@@ -42427,6 +43600,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /stage-diagrams.update:
     post:
       description: Updates a stage diagram.
@@ -42464,6 +43638,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /stages.custom.create:
     post:
       description: Creates a custom stage.
@@ -42499,6 +43674,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /stages.custom.get:
     get:
       description: Gets a custom stage.
@@ -42538,6 +43714,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomStagesGetQuery
     post:
       description: Gets a custom stage.
@@ -42575,6 +43752,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /stages.custom.list:
     get:
       description: Lists custom stages.
@@ -42648,6 +43826,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomStagesListQuery
     post:
       description: Lists custom stages.
@@ -42683,6 +43862,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /stages.custom.update:
     post:
       description: Updates a custom stage.
@@ -42720,6 +43900,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /states.custom.create:
     post:
       description: Creates a custom state.
@@ -42755,6 +43936,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /states.custom.get:
     get:
       description: Gets a custom state.
@@ -42794,6 +43976,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomStatesGetQuery
     post:
       description: Gets a custom state.
@@ -42831,6 +44014,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /states.custom.list:
     get:
       description: Lists custom states.
@@ -42910,6 +44094,7 @@ paths:
         - customization
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: CustomStatesListQuery
     post:
       description: Lists custom states.
@@ -42945,6 +44130,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /states.custom.update:
     post:
       description: Updates a custom state.
@@ -42982,6 +44168,142 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
+  /subscribers.list:
+    get:
+      description: Lists subscribers of an object.
+      operationId: subscribers-list
+      parameters:
+        - description: The object's ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            example: ISS-12345
+            format: id
+        - description: |
+            The cursor to resume iteration from, otherwise if not provided, then
+            iteration starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: |
+            The maximum number of subscribers to return. If not set or `<= 0`,
+            then this defaults to `50`.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/subscribers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Subscribers
+      tags:
+        - subscribers
+      x-fern-audiences:
+        - docs
+      x-fern-availability: beta
+      x-request-name: SubscribersListQuery
+    post:
+      description: Lists subscribers of an object.
+      operationId: subscribers-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/subscribers-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/subscribers-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Subscribers (POST)
+      tags:
+        - subscribers
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: beta
+  /subscribers.update:
+    post:
+      description: Updates subscribers on the object.
+      operationId: subscribers-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/subscribers-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/subscribers-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Subscriber
+      tags:
+        - subscribers
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: beta
   /surveys.create:
     post:
       description: |
@@ -43019,6 +44341,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /surveys.delete:
     post:
       description: Deletes the specified survey.
@@ -43056,6 +44379,81 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
+  /surveys.get:
+    get:
+      description: Gets a survey given the ID.
+      operationId: surveys-get
+      parameters:
+        - description: The ID of the survey to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Survey
+      tags:
+        - surveys
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: SurveysGetQuery
+    post:
+      description: Gets a survey given the ID.
+      operationId: surveys-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/surveys-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/surveys-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Survey (POST)
+      tags:
+        - surveys
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
   /surveys.list:
     get:
       description: List surveys requested by the user.
@@ -43141,6 +44539,7 @@ paths:
         - surveys
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: SurveysListQuery
     post:
       description: List surveys requested by the user.
@@ -43176,6 +44575,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /surveys.responses.list:
     get:
       description: List survey responses requested by the user.
@@ -43305,6 +44705,7 @@ paths:
         - surveys
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: SurveysResponsesListQuery
     post:
       description: List survey responses requested by the user.
@@ -43340,6 +44741,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /surveys.responses.update:
     post:
       description: |
@@ -43376,6 +44778,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /surveys.send:
     post:
       description: Sends a survey on the specified channels.
@@ -43411,6 +44814,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /surveys.submit:
     post:
       description: |
@@ -43447,6 +44851,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /surveys.update:
     post:
       description: Updates a survey's metadata.
@@ -43482,6 +44887,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /sys-users.list:
     get:
       description: Lists system users within your organization.
@@ -43547,6 +44953,7 @@ paths:
         - sys-users
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: SysUsersListQuery
     post:
       description: Lists system users within your organization.
@@ -43582,6 +44989,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /sys-users.update:
     post:
       description: Updates the system user.
@@ -43619,6 +45027,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /tags.create:
     post:
       description: |
@@ -43656,6 +45065,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /tags.delete:
     post:
       description: Deletes a tag.
@@ -43693,6 +45103,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /tags.get:
     get:
       description: Gets a tag's information.
@@ -43733,6 +45144,7 @@ paths:
         - tags
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: TagsGetQuery
     post:
       description: Gets a tag's information.
@@ -43770,6 +45182,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /tags.list:
     get:
       description: Lists the available tags.
@@ -43841,6 +45254,7 @@ paths:
         - tags
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: TagsListQuery
     post:
       description: Lists the available tags.
@@ -43876,6 +45290,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /tags.update:
     post:
       description: Updates a tag's information.
@@ -43913,6 +45328,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /timeline-entries.create:
     post:
       description: Creates a new entry on an object's timeline.
@@ -43950,6 +45366,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /timeline-entries.delete:
     post:
       description: Deletes an entry from an object's timeline.
@@ -43985,6 +45402,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /timeline-entries.get:
     get:
       description: Gets an entry on an object's timeline.
@@ -44036,6 +45454,7 @@ paths:
         - timeline-entries
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: TimelineEntriesGetQuery
     post:
       description: Gets an entry on an object's timeline.
@@ -44073,6 +45492,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /timeline-entries.list:
     get:
       description: Lists the timeline entries for an object.
@@ -44173,6 +45593,7 @@ paths:
         - timeline-entries
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: TimelineEntriesListQuery
     post:
       description: Lists the timeline entries for an object.
@@ -44210,6 +45631,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /timeline-entries.update:
     post:
       description: Updates an entry on an object's timeline.
@@ -44247,6 +45669,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /track-events.publish:
     post:
       description: Allows publishing of events (example from plug widget).
@@ -44282,6 +45705,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /uoms.count:
     get:
       description: |
@@ -44370,6 +45794,7 @@ paths:
         - uoms
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: UomsCountQuery
     post:
       description: |
@@ -44406,6 +45831,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /uoms.create:
     post:
       description: Creates a Unit of Measurement on a part.
@@ -44441,6 +45867,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /uoms.delete:
     post:
       description: Deletes a Unit of Measurement.
@@ -44474,6 +45901,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /uoms.get:
     get:
       description: Gets a Unit of Measurement.
@@ -44513,6 +45941,7 @@ paths:
         - uoms
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: UomsGetQuery
     post:
       description: Gets a Unit of Measurement.
@@ -44550,6 +45979,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /uoms.list:
     get:
       description: Gets the Unit of Measurements based on the given filters.
@@ -44674,6 +46104,7 @@ paths:
         - uoms
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: UomsListQuery
     post:
       description: Gets the Unit of Measurements based on the given filters.
@@ -44709,6 +46140,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /uoms.update:
     post:
       description: Updates a Unit of Measurement.
@@ -44746,6 +46178,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /web-crawler-jobs.control:
     post:
       description: |
@@ -44785,6 +46218,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /web-crawler-jobs.create:
     post:
       description: |
@@ -44822,6 +46256,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /web-crawler-jobs.get:
     get:
       description: Gets a web crawler job.
@@ -44861,6 +46296,7 @@ paths:
         - web-crawler-job
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: GetWebCrawlerJobQuery
     post:
       description: Gets a web crawler job.
@@ -44898,6 +46334,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /web-crawler-jobs.list:
     get:
       description: Lists web crawler jobs.
@@ -44965,6 +46402,7 @@ paths:
         - web-crawler-job
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: ListWebCrawlerJobsQuery
     post:
       description: Lists web crawler jobs.
@@ -45000,6 +46438,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /webhooks.create:
     post:
       description: Creates a new webhook target.
@@ -45035,6 +46474,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /webhooks.delete:
     post:
       description: Deletes the requested webhook.
@@ -45072,6 +46512,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /webhooks.event:
     post:
       description: |
@@ -45111,6 +46552,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /webhooks.fetch:
     post:
       description: Fetches an object via webhook.
@@ -45148,6 +46590,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /webhooks.get:
     get:
       description: Gets the requested webhook's information.
@@ -45188,6 +46631,7 @@ paths:
         - webhooks
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: WebhooksGetQuery
     post:
       description: Gets the requested webhook's information.
@@ -45225,6 +46669,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /webhooks.list:
     get:
       description: Lists the webhooks.
@@ -45253,6 +46698,7 @@ paths:
         - webhooks
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: WebhooksListQuery
     post:
       description: Lists the webhooks.
@@ -45288,6 +46734,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /webhooks.update:
     post:
       description: Updates the requested webhook.
@@ -45325,6 +46772,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /widgets.get:
     get:
       description: Returns the requested widget.
@@ -45362,6 +46810,7 @@ paths:
         - widgets
       x-fern-audiences:
         - docs
+      x-fern-availability: beta
       x-request-name: WidgetsGetQuery
     post:
       description: Returns the requested widget.
@@ -45397,6 +46846,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: beta
   /works.create:
     post:
       description: |
@@ -45436,6 +46886,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /works.delete:
     post:
       description: Deletes a work item.
@@ -45473,6 +46924,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /works.export:
     get:
       description: Exports a collection of work items.
@@ -45582,6 +47034,17 @@ paths:
             items:
               type: string
               format: text
+        - description: Filters for work modified by any of these users.
+          explode: false
+          in: query
+          name: modified_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+              format: id
         - description: |
             Filters for opportunities belonging to any of the provided accounts.
           explode: false
@@ -45762,6 +47225,16 @@ paths:
             items:
               type: string
               format: id
+        - description: |
+            Filters for tickets that are associated with any of the brands.
+          explode: false
+          in: query
+          name: ticket.brand
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for tickets with any of the provided channels.
           explode: false
           in: query
@@ -45846,6 +47319,17 @@ paths:
             items:
               type: string
               format: text
+        - description: |
+            Filters for tickets that are associated with any of the source
+            channels.
+          explode: false
+          in: query
+          name: ticket.source_channel_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for tickets with any of the provided subtypes.
           explode: false
           in: query
@@ -45887,6 +47371,7 @@ paths:
         - works
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: WorksExportQuery
     post:
       description: Exports a collection of work items.
@@ -45922,6 +47407,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /works.get:
     get:
       description: Gets a work item's information.
@@ -45962,6 +47448,7 @@ paths:
         - works
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: WorksGetQuery
     post:
       description: Gets a work item's information.
@@ -45999,6 +47486,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /works.list:
     get:
       description: Lists a collection of work items.
@@ -46124,6 +47612,17 @@ paths:
           name: mode
           schema:
             $ref: '#/components/schemas/list-mode'
+        - description: Filters for work modified by any of these users.
+          explode: false
+          in: query
+          name: modified_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+              format: id
         - description: |
             Filters for opportunities belonging to any of the provided accounts.
           explode: false
@@ -46304,6 +47803,16 @@ paths:
             items:
               type: string
               format: id
+        - description: |
+            Filters for tickets that are associated with any of the brands.
+          explode: false
+          in: query
+          name: ticket.brand
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for tickets with any of the provided channels.
           explode: false
           in: query
@@ -46388,6 +47897,17 @@ paths:
             items:
               type: string
               format: text
+        - description: |
+            Filters for tickets that are associated with any of the source
+            channels.
+          explode: false
+          in: query
+          name: ticket.source_channel_v2
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filters for tickets with any of the provided subtypes.
           explode: false
           in: query
@@ -46429,6 +47949,7 @@ paths:
         - works
       x-fern-audiences:
         - docs
+      x-fern-availability: generally-available
       x-request-name: WorksListQuery
     post:
       description: Lists a collection of work items.
@@ -46464,6 +47985,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
   /works.update:
     post:
       description: Updates a work item's information.
@@ -46501,6 +48023,7 @@ paths:
       x-fern-audiences:
         - docs
         - sdks
+      x-fern-availability: generally-available
 security:
   - auth-token: []
 servers:
@@ -46576,6 +48099,8 @@ tags:
     name: question-answers
   - description: Recommendations at DevRev.
     name: recommendations
+  - description: Record templates APIs.
+    name: record-templates
   - description: Rev organization interactions.
     name: rev-orgs
   - description: Rev user interactions.
@@ -46596,6 +48121,8 @@ tags:
     name: snap-kit-execution
   - description: SnapWidget APIs.
     name: snap-widgets
+  - description: Object subscribers APIs.
+    name: subscribers
   - description: Surveys APIs.
     name: surveys
   - description: System user interactions.

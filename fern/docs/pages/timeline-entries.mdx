@@ -9,7 +9,7 @@ You can use this to send any information about a customer like their last logged
 
 To send a restricted visibility message, follow the steps listed below:
 
-The payload to make a request would look like given below: 
+The payload to make a request would look like given below:
 
 <CodeBlock title="Payload">
 ```json {4-6}
@@ -20,12 +20,12 @@ The payload to make a request would look like given below:
         "private_to": [<list of user IDs>],
         "type": "timeline_comment"
     }
-``` 
+```
 </CodeBlock>
 
 * `object` must be of type string and contains `<partition>`, `<dev-org-id>`, and `<object-id>`.
 * `body` is of type string and contains the actual message to be posted.
-* `visibility` is set to `private` in order for the message to be visible only to users, `internal` is visible with the Dev organization, `external` is visible to the Dev organzation and customers, and `public` is visible to all. 
+* `visibility` is set to `private` in order for the message to be visible only to users, `internal` is visible with the Dev organization, `external` is visible to the Dev organzation and customers, and `public` is visible to all.
 * `type` should be `timeline_comment`.
 
 1. Get the [object ID](/api-reference/getting-started) and object type where you want to send a message.
@@ -44,15 +44,15 @@ In this example, you are using curl to make the requests but you can use any too
 
 <CodeBlock title="Request">
 ```bash
-curl -X POST -H "Content-Type: application/json" -d 
+curl -X POST -H "Content-Type: application/json" -d
 '{
     "object": "don:core:<partition>:devo/<dev-org-id>:<object-type>/<object-id>",
     "body": "message",
     "visibility": "private",
     "type": "timeline_comment"
-}' 
+}'
 'https://api.devrev.ai/timeline-entries.create' \
---header 'Authorization: <PAT>'
+--header 'Authorization: Bearer <PAT>'
 ```
 </CodeBlock>
 

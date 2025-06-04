@@ -19,7 +19,7 @@ flowchart TD
 acct-create[accounts.create]
 exist(((Account is existing
 'account ID')))
-list[rev-orgs.list with 
+list[rev-orgs.list with
 'account' filter]
 get[rev-orgs.get with
 'account ID']
@@ -52,7 +52,7 @@ The payload to make a request is given below:
    curl --location 'https://api.devrev.ai/accounts.create' \
     --header 'Content-Type: application/json' \
     --header 'Accept: application/json' \
-    --header 'Authorization: <PAT>' \
+    --header 'Authorization: Bearer <PAT>' \
     --data '{
         "display_name": "John Doe"
         }'
@@ -126,9 +126,9 @@ The payload to make a request is given below:
    }
    ```
 
-The response contains `"external_ref": "don:identity:dvrv-us-1:devo/<devo-id>:account/<acc-id>",`. The `external_ref` identifies the `devo` ID (Dev organization ID) as `devo/<devo-id>` and the `account` ID as `account/<acc-id>`. 
+The response contains `"external_ref": "don:identity:dvrv-us-1:devo/<devo-id>:account/<acc-id>",`. The `external_ref` identifies the `devo` ID (Dev organization ID) as `devo/<devo-id>` and the `account` ID as `account/<acc-id>`.
 
-1. Check **Customers > Accounts** in the DevRev app to confirm that that account was created.
+1. Check **Customers > Accounts** in the DevRev app to confirm that the account was created.
 
    ![account](../img/account.png)
 
@@ -139,19 +139,19 @@ To create a contact associated with the account you created, follow the steps li
 Get the default rev org created along with the newly created account using the `rev-orgs.list` API:
 
     1. Make a GET/POST request to "https://api.devrev.ai/rev-orgs.list" using cURL with the `account` filter. Use the `external_ref` from the previous response as an `account` filter.
-    
+
        ```bash
         curl -X POST https://api.devrev.ai/rev-orgs.list \
-            -H "Authorization: <apiKey>" \
+            -H "Authorization: Bearer <apiKey>" \
             -H "Content-Type: application/json" \
             -d '{"account": [
                     "<external reference of the account>"
                 ]
             }'
        ```
-    
+
        It returns the following response:
-    
+
        ```json focus={19}
        {
          "rev_orgs": [
@@ -189,26 +189,26 @@ Get the default rev org created along with the newly created account using the `
          ]
        }
        ```
-    
+
        Note the `display_id` (example: `REV-abcd`) of the rev org from the response.
 
 - If there is an existing account then you can get the default rev org using the `rev-orgs.get` API:
 
     - Make a GET request to "https://api.devrev.ai/rev-orgs.get" using cURL with the `account` filter.
-    
+
        ```bash
           curl -G https://api.devrev.ai/rev-orgs.get \
-               -H "Authorization: <apiKey>" \
+               -H "Authorization: Bearer <apiKey>" \
                -d account=ACC-12345 \
        ```
-    
+
 2. Make a POST request to "https://api.devrev.ai/rev-users.create" to create a rev-user.
 
    In the request, set `rev_org` to the value of the `display_id` from the previous reponse.
 
    ```bash
     curl -X POST https://api.devrev.ai/rev-users.create \
-        -H "Authorization: <apiKey>" \
+        -H "Authorization: Bearer <apiKey>" \
         -H "Content-Type: application/json" \
         -d '{
             "rev_org": "<rev org display-id>"

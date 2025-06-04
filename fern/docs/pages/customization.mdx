@@ -61,7 +61,7 @@ Make sure to replace `<TOKEN>` with your API token.
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "description": "Attributes for tracking a bug",
@@ -105,7 +105,7 @@ _bug_-flavored _issue_ object to track it and assigns a relevant owner.
 ```curl {11-17}
 curl --location 'https://api.devrev.ai/works.create' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "issue",
     "title": "API failure in Prod",
@@ -138,7 +138,7 @@ a subtype-specific field.
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "tenant_fragment",
     "description": "Tenant attributes for issues",
@@ -160,7 +160,7 @@ Populate the release notes in the issue object created above:
 ```curl {8-13}
 curl --location 'https://api.devrev.ai/works.update' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "id": "don:core:dvrv-us-1:devo/test:issue/1",
     "type": "issue",
@@ -239,7 +239,7 @@ to `true` and _impacted_environments_ containing `"Prod"`.
 ```curl
 curl --location 'https://api.devrev.ai/works.list' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": [ "issue" ],
     "issue": {
@@ -275,7 +275,7 @@ and delete the _regression_ field.
 ```curl {28-36}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "description": "Attributes for tracking a bug",
@@ -359,7 +359,7 @@ _regression_ field is dropped in the response.
 ```curl {16-18, 21}
 curl --location 'https://api.devrev.ai/works.get' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "id": "don:core:dvrv-us-1:devo/test:issue/2"
 }'
@@ -414,7 +414,7 @@ organization:
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.list' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>'
+--header 'Authorization: Bearer <TOKEN>'
 ```
 
 Deprecated fragments aren't listed in the response.
@@ -458,7 +458,7 @@ fragment with the following payload:
 ```curl
 curl --location 'https://api.devrev.ai/internal/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
   "type": "tenant_fragment",
   "leaf_type": "issue",
@@ -540,7 +540,7 @@ You want to add a new stage _Needs RCA_ to the _bug_ subtype.
 ```curl
 curl --location 'https://api.devrev.ai/stages.custom.create' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "name": "Needs RCA",
     "state": "closed",
@@ -581,7 +581,7 @@ backl --> dev --> rca --> compl
 ```curl {11}
 curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "leaf_type": "issue",
     "subtype": "bug",
@@ -629,7 +629,7 @@ The stage diagram created above can be referenced in the _bug_ subtype as follow
 ```curl {9}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "leaf_type": "issue",
@@ -654,7 +654,7 @@ _completed_ stage by adding a dependent field constraint.
 ```curl {12-22}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "leaf_type": "issue",

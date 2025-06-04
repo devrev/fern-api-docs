@@ -1,32 +1,10 @@
-This section describes the process of integrating the DevRev SDK with your React Native app.
-
-## Installation
-
-To install the DevRev SDK, run the following command:
-
-```sh
-npm install @devrev/sdk-react-native
-```
-
-## Set up the DevRev SDK
-
-In DevRev, go to **Settings** > **PLuG Chat** copy the value under **Your unique App ID**. After obtaining the credentials, you can configure the DevRev SDK in your app. 
-
-<Callout intent="note">
-The DevRev SDK must be configured before you can use any of its features.
-</Callout>
-
-The SDK will be ready for use once you execute the following configuration method.
-
-```typescript
-DevRev.configure(appID: string)
-```
+# Features
 
 ## Identification
 
 To access certain features of the DevRev SDK, user identification is required.
 
-The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID:)` method.
+The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID)` method.
 
 <Callout intent="note">
 On iOS, if you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
@@ -42,33 +20,51 @@ You can select from the following methods to identify users within your applicat
 
 The anonymous identification method allows you to create an anonymous user with an optional user identifier, ensuring that no other data is stored or associated with the user.
 
-```typescript
-DevRev.identifyAnonymousUser(userID: string)
+```javascript
+DevRev.identifyAnonymousUser(successCallback, errorCallback)
 ```
 
 ### Unverified identification
 
 The unverified identification method identifies users with a unique identifier, but it does not verify their identity with the DevRev backend.
 
-```typescript
-DevRev.identifyUnverifiedUser(userID: string, organizationID?: string)
+```javascript
+DevRev.identifyUnverifiedUser(identity, successCallback, errorCallback)
+```
+
+### Verified identification
+
+The verified identification method identifies users with a unique identifier and verifies their identity with the DevRev backend.
+
+```javascript
+DevRev.identifyVerifiedUser(identity, successCallback, errorCallback)
 ```
 
 ### Update the user
 
 You can update the user's information using the following method:
 
-```typescript
-DevRev.updateUser(identity: Identity)
+```javascript
+DevRev.updateUser(identity, successCallback, errorCallback)
 ```
 
 <Callout intent="note">
 The `userID` property cannot be updated.
 </Callout>
 
+### Logout
+
+You can log out the current user by using the following method:
+
+```javascript
+DevRev.logout(deviceID, successCallback, errorCallback)
+```
+
+The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
+
 ## PLuG support chat
 
-Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen. 
+Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
 
 <Callout intent="note">
 This functionality requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
@@ -76,45 +72,35 @@ This functionality requires the SDK to be configured and the user to be identifi
 
 To show the support chat screen in your app, you can use the following method:
 
-```typescript
-DevRev.showSupport()
+```javascript
+DevRev.showSupport(successCallback, errorCallback)
 ```
 
 ### Creating a new support conversation
 
 You can initiate a new support conversation directly from your app. This method displays the support chat screen and simultaneously creates a new conversation.
 
-```typescript
-DevRev.createSupportConversation()
+```javascript
+DevRev.createSupportConversation(isAnimated, successCallback, errorCallback)
 ```
 
-### In-app link handling
+## In-app link handling
 
-In some instances, links opened from the support chat are displayed within the app rather than in a browser. You can manage whether the chat modal should close after a link is opened by using the following method:
+The DevRev SDK provides a mechanism to handle links opened from within any screen that is part of the DevRev SDK.
 
-```typescript
-DevRev.setShouldDismissModalsOnOpenLink(value: boolean)
+You can fully customize the link handling behavior by setting the specialized in-app link handler. That way you can decide what should happen when a link is opened from within the app.
+
+```javascript
+DevRev.setInAppLinkHandler(handler, successCallback, errorCallback)
 ```
 
-Setting this flag to `true` applies the system's default behavior for opening links, which includes dismissing any DevRev modal screens to facilitate handling your own deep links.
+You can further customize the behavior by setting the `setShouldDismissModalsOnOpenLink` boolean flag. This flag controls whether the DevRev SDK should dismiss the top-most modal screen when a link is opened.
 
-### In-app link callback
-
-<Callout intent="note">
-This functionality is for Android only.
-</Callout>
-
-For scenarios where custom handling is needed, links from the support chat can be captured with the following method:
-
-```typescript
-DevRevSDK.setInAppLinkHandler((url) => {
-	// Perform an action here.
-});
+```javascript
+DevRev.setShouldDismissModalsOnOpenLink(value, successCallback, errorCallback)
 ```
 
-If a custom handler is not defined, all external and in-app links from the support chat will open using the system's default browser, such as Chrome.
-
- ## Analytics
+## Analytics
 
 The DevRev SDK allows you to send custom analytic events by using a properties map. You can track these events using the following function:
 
@@ -122,8 +108,8 @@ The DevRev SDK allows you to send custom analytic events by using a properties m
 This functionality requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
 </Callout>
 
-```typescript
-DevRev.trackEvent(name: string, properties?: Map<string, string>)
+```javascript
+DevRev.trackEvent(name, properties, successCallback, errorCallback)
 ```
 
 ## Session analytics
@@ -134,14 +120,14 @@ The DevRev SDK offers session analytics features to help you understand how user
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
-```typescript
-DevRev.stopAllMonitoring()
+```javascript
+DevRev.stopAllMonitoring(successCallback, errorCallback)
 ```
 
 To opt back in, use the following method:
 
-```typescript
-DevRev.resumeAllMonitoring()
+```javascript
+DevRev.resumeAllMonitoring(successCallback, errorCallback)
 ```
 
 ### Session recording
@@ -156,23 +142,23 @@ The session recording feature includes the following methods to control the reco
 
 | Method                                                               | Action                                                    |
 |--------------------------------------------------------------------|-----------------------------------------------------------|
-|`DevRev.startRecording()`   | Starts the session recording.                             |
-|`DevRev.stopRecording()`    | Ends the session recording and uploads it to the portal. |
-|`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
-|`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
+|`DevRev.startRecording(successCallback, errorCallback)`   | Starts the session recording.                             |
+|`DevRev.stopRecording(successCallback, errorCallback)`    | Ends the session recording and uploads it to the portal. |
+|`DevRev.pauseRecording(successCallback, errorCallback)`   | Pauses the ongoing session recording.                     |
+|`DevRev.resumeRecording(successCallback, errorCallback)`  | Resumes a paused session recording.                       |
 
 ### Session properties
 
 You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a map of string values.
 
-```typescript
-DevRev.addSessionProperties(properties: Map<string, string>)
+```javascript
+DevRev.addSessionProperties(properties, successCallback, errorCallback)
 ```
 
 To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
 
-```typescript
-DevRev.clearSessionProperties()
+```javascript
+DevRev.clearSessionProperties(successCallback, errorCallback)
 ```
 
 ### Masking sensitive data
@@ -181,14 +167,14 @@ To protect sensitive data, the DevRev SDK provides an auto-masking feature that 
 
 While the auto-masking feature may be sufficient for most situations, you can manually mark additional views as sensitive using the following method:
 
-```typescript
-DevRev.markSensitiveViews(tags: any[])
+```javascript
+DevRev.markSensitiveViews(tags, successCallback, errorCallback)
 ```
 
 If any previously masked views need to be unmasked, you can use the following method:
 
-```typescript
-DevRev.unmarkSensitiveViews(tags: any[])
+```javascript
+DevRev.unmarkSensitiveViews(tags, successCallback, errorCallback)
 ```
 
 ### Timers
@@ -199,22 +185,22 @@ The mechanism utilizes balanced start and stop methods, both of which accept a t
 
 To start a timer, use the following method:
 
-```typescript
-DevRev.startTimer(name: string, properties: Map<string, string>)
+```javascript
+DevRev.startTimer(name, properties, successCallback, errorCallback)
 ```
 
 To stop a timer, use the following method:
 
-```typescript
-DevRev.stopTimer(name: string, properties: Map<string, string>)
+```javascript
+DevRev.endTimer(name, properties, successCallback, errorCallback)
 ```
 
 ### Screen tracking
 
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although view controllers are automatically tracked, you can manually track screens using the following method:
 
-```typescript
-DevRev.trackScreen(name: string)
+```javascript
+DevRev.trackScreenName(screenName, successCallback, errorCallback)
 ```
 
 ## Push notifications
@@ -225,7 +211,7 @@ The DevRev backend sends push notifications to your app to alert users about new
 
 ### Configuration
 
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notification) section.
 
 ### Register for push notifications
 
@@ -235,8 +221,8 @@ Push notifications require SDK configuration and user identification, whether un
 
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
 
-```typescript
-DevRevSDK.registerDeviceToken(deviceToken: string, deviceID: string)
+```javascript
+DevRev.registerDeviceToken(deviceToken, deviceID, successCallback, errorCallback)
 ```
 
 On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNS) token.
@@ -247,12 +233,9 @@ If your app no longer needs to receive push notifications, you can unregister th
 
 Use the following method to unregister the device:
 
-```typescript
-DevRevSDK.unregisterDevice(deviceID: string)
+```javascript
+DevRev.unregisterDevice(deviceID, successCallback, errorCallback)
 ```
-
-The method requires the device identifier, which should be the same as the one used when registering the device.
-
 
 ### Processing push notifications
 
@@ -262,39 +245,62 @@ On Android, notifications are implemented as data messages to offer flexibility.
 
 To process the notification, use the following method:
 
-```typescript
-DevRevSDK.processPushNotification(payload: string)
+```javascript
+DevRev.processPushNotification(payload, successCallback, errorCallback)
 ```
 
 Here, the `message` object from the notification payload should be passed to this function.
 
 For example:
 
-```typescript
+```javascript
 const notificationPayload = {
-	// message may be nested based on the notification library
 	"message": {
-		// ... (the entire message object)
+		"title": "New Message",
+		"body": "You have received a new message.",
+		"data": {
+			"messageId": "12345",
+			"sender": "John Doe"
+		}
 	}
 };
+
 const messageJson = notificationPayload["message"];
-DevRevSDK.processPushNotification(JSON.stringify(messageJson));
+
+DevRev.processPushNotification(messageJson, function() {
+	console.log("Push notification processed successfully.");
+}, function(error) {
+	console.error("Failed to process push notification:", error);
+});
 ```
+
 #### iOS
 
 On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions. 
 
-```typescript
-DevRevSDK.processPushNotification(payload: string)
+```javascript
+DevRev.processPushNotification(payload, successCallback, errorCallback)
 ```
 
 For example:
 
-```typescript
-DevRevSDK.processPushNotification(JSON.stringify(payload));
+```javascript
+const notificationPayload = {
+	"message": {
+		"title": "New Message",
+		"body": "You have received a new message.",
+		"data": {
+			"messageId": "12345",
+			"sender": "John Doe"
+		}
+	}
+};
+
+const messageJson = notificationPayload["message"];
+
+DevRev.processPushNotification(messageJson, function() {
+	console.log("Push notification processed successfully.");
+}, function(error) {
+	console.error("Failed to process push notification:", error);
+});
 ```
-
-## License
-
-Apache 2.0
-

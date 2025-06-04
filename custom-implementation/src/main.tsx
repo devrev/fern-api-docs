@@ -7,6 +7,8 @@ import React from 'react'
 
 import Header from './components/header'
 import Footer from './components/footer'
+
+import { Search } from './components/search'
 import { ThemeSwitch } from './components/theme-switch'
 
 import { getPageData } from './modules/sanity/utils'
@@ -22,16 +24,28 @@ const render = async () => {
    */
 
   const data = await getPageData()
+
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
-  if (!document.getElementById('theme-switch')) {
+  if (!document.getElementById('sidenav-header-wrapper')) {
+    const sidenavHeaderWrapper = document.createElement('div')
+    sidenavHeaderWrapper.setAttribute('id', 'sidenav-header-wrapper')
+    sidenav.appendChild(sidenavHeaderWrapper)
+
+    const search = document.createElement('div')
+    search.setAttribute('id', 'search-component')
+    sidenavHeaderWrapper.appendChild(search)
+    ReactDOM.render(React.createElement(Search), search)
+
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
-    sidenav.appendChild(wrapper)
+    sidenavHeaderWrapper.appendChild(wrapper)
     ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+
+    sidenav.replaceWith(sidenavHeaderWrapper)
   }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
@@ -92,11 +106,46 @@ const render = async () => {
       if (footer) footer.style.display = 'block'
     },
   )
+
+  // Add Plug component directly to body
+  if (!document.getElementById('plug-platform')) {
+    const plugScript = document.createElement('script')
+    plugScript.setAttribute('type', 'text/javascript')
+    plugScript.setAttribute('id', 'plug-platform')
+    plugScript.setAttribute('src', 'https://plug-platform.devrev.ai/static/plug.js')
+    document.body.appendChild(plugScript)
+    
+    // Initialize Plug SDK after script loads
+    plugScript.onload = () => {
+      if ((window as any).plugSDK) {
+        (window as any).plugSDK?.init?.({
+          app_id: data?.plug?.id,
+          enable_session_recording: true,
+        });
+        
+        // Wait for the widget to be ready before adding event listeners
+        (window as any).plugSDK.onEvent((payload: any) => {
+          if(payload.type === "ON_PLUG_WIDGET_READY") {
+            // Initialize search agent after widget is ready
+            (window as any).plugSDK.initSearchAgent();
+            
+            // Add keyboard shortcut for search agent
+            document.addEventListener("keydown", function(event) {
+              // Check if event.key is defined before accessing it
+              if (event && event.key === "/") {
+                event.preventDefault();
+                (window as any).plugSDK.toggleSearchAgent();
+              }
+            });
+          }
+        }); 
+      }
+    }
+  }
 }
 
 let observations = 0
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('DOMContentLoaded')
   await render()
   new MutationObserver(async (e, o) => {
     await render()

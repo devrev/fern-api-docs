@@ -1,7 +1,25 @@
 Initial domain mapping is a process that establishes relationships between 
-external data schemas and DevRev's native record types. This mapping is configured
-once and then becomes available to all users of your integration,
+external data schemas and DevRev's native record types. 
+This mapping is configured once and then becomes available to all users of your snap-in,
 allowing them to import data while maintaining semantic meaning from their source systems.
+
+The initial domain mapping is installed with your snap-in.
+On each snap-in version update, function to upload these mappings to the Airdrop
+system is triggered.
+
+## Approaches
+
+You can create initial domain mappings using two methods:
+
+1. **Chef-cli UI**: Interactive web interface for comprehensive mapping creation
+2. **Model Context Protocol (MCP)**: AI-assisted mapping creation for developers (experimental)
+
+Choose the chef-cli UI for manual control or use MCP for rapid prototyping with AI assistance.
+MCP is an experimental feature and works locally without requiring a sync to be created.
+
+<Info>
+For AI-assisted mapping creation, see the [Model Context Protocol integration guide](./mcp.mdx).
+</Info>
 
 ## Chef-cli initial domain mapping setup
 
@@ -91,7 +109,7 @@ After the blueprint of the test import is completed, the *Install in this org* b
 
 By repeating this process (run a new import, create a different configuration, merge to the initial mappings), you can create an initial mapping that contains multiple options for the user to choose from.
 
-Finally, the Export button allows you to retrieve the `initial_domain_mapping.json`.
+Finally, when all the fields are mapped without deficiencies and the blueprint is installed, the Export button allows you to retrieve the `initial_domain_mapping.json`.
 
 <Tip>
 You can also provide a local metadata file to the command using the `-m` flag, for example: 

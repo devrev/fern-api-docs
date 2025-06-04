@@ -9,7 +9,14 @@ sync units that it can extract from the external system API and send it to Airdr
 
 External sync unit extraction is executed only during the initial import.
 
-### Implementation
+## Triggering event
+
+Airdrop starts the external sync unit extraction by sending a message with the event type `EXTRACTION_EXTERNAL_SYNC_UNITS_START`.
+
+The snap-in must reply to Airdrop with an `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE` message when finished, 
+or `EXTRACTION_EXTERNAL_SYNC_UNITS_ERROR` if an error occurs.
+
+## Implementation
 
 This phase should be implemented in the [`external-sync-units-extraction.ts`](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/external-sync-units-extraction.ts) file.
 
@@ -51,5 +58,7 @@ await adapter.emit(ExtractorEventType.ExtractionExternalSyncUnitsError, {
   },
 });
 ```
+
+**The snap-in must always emit a single message.**
 
 To test your changes, start a new airdrop in the DevRev App. If external sync units extraction is successful, you should be prompted to choose an external sync unit from the list.

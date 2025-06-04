@@ -15,15 +15,15 @@ def main(vrn, d):
         outfile.write(p)
         print(f"Wrote prompt to {pr_file}.")
 
+    print('Sending request to LLM.')
     l = llm_client.get_response(p)
-
     log_file = f"./fern/apis/{vrn}/changelog/{d}.md"
-    if (l):
+    if (l) and 'Error' not in l.partition('\n')[0]:
         with open(log_file, 'w', encoding="utf-8") as outfile:
-            outfile.write(l)
+            outfile.write(llm_client.get_lines_between_tags(l, 'changelog'))
             print(f"Wrote log to {log_file}.")
     else:
-        print(f"Failed to generate {log_file}.")
+        print(f"Failed to generate {log_file}. No response from LLM.")
 
 
 
@@ -32,7 +32,7 @@ def gen_prompt(oasdiff, links, version):
         oasdiff = infile.read()
 
     prompt = f"""
-Please provide an API changelog for the {version} API from the following OASDiff of OpenAPI spec changes. The output should be in markdown format grouping endpoints by use case/object type. For cases where some schema is modified, please also tell what endpoints it affects. Wherever an endpoint, property, or enum value is mentioned, surround it with backticks (`). Wherever an API is mentioned, include a hyperlink to the corresponding path from `<api_links>` section.
+Please provide an API changelog for the {version} API from the following OASDiff of OpenAPI spec changes. The output should be in markdown format grouping endpoints by use case/object type. For cases where some schema is modified, please also tell what endpoints it affects. Wherever an endpoint, property, or enum value is mentioned, surround it with backticks (`). Use only H2 and H3 headings. Wherever an API is mentioned, include a hyperlink to the corresponding path from `<api_links>` section. Place the changelog in a `<changelog>` element in your response so I can parse it out.
 
 <oasdiff>
 {oasdiff}

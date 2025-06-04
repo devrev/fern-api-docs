@@ -27997,7 +27997,7 @@ components:
     auth-token:
       type: http
       description: |-
-        All the DevRev APIs require a token to authenticate the user. Provide `Authorization: <token>` as a header to every API request.
+        All the DevRev APIs require a token to authenticate the user. Provide `Authorization: Bearer <TOKEN>` as a header to every API request.
          [How do I find my token?](https://devrev.ai/docs/apis/auth)
       scheme: bearer
       x-fern-bearer:

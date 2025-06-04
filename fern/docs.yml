@@ -52,25 +52,34 @@ versions:
     slug: beta
 
 redirects:
-  - source: /public/sdks/plug/methods
-    destination: /public/sdks/web/methods
+  - source: /:path*/sdks/plug/methods
+    destination: /:path*/sdks/web/methods
     permanent: true
-  - source: /sdks/plug/methods
-    destination: /sdks/web/methods
+  - source: /:path*/sdks/plug/methods
+    destination: /:path*/sdks/web/methods
     permanent: true
-  - source: /sdks/plug/install-ios
-    destination: /sdks/mobile/ios
+  - source: /:path*/sdks/plug/install-ios
+    destination: /:path*/sdks/ios
     permanent: true
-  - source: /sdks/plug/install-android
-    destination: /sdks/mobile/android
+  - source: /:path*/sdks/plug/install-android
+    destination: /:path*/sdks/android
     permanent: true
-  - source: /snap-in-development/:slug*
-    destination: /snapin-development/:slug*
+  - source: /:path*/snap-in-development/:slug*
+    destination: /:path*/snapin-development/:slug*
     permanent: true
-  - source: /public/snap-in-development/:slug*
-    destination: /public/snapin-development/:slug*
+  - source: /:path*/web/overview
+    destination: /:path*/sdks
     permanent: true
-    
+  - source: /:path*/sdks/mobile/:slug*
+    destination: /:path*/sdks/:slug*
+    permanent: true    
+  - source: /:path*/snapin-development/adaas/:slug*
+    destination: /:path*/airdrop/:slug*
+    permanent: true 
+  - source: /:path*/airdrop/overview
+    destination: /:path*/airdrop
+    permanent: true   
+
 analytics:
   ga4:
     measurement-id: G-XP1LEFVYQ9

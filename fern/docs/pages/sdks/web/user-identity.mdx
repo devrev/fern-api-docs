@@ -64,7 +64,7 @@ Ensure that you follow the specified format when providing your phone number.
 
 ## Pass custom attributes
 
-To create custom attributes, see [Object customization](https://devrev.ai/docs/product/object-customization).
+To create custom attributes, see [Object customization](https://developer.devrev.ai/beta/guides/object-customization).
 
 You can pass the custom attributes that are created as shown below:
 ```json
@@ -88,14 +88,14 @@ If you prefer a two-level structure, where users are directly associated with an
 |`display_name`   |The name of the user that's shown on the widget.   |string   |
 |`phone_numbers`   |The mobile number of the customer.   |array   |
 
-**Attributes for workspaces**                                              
+**Attributes for workspaces**
 
 |Attributes   |Description   |Type   |
 |---|---|---|
 |`workspace_ref`   |A unique reference for the user's workspace. If not provided, and an account reference is passed, the user is directly attached to the account.   |string   |
 |`display_name`   |The name of the workspace that's shown on the widget.   |string   |
 
-**Attributes for accounts**                                                        
+**Attributes for accounts**
 
 |Attributes   |Description   |Type   |
 |---|---|---|
@@ -104,7 +104,7 @@ If you prefer a two-level structure, where users are directly associated with an
 |`domains`   |The domain names of the accounts that the users belongs to.   |array   |
 | `phone_numbers`    |The phone number associated with the account.   |array   |
 
-## Pass the session token 
+## Pass the session token
 
 While initializing the PLuG widget you pass the session token for DevRev to identify this user and thereby make the widget more customized for the user and their context.
 

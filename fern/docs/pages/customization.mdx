@@ -38,7 +38,7 @@ _issue_ would have all _issue_ fields plus _bug_-specific fields like _RCA_.
 
 Subtypes are defined using a schema fragment of type `custom_type_fragment`.
 
-## Customizing a DevRev object
+## Customize a DevRev object
 <Callout intent="note">
 Let's say you want to track bugs across various environments in your organization.
 </Callout>
@@ -348,7 +348,7 @@ The object now references the latest fragment version (`custom_type_fragment/2`)
 the optional release notes field is absent, the tenant fragment remains attached,
 allowing for future tenant-specific field additions.
 
-## Deprecating a custom schema fragment
+## Deprecate a custom schema fragment
 
 Custom schema fragments can be deprecated to avoid creating work items using them. The
 following POST request payload to `schemas.custom.set` can be used:
@@ -366,7 +366,7 @@ following POST request payload to `schemas.custom.set` can be used:
 }
 ```
 
-## Listing custom schema fragments
+## List custom schema fragments
 
 The following API call can be used to list all the custom schema fragments in your
 organization:
@@ -503,7 +503,7 @@ and _closed_ states in your organization.
 Let's say you want to add a new stage _Needs RCA_ to the _bug_ subtype.
 </Callout>
 
-### Adding a custom stage
+### Add a custom stage
 
 ```curl
 curl --location 'https://api.devrev.ai/stages.custom.create' \
@@ -592,7 +592,7 @@ curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 It is important to specify the start stage for the diagram. This is the default stage that gets assigned to the newly created objects.
 </Callout>
 
-### Using a stage diagram
+### Apply a stage diagram
 
 The stage diagram created above can be referenced in the _bug_ subtype as follows:
 

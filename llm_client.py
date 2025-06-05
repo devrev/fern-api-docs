@@ -21,40 +21,34 @@ def get_response(prompt):
             r = requests.post('https://openwebui.dev.devrev-eng.ai/api/chat/completions', json=payload,
                             headers=headers)
             r.raise_for_status()
-            print(r)
 
             if not r.text:
                 raise ValueError("Empty response received from API")
-            else:
-                response = r.json()
-
-            if not response.get('choices'):
+            json_response = r.json()
+            if not json_response.get('choices'):
                 raise ValueError("No 'choices' field in response")
-            if not response['choices'][0].get('message'):
+            if not json_response['choices'][0].get('message'):
                 raise ValueError("No 'message' field in response")
-            if not response['choices'][0]['message'].get('content'):
+            if not json_response['choices'][0]['message'].get('content'):
                 raise ValueError("No 'content' field in response")
-            else:
-                response = response['choices'][0]['message']['content']
             
+            response = json_response['choices'][0]['message']['content']
+            
+            # Check if final response is empty
             if not response:
-                raise ValueError("Empty content received from LLM.")
-            else:
-                print("Response received from LLM.")
-                return response
+                raise ValueError("Empty content received from API")
+                
+            return response
 
         except requests.RequestException as e:
-            msg = f"HTTP request failed. Error: {type(e)} {e}"
-            print(msg)
-            return msg
+            print(f"HTTP request failed. Error: {type(e)} {e}")
+            return None
         except ValueError as e:
-            msg = f"Invalid response received. Error: {e}"
-            print(msg)
-            return msg
+            print(f"Invalid response received. Error: {e}")
+            return None
         except Exception as e:
-            msg = f"Failed to generate response. Error: {type(e)} {e}"
-            print(msg)
-            return msg
+            print(f"Failed to generate response. Error: {type(e)} {e}")
+            return None
         
 def get_lines_between_tags(text, tag):
   pattern = r'<' + tag + r'>(.*?)<\/' + tag + r'>'

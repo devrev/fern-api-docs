@@ -18,7 +18,7 @@ def main(vrn, d):
     print('Sending request to LLM.')
     l = llm_client.get_response(p)
     log_file = f"./fern/apis/{vrn}/changelog/{d}.md"
-    if (l):
+    if (l) and 'Error' not in l.partition('\n')[0]:
         with open(log_file, 'w', encoding="utf-8") as outfile:
             outfile.write(llm_client.get_lines_between_tags(l, 'changelog'))
             print(f"Wrote log to {log_file}.")

@@ -15,6 +15,7 @@ export const SANITY_TYPES = {
 export const getPageData = async (): Promise<{
   header: object
   footer: object
+  plug: { id: string }
 }> => {
   const header = await CLIENT.fetch(
     `*[_type == 'headerV2' && slug.current == 'developer']{
@@ -28,5 +29,11 @@ export const getPageData = async (): Promise<{
       }[0]`,
   )
 
-  return { header, footer }
+  const plug = await CLIENT.fetch(
+    `*[_type == 'externalLink' && slug.current == 'devrev-plug-app-id']{
+         "id": href
+      }[0]`,
+  )
+
+  return { header, footer, plug }
 }

@@ -98,7 +98,8 @@ You can start receiving event notifications using the following steps:
 ### Webhook create request `[bash]`
 
 ```bash
-curl  --request POST 'https://api.devrev.ai/webhooks.create' --header "Authorization:token"
+curl  --request POST 'https://api.devrev.ai/webhooks.create'
+      --header "Authorization: Bearer <TOKEN>"
       --header 'Content-Type: application/json' --data-raw
       '{
          "event_types": ["work_created", "work_deleted"],

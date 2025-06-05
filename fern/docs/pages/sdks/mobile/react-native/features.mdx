@@ -1,26 +1,4 @@
-This section describes the process of integrating the DevRev SDK with your React Native app.
-
-## Installation
-
-To install the DevRev SDK, run the following command:
-
-```sh
-npm install @devrev/sdk-react-native
-```
-
-## Set up the DevRev SDK
-
-In DevRev, go to **Settings** > **PLuG Chat** copy the value under **Your unique App ID**. After obtaining the credentials, you can configure the DevRev SDK in your app. 
-
-<Callout intent="note">
-The DevRev SDK must be configured before you can use any of its features.
-</Callout>
-
-The SDK will be ready for use once you execute the following configuration method.
-
-```typescript
-DevRev.configure(appID: string)
-```
+# Features
 
 ## Identification
 
@@ -68,13 +46,11 @@ The `userID` property cannot be updated.
 
 ## PLuG support chat
 
-Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen. 
+Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
 
 <Callout intent="note">
 This feature requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
 </Callout>
-
-To show the support chat screen in your app, you can use the following method:
 
 ```typescript
 DevRev.showSupport()
@@ -90,13 +66,13 @@ DevRev.createSupportConversation()
 
 ### In-app link handling
 
-In certain cases, tapping links in the support chat opens them in the app instead of a browser. You can control whether the chat modal screen is dismissed after the link is opened by calling the following method:
+In certain cases, the links opened from the support chat are opened in the app instead of a browser. You can control whether the chat modal should be dismissed after the link is opened by calling the following method:
 
 ```typescript
 DevRev.setShouldDismissModalsOnOpenLink(value: boolean)
 ```
 
-Setting this flag to `true` applies the system's default behavior for opening links, which includes dismissing any DevRev modal screens to facilitate handling your own deep links.
+Setting this flag to true applies the system's default behavior for opening links, which includes dismissing any DevRev modal screens to facilitate handling your own deep links.
 
 ### In-app link callback
 
@@ -112,7 +88,13 @@ DevRevSDK.setInAppLinkHandler((url) => {
 });
 ```
 
-If a custom handler is not defined, all external and in-app links from the support chat will open using the system's default browser, such as Chrome.
+## Dynamic theme configuration (iOS only)
+
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+
+```swift
+DevRev.setPrefersSystemTheme(value: boolean)
+```
 
  ## Analytics
 
@@ -156,11 +138,11 @@ The session recording feature includes the following methods to control the reco
 
 | Method                                                               | Action                                                    |
 |--------------------------------------------------------------------|-----------------------------------------------------------|
-|`DevRev.startRecording()`   | Start the session recording.                             |
-|`DevRev.stopRecording()`    | Stop the session recording and upload it to the portal. |
-|`DevRev.pauseRecording()`   | Pause the ongoing session recording.                     |
-|`DevRev.resumeRecording()`  | Resume a paused session recording.                       |
-|`DevRev.processAllOnDemandSessions()`  | Stop the ongoing session recording and upload all offline sessions on demand, including the current one.|
+|`DevRev.startRecording()`   | Starts the session recording.                             |
+|`DevRev.stopRecording()`    | Stops the session recording and uploads it to the portal. |
+|`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
+|`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
+|`DevRev.processAllOnDemandSessions()`  | Stops the ongoing session recording and uploads all offline sessions on demand, including the current one.|
 
 ### Session properties
 
@@ -170,7 +152,7 @@ You can add custom properties to the session recording to help you understand th
 DevRev.addSessionProperties(properties: Map<string, string>)
 ```
 
-To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method:
 
 ```typescript
 DevRev.clearSessionProperties()
@@ -226,12 +208,12 @@ The DevRev backend sends push notifications to your app to notify users about ne
 
 ### Configuration
 
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](./push-notification) section.
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notification) section.
 
 ### Register for push notifications
 
 <Callout intent="note">
-To ensure delivery to the correct user, push notifications require that the SDK has been configured and the user has been identified.
+Push notifications require that the SDK has been configured and the user has been identified, to ensure delivery to the correct user.
 </Callout>
 
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
@@ -240,11 +222,11 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRevSDK.registerDeviceToken(deviceToken: string, deviceID: string)
 ```
 
-On Android devices, the `deviceToken` must be the Firebase Cloud Messaging (FCM) token value. On iOS devices, it must be the Apple Push Notification Service (APNs) token.
+On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
 
 ### Unregister from push notifications
 
-If your app no longer needs to receive push notifications, you can unregister the device. 
+If your app no longer needs to receive push notifications, you can unregister the device.
 
 Use the following method to unregister the device:
 
@@ -267,7 +249,7 @@ To process the notification, use the following method:
 DevRevSDK.processPushNotification(payload: string)
 ```
 
-Here, the `message` object from the notification payload should be passed to this function.
+Here, the `message` object from the notification payload needs to be passed to this function.
 
 For example:
 
@@ -283,7 +265,7 @@ DevRevSDK.processPushNotification(JSON.stringify(messageJson));
 ```
 #### iOS
 
-On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions. 
+On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
 
 ```typescript
 DevRevSDK.processPushNotification(payload: string)
@@ -295,6 +277,18 @@ For example:
 DevRevSDK.processPushNotification(JSON.stringify(payload));
 ```
 
-## License
+### Screen transition tracking (Android only)
 
-Apache 2.0
+On Android, the DevRev SDK provides methods to manually track the screen transitions.
+
+When a screen transition begins, you must call the following method:
+
+```typescript
+DevRev.startScreenTransition()
+```
+
+When a screen transition ends, you must call the following method:
+
+```typescript
+DevRev.endScreenTransition()
+```

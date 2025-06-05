@@ -216,6 +216,41 @@ be changed by the end user at any time, such as mandatory fields or custom field
     }
     ```
 
+    ### Mark record types as loadable
+
+    The record types that will be used in a 2-way sync must be marked with `is_loadable`. 
+    This will allow Airdrop to load the record types to the external system.
+
+    <Note>
+    When mapping record loadable record types use the `--reverse` flag with the `chef-cli configure-mappings` command.
+    </Note>
+
+
+    ```json {6,18}
+    {
+      "record_types":{
+        "issues_stock_epic":{
+          "name":"Epic",
+          "category":"issue",
+          "is_loadable": true
+        },
+        "issues_custom2321":{
+          "name":"Incident report",
+          "category":"issue"
+        },
+        "issues_custom2322":{
+          "name":"Problem",
+          "category":"issue"
+        },
+        "comments":{
+          "name":"Comment",
+          "is_loadable": true
+        }
+      }
+    }
+    ```
+
+
   ### Declare fields for each record type
 
     Fields' keys must match what is actually found in the extracted data in the artifacts.

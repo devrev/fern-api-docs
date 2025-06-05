@@ -36,6 +36,9 @@ const run = async (events: AirdropEvent[]) => {
       event,
       initialState: initialLoaderState,
       workerPath: file,
+      initialDomainMapping: {
+        /* your initial domain mapping JSON here */
+      },
       // options: {},
     });
   }
@@ -43,6 +46,12 @@ const run = async (events: AirdropEvent[]) => {
 
 export default run;
 ```
+
+<Note>
+  You must pass the <code>initialDomainMapping</code> parameter to{" "}
+  <code>spawn</code> when running loading phases. This ensures the correct
+  domain mapping is installed and used by the snap-in.
+</Note>
 
 ## State handling
 

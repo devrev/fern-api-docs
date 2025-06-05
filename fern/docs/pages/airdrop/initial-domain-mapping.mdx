@@ -36,7 +36,7 @@ or by running `make auth` in your snap-in repository.
 
 ### Add your token as an environment variable
    
-Obtain a PAT-token from the **Settings** > **Account** tab of the dev org where you deploy your snap-in, 
+Obtain a PAT-token from the **Settings** > **Account** tab of the org where you deploy your snap-in, 
 and export it as `DEVREV_TOKEN`. 
 
 You can also run the following command if you are authenticated with the CLI:
@@ -104,8 +104,8 @@ The Chef UI generates an `initial_domain_mapping.json` file that must be embedde
 
 Initial domain mappings provide two key configuration capabilities:
 
-1. **Multiple mapping options**: The developer can choose how external record types map to DevRev records (for example, external *task* can map to either *issue* or *ticket*).
-2. **Category-based defaults**: Mappings can apply to entire record type categories, automatically handling new record types.
+- **Multiple mapping options**: The developer can choose how external record types map to DevRev records (for example, external *task* can map to either *issue* or *ticket*).
+- **Category-based defaults**: Mappings can apply to entire record type categories, automatically handling new record types.
 
 <Steps>
 

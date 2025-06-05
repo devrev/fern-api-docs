@@ -47,7 +47,7 @@ _issue_ would have all _issue_ fields plus _bug_-specific fields like _RCA_.
 
 Subtypes are defined using a schema fragment of type `custom_type_fragment`.
 
-## Customizing a DevRev object
+## Customize a DevRev object
 <Callout intent="note">
 Your team needs to track software bugs. You want to know:
 - Which environments are affected (development, testing, production)
@@ -388,7 +388,7 @@ The object now references the latest fragment version (`custom_type_fragment/2`)
 the optional release notes field is absent, the tenant fragment remains attached,
 allowing for future tenant-specific field additions.
 
-## Deprecating a custom schema fragment
+## Deprecate a custom schema fragment
 
 Custom schema fragments can be deprecated to avoid creating work items using them. The
 following POST request payload to `schemas.custom.set` can be used:
@@ -406,7 +406,7 @@ following POST request payload to `schemas.custom.set` can be used:
 }
 ```
 
-## Listing custom schema fragments
+## List custom schema fragments
 
 The following API call can be used to list all the custom schema fragments in your
 organization:
@@ -431,10 +431,16 @@ hints:
 * `is_sortable`: Whether the field is sortable. Requires `is_filterable` to be true.
 * `is_groupable`: Whether the field is groupable. Requires `is_filterable` to be true.
 * `order`: The order in which the field appears in the side panel.
+* `is_read_only`: Whether the field is read-only in the UI. Once the object is created, this
+  field cannot be updated in the UI.
 * `group_name`: The group title under which field(s) appear in the side panel. In the
   example below, the fields are grouped under groups titled **Group 1** and **Group 2**.
 
   ![customization-group_name-ui-hint](../img/customization-group_name-ui-hint.png)
+* `unit`: The unit for the field. For example, days, kg. The unit is displayed
+  in the side panel as shown below:
+
+  ![customization-unit-ui-hint](../img/customization-unit-ui-hint.png)
 
 <Callout intent="tip">
 `is_filterable` is not a UI hint but a top level field property.
@@ -535,7 +541,7 @@ and _closed_ states in your organization.
 You want to add a new stage _Needs RCA_ to the _bug_ subtype.
 </Callout>
 
-### Adding a custom stage
+### Add a custom stage
 
 ```curl
 curl --location 'https://api.devrev.ai/stages.custom.create' \
@@ -622,7 +628,7 @@ curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 It is important to specify the start stage for the diagram. This is the default stage that gets assigned to the newly created objects.
 </Callout>
 
-### Using a stage diagram
+### Apply a stage diagram
 
 The stage diagram created above can be referenced in the _bug_ subtype as follows:
 

@@ -177,7 +177,8 @@ window.plugSDK.addSessionProperties({
 
 ## Get session details
 
-You can use the `getSessionDetails` method to fetch the session ID and tab ID of currently ongoing session. These details can then be passed across different domains to maintain the journey as a single, continuous session.
+You can use the `getSessionDetails` method to fetch the session ID and tab ID of currently ongoing session. These details can then be passed across different domains to maintain the journey as a single, continuous session. For more details on how to fetch the session ID and tab ID, and pass them across different domains for a seamless journey, refer to [Cross-domain session tracking](https://devrev.ai/docs/plug/cross-domain-session).
+```jsx
 
 ```jsx
 const { sessionId, tabId } = window.plugSDK.getSessionDetails();

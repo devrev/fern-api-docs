@@ -39,13 +39,13 @@ A _sync unit_ is one self-encompassing unit of data that is synced to an externa
 - An organization Zendesk.
 
 In Jira, users often have multiple projects. Each project acts as an individual sync unit. 
-In contrast, Zendesk operates with a single large pool of tickets and agents. Here, the entire Zendesk instance can be synced in a single airdrop.
+In contrast, Zendesk operates with a single large pool of tickets and agents. Here, the entire Zendesk instance can be synced in a single import.
 
 ### Sync run
 
 Airdrop extractions are done in _sync runs_.
 A sync run is one end-to-end (extract-transform-load) execution of a _sync unit_.
-If you do an initial import from the external system to DevRev, that import will be one sync run.
+If you do an initial import from the external system to DevRev, that import is one sync run.
 Another import in the same direction is another sync run.
 And if you then decide to do a reverse sync from DevRev to the external system, that would be another
 sync run.

@@ -110,7 +110,7 @@ keyring_types:
 There are some options to consider:
 
 * `kind`  
-  The `kind` option can be either "secret" or "oauth2". The "secret" option is intended for storing various tokens, such as a PAT token. Use of OAuth2 is encouraged when possible. More information is available for [secret](/public/snapin-development/references/keyrings/secret-configuration) and [oauth2](/oauth-configuration).
+  The `kind` option can be either "secret" or "oauth2". The "secret" option is intended for storing various tokens, such as a PAT token. Use of OAuth2 is encouraged when possible. More information is available for [secret](/public/snapin-development/references/keyrings/secret-configuration) and [oauth2](/public/snapin-development/references/keyrings/oauth-configuration).
 
 * `is_subdomain`  
   The `is_subdomain` field relates to the API endpoints being called. When the endpoints for fetching data from an external system include a slug representing the organization—such as for example `https://subdomain.freshdesk.com/api/v2/tickets`—set this key to "true". In this scenario, users creating a new connection are prompted to insert the subdomain.

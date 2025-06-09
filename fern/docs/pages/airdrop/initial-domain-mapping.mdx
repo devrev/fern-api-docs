@@ -115,6 +115,12 @@ Use the chef-cli UI to map record types and fields.
 The UI will show you the record types that are available in the org and allow you to map them to the external record types.
 You should map one record type at a time.
 
+#### Mapping as custom object
+The system allows importing record types and categories as custom objects. To achieve this you have to select `new_custom_object` when mapping the record type. For each external record type mapped as a custom object, a new custom **Leaf type** will be defined in DevRev and a **Subtype** will automatically be created. For more details on customization concepts, please refer to the
+[Customization](../customization.mdx) and [Custom Objects](../custom-objects.mdx)  documentation.
+
+The field mapping works the same as for the stock DevRev types, with the difference being that there are significantly fewer fields to map. All the unmapped fields of the external record type will be created as custom fields.
+
 ### Specify fallback mappings
 
 For most required DevRev fields we require a fallback. This is used on object creation if the extractor doesn't provide a value.

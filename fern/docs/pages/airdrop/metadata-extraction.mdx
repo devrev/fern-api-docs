@@ -506,4 +506,61 @@ be changed by the end user at any time, such as mandatory fields or custom field
   - The `starting_stage` defines the initial stage for new object instances. This data should always be provided if available, otherwise the starting stage is selected alphabetically.
   - In current metadata format (v0.2.0), the order and human-readable name are taken from the enum values defined on the controlling field.
   - If the `states` field is not provided, default DevRev states are used: `open`, `in_progress`, and `closed`.
+
+  ### Declare custom link types
+
+  External record types that represent links between other record types can be imported as ***custom links***, which means that each delcared link type will be recreated in DevRev with the same names. This allows closer preservation of the original data without the need to map the links to DevRev's predefined link types.
+
+  To achieve this, the external record type needs to have an enum field defined that represents the link types and you need to declare a special field called `link_naming_data` in the record type. 
+
+  ```json
+  {
+    "fields": {
+        "type": {
+            "name": "Link Type",
+            "is_required": true,
+            "type": "enum",
+            "enum": {
+                "values": [
+                    {
+                        "key": "1",
+                        "name": "Parent Of"
+                    },
+                    {
+                        "key": "2",
+                        "name": "Related"
+                    },
+                    {
+                        "key": "3",
+                        "name": "Blocks"
+                    }
+                ]
+            }
+        }
+    },
+    "link_naming_data": {
+        "link_type_field": "type",
+        "link_direction_names": {
+            "1": {
+                "forward_name": "Parent of",
+                "backward_name": "Child of"
+            },
+            "2": {
+                "forward_name": "Relates To",
+                "backward_name": "Relates To"
+            },
+            "3": {
+                "forward_name": "Blocks",
+                "backward_name": "Is Blocked By"
+            }
+        }
+    }
+  }
+  ```
+
+  In the above example:
+  - The external *type* field is declared as the `link_type_field`.
+  - The `link_direction_names` provide a mapping of each value in the `link_type_field` to their directional names. `forward_name` and `backward_name` can be the same, but both are required.
+  - In current metadata format (v0.2.0), the human-readable name of the link type is taken from the enum values defined on the `link_type_field`. The linkable object types in DevRev will be defined based on the mappings of the *source_id* and *target_id* [fields](./supported-object-types.mdx#custom_link#).
+
 </Steps>

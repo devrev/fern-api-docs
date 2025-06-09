@@ -81,7 +81,7 @@ If you are also creating a bidirectional sync (DevRev to external system), to en
 chef-cli configure-mappings --env prod --reverse
 ```
 
-If your org is not in `US-East-1`, you have to override an environment variable to make sure the tool reaches the right server. For example:
+If your org is not in `US-East-1`, you h ave to override an environment variable to make sure the tool reaches the right server. For example:
 ```bash
 ACTIVE_PARTITION=dvrv-in-1 chef-cli configure-mappings --env prod
 ```
@@ -129,8 +129,9 @@ Follow the instructions to create your initial domain mapping.
 
 ### Merge configurations
 
-You can repeat the process for different record types and fields to create multiple mappings.
-In the install screen, you can merge new mappings with existing initial domain mappings.
+To create multiple mappings for different record types and fields, repeat this process:
+Create a new import, map the record types and fields, then install the mappings in your org.
+The install screen allows you to merge new mappings with existing initial domain mappings.
 
 ### Export the mapping file
 

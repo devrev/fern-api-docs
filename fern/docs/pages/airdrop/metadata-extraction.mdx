@@ -504,7 +504,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
   - If a status field has no explicit transitions but you still want a stage diagram, set `all_transitions_allowed` to `true`, which creates a diagram where all the defined stages can transition to each other.
   - External systems may categorize statuses (like Jira's status categories), which can be included in the diagram metadata (`states` in the example).
   - The `starting_stage` defines the initial stage for new object instances. This data should always be provided if available, otherwise the starting stage is selected alphabetically.
-  - In current metadata format (v0.2.0), the order and human-readable name are taken from the enum values defined on the controlling field.
+  - The order and human-readable name are taken from the enum values defined on the controlling field.
   - If the `states` field is not provided, default DevRev states are used: `open`, `in_progress`, and `closed`.
 
   ### Declare custom link types

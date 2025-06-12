@@ -115,6 +115,12 @@ Use the Chef UI to map record types and fields.
 The UI displays the external record types you defined in external domain metadata and allows you to map them to DevRev objects.
 Map one record type at a time, ensuring you map all required fields and as many optional fields as possible.
 
+#### Mapping as custom object
+The system allows importing record types and categories as custom objects. To achieve this you have to select `new_custom_object` when mapping the record type. For each external record type mapped as a custom object, a new custom **Leaf type** will be defined in DevRev and a **Subtype** will automatically be created. For more details on customization concepts, please refer to the
+[Customization](../customization.mdx) and [Custom Objects](../custom-objects.mdx)  documentation.
+
+The field mapping works the same as for the stock DevRev types, with the difference being that there are significantly fewer fields to map. All the unmapped fields of the external record type will be created as custom fields.
+
 ### Specify fallback mappings
 
 For some required DevRev fields a fallback is required.
@@ -147,6 +153,13 @@ You can provide a local metadata file for enhanced functionality:
 chef-cli configure-mappings --env prod -m metadata.json
 ```
 
+This enables:
+- Raw jq transformations using external fields as input (experimental)
+- Example input data for testing transformations
+
+<Warning>
+The local metadata file is not validated against the snap-in submission.
+</Warning>
 This enables:
 - Raw jq transformations using external fields as input (experimental)
 - Example input data for testing transformations

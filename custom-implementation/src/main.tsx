@@ -1,8 +1,7 @@
 import './main.css'
 import '@devrev/marketing-shared-components/dist/cjs/index.css'
 
-import ReactDOM from 'react-dom'
-
+import ReactDOM from 'react-dom/client'
 import React from 'react'
 
 import Header from './components/header'
@@ -10,25 +9,33 @@ import Footer from './components/footer'
 
 import { Search } from './components/search'
 import { ThemeSwitch } from './components/theme-switch'
-
 import { getPageData } from './modules/sanity/utils'
 
 const FERN_CONTENT_WRAPPER_ID = 'fern-header-content-wrapper'
 const DEVREV_CONTENT_WRAPPER_ID = 'devrev-header-content-wrapper'
-
 const FERN_HEADER_CONTAINER_ID = 'fern-header'
 
 const render = async () => {
+  console.log('Starting render function')
   /*
    * This is a where we try to make async data call.
    */
-
   const data = await getPageData()
-
+  console.log('Page data fetched:', data ? 'success' : 'failed')
+  
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined') {
+    console.log('Not in browser environment, exiting render')
+    return
+  }
+  
+  console.log('Looking for sidenav element')
   const sidenav = document.querySelector('button.fern-search-bar')
     ?.parentElement as HTMLElement
+  console.log('Sidenav found:', sidenav ? 'yes' : 'no')
 
-  const theme = document.getElementsByTagName('html')[0].getAttribute('class')
+  const theme = document.documentElement.getAttribute('class')
+  console.log('Current theme:', theme)
 
   if (!document.getElementById('sidenav-header-wrapper')) {
     const sidenavHeaderWrapper = document.createElement('div')
@@ -38,77 +45,142 @@ const render = async () => {
     const search = document.createElement('div')
     search.setAttribute('id', 'search-component')
     sidenavHeaderWrapper.appendChild(search)
-    ReactDOM.render(React.createElement(Search), search)
+    const searchRoot = ReactDOM.createRoot(search)
+    searchRoot.render(React.createElement(Search))
 
     const wrapper = document.createElement('div')
     wrapper.setAttribute('id', 'theme-switch')
     sidenavHeaderWrapper.appendChild(wrapper)
-    ReactDOM.render(React.createElement(ThemeSwitch), wrapper)
+    const themeRoot = ReactDOM.createRoot(wrapper)
+    themeRoot.render(React.createElement(ThemeSwitch))
 
     sidenav.replaceWith(sidenavHeaderWrapper)
   }
 
-  const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
-  const devrevHeaderId = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
-
-  if (!fernHeaderId && !devrevHeaderId) {
-    //  Main Container
-    const fernHeaderContainer = document.createElement('div')
-    fernHeaderContainer.setAttribute('id', FERN_HEADER_CONTAINER_ID)
-
-    //  Fern Header
-    const fernContentWrapper = document.createElement('div')
-    fernContentWrapper.setAttribute('id', FERN_CONTENT_WRAPPER_ID)
-
+  // Find the existing Fern header
+  console.log('Looking for Fern header')
+  const existingFernHeader = document.getElementById(FERN_HEADER_CONTAINER_ID)
+  console.log('Fern header found:', existingFernHeader ? 'yes' : 'no')
+  
+  if (existingFernHeader) {
+    // Check if our custom wrappers already exist
+    let fernContentWrapper = document.getElementById(FERN_CONTENT_WRAPPER_ID)
+    let devrevContentWrapper = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
+    console.log('Existing wrappers found:', {
+      fernWrapper: fernContentWrapper ? 'yes' : 'no',
+      devrevWrapper: devrevContentWrapper ? 'yes' : 'no'
+    })
+    
+    // If wrappers don't exist, create them
+    if (!fernContentWrapper) {
+      console.log('Creating Fern content wrapper')
+      fernContentWrapper = document.createElement('div')
+      fernContentWrapper.setAttribute('id', FERN_CONTENT_WRAPPER_ID)
+      
+      // Move all existing children to the Fern wrapper
+      console.log('Moving existing children to Fern wrapper')
+      while (existingFernHeader.firstChild) {
+        fernContentWrapper.appendChild(existingFernHeader.firstChild)
+      }
+      
+      existingFernHeader.appendChild(fernContentWrapper)
+      console.log('Fern content wrapper created and populated')
+    }
+    
+    if (!devrevContentWrapper) {
+      console.log('Creating DevRev content wrapper')
+      devrevContentWrapper = document.createElement('div')
+      devrevContentWrapper.setAttribute('id', DEVREV_CONTENT_WRAPPER_ID)
+      existingFernHeader.appendChild(devrevContentWrapper)
+      
+      // Render our custom header in the DevRev wrapper
+      console.log('Rendering custom header in DevRev wrapper')
+      const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
+      
+      // Remove display style forcing for production
+      // fernContentWrapper.style.display = 'block'
+      // devrevContentWrapper.style.display = 'block'
+      
+      // Pass header data to the component
+      headerRoot.render(
+        React.createElement(Header, {
+          version: theme === 'dark' ? 'light' : 'dark',
+          ...data.header
+        })
+      )
+      console.log('Custom header rendered')
+    } else {
+      // Update the header with current theme if it already exists
+      console.log('Updating existing header with current theme')
+      const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
+      headerRoot.render(
+        React.createElement(Header, {
+          version: theme === 'dark' ? 'light' : 'dark',
+          ...data.header
+        })
+      )
+    }
+    
+    // Make sure the header is visible
+    console.log('Making header visible')
+    existingFernHeader.style.display = 'block'
+  } else {
+    // If Fern header doesn't exist yet, create it
+    console.log('Fern header not found, creating it')
+    const newHeader = document.createElement('div')
+    newHeader.setAttribute('id', FERN_HEADER_CONTAINER_ID)
+    document.body.insertBefore(newHeader, document.body.firstChild)
+    
+    // Create DevRev content wrapper
     const devrevContentWrapper = document.createElement('div')
     devrevContentWrapper.setAttribute('id', DEVREV_CONTENT_WRAPPER_ID)
-
-    // Get existing fern-header element and its children
-    const mainHeaderWrapper = document.getElementById(FERN_HEADER_CONTAINER_ID)
-
-    if (mainHeaderWrapper) {
-      // Move all children to the wrapper
-      while (mainHeaderWrapper.firstChild) {
-        fernContentWrapper.appendChild(mainHeaderWrapper.firstChild)
-      }
-    }
-
-    fernHeaderContainer.appendChild(fernContentWrapper)
-    fernHeaderContainer.appendChild(devrevContentWrapper)
-
-    // Insert the new container where the original fern-header was
-    if (mainHeaderWrapper) {
-      mainHeaderWrapper.replaceWith(fernHeaderContainer)
-    } else {
-      document.body.appendChild(fernHeaderContainer)
-    }
-
-    ReactDOM.render(
+    newHeader.appendChild(devrevContentWrapper)
+    
+    // Render our custom header
+    console.log('Rendering custom header in new element')
+    const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
+    headerRoot.render(
       React.createElement(Header, {
-        ...data.header,
-        version: theme == 'dark' ? 'light' : 'dark',
-      }),
-      devrevContentWrapper,
-      () => {
-        // Once the header component is loaded, make it visible
-        const header = document.getElementById(FERN_HEADER_CONTAINER_ID)
-        if (header) header.style.display = 'block'
-      }
+        version: theme === 'dark' ? 'light' : 'dark',
+        ...data.header
+      })
     )
+    console.log('Custom header created and rendered')
   }
 
-  ReactDOM.render(
-    React.createElement(Footer, { ...data.footer }),
-    document.getElementById('fern-footer'),
-    () => {
+  // Handle footer rendering
+  console.log('Looking for footer element')
+  const footerElement = document.getElementById('fern-footer')
+  console.log('Footer element found:', footerElement ? 'yes' : 'no')
+  
+  if (footerElement) {
+    // Check if footer is already rendered
+    const hasChildren = footerElement.hasChildNodes()
+    console.log('Footer already has children:', hasChildren ? 'yes' : 'no')
+    
+    if (!hasChildren) {
+      console.log('Rendering footer component')
+      const footerRoot = ReactDOM.createRoot(footerElement)
+      footerRoot.render(React.createElement(Footer, { ...data.footer }))
+      
       // Once the footer component is loaded, make it visible
-      const footer = document.getElementById('fern-footer')
-      if (footer) footer.style.display = 'block'
-    },
-  )
-
-  // Add Plug component directly to body
-  if (!document.getElementById('plug-platform')) {
+      console.log('Making footer visible')
+      footerElement.style.display = 'block'
+    }
+  } else {
+    // Create footer if it doesn't exist
+    console.log('Creating new footer element')
+    const newFooter = document.createElement('div')
+    newFooter.setAttribute('id', 'fern-footer')
+    document.body.appendChild(newFooter)
+    
+    console.log('Rendering footer in new element')
+    const footerRoot = ReactDOM.createRoot(newFooter)
+    footerRoot.render(React.createElement(Footer, { ...data.footer }))
+    newFooter.style.display = 'block'
+    console.log('Footer created and rendered')
+  }
+    if (!document.getElementById('plug-platform')) {
     const plugScript = document.createElement('script')
     plugScript.setAttribute('type', 'text/javascript')
     plugScript.setAttribute('id', 'plug-platform')
@@ -142,38 +214,66 @@ const render = async () => {
       }
     }
   }
+  console.log('Render function completed')
 }
 
-let observations = 0
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', async () => {
-    await render()
-    setupMutationObserver()
-  })
-} else {
-  // DOM is already ready, run immediately
-  render().then(() => {
-    setupMutationObserver()
-  })
-}
-
-function setupMutationObserver() {
-  new MutationObserver(async (e, o) => {
-    await render()
-    for (const item of e) {
-      if (item.target instanceof HTMLElement) {
-        const target = item.target
-        if (target.id === 'fern-header' || target.id === 'fern-footer') {
-          if (observations < 3) {
-            // react hydration will trigger a mutation event
-            observations++
-          } else {
-            o.disconnect()
-          }
-          break
+// For Next.js App Router compatibility
+const initApp = () => {
+  console.log('Initializing app')
+  if (typeof window !== 'undefined') {
+    console.log('Browser environment detected')
+    
+    // Function to attempt rendering multiple times
+    const attemptRender = (attempts = 0, maxAttempts = 5) => {
+      console.log(`Render attempt ${attempts + 1} of ${maxAttempts}`)
+      render().then(() => {
+        // Check if header and footer are properly rendered
+        const header = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
+        const footer = document.getElementById('fern-footer')
+        const headerRendered = header && header.children.length > 0
+        const footerRendered = footer && footer.children.length > 0
+        
+        console.log('Render check:', {
+          headerRendered: headerRendered ? 'yes' : 'no',
+          footerRendered: footerRendered ? 'yes' : 'no'
+        })
+        
+        // If not rendered properly and we haven't reached max attempts, try again
+        if ((!headerRendered || !footerRendered) && attempts < maxAttempts - 1) {
+          console.log('Components not fully rendered, trying again in 500ms')
+          setTimeout(() => attemptRender(attempts + 1, maxAttempts), 500)
+        } else if (attempts >= maxAttempts - 1) {
+          console.log('Max render attempts reached')
+        } else {
+          console.log('Components successfully rendered')
         }
-      }
+      })
     }
-  }).observe(document.body, { childList: true, subtree: true })
+    
+    // Check if the DOM is already loaded
+    if (document.readyState === 'loading') {
+      console.log('DOM still loading, adding DOMContentLoaded listener')
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOMContentLoaded event fired')
+        attemptRender()
+      })
+    } else {
+      // DOM already loaded, render immediately
+      console.log('DOM already loaded, rendering immediately')
+      attemptRender()
+    }
+    
+    // Also add a window load event to ensure everything is rendered
+    window.addEventListener('load', () => {
+      console.log('Window load event fired')
+      render()
+    })
+  } else {
+    console.log('Not in browser environment, skipping initialization')
+  }
 }
+
+// Initialize the app
+console.log('Starting application initialization')
+initApp()
+

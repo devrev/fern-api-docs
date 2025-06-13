@@ -145,8 +145,20 @@ const render = async () => {
 }
 
 let observations = 0
-document.addEventListener('DOMContentLoaded', async () => {
-  await render()
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', async () => {
+    await render()
+    setupMutationObserver()
+  })
+} else {
+  // DOM is already ready, run immediately
+  render().then(() => {
+    setupMutationObserver()
+  })
+}
+
+function setupMutationObserver() {
   new MutationObserver(async (e, o) => {
     await render()
     for (const item of e) {
@@ -164,4 +176,4 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
   }).observe(document.body, { childList: true, subtree: true })
-})
+}

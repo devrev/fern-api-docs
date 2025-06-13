@@ -217,63 +217,40 @@ const render = async () => {
   console.log('Render function completed')
 }
 
-// For Next.js App Router compatibility
-const initApp = () => {
-  console.log('Initializing app')
-  if (typeof window !== 'undefined') {
-    console.log('Browser environment detected')
-    
-    // Function to attempt rendering multiple times
-    const attemptRender = (attempts = 0, maxAttempts = 5) => {
-      console.log(`Render attempt ${attempts + 1} of ${maxAttempts}`)
-      render().then(() => {
-        // Check if header and footer are properly rendered
-        const header = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
-        const footer = document.getElementById('fern-footer')
-        const headerRendered = header && header.children.length > 0
-        const footerRendered = footer && footer.children.length > 0
-        
-        console.log('Render check:', {
-          headerRendered: headerRendered ? 'yes' : 'no',
-          footerRendered: footerRendered ? 'yes' : 'no'
-        })
-        
-        // If not rendered properly and we haven't reached max attempts, try again
-        if ((!headerRendered || !footerRendered) && attempts < maxAttempts - 1) {
-          console.log('Components not fully rendered, trying again in 500ms')
-          setTimeout(() => attemptRender(attempts + 1, maxAttempts), 500)
-        } else if (attempts >= maxAttempts - 1) {
-          console.log('Max render attempts reached')
-        } else {
-          console.log('Components successfully rendered')
-        }
-      })
-    }
-    
-    // Check if the DOM is already loaded
-    if (document.readyState === 'loading') {
-      console.log('DOM still loading, adding DOMContentLoaded listener')
-      document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOMContentLoaded event fired')
-        attemptRender()
-      })
-    } else {
-      // DOM already loaded, render immediately
-      console.log('DOM already loaded, rendering immediately')
-      attemptRender()
-    }
-    
-    // Also add a window load event to ensure everything is rendered
-    window.addEventListener('load', () => {
-      console.log('Window load event fired')
-      render()
-    })
-  } else {
-    console.log('Not in browser environment, skipping initialization')
-  }
+let observations = 0
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', async () => {
+    await render()
+    setupMutationObserver()
+  })
+} else {
+  // DOM is already ready, run immediately
+  render().then(() => {
+    setupMutationObserver()
+  })
 }
 
-// Initialize the app
-console.log('Starting application initialization')
-initApp()
+function setupMutationObserver() {
+  new MutationObserver(async (e, o) => {
+    await render()
+    for (const item of e) {
+      if (item.target instanceof HTMLElement) {
+        const target = item.target
+        if (target.id === 'fern-header' || target.id === 'fern-footer') {
+          if (observations < 3) {
+            // react hydration will trigger a mutation event
+            observations++
+          } else {
+            o.disconnect()
+          }
+          break
+        }
+      }
+    }
+  }).observe(document.body, { childList: true, subtree: true })
+}
+
+
+
 

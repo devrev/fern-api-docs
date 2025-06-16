@@ -41,3 +41,34 @@ The SDK will be ready for use once you execute the following configuration metho
 ```typescript
 DevRev.configure(appID: string)
 ```
+
+## Sample app
+A sample app with use cases for the DevRev Expo plugin has been provided as a part of our [public repository](https://github.com/devrev/devrev-sdk-expo). To set up and run the sample app:
+
+1. Go to sample directory:
+  ```sh
+  cd sample
+  ```
+
+2. Install dependencies:
+   ```sh
+   yarn install
+   ```
+
+3. Run clean and prebuild:
+   ```sh
+   npx expo prebuild --clean
+   ```
+
+4. Run the app:
+   - **On Android**
+    ```sh
+    npx expo run:android
+    ```
+    OR open `android` in Android Studio and run the app.
+
+   - **On iOS**
+    ```sh
+    npx expo run:ios
+    ```
+    OR open `DevRevSDKSample.xcworkspace` in Xcode and run the app.

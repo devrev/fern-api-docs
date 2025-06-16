@@ -34,6 +34,9 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
     "type": "tenant_fragment",
     "description": "Attributes for Campaign",
     "leaf_type": "campaign",
+    "leaf_type_display_name": "Campaign",
+    "is_custom_leaf_type": true,
+    "id_prefix": "CAMP"
     "fields": [
         {
             "name": "name",
@@ -64,9 +67,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
                 "Students"
             ]
         }
-    ],
-    "is_custom_leaf_type": true,
-    "id_prefix": "CAMP"
+    ]
 }'
 ```
 

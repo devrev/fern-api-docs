@@ -30,3 +30,35 @@ The SDK will be ready for use once you execute the following configuration metho
 ```javascript
 DevRev.configure(appID, successCallback, errorCallback)
 ```
+
+## Sample app
+A sample app with use cases for the DevRev Cordova plugin has been provided as a part of our [public repository](https://github.com/devrev/devrev-sdk-cordova). To set up and run the sample app:
+
+```sh
+cd sample
+npm install
+cordova platform add android
+cordova platform add ios
+```
+
+- **On Android:**
+  ```sh
+  cordova run android
+  ```
+  OR open `platforms/android` in Android Studio and run the app.
+
+- **On iOS:**
+1. Open `platforms/ios/Podfile` and ensure it contains:
+   ```ruby
+   platform :ios, '15.0'
+   ```
+2. Install dependencies:
+   ```sh
+   cd platforms/ios
+   pod install
+   ```
+3. Run the app:
+   ```sh
+     cordova run ios
+   ```
+   OR open `DevRevSDKSample.xcworkspace` in Xcode and run the app.

@@ -41,24 +41,27 @@ cordova platform add android
 cordova platform add ios
 ```
 
-**On Android:**
-  ```sh
-  cordova run android
-  ```
-  OR open `platforms/android` in Android Studio and run the app.
-
-**On iOS:**
-1. Open `platforms/ios/Podfile` and ensure it contains:
-   ```ruby
-   platform :ios, '15.0'
-   ```
-2. Install dependencies:
-   ```sh
-   cd platforms/ios
-   pod install
-   ```
-3. Run the app:
-   ```sh
-     cordova run ios
-   ```
-   OR open `DevRevSDKSample.xcworkspace` in Xcode and run the app.
+<Tabs>
+  <Tab title="Android">
+    ```sh
+    cordova run android
+    ```
+    OR open `platforms/android` in Android Studio and run the app.
+  </Tab>
+  <Tab title="iOS">
+    1. Open `platforms/ios/Podfile` and ensure it contains:
+    ```ruby
+    platform :ios, '15.0'
+    ```
+    2. Install dependencies:
+    ```sh
+    cd platforms/ios
+    pod install
+    ```
+    3. Run the app:
+    ```sh
+    cordova run ios
+    ```
+    OR open `DevRevSDKSample.xcworkspace` in Xcode and run the app.
+  </Tab>
+</Tabs>

@@ -23,7 +23,7 @@ Let's say you want to manage marketing campaigns on DevRev. This guide goes thro
 
 All DevRev objects require a schema. First, create a schema for the "Campaign" custom object. Make sure to replace the `<TOKEN>` with your API token.
 
-### Create a schema and a custom object
+### Create custom objects
 
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
@@ -127,7 +127,7 @@ Note that the `id` field in the above response is the system generated unique ID
 
 The sections below provide more details on the available API endpoints for interacting with custom objects.
 
-### Get a custom object
+### Get custom objects
 
 To get a custom object, use the `custom-objects.get` endpoint:
 
@@ -160,7 +160,7 @@ curl --location 'https://api.devrev.ai/custom-objects.list' \
 }'
 ```
 
-### Update a custom object
+### Update custom objects
 
 To update an existing custom object, use the `custom-objects.update` endpoint. The
 following example updates the budget of the previously created campaign custom object:
@@ -178,7 +178,7 @@ curl --location 'https://api.devrev.ai/custom-objects.update' \
 }'
 ```
 
-### Delete a custom object
+### Delete custom objects
 
 To delete a custom object, use the `custom-objects.delete` endpoint.
 The following example deletes the previously created campaign custom object:

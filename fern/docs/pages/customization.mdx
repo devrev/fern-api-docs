@@ -47,7 +47,7 @@ _issue_ would have all _issue_ fields plus _bug_-specific fields like _RCA_.
 
 Subtypes are defined using a schema fragment of type `custom_type_fragment`.
 
-## Customize a DevRev object
+## Customize DevRev objects
 <Callout intent="note">
 Your team needs to track software bugs. You want to know:
 - Which environments are affected (development, testing, production)
@@ -226,7 +226,7 @@ The following custom field types are supported -
 The list variants of all the supported custom field types are also supported.
 In the example above, the `impacted_environments` field is a list of enum values.
 
-## Filtering DevRev objects
+## Filter DevRev objects
 
 <Callout intent="note">
 To demonstrate filtering capabilities, consider finding all bugs in the production
@@ -388,7 +388,7 @@ The object now references the latest fragment version (`custom_type_fragment/2`)
 the optional release notes field is absent, the tenant fragment remains attached,
 allowing for future tenant-specific field additions.
 
-## Deprecate a custom schema fragment
+## Deprecate custom schema fragments
 
 Custom schema fragments can be deprecated to avoid creating work items using them. The
 following POST request payload to `schemas.custom.set` can be used:
@@ -419,7 +419,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.list' \
 
 Deprecated fragments aren't listed in the response.
 
-## UI hints
+## Configure UI hints
 
 UI hints allow customizing the UI/UX of custom fields. So far, `ui.display_name` has
 been used to set the display name of a field. Let's look at the other supported UI
@@ -446,7 +446,7 @@ hints:
 `is_filterable` is not a UI hint but a top level field property.
 </Callout>
 
-## Stock field overrides
+## Override stock fields
 
 The fields available in native DevRev objects are called stock fields. For example,
 `priority` is a stock field of _issue_.
@@ -514,7 +514,7 @@ A few observations can be made from the above payload:
 If you want the overrides to be scoped to a subtype, you can add them to the subtype
 instead.
 
-## Stage customization
+## Customize stages
 
 Stages represent the different phases an object can be in during its lifecycle. For
 example, an issue might go through the following lifecycle:
@@ -541,7 +541,7 @@ and _closed_ states in your organization.
 You want to add a new stage _Needs RCA_ to the _bug_ subtype.
 </Callout>
 
-### Add a custom stage
+### Create custom stages
 
 ```curl
 curl --location 'https://api.devrev.ai/stages.custom.create' \
@@ -558,7 +558,7 @@ A stage can be referenced by any object type. For example, both _issue_ and _tic
 object types can use the _in_development_ stage. It's incorrect to say that the stage is
 bound to an _issue_ or _ticket_.
 
-### Stage diagram
+### Create stage diagrams
 
 A stage diagram determines the allowed transitions between stages for a given object.
 For example, _triage_ stage can transition to _backlog_ stage but not vice versa.
@@ -628,7 +628,7 @@ curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 It is important to specify the start stage for the diagram. This is the default stage that gets assigned to the newly created objects.
 </Callout>
 
-### Apply a stage diagram
+### Apply stage diagrams
 
 The stage diagram created above can be referenced in the _bug_ subtype as follows:
 
@@ -649,7 +649,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 
 All objects of the _bug_ subtype now adhere to the stage diagram created above.
 
-## Dependent fields
+## Configure dependent fields
 
 <Callout intent="note">
 The developers in your organization tend to forget to add an RCA when resolving the

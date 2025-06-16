@@ -47,7 +47,7 @@ _issue_ would have all _issue_ fields plus _bug_-specific fields like _RCA_.
 
 Subtypes are defined using a schema fragment of type `custom_type_fragment`.
 
-## Customizing a DevRev object
+## Customize DevRev objects
 <Callout intent="note">
 Your team needs to track software bugs. You want to know:
 - Which environments are affected (development, testing, production)
@@ -61,7 +61,7 @@ Make sure to replace `<TOKEN>` with your API token.
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "description": "Attributes for tracking a bug",
@@ -105,7 +105,7 @@ _bug_-flavored _issue_ object to track it and assigns a relevant owner.
 ```curl {11-17}
 curl --location 'https://api.devrev.ai/works.create' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "issue",
     "title": "API failure in Prod",
@@ -138,7 +138,7 @@ a subtype-specific field.
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "tenant_fragment",
     "description": "Tenant attributes for issues",
@@ -160,7 +160,7 @@ Populate the release notes in the issue object created above:
 ```curl {8-13}
 curl --location 'https://api.devrev.ai/works.update' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "id": "don:core:dvrv-us-1:devo/test:issue/1",
     "type": "issue",
@@ -226,7 +226,7 @@ The following custom field types are supported -
 The list variants of all the supported custom field types are also supported.
 In the example above, the `impacted_environments` field is a list of enum values.
 
-## Filtering DevRev objects
+## Filter DevRev objects
 
 <Callout intent="note">
 To demonstrate filtering capabilities, consider finding all bugs in the production
@@ -239,7 +239,7 @@ to `true` and _impacted_environments_ containing `"Prod"`.
 ```curl
 curl --location 'https://api.devrev.ai/works.list' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": [ "issue" ],
     "issue": {
@@ -275,7 +275,7 @@ and delete the _regression_ field.
 ```curl {28-36}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "description": "Attributes for tracking a bug",
@@ -359,7 +359,7 @@ _regression_ field is dropped in the response.
 ```curl {16-18, 21}
 curl --location 'https://api.devrev.ai/works.get' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "id": "don:core:dvrv-us-1:devo/test:issue/2"
 }'
@@ -388,7 +388,7 @@ The object now references the latest fragment version (`custom_type_fragment/2`)
 the optional release notes field is absent, the tenant fragment remains attached,
 allowing for future tenant-specific field additions.
 
-## Deprecating a custom schema fragment
+## Deprecate custom schema fragments
 
 Custom schema fragments can be deprecated to avoid creating work items using them. The
 following POST request payload to `schemas.custom.set` can be used:
@@ -406,7 +406,7 @@ following POST request payload to `schemas.custom.set` can be used:
 }
 ```
 
-## Listing custom schema fragments
+## List custom schema fragments
 
 The following API call can be used to list all the custom schema fragments in your
 organization:
@@ -414,12 +414,12 @@ organization:
 ```curl
 curl --location 'https://api.devrev.ai/schemas.custom.list' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>'
+--header 'Authorization: Bearer <TOKEN>'
 ```
 
 Deprecated fragments aren't listed in the response.
 
-## UI hints
+## Configure UI hints
 
 UI hints allow customizing the UI/UX of custom fields. So far, `ui.display_name` has
 been used to set the display name of a field. Let's look at the other supported UI
@@ -431,16 +431,22 @@ hints:
 * `is_sortable`: Whether the field is sortable. Requires `is_filterable` to be true.
 * `is_groupable`: Whether the field is groupable. Requires `is_filterable` to be true.
 * `order`: The order in which the field appears in the side panel.
+* `is_read_only`: Whether the field is read-only in the UI. Once the object is created, this
+  field cannot be updated in the UI.
 * `group_name`: The group title under which field(s) appear in the side panel. In the
   example below, the fields are grouped under groups titled **Group 1** and **Group 2**.
 
   ![customization-group_name-ui-hint](../img/customization-group_name-ui-hint.png)
+* `unit`: The unit for the field. For example, days, kg. The unit is displayed
+  in the side panel as shown below:
+
+  ![customization-unit-ui-hint](../img/customization-unit-ui-hint.png)
 
 <Callout intent="tip">
 `is_filterable` is not a UI hint but a top level field property.
 </Callout>
 
-## Stock field overrides
+## Override stock fields
 
 The fields available in native DevRev objects are called stock fields. For example,
 `priority` is a stock field of _issue_.
@@ -458,7 +464,7 @@ fragment with the following payload:
 ```curl
 curl --location 'https://api.devrev.ai/internal/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
   "type": "tenant_fragment",
   "leaf_type": "issue",
@@ -508,7 +514,7 @@ A few observations can be made from the above payload:
 If you want the overrides to be scoped to a subtype, you can add them to the subtype
 instead.
 
-## Stage customization
+## Customize stages
 
 Stages represent the different phases an object can be in during its lifecycle. For
 example, an issue might go through the following lifecycle:
@@ -535,12 +541,12 @@ and _closed_ states in your organization.
 You want to add a new stage _Needs RCA_ to the _bug_ subtype.
 </Callout>
 
-### Adding a custom stage
+### Create custom stages
 
 ```curl
 curl --location 'https://api.devrev.ai/stages.custom.create' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "name": "Needs RCA",
     "state": "closed",
@@ -552,7 +558,7 @@ A stage can be referenced by any object type. For example, both _issue_ and _tic
 object types can use the _in_development_ stage. It's incorrect to say that the stage is
 bound to an _issue_ or _ticket_.
 
-### Stage diagram
+### Create stage diagrams
 
 A stage diagram determines the allowed transitions between stages for a given object.
 For example, _triage_ stage can transition to _backlog_ stage but not vice versa.
@@ -581,7 +587,7 @@ backl --> dev --> rca --> compl
 ```curl {11}
 curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "leaf_type": "issue",
     "subtype": "bug",
@@ -622,14 +628,14 @@ curl --location 'https://api.devrev.ai/stage-diagrams.create' \
 It is important to specify the start stage for the diagram. This is the default stage that gets assigned to the newly created objects.
 </Callout>
 
-### Using a stage diagram
+### Apply stage diagrams
 
 The stage diagram created above can be referenced in the _bug_ subtype as follows:
 
 ```curl {9}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "leaf_type": "issue",
@@ -643,7 +649,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
 
 All objects of the _bug_ subtype now adhere to the stage diagram created above.
 
-## Dependent fields
+## Configure dependent fields
 
 <Callout intent="note">
 The developers in your organization tend to forget to add an RCA when resolving the
@@ -654,7 +660,7 @@ _completed_ stage by adding a dependent field constraint.
 ```curl {12-22}
 curl --location 'https://api.devrev.ai/schemas.custom.set' \
 --header 'Content-Type: application/json' \
---header 'Authorization: <TOKEN>' \
+--header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "type": "custom_type_fragment",
     "leaf_type": "issue",

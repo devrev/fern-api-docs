@@ -1,5 +1,6 @@
 .custom-header {
 	z-index: 60;
+	padding: 1.5rem 1.5rem;
 }
 
 .custom-header nav a {

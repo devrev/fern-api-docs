@@ -23,9 +23,9 @@
   top: 80px !important; /* Start BELOW the header */
   left: 0 !important;
   height: 100% !important;
-  overflow-y: auto !important;
+  /* overflow-y: auto !important; */
 }
 
 .fern-body {
-  margin-top: 40px !important; /* Push content below header */
+  margin-top: 60px !important; /* Push content below header */
 }

@@ -20,17 +20,9 @@
 /* Constrain sidebar within fern-body but account for header */
 .fern-sidebar-fixed {
   position: absolute !important;
-  height: 100% !important;
 }
 
 .fern-body {
   position: relative !important;
   margin-top: 65px !important; /* Push content below header */
-}
-.fern-sidebar-container {
-  height: 100% !important; 
-}
-
-.fern-scroll-area {
-  height: 100% !important;
 }

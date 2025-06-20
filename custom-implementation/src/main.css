@@ -17,7 +17,13 @@
     display: block; /* Show the wrapper on screens larger than 1024px */
   }
 }
-body {
-  margin-top: 60px; /* Adjust this value to match your header height */
-  margin-bottom: 60px
+
+.fern-sidebar-container {
+  top: 60px; /* Adjust to your header height */
+  height: calc(100vh - 60px); /* Subtract header height from full viewport */
+}
+
+/* Also push the main content down */
+.fern-main {
+  margin-top: 60px; /* Adjust to your header height */
 }

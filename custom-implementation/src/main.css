@@ -22,7 +22,7 @@
   position: absolute !important;
   top: 80px !important; /* Start BELOW the header */
   left: 0 !important;
-  height: 80% !important; /* Full height minus header space + small footer buffer */
+  height: 100% !important;
   overflow-y: auto !important;
 }
 

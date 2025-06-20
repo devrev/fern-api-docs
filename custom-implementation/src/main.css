@@ -17,6 +17,7 @@
     display: block; /* Show the wrapper on screens larger than 1024px */
   }
 }
-.fern-body {
+body {
   margin-top: 60px; /* Adjust this value to match your header height */
+  margin-bottom: 60px
 }

@@ -20,7 +20,6 @@
 /* Constrain sidebar within fern-body but account for header */
 .fern-sidebar-fixed {
   position: absolute !important;
-  top: 65px !important;
 }
 
 .fern-body {

@@ -17,16 +17,17 @@
     display: block; /* Show the wrapper on screens larger than 1024px */
   }
 }
+/* Constrain sidebar within fern-body but account for header */
 .fern-sidebar-fixed {
-  position: absolute !important; /* Change from fixed to absolute */
-  top: 0 !important; /* Start at top of fern-body */
+  position: absolute !important;
+  top: 80px !important; /* Start BELOW the header */
   left: 0 !important;
-  height: 100% !important; /* Full height of fern-body */
+  height: calc(100% - 100px) !important; /* Full height minus header space + small footer buffer */
   overflow-y: auto !important;
 }
 
 /* Make sure fern-body is positioned to contain the sidebar */
 .fern-body {
-  position: relative !important; /* Creates positioning context */
+  position: relative !important;
   padding-top: 80px !important; /* Push content below header */
 }

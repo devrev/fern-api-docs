@@ -19,9 +19,10 @@
 }
 /* Constrain sidebar within fern-body but account for header */
 .fern-sidebar-fixed {
-  position: relative !important;
+  position: absolute !important;
 }
 
 .fern-body {
+  position: relative !important;
   margin-top: 65px !important; /* Push content below header */
 }

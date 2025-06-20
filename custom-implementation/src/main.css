@@ -19,7 +19,7 @@
 }
 /* Constrain sidebar within fern-body but account for header */
 .fern-sidebar-fixed {
-  position: sticky !important;
+  position: relative !important;
 }
 
 .fern-body {

@@ -25,3 +25,7 @@
   height: 80% !important; /* Full height minus header space + small footer buffer */
   overflow-y: auto !important;
 }
+
+.fern-body {
+  margin-top: 40px !important; /* Push content below header */
+}

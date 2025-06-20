@@ -23,6 +23,5 @@
 }
 
 .fern-body {
-  position: relative !important;
   margin-top: 65px !important; /* Push content below header */
 }

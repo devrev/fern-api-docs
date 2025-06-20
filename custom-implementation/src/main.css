@@ -22,12 +22,6 @@
   position: absolute !important;
   top: 80px !important; /* Start BELOW the header */
   left: 0 !important;
-  height: 100% !important; /* Full height minus header space + small footer buffer */
+  height: 80% !important; /* Full height minus header space + small footer buffer */
   overflow-y: auto !important;
-}
-
-/* Make sure fern-body is positioned to contain the sidebar */
-.fern-body {
-  position: relative !important;
-  margin-top: 80px !important; /* Push content below header */
 }

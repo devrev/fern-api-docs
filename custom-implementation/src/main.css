@@ -17,3 +17,6 @@
     display: block; /* Show the wrapper on screens larger than 1024px */
   }
 }
+.fern-body {
+  margin-top: var(--spacing-header-height) !important;
+}

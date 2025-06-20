@@ -17,8 +17,16 @@
     display: block; /* Show the wrapper on screens larger than 1024px */
   }
 }
+.fern-sidebar-fixed {
+  position: absolute !important; /* Change from fixed to absolute */
+  top: 0 !important; /* Start at top of fern-body */
+  left: 0 !important;
+  height: 100% !important; /* Full height of fern-body */
+  overflow-y: auto !important;
+}
 
-body {
-  margin-top: 800px;
-  margin-bottom: 800px;
+/* Make sure fern-body is positioned to contain the sidebar */
+.fern-body {
+  position: relative !important; /* Creates positioning context */
+  padding-top: 80px !important; /* Push content below header */
 }

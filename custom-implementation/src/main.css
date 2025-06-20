@@ -18,5 +18,5 @@
   }
 }
 .fern-body {
-  margin-top: var(--spacing-header-height) !important;
+  margin-top: 60px; /* Adjust this value to match your header height */
 }

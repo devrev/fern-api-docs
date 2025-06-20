@@ -29,5 +29,5 @@
 /* Make sure fern-body is positioned to contain the sidebar */
 .fern-body {
   position: relative !important;
-  padding-top: 80px !important; /* Push content below header */
+  margin-top: 80px !important; /* Push content below header */
 }

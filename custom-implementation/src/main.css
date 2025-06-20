@@ -17,13 +17,39 @@
     display: block; /* Show the wrapper on screens larger than 1024px */
   }
 }
-
+/* Fix header overlap and sidebar height issues */
 .fern-sidebar-container {
-  top: 60px; /* Adjust to your header height */
-  height: calc(100vh - 60px); /* Subtract header height from full viewport */
+  position: fixed;
+  top: 60px; /* Your header height */
+  bottom: 60px; /* Your footer height */
+  height: calc(100vh - 120px); /* Viewport minus header and footer */
+  overflow-y: auto;
+  z-index: 50; /* Lower than header */
 }
 
-/* Also push the main content down */
 .fern-main {
-  margin-top: 60px; /* Adjust to your header height */
+  margin-top: 60px; /* Header height */
+  margin-bottom: 60px; /* Footer height if footer is fixed */
+}
+
+/* Ensure header is properly positioned */
+.custom-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px; /* Set explicit height */
+  z-index: 60;
+  background: white; /* Prevent content showing through */
+}
+
+/* Ensure footer is properly positioned */
+.custom-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px; /* Set explicit height */
+  z-index: 50;
+  background: white;
 }

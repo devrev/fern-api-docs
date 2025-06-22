@@ -83,6 +83,12 @@ redirects:
   - source: /:path*/airdrop/overview
     destination: /:path*/airdrop
     permanent: true   
+  - source: /beta/guides/object-customization
+    destination: /public/guides/object-customization
+    permanent: true
+  - source: /beta/guides/custom-objects
+    destination: /public/guides/custom-objects
+    permanent: true
 
 analytics:
   ga4:

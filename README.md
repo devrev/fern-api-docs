@@ -35,7 +35,7 @@ fern generate --version <version>
 
 In the root of this repository:
 ```
-cd custom-implementation/ && npm i && npm run build && cd ..
+cd custom-implementation/ && yarn && yarn build && cd ..
 fern docs dev
 ```
 

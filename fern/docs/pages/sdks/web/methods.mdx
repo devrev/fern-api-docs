@@ -61,6 +61,16 @@ Passing `false` closes the chat widget.
 window.plugSDK.toggleWidget(true);
 ```
 
+## Check widget status
+
+Use `isWidgetOpen` to determine whether your chat widget is currently open or closed.
+
+```jsx
+window.plugSDK.isWidgetOpen
+```
+
+This returns `true` if the chat widget is open and `false` if it is closed.
+
 ## Take action from PLuG chat events
 
 This method allows you to listen for events from the PLuG widget. Below are the available values for `PAYLOAD_TYPE`.
@@ -81,16 +91,6 @@ useEffect(() => {
   });
 }, []);
 ```
-
-## Check widget status
-
-Use `isWidgetOpen` to determine whether your chat widget is currently open or closed.
-
-```jsx
-window.plugSDK.isWidgetOpen
-```
-
-This returns true if the chat widget is open and false if it is closed.
 
 ## Start conversation
 
@@ -146,6 +146,16 @@ If no input is provided, the method toggles the search bar: opening it if it's c
 window.plugSDK.toggleSearchAgent(true);
 ```
 
+## Check Search Agent status
+
+Use `isSearchAgentOpen` to determine whether the search agent is currently open or closed.
+
+```jsx
+window.plugSDK.isSearchAgentOpen
+```
+
+This returns `true` if the search agent is open and `false` if it is closed.
+
 ## Prefill search query in search agent
 
 Use the `prefillSearchQuery` method to prefill a search query when opening and initializing the search agent.
@@ -165,9 +175,17 @@ window.plugSDK.addSessionProperties({
 });
 ```
 
+## Get session details
+
+You can use the `getSessionDetails` method to fetch the session ID and tab ID of currently ongoing session. These details can then be passed across different domains to maintain the journey as a single, continuous session. For more details on how to fetch the session ID and tab ID, and pass them across different domains for a seamless journey, refer to [Cross-domain session tracking](https://devrev.ai/docs/plug/cross-domain-session).
+
+```jsx
+const { sessionId, tabId } = window.plugSDK.getSessionDetails();
+```
+
 ## Track events
 
-To track user events using PLuG, utilize the `trackEvent` method available in the PLuG SDK. This method automatically links the event to the active user profile within the widget. For more details on user identification within the PLuG widget, refer to [Identify your users with PLuG](https://devrev.ai/docs/plug/identify-web-user).
+To track user events using PLuG, utilize the `trackEvent` method available in the PLuG SDK. This method automatically links the event to the active user profile within the widget. For more details on user identification within the PLuG widget, refer to [Identify your users with PLuG](./user-identity).
 
 ```jsx
 window.plugSDK.trackEvent(event_name, properties)
@@ -186,7 +204,7 @@ var properties = {
 window.plugSDK.trackEvent("signed_up",properties)
 ```
 
-To learn more about tracking events, visit [Track events](/plug-sdk/track-events).
+To learn more about tracking events, visit [Track events](/sdks/web/track-events).
 
 ## Restart session recording
 

@@ -1,9 +1,27 @@
 Initial domain mapping is a process that establishes relationships between 
-external data schemas and DevRev's native record types. This mapping is configured
-once and then becomes available to all users of your integration,
+external data schemas and DevRev's native record types. 
+This mapping is configured once and then becomes available to all users of your snap-in,
 allowing them to import data while maintaining semantic meaning from their source systems.
 
-## Chef-cli initial domain mapping setup
+The initial domain mapping is installed with your snap-in.
+On each snap-in version update, function to upload these mappings to the Airdrop
+system is triggered.
+
+## Approaches
+
+You can create initial domain mappings using two methods:
+
+1. **Chef UI**: Interactive web interface for comprehensive mapping creation
+2. **Model Context Protocol (MCP)**: AI-assisted mapping creation for developers (experimental)
+
+Choose the Chef UI for manual control or use MCP for rapid prototyping with AI assistance.
+MCP is an experimental feature and works locally without requiring a sync to be created.
+
+<Info>
+For AI-assisted mapping creation, see the [Model Context Protocol integration guide](./mcp.mdx).
+</Info>
+
+## Chef UI setup
 
 ### Prerequisites
 
@@ -18,7 +36,7 @@ or by running `make auth` in your snap-in repository.
 
 ### Add your token as an environment variable
    
-Obtain a PAT-token from the **Settings** > **Account** tab of the dev org where you deploy your snap-in, 
+Obtain a PAT-token from the **Settings** > **Account** tab of the org where you deploy your snap-in, 
 and export it as `DEVREV_TOKEN`. 
 
 You can also run the following command if you are authenticated with the CLI:
@@ -52,7 +70,7 @@ Or you can use the interactive helper of the CLI:
 eval $(chef-cli ctx init); chef-cli ctx show > ctx.json
 ```
 
-### Use the local UI to create a recipe blueprint for your initial import
+### Use the Chef UI
 
 ```bash
 chef-cli configure-mappings --env prod
@@ -63,48 +81,85 @@ If you are also creating a bidirectional sync (DevRev to external system), to en
 chef-cli configure-mappings --env prod --reverse
 ```
 
-If your org is not in `US-East-1`, you have to override an environment variable to make sure the tool reaches the right server. For example:
+If your org is not in `US-East-1`, you h ave to override an environment variable to make sure the tool reaches the right server. For example:
 ```bash
 ACTIVE_PARTITION=dvrv-in-1 chef-cli configure-mappings --env prod
 ```
 
 The options are: `dvrv-us-1`, `dvrv-eu-1`, `dvrv-in-1`, and `dvrv-de-1`.
 
-The first function of the local UI is to assemble a *blueprint* for a concrete import running in the test-org, allowing the mapping to be tested out and evaluated.
-After it is used for the import, the mappings become immutable, but the chef-cli UI offers a button to make a draft clone, which can be edited again for refinements.
+The first function of the Chef UI is to assemble a *blueprint* for a concrete import running in the test-org, allowing the mapping to be tested out and evaluated.
+After it is used for the import, the mappings become immutable, but the Chef UI offers a button to make a draft clone, which can be edited again for refinements.
 
 ### Continue to initial domain mapping
 
-When you are done, you should have the chef-cli context set up and have the chef-cli local UI running in your browser.
-You can now use the chef-cli web UI to create initial domain mappings.
+When you are done, you should have the chef-cli context set up and have the Chef UI running in your browser.
+You can now use the Chef UI to create initial domain mappings.
 
 </Steps>
 
-## Use the local UI to create initial domain mappings
+## Use the Chef UI to create initial domain mappings
 
-The final artifact of the recipe creation process is the `initial_domain_mapping.json`, which has to be embedded in the extractor.
+The Chef UI generates an `initial_domain_mapping.json` file that must be embedded in your extractor. This defines the options that the end-user sees when they are mapping the data.
 
-This mapping, unlike the recipe blueprint of a concrete import, can contain multiple options for each external record type from which the end-user might choose (for example, allow *task* from an external system to map either to *issue* or *ticket* in DevRev), and it can also contain mappings that apply to a record type category. 
-When the user runs a new import, and the extractor reports in its metadata record types belonging to this category that are not directly mapped in the initial domain mappings, the recipe manager applies the per-category default to them.
+Initial domain mappings provide two key configuration capabilities:
 
-After the blueprint of the test import is completed, the *Install in this org* button takes you to the initial domain mapping creation screen, where you can *merge* the blueprint to the existing initial mappings of the org.
+- **Multiple mapping options**: The developer can choose how external record types map to DevRev records (for example, external *task* can map to either *issue* or *ticket*).
+- **Category-based defaults**: Mappings can apply to entire record type categories, automatically handling new record types.
 
-By repeating this process (run a new import, create a different configuration, merge to the initial mappings), you can create an initial mapping that contains multiple options for the user to choose from.
+<Steps>
 
-Finally, the Export button allows you to retrieve the `initial_domain_mapping.json`.
+### Map record types and fields
 
-<Tip>
-You can also provide a local metadata file to the command using the `-m` flag, for example: 
+Use the Chef UI to map record types and fields.
+The UI displays the external record types you defined in external domain metadata and allows you to map them to DevRev objects.
+Map one record type at a time, ensuring you map all required fields and as many optional fields as possible.
+
+#### Mapping as custom object
+The system allows importing record types and categories as custom objects. To achieve this you have to select `new_custom_object` when mapping the record type. For each external record type mapped as a custom object, a new custom **Leaf type** will be defined in DevRev and a **Subtype** will automatically be created. For more details on customization concepts, please refer to the
+[Customization](../customization.mdx) and [Custom Objects](../custom-objects.mdx)  documentation.
+
+The field mapping works the same as for the stock DevRev types, with the difference being that there are significantly fewer fields to map. All the unmapped fields of the external record type will be created as custom fields.
+
+### Specify fallback mappings
+
+For some required DevRev fields a fallback is required.
+
+The fallback you choose is used on item creation if the extractor doesn't provide a value for the required DevRev field. 
+This is useful for fields that are required by DevRev but optional in the external system.
+
+### Install the blueprint
+
+Apply the mappings and **install them in your org** to access the initial domain mapping creation screen.
+Follow the instructions to create your initial domain mapping.
+
+### Merge configurations
+
+To create multiple mappings for different record types and fields, repeat this process:
+Create a new import, map the record types and fields, then install the mappings in your org.
+The install screen allows you to merge new mappings with existing initial domain mappings.
+
+### Export the mapping file
+
+When all fields are mapped correctly, click **Export** to download `initial_domain_mapping.json`.
+
+</Steps>
+
+### Advanced configuration
+
+You can provide a local metadata file for enhanced functionality:
+
 ```bash
 chef-cli configure-mappings --env prod -m metadata.json
 ```
 
-This enables the following features:
-- Raw jq transformations using an external field as input (experimental feature).
-- Filling in example input data for trying out the transformation.
+This enables:
+- Raw jq transformations using external fields as input (experimental)
+- Example input data for testing transformations
 
-In this case, it's not validated that the local file is the same as the one submitted by the snap-in.
-</Tip>
+<Warning>
+The local metadata file is not validated against the snap-in submission.
+</Warning>
 
 ### Test an import with initial mapping using the in-app UI
 

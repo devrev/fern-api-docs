@@ -70,45 +70,103 @@ navigation:
         path: ../docs/pages/timeline-entries.mdx
   - section: SDKs
     slug: sdks
-    path: ../docs/pages/plug-sdk/index.mdx
+    path: ../docs/pages/sdks/index.mdx
     contents:
-      - section: PLuG SDK for Web
+      - section: PLuG Web SDK
         slug: web
         icon: fa-globe
         contents:
           - page: Install the Web SDK
             slug: installation
-            path: ../docs/pages/plug-sdk/web/install.mdx
+            path: ../docs/pages/sdks/web/install.mdx
           - page: Install PLuG search
             slug: install-search
-            path: ../docs/pages/plug-sdk/web/search.mdx
+            path: ../docs/pages/sdks/web/search.mdx
           - page: Identify your users with PLuG
             slug: user-identity
-            path: ../docs/pages/plug-sdk/web/user-identity.mdx
+            path: ../docs/pages/sdks/web/user-identity.mdx
           - page: Track events
             slug: track-events
-            path: ../docs/pages/plug-sdk/web/track-events.mdx
+            path: ../docs/pages/sdks/web/track-events.mdx
           - page: Methods
             slug: methods
-            path: ../docs/pages/plug-sdk/web/methods.mdx
+            path: ../docs/pages/sdks/web/methods.mdx
           - page: Custom implementation
             slug: customize
-            path: ../docs/pages/plug-sdk/web/customize.mdx
-      - page: DevRev SDK for Android
+            path: ../docs/pages/sdks/web/customize.mdx
+          - page: UserExperior migration
+            slug: migration
+            path: ../docs/pages/sdks/web/ue-migration.mdx
+      - section: DevRev SDK for Android
         slug: android
         icon: fa-brands fa-android
-        path: ../docs/pages/plug-sdk/android.mdx
-      - page: DevRev SDK for iOS
+        contents:
+          - page: Quickstart guide
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/android/quickstart.mdx
+          - page: Features
+            slug: features
+            path: ../docs/pages/sdks/mobile/android/features.mdx
+          - page: Migration guide
+            slug: migration-guide
+            path: ../docs/pages/sdks/mobile/android/migration-guide.mdx
+          - page: Troubleshooting
+            slug: troubleshooting
+            path: ../docs/pages/sdks/mobile/android/troubleshooting.mdx
+      - section: DevRev SDK for iOS
         slug: ios
         icon: fa-brands fa-apple
-        path: ../docs/pages/plug-sdk/ios.mdx
-      - page: DevRev SDK for React Native
+        contents:
+          - page: Quickstart guide
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/ios/quickstart.mdx
+          - page: Features
+            slug: features
+            path: ../docs/pages/sdks/mobile/ios/features.mdx
+          - page: Migration guide
+            slug: migration-guide
+            path: ../docs/pages/sdks/mobile/ios/migration-guide.mdx
+          - page: Troubleshooting
+            slug: troubleshooting
+            path: ../docs/pages/sdks/mobile/ios/troubleshooting.mdx
+      - section: DevRev SDK for React Native and Expo
         slug: react-native
         icon: fa-brands fa-react
-        path: ../docs/pages/plug-sdk/react-native.mdx
+        contents:
+          - page: Quickstart guide (React Native)
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/react-native/quickstart.mdx
+          - page: Quickstart guide (Expo)
+            slug: quickstart-expo
+            path: ../docs/pages/sdks/mobile/react-native/quickstart-expo.mdx
+          - page: Features
+            slug: features
+            path: ../docs/pages/sdks/mobile/react-native/features.mdx
+          - page: Migration guide
+            slug: migration-guide
+            path: ../docs/pages/sdks/mobile/react-native/migration-guide.mdx
+          - page: Troubleshooting
+            slug: troubleshooting
+            path: ../docs/pages/sdks/mobile/react-native/troubleshooting.mdx
+      - section: DevRev SDK for Cordova
+        slug: cordova
+        icon: fa-solid fa-robot
+        contents:
+          - page: Quickstart guide
+            slug: quickstart
+            path: ../docs/pages/sdks/mobile/cordova/quickstart.mdx
+          - page: Features
+            slug: features
+            path: ../docs/pages/sdks/mobile/cordova/features.mdx
+          - page: Migration guide
+            slug: migration-guide
+            path: ../docs/pages/sdks/mobile/cordova/migration-guide.mdx
+          - page: Troubleshooting
+            slug: troubleshooting
+            path: ../docs/pages/sdks/mobile/cordova/troubleshooting.mdx
       - page: Push notifications for mobile
         slug: push-notification
-        path: ../docs/pages/plug-sdk/push-notification.mdx
+        path: ../docs/pages/sdks/mobile/push-notification.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:
@@ -135,88 +193,6 @@ navigation:
           - page: Snap-in triggered by an external source
             slug: triggered-external-source
             path: ../docs/pages/tutorials/triggered-external-source.mdx
-      - section: Airdrop
-        slug: adaas
-        contents:
-          - page: "Overview"
-            slug: overview
-            path: ../docs/pages/airdrop/overview.mdx
-          - page: "Getting started"
-            slug: getting-started
-            path: ../docs/pages/airdrop/getting-started.mdx
-          - section: "Development guide"
-            skip-slug: true
-            contents:
-              - page: "Airdrop snap-in template"
-                slug: snap-in-template
-                path: ../docs/pages/airdrop/snap-in-template.mdx
-              - page: "Local development"
-                slug: local-development
-                path: ../docs/pages/airdrop/local-development.mdx
-              - page: "Manifest"
-                slug: manifest
-                path: ../docs/pages/airdrop/manifest.mdx
-              - page: "Extraction phases"
-                slug: extraction-phases
-                path: ../docs/pages/airdrop/extraction-phases.mdx
-              - page: "External sync units extraction"
-                slug: external-sync-units-extraction
-                path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
-              - page: "Metadata extraction"
-                slug: metadata-extraction
-                path: ../docs/pages/airdrop/metadata-extraction.mdx
-              - page: "Initial domain mapping"
-                slug: initial-domain-mapping
-                path: ../docs/pages/airdrop/initial-domain-mapping.mdx
-              - page: "Data extraction"
-                slug: data-extraction
-                path: ../docs/pages/airdrop/data-extraction.mdx
-              - page: "Attachments extraction"
-                slug: extract-attachments
-                path: ../docs/pages/airdrop/attachments-extraction.mdx
-              - page: "Loading phases"
-                slug: loading-phases
-                path: ../docs/pages/airdrop/loading-phases.mdx
-              - page: "Load data"
-                slug: load-data
-                path: ../docs/pages/airdrop/load-data.mdx
-              - page: "Load attachments"
-                slug: load-attachments
-                path: ../docs/pages/airdrop/load-attachments.mdx
-              - page: "Data and attachments deletion"
-                slug: data-attachments-deletion
-                hidden: true
-                path: ../docs/pages/airdrop/data-attachments-deletion.mdx
-          - page: "Examples of snap-ins"
-            slug: snap-in-examples
-            path: ../docs/pages/airdrop/snap-in-examples.mdx
-          - page: "Deploy to organization"
-            slug: deploy-to-organization
-            path: ../docs/pages/airdrop/deploy-to-organization.mdx
-          - page: "Publish to the marketplace"
-            slug: publish-to-marketplace
-            path: ../docs/pages/airdrop/publish-to-marketplace.mdx
-          - page: "Common issues"
-            slug: faq
-            path: ../docs/pages/airdrop/faq.mdx
-          - page: "Supported DevRev object types"
-            slug: supported-object-types
-            path: ../docs/pages/airdrop/supported-object-types.mdx
-          - section: Data model
-            slug: data-model
-            contents:
-              - page: "Rich text"
-                slug: rich-text
-                hidden: true
-                path: ../docs/pages/airdrop/data-model/rich-text.mdx
-              - page: "Permissions"
-                slug: permissions
-                hidden: true
-                path: ../docs/pages/airdrop/data-model/permissions.mdx
-              - page: "Mapping reasons"
-                slug: mapping-reasons
-                hidden: true
-                path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx
       - section: References
         slug: references
         contents:
@@ -290,3 +266,84 @@ navigation:
         path: ../docs/pages/examples/samples.mdx
       - page: Marketplace listings
         path: ../docs/pages/marketplace-listings.mdx
+
+  - section: Airdrop
+    slug: airdrop
+    path: ../docs/pages/airdrop/overview.mdx
+    contents:
+      - page: "Getting started"
+        slug: getting-started
+        path: ../docs/pages/airdrop/getting-started.mdx
+      - section: "Development guide"
+        skip-slug: true
+        contents:
+          - page: "Airdrop snap-in template"
+            slug: snap-in-template
+            path: ../docs/pages/airdrop/snap-in-template.mdx
+          - page: "Local development"
+            slug: local-development
+            path: ../docs/pages/airdrop/local-development.mdx
+          - page: "Manifest"
+            slug: manifest
+            path: ../docs/pages/airdrop/manifest.mdx
+          - page: "Extraction phases"
+            slug: extraction-phases
+            path: ../docs/pages/airdrop/extraction-phases.mdx
+          - page: "External sync units extraction"
+            slug: external-sync-units-extraction
+            path: ../docs/pages/airdrop/external-sync-units-extraction.mdx
+          - page: "Metadata extraction"
+            slug: metadata-extraction
+            path: ../docs/pages/airdrop/metadata-extraction.mdx
+          - page: "Initial domain mapping"
+            slug: initial-domain-mapping
+            path: ../docs/pages/airdrop/initial-domain-mapping.mdx
+          - page: "Data extraction"
+            slug: data-extraction
+            path: ../docs/pages/airdrop/data-extraction.mdx
+          - page: "Attachments extraction"
+            slug: extract-attachments
+            path: ../docs/pages/airdrop/attachments-extraction.mdx
+          - page: "Loading phases"
+            slug: loading-phases
+            path: ../docs/pages/airdrop/loading-phases.mdx
+          - page: "Load data"
+            slug: load-data
+            path: ../docs/pages/airdrop/load-data.mdx
+          - page: "Load attachments"
+            slug: load-attachments
+            path: ../docs/pages/airdrop/load-attachments.mdx
+          - page: "Data and attachments deletion"
+            slug: data-attachments-deletion
+            hidden: true
+            path: ../docs/pages/airdrop/data-attachments-deletion.mdx
+      - page: "Examples of snap-ins"
+        slug: snap-in-examples
+        path: ../docs/pages/airdrop/snap-in-examples.mdx
+      - page: "Deploy to organization"
+        slug: deploy-to-organization
+        path: ../docs/pages/airdrop/deploy-to-organization.mdx
+      - page: "Publish to the marketplace"
+        slug: publish-to-marketplace
+        path: ../docs/pages/airdrop/publish-to-marketplace.mdx
+      - page: "MCP integration"
+        slug: mcp
+        path: ../docs/pages/airdrop/mcp.mdx
+      - page: "Common issues"
+        slug: faq
+        path: ../docs/pages/airdrop/faq.mdx
+      - page: "Supported DevRev object types"
+        slug: supported-object-types
+        path: ../docs/pages/airdrop/supported-object-types.mdx
+      - section: Data model
+        slug: data-model
+        contents:
+          - page: "Rich text fields"
+            slug: rich-text-fields
+            path: ../docs/pages/airdrop/data-model/rich-text-fields.mdx
+          - page: "Permissions"
+            slug: permissions
+            path: ../docs/pages/airdrop/data-model/permissions.mdx
+          - page: "Mapping reasons"
+            slug: mapping-reasons
+            path: ../docs/pages/airdrop/data-model/mapping-reasons.mdx

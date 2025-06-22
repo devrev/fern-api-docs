@@ -1,0 +1,13 @@
+# Troubleshooting
+
+- **Issue**: Can't import the SDK into my app.
+  **Solution**: Double-check the setup process and ensure that `mavenCentral()` is present in the project level repositories block.
+
+- **Issue**: How does the DevRev SDK handle errors?
+  **Solution**: The DevRev SDK reports all errors using Android's logging utility. Look for error messages in Android Studio's Logcat after applying `DEVREV SDK` filter.
+
+- **Issue**: Support chat doesn't show.
+  **Solution**: Ensure you have correctly called one of the identification methods: `DevRev.identifyUnverifiedUser(...)`, `DevRev.identifyVerifiedUser(...)`, or `DevRev.identifyAnonymousUser(...)`.
+
+- **Issue**: Not receiving push notifications.
+  **Solution**: Ensure that your app is configured to receive push notifications and that your device is registered with the DevRev SDK.

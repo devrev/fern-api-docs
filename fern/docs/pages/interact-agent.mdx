@@ -7,7 +7,7 @@ The DevRev async API enables you to execute agents without any execution timeout
 - Ability to handle long-running agent tasks.
 
 <Callout type="note">
-  In any unlikely and unforeseen circumstances, if an individual operation of the workflow times out, you do not receive an error event right now to notify that you should not wait for any more messages. It is better to have a client side timeout for now while the issue is brainstormed and fixed for you. 
+  In any unlikely and unforeseen circumstances, if an individual operation of the workflow times out, you do not receive an error event right now to notify that you should not wait for any more messages. It is better to have a client side timeout for now while the issue is brainstormed and fixed for you.
 </Callout>
 
 ## Set up webhook
@@ -18,7 +18,7 @@ Before using the async API, you need to create a webhook to receive agent execut
   ```bash
   curl --location 'https://api.devrev.ai/internal/webhooks.create' \
   --header 'Content-Type: application/json' \
-  --header 'Authorization: <YOUR_API_TOKEN>' \
+  --header 'Authorization: Bearer <YOUR_API_TOKEN>' \
   --data '{
       "url": "https://your-application.com/webhook-endpoint",
       "event_types": ["ai_agent_response"],
@@ -86,7 +86,7 @@ You should follow the documentation provided for webhooks [here](https://develop
   curl --location 'https://api.devrev.ai/internal/ai-agents.events.execute-async' \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  --header 'Authorization: <YOUR_API_KEY>' \
+  --header 'Authorization: Bearer <YOUR_API_KEY>' \
   --data '{
     "agent": "don:core:dvrv-us-1:devo/0:ai_agent/1",
     "event": {
@@ -131,7 +131,7 @@ You should follow the documentation provided for webhooks [here](https://develop
         }
       })
     });
-    
+
     return await response.json();
   };
   ```
@@ -276,7 +276,7 @@ function handleUserMessage(message) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "YOUR_API_KEY",
+      Authorization: Bearer "YOUR_API_KEY",
     },
     body: JSON.stringify({
       agent: "your_agent_id",
@@ -342,7 +342,7 @@ If you're using DevRev workflows:
   Agent node.
 </Callout>
 
-1. Add the "Talk To Agent" node to your workflow 
+1. Add the "Talk To Agent" node to your workflow
 2. Configure it with your agent ID
 3. Connect it to response nodes to process the agent's output
 4. The async API is used automatically by the workflow engine

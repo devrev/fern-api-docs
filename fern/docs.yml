@@ -26,6 +26,10 @@ js:
   - path: ./dist/output.js
     strategy: beforeInteractive
 
+layout:
+  searchbar-placement: sidebar
+  tabs-placement: sidebar
+  disable-header: true
 
 typography:
   bodyFont:
@@ -72,7 +76,14 @@ redirects:
     permanent: true
   - source: /:path*/sdks/mobile/:slug*
     destination: /:path*/sdks/:slug*
-    
+    permanent: true    
+  - source: /:path*/snapin-development/adaas/:slug*
+    destination: /:path*/airdrop/:slug*
+    permanent: true 
+  - source: /:path*/airdrop/overview
+    destination: /:path*/airdrop
+    permanent: true   
+
 analytics:
   ga4:
     measurement-id: G-XP1LEFVYQ9

@@ -83,7 +83,7 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
 | `account_ref`   | A unique reference for the account.                                                                               | string | ❌        | ✅      |
 | `display_name`  | The name of the account that's shown on the widget.                                                               | string | ❌        | ✅     |
 | `domains`       | Use a unique format like 'devrev.ai'. Formats such as 'https://devrev.ai' or 'www.devrev.ai' are not valid.       | array  | ❌        | ✅     |
-| `phone_numbers` | The phone number associated with the account must be in E.164 format.                                             | array  | ❌        | ❌      |
+| `phone_numbers` | The phone number associated with the account in E.164 format.                                             | array  | ❌        | ❌      |
 
 <Callout intent="note">
 Ensure that you follow the specified format when populating phone numbers and domains in the request body.
@@ -106,15 +106,15 @@ You can pass custom traits, as shown above, not only for `users` but also for `w
 
 ### API status codes and troubleshooting
 
-| Status code| Description & Troubleshooting |
+| Status code| Description | Troubleshooting |
 |----------|----------|
-| 200 OK                    | The request was successful and the session token would be returned in the response. No troubleshooting required.  |
-| 400 Bad Request           | The request was invalid. Check the request body for errors. For fields like domain and phone number, check on their format. |
-| 401 Unauthorized          | The request was unauthorized. Check if the AAT is valid and not expired. |
-| 403 Forbidden             | The request was forbidden. Check the authorization header for errors and make sure the token is a valid AAT. |
-| 404 Not Found             | The requested resource could not be found. Verify the endpoint URL is correct. |
-| 429 Too Many Requests     | Rate limit exceeded. Implement request throttling or wait before retrying. |
-| 500 Internal Server Error | Server encounters an unexpected error. Wait and try again later. If the issue persists, contact support with the request details and timestamp. |
+| 200 OK                    | The request was successful and the session token would be returned in the response. | No troubleshooting required. |
+| 400 Bad Request           | The request was invalid. | Check the request body for errors. For fields like domain and phone number, check on their format. |
+| 401 Unauthorized          | The request was unauthorized. | Check if the AAT is valid and not expired. |
+| 403 Forbidden             | The request was forbidden. | Check the authorization header for errors and make sure the token is a valid AAT. |
+| 404 Not Found             | The requested resource could not be found. | Verify the endpoint URL is correct. |
+| 429 Too Many Requests     | Rate limit exceeded. | Implement request throttling or wait before retrying. |
+| 500 Internal Server Error | Server encounters an unexpected error. | Wait and try again later. If the issue persists, contact support with the request details and timestamp. |
 
 ### How resolution works
 

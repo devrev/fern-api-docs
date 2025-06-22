@@ -6,8 +6,8 @@ To implement user identification, you need to generate a session token for each 
 
 ## Generate an application access token
 
-1. In DevRev, go to **Settings > Support > PLuG Tokens** through the settings icon on the top-left corner.
-2. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
+1. In DevRev, go to **Settings > Support > PLuG Tokens** through the settings icon on the top-left corner.
+2. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
 
 <Callout intent="note">
 Ensure you copy your access token, as you will not be able to view it again.
@@ -119,18 +119,12 @@ You can pass custom traits, as shown above, not only for `users` but also for `w
 ### How resolution works
 
 DevRev offers three ways to structure your customer's data:
-1. **Single-level (Recommended for most B2C cases)**
-   - User
-   - What to include: Only user information
 
-2. **Two-level (Recommended for most B2B cases)**
-   - User → Account
-   - What to include: User and account information
-
-3. **Three-level**
-   - User → Workspace → Account
-   - What to include: User, workspace and account information
-   - Only use workspace information if your business model requires workspace organization
+| Hierarchy Type | Documents Created | What to Include | Use Case |
+|----------------|-------------------|-----------------|----------|
+| **Single-level** | Contacts only | Only user information | Recommended for most B2C cases |
+| **Two-level** | Accounts and Contacts linked to the account | User and account information | Recommended for most B2B cases |
+| **Three-level** | Account with linked workspaces and contacts | User, workspace and account information | Used for B2B cases but only recommended if your business model requires workspace organization |
 
 In a DevOrg, unique identifiers are utilized to handle objects. If an object doesn't exist, it is created and then an attempt is made to link it. For example, here's how it operates:
 
@@ -142,12 +136,12 @@ This approach ensures efficient management and integration of objects within the
 
 | Workspace Ref | Account Ref | Results                                                                                              |
 |---------------|-------------|------------------------------------------------------------------------------------------------------|
-| ❌            | ✅          | (Most common Usage) \nIf the account doesn’t exist: An account is created, and the user is linked with the account.         |
+| ❌            | ✅          | (Most common Usage) \nIf the account doesn't exist: An account is created, and the user is linked with the account.         |
 | ❌            | ❌          | No action on account or workspace. The user is returned.                                              |
 | ✅            | ✅          | If neither exists: System creates the account first, then creates the workspace. User is linked to both. |
 |               |             | If account exists but workspace doesn't: System creates the workspace under the existing account. User is linked to both. |
 |               |             | If workspace exists under different account: System returns an error, as workspaces cannot be a part of 2 accounts. |
-| ✅            | ❌          | If workspace doesn’t exist: System creates a new account and workspace (if needed). User is linked to both. |
+| ✅            | ❌          | If workspace doesn't exist: System creates a new account and workspace (if needed). User is linked to both. |
 
 
 

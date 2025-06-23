@@ -16,7 +16,7 @@ Ensure you copy your access token, as you will not be able to view it again.
 ## Generate a session token
 
 <Callout intent="note">
-For security reasons, this API call must be made from your server side to prevent exposing your Application Access Token (AAT).
+For security reasons, this API call must be made from the server side to prevent exposing your application access token (AAT).
 </Callout>
 
 Using the `rev_info` method, you can generate and recognize a user within the DevRev system by providing relevant user details. This method enables you to convey information systematically, ensuring alignment between your DevRev CRM and the structured data model. For information regarding terminologies, click [here](https://devrev.ai/docs/product/grow).
@@ -54,16 +54,16 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
         }
     }
 }'
- ```
+```
 
 **Attributes for [users](https://developer.devrev.ai/public/api-reference/dev-users/product-builders-and-service-providers)**
 
 | Attributes    | Description                                                                 | Type   | Required | Unique |
 |---------------|-----------------------------------------------------------------------------|--------|----------|--------|
-| user_ref      | A unique user reference that the DevRev app uses for identifying your users. This parameter is required. | string | ✅       | ✅    |
-| email         | The email address of the customer. It's used for sending email notifications of any support messages. | string | ❌       | ✅**     |
-| display_name  | The name of the user that's shown on the widget.                          | string | ❌*       | ❌     |
-| phone_numbers | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌      | ❌     |
+| `user_ref`      | A unique user reference that the DevRev app uses for identifying your users. This parameter is required. | string | ✅       | ✅    |
+| `email`         | The email address of the customer. It's used for sending email notifications of any support messages. | string | ❌       | ✅**     |
+| `display_name`  | The name of the user that's shown on the widget.                          | string | ❌*       | ❌     |
+| `phone_numbers` | The customer's mobile number, which must adhere to the E.164 format.       | array  | ❌      | ❌     |
 
 * If nothing is specified, a system-generated name is assigned to the user.
 
@@ -78,12 +78,12 @@ curl --location 'https://api.devrev.ai/auth-tokens.create' \
 
 **Attributes for [accounts](https://developer.devrev.ai/public/api-reference/accounts/accounts)**                                                        
 
-| Attributes      | Description                                                                                                       | Type   | Required | Unique |
-|-----------------|-------------------------------------------------------------------------------------------------------------------|--------|----------|--------|
-| `account_ref`   | A unique reference for the account.                                                                               | string | ❌        | ✅      |
-| `display_name`  | The name of the account that's shown on the widget.                                                               | string | ❌        | ✅     |
-| `domains`       | Use a unique format like 'devrev.ai'. Formats such as 'https://devrev.ai' or 'www.devrev.ai' are not valid.       | array  | ❌        | ✅     |
-| `phone_numbers` | The phone number associated with the account in E.164 format.                                             | array  | ❌        | ❌      |
+| Attributes      | Description                                                                                                             | Type   | Required | Unique |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------|--------|----------|--------|
+| `account_ref`   | A unique reference for the account.                                                                                     | string | ❌        | ✅     |
+| `display_name`  | The name of the account that's shown on the widget.                                                                     | string | ❌        | ✅     |
+| `domains`       | The attribute must be unique. Use a format like `devrev.ai`. Inputs like `https://devrev.ai` or `www.devrev.ai` are invalid. | array  | ❌        | ✅     |
+| `phone_numbers` | The phone number associated with the account must be in E.164 format.                                                   | array  | ❌        | ❌     |
 
 <Callout intent="note">
 Ensure that you follow the specified format when populating phone numbers and domains in the request body.
@@ -118,6 +118,8 @@ You can pass custom traits, as shown above, not only for `users` but also for `w
 
 ### How resolution works
 
+When you send object information to DevRev, the system automatically creates or finds existing contacts, accounts, and workspaces.
+
 DevRev offers three ways to structure your customer's data:
 
 | Hierarchy Type | Documents Created | What to Include | Use Case |
@@ -126,7 +128,7 @@ DevRev offers three ways to structure your customer's data:
 | **Two-level** | Accounts and Contacts linked to the account | User and account information | Recommended for most B2B cases |
 | **Three-level** | Account with linked workspaces and contacts | User, workspace and account information | Used for B2B cases but only recommended if your business model requires workspace organization |
 
-In a DevOrg, unique identifiers are utilized to handle objects. If an object doesn't exist, it is created and then an attempt is made to link it. For example, here's how it operates:
+**What happens when you send different combinations:**
 
 User reference:
 - A user reference is mandatory, ensuring its constant presence.
@@ -147,12 +149,10 @@ This approach ensures efficient management and integration of objects within the
 
 ### Best practices
 
-- Populate user traits like email and display name to:
-    - Make users identifiable
-    - Prevent duplicate users across integrations
-- Maintain consistent unique identifiers across your system
-- Follow the specified formats for phone numbers and domains
-- Keep your application access token secure
+- Populate user traits like email and display name to make users identifiable and to prevent duplicate users across integrations.
+- Maintain consistent unique identifiers across your system.
+- Follow the specified formats for phone numbers and domains.
+- Keep your application access token secure.
 
 ## Pass the session token
 
@@ -165,7 +165,7 @@ const sessionToken = '<SESSION_TOKEN>'
 <script>
     (() => {
       window.plugSDK.init({
-        app_id: '<your_unique_app_id>',
+          app_id: '<your_unique_app_id>',
           session_token: sessionToken
         })})();
 </script>
@@ -187,17 +187,17 @@ This method is currently in beta and comes with the following limitations:
 
 ```jsx
 window.plugSDK.init({
-  app_id: '<your_unique_app_id>',
+  app_id: appId,
   identity: {
-    user_ref: string;
-    user_traits?: { // optional
-      custom_fields?: object; // optional
-      display_name?: string; // optional
-      email?: string; // optional
-      phone_numbers?: string[]; // optional
+    user_ref: userRef,
+    user_traits: { // Optional user details
+      custom_fields?: object,
+      display_name: 'John Doe',
+      email: 'john@example.com',
+      phone_numbers: ['+1234567890']
     }
   }
-})
+});
 ```
 
 You can add or update the data in `user_traits` by using the `updateIdentity` method on the PLuG SDK. Attached is a sample code snippet for the same. 
@@ -212,4 +212,3 @@ window.plugSDK.updateIdentity({
   }
 })
 ```
-

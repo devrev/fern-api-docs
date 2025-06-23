@@ -141,8 +141,6 @@ This approach ensures efficient management and integration of objects within the
 | ❌            | ✅          | (Most common Usage) \nIf the account doesn't exist: An account is created, and the user is linked with the account.         |
 | ❌            | ❌          | No action on account or workspace. The user is returned.                                              |
 | ✅            | ✅          | If neither exists: System creates the account first, then creates the workspace. User is linked to both.<br>If account exists but workspace doesn't: System creates the workspace under the existing account. User is linked to both.<br>If workspace exists under different account: System returns an error, as workspaces cannot be a part of 2 accounts. |
-|               |             | If account exists but workspace doesn't: System creates the workspace under the existing account. User is linked to both. |
-|               |             | If workspace exists under different account: System returns an error, as workspaces cannot be a part of 2 accounts. |
 | ✅            | ❌          | If workspace doesn't exist: System creates a new account and workspace (if needed). User is linked to both. |
 
 

@@ -16,6 +16,11 @@ const FERN_CONTENT_WRAPPER_ID = 'fern-header-content-wrapper'
 const DEVREV_CONTENT_WRAPPER_ID = 'devrev-header-content-wrapper'
 const FERN_HEADER_CONTAINER_ID = 'fern-header'
 
+// ADD GUARDS: Track what's already been rendered
+let headerRendered = false
+let footerRendered = false
+let sidenavRendered = false
+
 const render = async () => {
   if (typeof window === 'undefined') {
     return
@@ -28,7 +33,9 @@ const render = async () => {
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
-  if (!document.getElementById('sidenav-header-wrapper') && sidenav) {
+  if (!sidenavRendered && !document.getElementById('sidenav-header-wrapper') && sidenav) {
+    sidenavRendered = true
+    
     const sidenavHeaderWrapper = document.createElement('div')
     sidenavHeaderWrapper.setAttribute('id', 'sidenav-header-wrapper')
     sidenav.appendChild(sidenavHeaderWrapper)
@@ -51,7 +58,11 @@ const render = async () => {
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
   const devrevHeaderId = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
 
-  if (!fernHeaderId && !devrevHeaderId) {
+  // GUARD: Only render header once
+  if (!headerRendered && !fernHeaderId && !devrevHeaderId) {
+    console.log('DEBUG: Rendering header...')
+    headerRendered = true
+    
     //  Main Container
     const fernHeaderContainer = document.createElement('div')
     fernHeaderContainer.setAttribute('id', FERN_HEADER_CONTAINER_ID)
@@ -83,7 +94,7 @@ const render = async () => {
       document.body.appendChild(fernHeaderContainer)
     }
 
-    // Updated to createRoot - callback handling changed
+    // Render header component
     const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
     headerRoot.render(
       React.createElement(Header, {
@@ -95,19 +106,27 @@ const render = async () => {
     // Make header visible immediately
     setTimeout(() => {
       const header = document.getElementById(FERN_HEADER_CONTAINER_ID)
-      if (header) header.style.display = 'block'
+      if (header) {
+        header.style.display = 'block'
+      }
     }, 0)
   }
 
+  // GUARD: Only render footer once
   const footerElement = document.getElementById('fern-footer')
-  if (footerElement) {
+  if (!footerRendered && footerElement && !footerElement.hasAttribute('data-footer-rendered')) {
+    footerRendered = true
+    footerElement.setAttribute('data-footer-rendered', 'true')
+    
     const footerRoot = ReactDOM.createRoot(footerElement)
-    footerRoot.render(React.createElement(Footer, { ...data.footer }))
+    footerRoot.render(React.createElement(Footer,{ ...data.footer }))
     
     // Make footer visible immediately
     setTimeout(() => {
       const footer = document.getElementById('fern-footer')
-      if (footer) footer.style.display = 'block'
+      if (footer) {
+        footer.style.display = 'block'
+      }
     }, 0)
   }
 
@@ -149,35 +168,66 @@ const render = async () => {
 }
 
 let observations = 0
+let isInitialized = false
+
+// BETTER INITIALIZATION: Only run once
+const initialize = async () => {
+  if (isInitialized) {
+    return
+  }
+  isInitialized = true
+  
+  await render()
+  setupMutationObserver()
+}
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', async () => {
-    await render()
-    setupMutationObserver()
-  })
+  document.addEventListener('DOMContentLoaded', initialize)
 } else {
-  // DOM is already ready, run immediately
-  render().then(() => {
-    setupMutationObserver()
-  })
+  // Use a small delay to ensure app router has finished initial render
+  setTimeout(initialize, 50)
 }
 
 function setupMutationObserver() {
-  new MutationObserver(async (e, o) => {
-    await render()
-    for (const item of e) {
-      if (item.target instanceof HTMLElement) {
-        const target = item.target
+  console.log('DEBUG: Setting up mutation observer')
+  
+  new MutationObserver(async (mutations, observer) => {
+    // LESS AGGRESSIVE: Only re-render in specific cases
+    let shouldRender = false
+    
+    for (const mutation of mutations) {
+      if (mutation.target instanceof HTMLElement) {
+        const target = mutation.target
+        
+        // Only re-render if fern-header or fern-footer are added/removed
         if (target.id === 'fern-header' || target.id === 'fern-footer') {
-          if (observations < 3) {
-            // react hydration will trigger a mutation event
-            observations++
-          } else {
-            o.disconnect()
-          }
+          console.log(`DEBUG: ${target.id} changed, triggering re-render`)
+          shouldRender = true
           break
         }
+        
+        // Check if fern-footer was added to DOM
+        if (mutation.type === 'childList') {
+          for (const node of Array.from(mutation.addedNodes)) {
+            if (node instanceof HTMLElement && node.id === 'fern-footer') {
+              console.log('DEBUG: fern-footer added to DOM, triggering re-render')
+              shouldRender = true
+              break
+            }
+          }
+        }
       }
+    }
+    
+    if (shouldRender && observations < 3) {
+      observations++
+      console.log(`DEBUG: Re-rendering (${observations}/3)`)
+      await render()
+    } else if (observations >= 3) {
+      console.log('DEBUG: Max observations reached, disconnecting observer')
+      observer.disconnect()
+    } else {
+      console.log('DEBUG: DOM change detected but no re-render needed')
     }
   }).observe(document.body, { childList: true, subtree: true })
 }

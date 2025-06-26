@@ -68,6 +68,12 @@ navigation:
       - page: Restricted messages on a timeline
         slug: timeline-entries
         path: ../docs/pages/timeline-entries.mdx
+      - page: Object customization
+        slug: object-customization
+        path: ../docs/pages/object-customization.mdx
+      - page: Custom objects
+        slug: custom-objects
+        path: ../docs/pages/custom-objects.mdx
   - section: SDKs
     slug: sdks
     path: ../docs/pages/sdks/index.mdx

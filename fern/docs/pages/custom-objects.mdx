@@ -1,7 +1,3 @@
-<Callout intent="warning">
-This functionality is in Beta. It is not recommended for use in production applications.
-</Callout>
-
 Custom objects allow you to extend DevRev's data model beyond the standard use-cases
 served by the native apps like Build and Support. Custom objects allow you to create
 and manage object types tailored to your specific business needs.
@@ -12,8 +8,7 @@ and manage object types tailored to your specific business needs.
 2. **Subtype**: A categorization of a leaf type. For example, "promotion" or "advertising" for a "campaign" leaf type.
 3. **Schema fragment**: A schema fragment defines the schema for an object.
 4. **Custom fields**: User-defined fields that store specific data for your custom object.
-5. **Unique key**: A unique identifier for each custom object. This is useful for maintaining idempotency when retrying custom object creation requests.
-6. **ID prefix**: A unique prefix used to generate the display ID for the custom object. If the `id_prefix` is "CAMP", the generated custom object display ID is "C-CAMP-1". The display ID is used to identify the custom object in the UI, similar to the standard DevRev object display IDs like "ISS-001" for issues.
+5. **ID prefix**: A unique prefix used to generate the display ID for the custom object. If the `id_prefix` is "CAMP", the generated custom object display ID is "C-CAMP-1". The display ID is used to identify the custom object in the UI, similar to the standard DevRev object display IDs like "ISS-001" for issues.
 
 For more details on customization concepts, please refer to the
 [Customization](./object-customization) documentation.
@@ -34,6 +29,9 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
     "type": "tenant_fragment",
     "description": "Attributes for Campaign",
     "leaf_type": "campaign",
+    "leaf_type_display_name": "Campaign",
+    "is_custom_leaf_type": true,
+    "id_prefix": "CAMP"
     "fields": [
         {
             "name": "name",
@@ -64,9 +62,7 @@ curl --location 'https://api.devrev.ai/schemas.custom.set' \
                 "Students"
             ]
         }
-    ],
-    "is_custom_leaf_type": true,
-    "id_prefix": "CAMP"
+    ]
 }'
 ```
 
@@ -82,7 +78,6 @@ curl --location 'https://api.devrev.ai/custom-objects.create' \
 --header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "leaf_type": "campaign",
-    "unique_key": "CAMP-001",
     "custom_schema_spec": {
         "tenant_fragment": true
     },
@@ -107,7 +102,6 @@ The response of the above API call is the ID of the custom object created.
     "modified_date": "2024-10-01T07:02:58.958Z",
     "display_id": "C-CAMP-1",
     "leaf_type": "campaign",
-    "unique_key": "CAMP-001"
     "stock_schema_fragment": "don:core:dvrv-us-1:stock_sf/1",
     "custom_schema_fragments": [
       "don:core:dvrv-us-1:devo/demo:tenant_fragment/1"
@@ -249,7 +243,33 @@ curl --location 'https://api.devrev.ai/custom-objects.create' \
         "tnt__target_audience": "Professionals",
         "ctype__social_media_platform": "Facebook",
         "ctype__post_id": "1234567890"
+    }
+}'
+```
+
+### Use unique keys for custom objects
+
+A unique identifier for each custom object can be used to maintain idempotency
+when retrying custom object creation requests. No other custom object of the
+same type can have the same unique key.
+
+```curl {10}
+curl --location 'https://api.devrev.ai/custom-objects.create' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "leaf_type": "campaign",
+    "custom_schema_spec": {
+        "tenant_fragment": true
     },
-    "unique_key": "CAMP-001"
+    "unique_key": "CAMP-1",
+    "custom_fields": {
+        "tnt__name": "Summer Sale 2023",
+        "tnt__start_date": "2023-06-01",
+        "tnt__end_date": "2023-08-31",
+        "tnt__budget": 10000,
+        "tnt__target_audience": "Professionals"
+    }
 }'
 ```

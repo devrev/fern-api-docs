@@ -1,4 +1,4 @@
-api: 
+api:
   specs:
     - openapi: ./openapi-beta.yaml
 groups:
@@ -7,7 +7,7 @@ groups:
       - sdks
     generators:
       - name: fernapi/fern-typescript-node-sdk
-        version: 0.35.0
+        version: 0.51.7
         output:
           location: npm
           package-name: "@devrev/api"

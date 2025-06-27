@@ -526,6 +526,106 @@ components:
       required:
         - id
       title: add-tag-with-value
+    aggregated-schema:
+      type: object
+      description: List of custom fields from multiple source fragments.
+      properties:
+        apps:
+          type: array
+          description: |
+            Apps corresponding to the app fragments used to populate the same
+            in the object.
+          items:
+            type: string
+            format: text
+        conditions:
+          type: array
+          description: The conditions associated with the fields.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragment-condition'
+        custom_composite_schemas:
+          type: array
+          description: List of all composite schemas used by custom fields.
+          items:
+            $ref: '#/components/schemas/composite-schema'
+        custom_fields:
+          type: array
+          description: List of all custom fields in this schema.
+          items:
+            $ref: '#/components/schemas/schema-field-descriptor'
+        description:
+          type: string
+          description: Description of the schema.
+          format: text
+        is_custom_leaf_type:
+          type: boolean
+          description: |
+            True when the fragments being aggregated correspond to a custom
+            leaf type.
+        leaf_type:
+          type: string
+          description: Leaf type of the fragments being aggregated.
+          format: text
+        stage_diagram_id:
+          $ref: '#/components/schemas/stage-diagram-summary'
+        stock_composite_schemas:
+          type: array
+          description: List of all composite schemas used by stock fields.
+          items:
+            $ref: '#/components/schemas/composite-schema'
+        stock_field_overrides:
+          type: array
+          description: |
+            Optional overrides for properties of stock fields. Overrides in the
+            custom type fragment take precedence over those defined in the
+            tenant fragment.
+          items:
+            $ref: '#/components/schemas/stock-field-override'
+        stock_fields:
+          type: array
+          description: List of all stock fields in this schema.
+          items:
+            $ref: '#/components/schemas/schema-field-descriptor'
+        subtype:
+          type: string
+          description: |
+            Subtype corresponding to the custom type fragment used to populate
+            the same in the object.
+          format: text
+        subtype_display_name:
+          type: string
+          description: Display name of the subtype.
+          format: text
+      required:
+        - custom_composite_schemas
+        - custom_fields
+        - stock_composite_schemas
+        - stock_fields
+      title: aggregated-schema
+    aggregated-schema-get-request:
+      type: object
+      properties:
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec-for-read'
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object.
+        leaf_type:
+          type: string
+          description: |
+            The leaf type. Used for inferring the default stage diagram and
+            tenant fragment ID.
+          format: text
+      title: aggregated-schema-get-request
+    aggregated-schema-get-response:
+      type: object
+      properties:
+        schema:
+          $ref: '#/components/schemas/aggregated-schema'
+      required:
+        - schema
+      title: aggregated-schema-get-response
+      x-go-name: AggregatedSchemaGetResponseBody
     ai-agent-event-execute-error:
       type: object
       description: |
@@ -646,6 +746,26 @@ components:
       required:
         - suggestion
       title: ai-agent-suggestion
+    applies-to-part-filter:
+      type: object
+      description: The filter for applies to part.
+      properties:
+        include_child_parts:
+          type: boolean
+          description: |
+            Whether to include items belonging to children of any of the
+            provided parts.
+        parts:
+          type: array
+          description: Part IDs to filter on.
+          example:
+            - PROD-12345
+          items:
+            type: string
+            format: id
+      required:
+        - parts
+      title: applies-to-part-filter
     archetype-metric-target:
       type: object
       description: Metric with corresponding target values.
@@ -847,6 +967,20 @@ components:
         - draft
         - published
         - review_needed
+    article-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            article_type:
+              $ref: '#/components/schemas/article-type'
+            resource:
+              $ref: '#/components/schemas/resource-summary'
+            title:
+              type: string
+              description: Title of the article.
+              format: text
+      title: article-summary
     article-type:
       type: string
       description: Type of the article.
@@ -1029,11 +1163,6 @@ components:
       type: object
       description: The request to get an article.
       properties:
-        dev_org:
-          type: string
-          description: Optional Dev Org ID for the unauthenticated user.
-          example: DEV-AbCdEfGh
-          format: id
         id:
           type: string
           description: The ID of the required article.
@@ -1103,11 +1232,6 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
-        dev_org:
-          type: string
-          description: Optional Dev Org ID for the unauthenticated user.
-          example: DEV-AbCdEfGh
-          format: id
         limit:
           type: integer
           description: |
@@ -1707,6 +1831,7 @@ components:
       type: object
       discriminator:
         mapping:
+          article: '#/components/schemas/article'
           auth_token: '#/components/schemas/auth-token'
           capability: '#/components/schemas/capability'
           conversation: '#/components/schemas/conversation'
@@ -1729,6 +1854,7 @@ components:
           webhook: '#/components/schemas/webhook'
         propertyName: type
       oneOf:
+        - $ref: '#/components/schemas/article'
         - $ref: '#/components/schemas/auth-token'
         - $ref: '#/components/schemas/capability'
         - $ref: '#/components/schemas/conversation'
@@ -1801,6 +1927,7 @@ components:
       type: object
       discriminator:
         mapping:
+          article: '#/components/schemas/article-summary'
           auth_token: '#/components/schemas/auth-token-summary'
           capability: '#/components/schemas/capability-summary'
           conversation: '#/components/schemas/conversation-summary'
@@ -1823,6 +1950,7 @@ components:
           webhook: '#/components/schemas/webhook-summary'
         propertyName: type
       oneOf:
+        - $ref: '#/components/schemas/article-summary'
         - $ref: '#/components/schemas/auth-token-summary'
         - $ref: '#/components/schemas/capability-summary'
         - $ref: '#/components/schemas/conversation-summary'
@@ -1852,6 +1980,7 @@ components:
     atom-type:
       type: string
       enum:
+        - article
         - auth_token
         - capability
         - conversation
@@ -2221,6 +2350,9 @@ components:
       type: object
       description: Carries account info.
       properties:
+        custom_fields:
+          type: object
+          description: Application-defined custom fields of the account.
         display_name:
           type: string
           description: The display name of the account.
@@ -2920,6 +3052,53 @@ components:
         - chat
       title: chats-update-response
       x-go-name: ChatsUpdateResponseBody
+    client-override:
+      type: object
+      description: UI hint overrides for a client.
+      properties:
+        client_name:
+          type: string
+          description: The name of the client.
+          format: text
+        decimal_places:
+          type: integer
+          description: |
+            Number of decimal places to show. Only applicable for number
+            fields.
+          format: int32
+        display_name:
+          type: string
+          description: The display name of the field.
+          format: text
+        is_groupable:
+          type: boolean
+          description: Whether the field is groupable in the UI.
+        is_hidden:
+          type: boolean
+          description: Whether the field is hidden in the UI.
+        order:
+          type: integer
+          description: Relative order in which the field is shown.
+          format: int32
+        placeholder:
+          type: string
+          description: A placeholder for the field.
+          format: text
+        tooltip:
+          type: string
+          description: Tooltip for the field.
+          format: text
+        use_shorthand_notation:
+          type: boolean
+          description: |
+            Whether to use shorthand notation. Example, 1K instead of 1000.
+            Only applicable for number fields.
+        view_overrides:
+          type: array
+          description: The view overrides for the client.
+          items:
+            $ref: '#/components/schemas/view-override'
+      title: client-override
     code-change:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -3409,6 +3588,26 @@ components:
         - commands
       title: commands-list-response
       x-go-name: CommandsListResponseBody
+    composite-schema:
+      type: object
+      description: The schema of a composite type.
+      properties:
+        description:
+          type: string
+          description: Description of this composite type.
+          format: text
+        fields:
+          type: array
+          description: List of all fields in this schema.
+          items:
+            $ref: '#/components/schemas/schema-field-descriptor'
+        name:
+          type: string
+          description: Name of this composite type.
+          format: text
+      required:
+        - fields
+      title: composite-schema
     conversation:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -3446,6 +3645,12 @@ components:
               $ref: '#/components/schemas/archetype-sla-summary'
             sla_tracker:
               $ref: '#/components/schemas/sla-tracker-summary'
+            source_channel:
+              type: string
+              description: Source channel for the conversation.
+              format: text
+            source_channel_v2:
+              $ref: '#/components/schemas/external-communication-channel-summary'
             stage:
               $ref: '#/components/schemas/legacy-stage'
             tags:
@@ -3969,6 +4174,25 @@ components:
         - conversation
       title: conversations-update-response
       x-go-name: ConversationsUpdateResponseBody
+    conversations-vista-group-item:
+      allOf:
+        - $ref: '#/components/schemas/vista-group-base'
+        - type: object
+          discriminator:
+            propertyName: type
+          properties:
+            type:
+              $ref: '#/components/schemas/conversations-vista-group-item-type'
+          required:
+            - type
+      description: Represents a nested conversations vista group object.
+      title: conversations-vista-group-item
+    conversations-vista-group-item-type:
+      type: string
+      description: Type of conversations vista group item.
+      enum:
+        - curated
+        - dynamic
     create-command-action:
       type: object
       properties:
@@ -4062,6 +4286,46 @@ components:
         - from
         - name
       title: create-org-schedule-interval
+    create-stage-node:
+      type: object
+      properties:
+        is_deprecated:
+          type: boolean
+          description: Whether this stage is deprecated.
+        is_start:
+          type: boolean
+          description: Whether this is the start stage.
+        stage_id:
+          type: string
+          description: The ID of the stage.
+          format: id
+        transitions:
+          type: array
+          description: List of transitions from this stage.
+          items:
+            $ref: '#/components/schemas/create-stage-transition'
+      required:
+        - stage_id
+      title: create-stage-node
+    create-stage-transition:
+      type: object
+      properties:
+        target_stage_id:
+          type: string
+          description: The ID of the target stage.
+          format: id
+        ui:
+          $ref: '#/components/schemas/create-stage-ui-metadata'
+      required:
+        - target_stage_id
+      title: create-stage-transition
+    create-stage-ui-metadata:
+      type: object
+      properties:
+        is_hidden:
+          type: boolean
+          description: Whether the stage is hidden.
+      title: create-stage-ui-metadata
     create-weekly-org-schedule-interval:
       type: object
       properties:
@@ -4082,6 +4346,575 @@ components:
         - from
         - to
       title: create-weekly-org-schedule-interval
+    curated-vista:
+      allOf:
+        - $ref: '#/components/schemas/vista-base'
+        - type: object
+          properties:
+            items:
+              type: array
+              description: Item list to store a curated list of DevRev objects.
+              items:
+                $ref: '#/components/schemas/atom-summary'
+      description: Static collection of DevRev objects.
+      title: curated-vista
+    custom-object:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            leaf_type:
+              type: string
+              description: Type of the object.
+              format: text
+            stage:
+              $ref: '#/components/schemas/stage'
+            title:
+              type: string
+              description: Title of the object.
+              format: text
+            unique_key:
+              type: string
+              description: |
+                A unique key that, if provided, ensures the combination of
+                {leaf_type, unique_key} is distinct across all objects in the
+                system.
+              format: text
+      title: custom-object
+    custom-objects-count-request:
+      type: object
+      properties:
+        filters:
+          type: array
+          description: List of filters to apply.
+          items: {}
+        leaf_type:
+          type: string
+          description: Leaf type to filter.
+          format: text
+      required:
+        - leaf_type
+      title: custom-objects-count-request
+    custom-objects-count-response:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The count of custom objects.
+          format: int64
+      required:
+        - count
+      title: custom-objects-count-response
+      x-go-name: CustomObjectsCountResponseBody
+    custom-objects-create-request:
+      type: object
+      properties:
+        custom_fields:
+          type: object
+          description: Custom fields of the custom object.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
+        leaf_type:
+          type: string
+          description: Leaf type of the custom object.
+          format: text
+        stage:
+          type: string
+          description: The stage of the custom object.
+          format: id
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when creating a custom
+            object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-create'
+        title:
+          type: string
+          description: Title of the custom object.
+          format: text
+        unique_key:
+          type: string
+          description: |
+            The unique key of the custom object.This can be used to hold an
+            external reference to another object.
+          format: text
+      required:
+        - leaf_type
+      title: custom-objects-create-request
+    custom-objects-create-response:
+      type: object
+      properties:
+        custom_object:
+          $ref: '#/components/schemas/custom-object'
+      required:
+        - custom_object
+      title: custom-objects-create-response
+      x-go-name: CustomObjectsCreateResponseBody
+    custom-objects-delete-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom object to get.
+          format: id
+      required:
+        - id
+      title: custom-objects-delete-request
+    custom-objects-delete-response:
+      type: object
+      additionalProperties: false
+      title: custom-objects-delete-response
+      x-go-name: CustomObjectsDeleteResponseBody
+    custom-objects-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom object to get.
+          format: id
+      title: custom-objects-get-request
+    custom-objects-get-response:
+      type: object
+      properties:
+        custom_object:
+          $ref: '#/components/schemas/custom-object'
+      required:
+        - custom_object
+      title: custom-objects-get-response
+      x-go-name: CustomObjectsGetResponseBody
+    custom-objects-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          format: text
+        filter:
+          type: array
+          description: List of filters to apply.
+          items: {}
+        filters:
+          type: array
+          description: List of filters to apply.
+          items: {}
+        leaf_type:
+          type: string
+          description: Leaf type to filter.
+          format: text
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+            format: sort-by
+      required:
+        - leaf_type
+      title: custom-objects-list-request
+    custom-objects-list-response:
+      type: object
+      description: |
+        The response to listing all custom objects matching the filter
+        criteria.
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          format: text
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          format: text
+        result:
+          type: array
+          description: The custom objects.
+          items:
+            $ref: '#/components/schemas/custom-object'
+      required:
+        - result
+      title: custom-objects-list-response
+      x-go-name: CustomObjectsListResponseBody
+    custom-objects-update-request:
+      type: object
+      properties:
+        custom_fields:
+          type: object
+          description: Custom fields of the custom object.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
+        id:
+          type: string
+          description: The ID of the custom object to update.
+          format: id
+        stage:
+          type: string
+          description: Updates the stage of the custom object.
+          format: id
+          nullable: true
+        stage_validation_options:
+          type: array
+          description: |
+            The type of stage validations options when updating the stage or
+            the stage diagram of a custom object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-update'
+        title:
+          type: string
+          description: Updates the title of the custom object.
+          format: text
+          nullable: true
+      required:
+        - id
+      title: custom-objects-update-request
+    custom-objects-update-response:
+      type: object
+      properties:
+        custom_object:
+          $ref: '#/components/schemas/custom-object'
+      required:
+        - custom_object
+      title: custom-objects-update-response
+      x-go-name: CustomObjectsUpdateResponseBody
+    custom-schema-fragment:
+      type: object
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          $ref: '#/components/schemas/custom-schema-fragment-type'
+      required:
+        - type
+      title: custom-schema-fragment
+    custom-schema-fragment-condition:
+      type: object
+      description: The condition associated with a field.
+      properties:
+        effects:
+          type: array
+          description: |
+            The associated effects when the expression evaluates to true.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragment-effect'
+        expression:
+          type: string
+          description: The expression to evaluate.
+          format: text
+      title: custom-schema-fragment-condition
+    custom-schema-fragment-effect:
+      type: object
+      description: An effect associated with a condition.
+      properties:
+        allowed_values:
+          type: array
+          description: |
+            Allowed values for the fields based on the condition. This takes
+            precedence over allowed_values in field_descriptor.
+          items:
+            type: string
+            format: text
+        fields:
+          type: array
+          description: The fields which are affected by the condition.
+          items:
+            type: string
+            format: text
+        immutable:
+          type: boolean
+          description: |
+            Whether the fields should be made immutable or not based on the
+            condition.
+        require:
+          type: boolean
+          description: |
+            Whether the fields are required or not based on the condition. This
+            takes precedence over is_required in field_descriptor.
+        show:
+          type: boolean
+          description: |
+            Whether the fields are shown or not based on the condition.
+      required:
+        - fields
+      title: custom-schema-fragment-effect
+    custom-schema-fragment-type:
+      type: string
+    custom-schema-fragments-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom schema fragment.
+          format: id
+      required:
+        - id
+      title: custom-schema-fragments-get-request
+    custom-schema-fragments-get-response:
+      type: object
+      properties:
+        fragment:
+          $ref: '#/components/schemas/custom-schema-fragment'
+      required:
+        - fragment
+      title: custom-schema-fragments-get-response
+      x-go-name: CustomSchemaFragmentsGetResponseBody
+    custom-schema-fragments-list-request:
+      type: object
+      properties:
+        app:
+          type: array
+          description: The list of app names.
+          items:
+            type: string
+            format: text
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          format: text
+        deprecated:
+          type: boolean
+          deprecated: true
+          description: Whether only deprecated fragments should be filtered.
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object
+        is_deprecated:
+          type: boolean
+          description: Whether the fragment has been deprecated.
+        leaf_type:
+          type: array
+          description: The list of leaf types.
+          items:
+            type: string
+            format: text
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        prune:
+          type: array
+          description: |
+            List of fields which are not required in the payload and can be
+            pruned away.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragments-list-request-prune'
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+            format: sort-by
+        subtype:
+          type: array
+          description: The list of subtypes.
+          items:
+            type: string
+            format: text
+        types:
+          type: array
+          description: |
+            Filters for custom schema fragment of the provided types.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragment-type'
+      title: custom-schema-fragments-list-request
+    custom-schema-fragments-list-request-prune:
+      type: string
+      enum:
+        - fields
+    custom-schema-fragments-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          format: text
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          format: text
+        result:
+          type: array
+          description: The custom schema fragments.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragment'
+      required:
+        - result
+      title: custom-schema-fragments-list-response
+      x-go-name: CustomSchemaFragmentsListResponseBody
+    custom-schema-fragments-set-request:
+      type: object
+      discriminator:
+        mapping:
+          app_fragment: '#/components/schemas/custom-schema-fragments-set-request-app-fragment'
+          custom_type_fragment: '#/components/schemas/custom-schema-fragments-set-request-custom-type-fragment'
+          tenant_fragment: '#/components/schemas/custom-schema-fragments-set-request-tenant-fragment'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/custom-schema-fragments-set-request-app-fragment'
+        - $ref: '#/components/schemas/custom-schema-fragments-set-request-custom-type-fragment'
+        - $ref: '#/components/schemas/custom-schema-fragments-set-request-tenant-fragment'
+      properties:
+        type:
+          $ref: '#/components/schemas/custom-schema-fragments-set-request-type'
+        composite_schemas:
+          type: array
+          description: List of all composite schemas used in this fragment.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragments-set-request-composite-schema'
+        conditions:
+          type: array
+          description: List of conditions for this fragment.
+          items:
+            $ref: '#/components/schemas/custom-schema-fragment-condition'
+        deleted_fields:
+          type: array
+          description: List of field names which are being dropped.
+          items:
+            type: string
+            format: text
+        deprecated:
+          type: boolean
+          deprecated: true
+          description: Whether this fragment has been deprecated.
+        description:
+          type: string
+          description: The description of the custom schema fragment.
+          format: text
+        fields:
+          type: array
+          description: List of all fields in this fragment.
+          items:
+            $ref: '#/components/schemas/schema-field-descriptor'
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object
+        is_deprecated:
+          type: boolean
+          description: Whether this fragment has been deprecated.
+        leaf_type:
+          type: string
+          description: The leaf type this fragment applies to.
+          format: text
+      required:
+        - description
+        - leaf_type
+        - type
+      title: custom-schema-fragments-set-request
+    custom-schema-fragments-set-request-app-fragment:
+      type: object
+      properties:
+        app:
+          type: string
+          description: The app this fragment applies to.
+          format: text
+        app_display_name:
+          type: string
+          description: The display name of the app.
+          format: text
+      required:
+        - app
+      title: custom-schema-fragments-set-request-app-fragment
+    custom-schema-fragments-set-request-composite-schema:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of this composite type.
+          format: text
+        fields:
+          type: array
+          description: List of fields in this composite type.
+          items:
+            $ref: '#/components/schemas/schema-field-descriptor'
+        name:
+          type: string
+          description: The name of this composite type.
+          format: text
+      required:
+        - fields
+      title: custom-schema-fragments-set-request-composite-schema
+    custom-schema-fragments-set-request-custom-type-fragment:
+      type: object
+      properties:
+        path:
+          type: array
+          description: |
+            Path components used to display available custom types in tree
+            form.
+          items:
+            $ref: '#/components/schemas/custom-type-path-component'
+        stage_diagram:
+          type: string
+          description: The ID of the associated custom stage diagram.
+          format: id
+        stock_field_overrides:
+          type: array
+          description: List of Per-DevOrg stock field overrides.
+          items:
+            $ref: '#/components/schemas/stock-field-override'
+        subtype:
+          type: string
+          description: |
+            The string used to populate the subtype in the leaf type.
+          format: text
+        subtype_display_name:
+          type: string
+          description: The display name of the subtype.
+          format: text
+      required:
+        - subtype
+      title: custom-schema-fragments-set-request-custom-type-fragment
+    custom-schema-fragments-set-request-tenant-fragment:
+      type: object
+      properties:
+        id_prefix:
+          type: string
+          description: The display ID prefix for the custom object.
+          format: text
+          pattern: ^[A-Z]{2,10}$
+        stock_field_overrides:
+          type: array
+          description: List of Per-DevOrg stock field overrides.
+          items:
+            $ref: '#/components/schemas/stock-field-override'
+      title: custom-schema-fragments-set-request-tenant-fragment
+    custom-schema-fragments-set-request-type:
+      type: string
+      enum:
+        - app_fragment
+        - custom_type_fragment
+        - tenant_fragment
+    custom-schema-fragments-set-response:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom schema fragment.
+          format: id
+      required:
+        - id
+      title: custom-schema-fragments-set-response
+      x-go-name: CustomSchemaFragmentsSetResponseBody
     custom-schema-spec:
       type: object
       description: |
@@ -4109,6 +4942,350 @@ components:
           type: boolean
           description: Whether to enforce required fields validation.
       title: custom-schema-spec
+    custom-schema-spec-for-read:
+      type: object
+      description: Custom schemas described using identifiers
+      properties:
+        apps:
+          type: array
+          description: List of apps.
+          items:
+            type: string
+            format: text
+        subtype:
+          type: string
+          description: Name of the subtype.
+          format: text
+      title: custom-schema-spec-for-read
+    custom-stage:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the stage.
+              format: text
+            ordinal:
+              type: integer
+              description: Position of the stage in the global stage ordering.
+              format: int32
+            state:
+              $ref: '#/components/schemas/custom-state-summary'
+      title: custom-stage
+    custom-stage-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the stage.
+              format: text
+      title: custom-stage-summary
+    custom-stages-create-request:
+      type: object
+      properties:
+        marketplace_ref:
+          type: string
+          description: |
+            A reference to the marketplace item from which this stage was
+            imported.
+          format: id
+        name:
+          type: string
+          description: The name of the custom stage.
+          format: text
+        ordinal:
+          type: integer
+          description: The ordinal of the custom stage used for ordering.
+          format: int32
+        state:
+          type: string
+          description: The state ID.
+          format: id
+      required:
+        - name
+        - ordinal
+        - state
+      title: custom-stages-create-request
+    custom-stages-create-response:
+      type: object
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+        - custom_stage
+      title: custom-stages-create-response
+      x-go-name: CustomStagesCreateResponseBody
+    custom-stages-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom stage to get.
+          format: id
+      required:
+        - id
+      title: custom-stages-get-request
+    custom-stages-get-response:
+      type: object
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+        - custom_stage
+      title: custom-stages-get-response
+      x-go-name: CustomStagesGetResponseBody
+    custom-stages-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          format: text
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        name:
+          type: array
+          description: The list of stage names.
+          items:
+            type: string
+            format: text
+        ordinal:
+          type: array
+          description: The list of stage ordinals.
+          items:
+            type: integer
+            format: int32
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+            format: sort-by
+      title: custom-stages-list-request
+    custom-stages-list-response:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          format: text
+        result:
+          type: array
+          description: The custom stages.
+          items:
+            $ref: '#/components/schemas/custom-stage'
+      required:
+        - result
+      title: custom-stages-list-response
+      x-go-name: CustomStagesListResponseBody
+    custom-stages-update-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom stage to update.
+          format: id
+        name:
+          type: string
+          description: The updated name of the custom stage.
+          format: text
+        ordinal:
+          type: integer
+          description: The ordinal of the custom stage.
+          format: int32
+        state_id:
+          type: string
+          description: The state ID.
+          format: id
+      required:
+        - id
+      title: custom-stages-update-request
+    custom-stages-update-response:
+      type: object
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+        - custom_stage
+      title: custom-stages-update-response
+      x-go-name: CustomStagesUpdateResponseBody
+    custom-state:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            is_final:
+              type: boolean
+              description: True if this is a final state.
+            name:
+              type: string
+              description: The human readable name of the state.
+              format: text
+            ordinal:
+              type: integer
+              description: Position of the state in the global state ordering.
+              format: int32
+      title: custom-state
+    custom-state-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            is_final:
+              type: boolean
+              description: True if this is a final state.
+            name:
+              type: string
+              description: The human readable name of the state.
+              format: text
+      title: custom-state-summary
+    custom-states-create-request:
+      type: object
+      properties:
+        is_final:
+          type: boolean
+          description: Whether this is a final state.
+        name:
+          type: string
+          description: The name of the custom state.
+          format: text
+        ordinal:
+          type: integer
+          description: |
+            Ordinal of the custom state used to identify system states.
+          format: int32
+      required:
+        - name
+        - ordinal
+      title: custom-states-create-request
+    custom-states-create-response:
+      type: object
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+        - custom_state
+      title: custom-states-create-response
+      x-go-name: CustomStatesCreateResponseBody
+    custom-states-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom state to get.
+          format: id
+      required:
+        - id
+      title: custom-states-get-request
+    custom-states-get-response:
+      type: object
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+        - custom_state
+      title: custom-states-get-response
+      x-go-name: CustomStatesGetResponseBody
+    custom-states-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          format: text
+        is_final:
+          type: boolean
+          description: Whether only final states should be filtered.
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        name:
+          type: array
+          description: The list of state names.
+          items:
+            type: string
+            format: text
+        ordinal:
+          type: array
+          description: The list of state ordinals.
+          items:
+            type: integer
+            format: int32
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+            format: sort-by
+      title: custom-states-list-request
+    custom-states-list-response:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          format: text
+        result:
+          type: array
+          description: The custom states.
+          items:
+            $ref: '#/components/schemas/custom-state'
+      required:
+        - result
+      title: custom-states-list-response
+      x-go-name: CustomStatesListResponseBody
+    custom-states-update-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the custom state to update.
+          format: id
+        is_final:
+          type: boolean
+          description: Whether this is a final state.
+        name:
+          type: string
+          description: The name of the custom state.
+          format: text
+        ordinal:
+          type: integer
+          description: |
+            Ordinal of the custom state used to identify system states.
+          format: int32
+      required:
+        - id
+      title: custom-states-update-request
+    custom-states-update-response:
+      type: object
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+        - custom_state
+      title: custom-states-update-response
+      x-go-name: CustomStatesUpdateResponseBody
+    custom-type-path-component:
+      type: object
+      additionalProperties: false
+      description: Path component for rendering custom type lists in tree form.
+      title: custom-type-path-component
     dashboard:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -5019,6 +6196,10 @@ components:
             $ref: '#/components/schemas/dev-users-update-job-history-item'
         job_title:
           $ref: '#/components/schemas/dev-user-job-title'
+        reports_to:
+          type: string
+          description: The ID of the Dev user that the user reports to.
+          format: id
       title: dev-users-self-update-request
     dev-users-update-job-history-item:
       type: object
@@ -5084,6 +6265,10 @@ components:
             $ref: '#/components/schemas/dev-users-update-job-history-item'
         job_title:
           $ref: '#/components/schemas/dev-user-job-title'
+        reports_to:
+          type: string
+          description: The ID of the Dev user that the user reports to.
+          format: id
       required:
         - id
       title: dev-users-update-request
@@ -5200,11 +6385,6 @@ components:
       type: object
       description: The request to get a directory.
       properties:
-        dev_org:
-          type: string
-          description: Optional Dev Org ID for the unauthenticated user.
-          example: DEV-AbCdEfGh
-          format: id
         id:
           type: string
           description: The ID of the requested directory.
@@ -5241,11 +6421,6 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
-        dev_org:
-          type: string
-          description: Optional Dev Org ID for the unauthenticated user.
-          example: DEV-AbCdEfGh
-          format: id
         limit:
           type: integer
           description: |
@@ -5407,6 +6582,39 @@ components:
       additionalProperties: false
       description: Information to define dynamic groups.
       title: dynamic-group-info
+    dynamic-vista:
+      allOf:
+        - $ref: '#/components/schemas/vista-base'
+        - type: object
+          discriminator:
+            propertyName: filter_type
+          properties:
+            filter_type:
+              $ref: '#/components/schemas/dynamic-vista-filter-type'
+          required:
+            - filter_type
+      description: |
+        Dynamic collection of DevRev objects, all adhering to a specific
+        filter.
+      title: dynamic-vista
+    dynamic-vista-filter-type:
+      type: string
+      description: Type of DevRev object for which the vista is applicable.
+      enum:
+        - accounts
+        - articles
+        - conversations
+        - credits
+        - custom_objects
+        - dev_users
+        - incidents
+        - invoices
+        - meetings
+        - parts
+        - quotes
+        - rev_orgs
+        - rev_users
+        - works
     empty:
       type: object
       additionalProperties: false
@@ -6389,6 +7597,37 @@ components:
         - session_object
       title: event-ai-agent-response
       x-go-name: EventAiAgentResponseBody
+    event-article-created:
+      type: object
+      properties:
+        article:
+          $ref: '#/components/schemas/article'
+      required:
+        - article
+      title: event-article-created
+    event-article-deleted:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the article that was deleted.
+          example: ARTICLE-12345
+          format: id
+        old_article:
+          $ref: '#/components/schemas/article'
+      required:
+        - id
+      title: event-article-deleted
+    event-article-updated:
+      type: object
+      properties:
+        article:
+          $ref: '#/components/schemas/article'
+        old_article:
+          $ref: '#/components/schemas/article'
+      required:
+        - article
+      title: event-article-updated
     event-conversation-created:
       type: object
       properties:
@@ -7102,9 +8341,115 @@ components:
       title: feature-summary
     field-descriptor:
       type: object
-      additionalProperties: false
       description: Set of field attributes.
+      properties:
+        default_value:
+          type: object
+          description: The default value for this field.
+        description:
+          type: string
+          description: Description of the field.
+          format: text
+        is_filterable:
+          type: boolean
+          description: |
+            Whether this field is filterable, groupable and sortable.
+        is_immutable:
+          type: boolean
+          description: Whether this field is immutable or not.
+        is_overridable:
+          type: boolean
+          description: |
+            Whether a stock unified enum can be extended with new values.
+        is_required:
+          type: boolean
+          description: Whether this field is required or not.
+        is_sensitive:
+          type: boolean
+          description: |
+            Whether this field can hold PII or sensitive information that
+            should not be logged.
+        is_system:
+          type: boolean
+          description: Whether this field is a system field or not.
+        name:
+          type: string
+          description: Name of the field.
+          format: text
+        uenum_values:
+          type: array
+          description: Allowed values for a unified enum.
+          items:
+            $ref: '#/components/schemas/schema-field-uenum-value'
+        ui:
+          $ref: '#/components/schemas/schema-field-ui-metadata'
+        validation:
+          $ref: '#/components/schemas/field-validation'
       title: field-descriptor
+    field-validation:
+      type: object
+      description: Validation annotations.
+      properties:
+        contains:
+          type: string
+          description: string contains.
+          format: text
+        disabled:
+          type: boolean
+          description: disables validations for this field.
+        eq_items:
+          type: integer
+          description: exact array length.
+          format: int32
+        eq_len:
+          type: integer
+          description: exact string length.
+          format: int32
+        gt:
+          type: integer
+          description: int must be greater than this.
+          format: int32
+        gte:
+          type: integer
+          description: int must be greater or equal than this.
+          format: int32
+        lt:
+          type: integer
+          description: int must be less than this.
+          format: int32
+        lte:
+          type: integer
+          description: int must be less or equal than this.
+          format: int32
+        max_items:
+          type: integer
+          description: maximum array length.
+          format: int32
+        max_len:
+          type: integer
+          description: maximum string length.
+          format: int32
+        min_items:
+          type: integer
+          description: minimum array length.
+          format: int32
+        min_len:
+          type: integer
+          description: minimum string length.
+          format: int32
+        pattern:
+          type: string
+          description: string pattern (re).
+          format: text
+        prefix:
+          type: string
+          description: string prefix.
+          format: text
+        suffix:
+          type: string
+          description: string suffix.
+          format: text
+      title: field-validation
     group:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -7115,6 +8460,12 @@ components:
       enum:
         - airdrop
         - scim
+    group-item-type:
+      type: string
+      description: Type of the vista group item object.
+      enum:
+        - curated
+        - dynamic
     group-member-type:
       type: string
       description: Type of the members in the group.
@@ -7250,6 +8601,36 @@ components:
       enum:
         - dynamic
         - static
+    grouped-vista:
+      allOf:
+        - $ref: '#/components/schemas/vista-base'
+        - type: object
+          discriminator:
+            propertyName: filter_type
+          properties:
+            filter_type:
+              $ref: '#/components/schemas/grouped-vista-filter-type'
+            flavor:
+              $ref: '#/components/schemas/grouped-vista-flavor'
+          required:
+            - filter_type
+      description: Represents a group of multiple vistas as a single unit.
+      title: grouped-vista
+    grouped-vista-filter-type:
+      type: string
+      description: |
+        Type of DevRev object for which the grouped vista is applicable.
+      enum:
+        - conversations
+        - parts
+        - works
+    grouped-vista-flavor:
+      type: string
+      description: Denotes the use case of the grouped vista.
+      enum:
+        - nnl
+        - sprint_board
+        - support_inbox
     groups-create-request:
       type: object
       description: A request to create a new group.
@@ -7688,6 +9069,7 @@ components:
       type: object
       discriminator:
         mapping:
+          article: '#/components/schemas/article-summary'
           capability: '#/components/schemas/capability-summary'
           conversation: '#/components/schemas/conversation-summary'
           dev_user: '#/components/schemas/dev-user-summary'
@@ -7700,6 +9082,7 @@ components:
           ticket: '#/components/schemas/ticket-summary'
         propertyName: type
       oneOf:
+        - $ref: '#/components/schemas/article-summary'
         - $ref: '#/components/schemas/capability-summary'
         - $ref: '#/components/schemas/conversation-summary'
         - $ref: '#/components/schemas/dev-user-summary'
@@ -7719,6 +9102,7 @@ components:
     link-endpoint-type:
       type: string
       enum:
+        - article
         - capability
         - conversation
         - dev_user
@@ -9614,6 +10998,13 @@ components:
             format: id
         parent_part:
           $ref: '#/components/schemas/parent-part-filter'
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the parts by and the direction to sort them.
+          items:
+            type: string
+            format: sort-by
         tags:
           type: array
           description: Filters for part with any of the provided tags.
@@ -9762,6 +11153,25 @@ components:
         - part
       title: parts-update-response
       x-go-name: PartsUpdateResponseBody
+    parts-vista-group-item:
+      allOf:
+        - $ref: '#/components/schemas/vista-group-base'
+        - type: object
+          discriminator:
+            propertyName: type
+          properties:
+            type:
+              $ref: '#/components/schemas/parts-vista-group-item-type'
+          required:
+            - type
+      description: Represents a nested parts vista group object.
+      title: parts-vista-group-item
+    parts-vista-group-item-type:
+      type: string
+      description: Type of parts vista group item.
+      enum:
+        - curated
+        - dynamic
     product:
       allOf:
         - $ref: '#/components/schemas/part-base'
@@ -9932,6 +11342,21 @@ components:
           description: URL of the resource (relevant only for type url).
           format: text
       title: resource
+    resource-summary:
+      type: object
+      description: Resource details.
+      properties:
+        artifacts:
+          type: array
+          description: |
+            Artifacts of the resource (relevant only for type artifact).
+          items:
+            $ref: '#/components/schemas/artifact-summary'
+        url:
+          type: string
+          description: URL of the resource (relevant only for type url).
+          format: text
+      title: resource-summary
     rev-org:
       allOf:
         - $ref: '#/components/schemas/org-base'
@@ -10946,13 +12371,85 @@ components:
       title: schema-field-oasis-metadata
     schema-field-uenum-value:
       type: object
-      additionalProperties: false
       description: A unified enum value.
+      properties:
+        id:
+          type: integer
+          description: The immutable id of the enum value.
+          format: int64
+        is_deprecated:
+          type: boolean
+          description: True if this value is deprecated.
+        label:
+          type: string
+          description: The human readable name of the enum value.
+          format: text
+        ordinal:
+          type: integer
+          description: The order value of the enum.
+          format: int64
+        tooltip:
+          type: string
+          description: Tooltip shown in the UI for this value.
+          format: text
+      required:
+        - id
+        - label
+        - ordinal
       title: schema-field-uenum-value
     schema-field-ui-metadata:
       type: object
-      additionalProperties: false
       description: The schema of ui specific fields.
+      properties:
+        client_overrides:
+          type: array
+          description: The client overrides for the field.
+          items:
+            $ref: '#/components/schemas/client-override'
+        decimal_places:
+          type: integer
+          description: |
+            Number of decimal places to show (only applicable for number
+            fields).
+          format: int32
+        display_name:
+          type: string
+          description: The display name of the field.
+          format: text
+        group_name:
+          type: string
+          description: An optional group name for the field.
+          format: text
+        is_groupable:
+          type: boolean
+          description: Whether the field is groupable in the UI.
+        is_hidden:
+          type: boolean
+          description: Whether the field is hidden in the UI.
+        is_sortable:
+          type: boolean
+          description: Whether the field is sortable in the UI.
+        order:
+          type: integer
+          description: Order in which field is shown.
+          format: int32
+        placeholder:
+          type: string
+          description: A placeholder for the field.
+          format: text
+        tooltip:
+          type: string
+          description: Tooltip for the field.
+          format: text
+        unit:
+          type: string
+          description: Unit of measurment.
+          format: text
+        use_shorthand_notation:
+          type: boolean
+          description: |
+            Whether to use shorthand notation (only applicable for number
+            fields).
       title: schema-field-ui-metadata
     schema-id-field-descriptor:
       allOf:
@@ -11376,6 +12873,93 @@ components:
       allOf:
         - $ref: '#/components/schemas/schema-field-descriptor-base'
       title: schema-unknown-field-descriptor
+    schemas-subtype-prepare-update-get-request:
+      type: object
+      properties:
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object.
+        leaf_type:
+          type: string
+          description: Leaf type of the object.
+          format: text
+        new_subtype:
+          type: string
+          description: Name of the new subtype for the object.
+          format: text
+        object:
+          type: string
+          description: |
+            ID of the object of which subtype is to be changed. Used to fetch
+            the object's custom schema fragments and custom fields
+          format: id
+      required:
+        - leaf_type
+      title: schemas-subtype-prepare-update-get-request
+    schemas-subtype-prepare-update-get-response:
+      type: object
+      properties:
+        added_fields:
+          type: array
+          description: |
+            List of fields that have a default value and need to be set.
+          items:
+            $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-added-field'
+        dropped_fields:
+          type: array
+          description: List of fields that will be dropped from the object.
+          items:
+            $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-dropped-field'
+        new_custom_schema_fragments:
+          type: array
+          description: List of new custom schema fragment IDs of the object.
+          items:
+            type: string
+            format: id
+        new_start_stage:
+          type: string
+          description: |
+            ID of the start stage of the new diagram if the subtype change
+            results in a change in the stage diagram.
+          format: id
+      title: schemas-subtype-prepare-update-get-response
+      x-go-name: SchemasSubtypePrepareUpdateGetResponseBody
+    schemas-subtype-prepare-update-get-response-added-field:
+      type: object
+      properties:
+        default_value:
+          description: Default value of the added field.
+        name:
+          type: string
+          description: API-compliant qualified name of the added field.
+          format: text
+      required:
+        - name
+      title: schemas-subtype-prepare-update-get-response-added-field
+    schemas-subtype-prepare-update-get-response-conflict-type:
+      type: string
+      enum:
+        - absent_in_new
+        - absent_in_old
+        - incompatible_type
+    schemas-subtype-prepare-update-get-response-dropped-field:
+      type: object
+      properties:
+        conflict_type:
+          $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response-conflict-type'
+        message:
+          type: string
+          description: Conflict message for the field being dropped.
+          format: text
+        name:
+          type: string
+          description: API-compliant qualified name of the dropped field.
+          format: text
+      required:
+        - conflict_type
+        - message
+        - name
+      title: schemas-subtype-prepare-update-get-response-dropped-field
     service-account:
       allOf:
         - $ref: '#/components/schemas/user-base'
@@ -12371,6 +13955,197 @@ components:
       additionalProperties: false
       description: Describes the current stage of a object.
       title: stage
+    stage-diagram:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            is_custom_leaf_type:
+              type: boolean
+              description: |
+                True if this stage diagram corresponds to a custom leaf type.
+            is_default:
+              type: boolean
+              description: |
+                True if this stage diagram is the default for the leaf type.
+            leaf_type:
+              type: string
+              description: The leaf type this stage diagram applies to.
+              format: text
+            name:
+              type: string
+              description: The human readable name of the stage diagram.
+              format: text
+            stages:
+              type: array
+              description: |
+                List of stages with their allowed transitions in this stage
+                diagram.
+              items:
+                $ref: '#/components/schemas/stage-node'
+          required:
+            - stages
+      title: stage-diagram
+    stage-diagram-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the stage diagram.
+              format: text
+      title: stage-diagram-summary
+    stage-diagrams-create-request:
+      type: object
+      properties:
+        is_custom_leaf_type:
+          type: boolean
+          description: Whether the leaf type corresponds to a custom object.
+        is_default:
+          type: boolean
+          description: Whether this is a default stage diagram.
+        leaf_type:
+          type: string
+          description: The leaf type this stage diagram applies to.
+          format: text
+        name:
+          type: string
+          description: |
+            The name of the stage diagram. Stage diagram is used for defining
+            stage transitions.
+          format: text
+        stages:
+          type: array
+          description: List of stages in the diagram.
+          items:
+            $ref: '#/components/schemas/create-stage-node'
+      required:
+        - leaf_type
+        - name
+        - stages
+      title: stage-diagrams-create-request
+    stage-diagrams-create-response:
+      type: object
+      properties:
+        stage_diagram:
+          $ref: '#/components/schemas/stage-diagram'
+      required:
+        - stage_diagram
+      title: stage-diagrams-create-response
+      x-go-name: StageDiagramsCreateResponseBody
+    stage-diagrams-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the stage diagram to get.
+          format: id
+        is_custom_leaf_type:
+          type: boolean
+          description: |
+            Whether the leaf type corresponds to a custom object. Specify this
+            along with leaf_type to get the default custom object stage
+            diagram.
+        leaf_type:
+          type: string
+          description: |
+            The leaf type. Should be specified to retrieve the default stage
+            diagram for the leaf type. If not provided, then id is used.
+          format: text
+      title: stage-diagrams-get-request
+    stage-diagrams-get-response:
+      type: object
+      properties:
+        stage_diagram:
+          $ref: '#/components/schemas/stage-diagram'
+      required:
+        - stage_diagram
+      title: stage-diagrams-get-response
+      x-go-name: StageDiagramsGetResponseBody
+    stage-diagrams-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          format: text
+        is_custom_leaf_type:
+          type: boolean
+          description: |
+            Whether only custom object stage diagrams should be filtered.
+        leaf_type:
+          type: array
+          description: The list of leaf types.
+          items:
+            type: string
+            format: text
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        name:
+          type: array
+          description: The list of stage diagram names.
+          items:
+            type: string
+            format: text
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+            format: sort-by
+      title: stage-diagrams-list-request
+    stage-diagrams-list-response:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          format: text
+        result:
+          type: array
+          description: The stage diagram.
+          items:
+            $ref: '#/components/schemas/stage-diagram'
+      required:
+        - result
+      title: stage-diagrams-list-response
+      x-go-name: StageDiagramsListResponseBody
+    stage-diagrams-update-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the stage diagram to update.
+          format: id
+        name:
+          type: string
+          description: The updated name of the stage diagram.
+          format: text
+        stages:
+          type: array
+          description: List of stages in the stage diagram.
+          items:
+            $ref: '#/components/schemas/update-stage-node'
+      required:
+        - id
+      title: stage-diagrams-update-request
+    stage-diagrams-update-response:
+      type: object
+      properties:
+        stage_diagram:
+          $ref: '#/components/schemas/stage-diagram'
+      required:
+        - stage_diagram
+      title: stage-diagrams-update-response
+      x-go-name: StageDiagramsUpdateResponseBody
     stage-filter:
       type: object
       description: The filter for stages.
@@ -12391,6 +14166,32 @@ components:
           description: The name of the stage.
           format: text
       title: stage-init
+    stage-node:
+      type: object
+      description: Diagram stage.
+      properties:
+        is_deprecated:
+          type: boolean
+          description: True if this stage has been deprecated.
+        is_start:
+          type: boolean
+          description: |
+            True if this stage is the starting stage of the stage diagram.
+        stage:
+          $ref: '#/components/schemas/custom-stage-summary'
+        transitions:
+          type: array
+          description: List of allowed transitions from this stage.
+          items:
+            $ref: '#/components/schemas/stage-transition'
+      title: stage-node
+    stage-transition:
+      type: object
+      description: Stage transition.
+      properties:
+        target_stage:
+          $ref: '#/components/schemas/custom-stage-summary'
+      title: stage-transition
     stage-update:
       type: object
       description: Updates an object's stage.
@@ -12419,6 +14220,144 @@ components:
           type: boolean
           description: Filters for issues that are staged.
       title: staged-info-filter
+    stock-field-override:
+      type: object
+      description: A stock field override.
+      properties:
+        is_required:
+          type: boolean
+          description: Whether the field is required.
+        name:
+          type: string
+          description: Name of the stock field to be overridden.
+          format: text
+        ui:
+          $ref: '#/components/schemas/schema-field-ui-metadata'
+      title: stock-field-override
+    stock-schema-fragment:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            composite_schemas:
+              type: array
+              description: List of composite schemas.
+              items:
+                $ref: '#/components/schemas/composite-schema'
+            description:
+              type: string
+              description: Description of the schema.
+              format: text
+            fields:
+              type: array
+              description: List of all fields in this schema.
+              items:
+                $ref: '#/components/schemas/schema-field-descriptor'
+            leaf_type:
+              type: string
+              description: Leaf type this fragment applies to.
+              format: text
+            new_fragment_ref:
+              $ref: '#/components/schemas/atom-summary'
+            old_fragment_ref:
+              $ref: '#/components/schemas/atom-summary'
+          required:
+            - composite_schemas
+            - fields
+      title: stock-schema-fragment
+    stock-schema-fragments-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the stock schema fragment.
+          format: id
+        leaf_type:
+          type: string
+          description: The leaf type this fragment applies to.
+          format: text
+      title: stock-schema-fragments-get-request
+    stock-schema-fragments-get-response:
+      type: object
+      properties:
+        fragment:
+          $ref: '#/components/schemas/stock-schema-fragment'
+      required:
+        - fragment
+      title: stock-schema-fragments-get-response
+      x-go-name: StockSchemaFragmentsGetResponseBody
+    stock-schema-fragments-list-request:
+      type: object
+      properties:
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          format: text
+        filter_preset:
+          $ref: '#/components/schemas/stock-schema-fragments-list-request-filter-preset'
+        leaf_type:
+          type: array
+          description: The list of leaf types.
+          items:
+            type: string
+            format: text
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        prune:
+          type: array
+          description: |
+            List of fields which are not required in the payload and can be
+            pruned away.
+          items:
+            $ref: '#/components/schemas/stock-schema-fragments-list-request-prune'
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+            format: sort-by
+      title: stock-schema-fragments-list-request
+    stock-schema-fragments-list-request-filter-preset:
+      type: string
+      enum:
+        - customizable_types_preset
+        - no_preset
+    stock-schema-fragments-list-request-prune:
+      type: string
+      enum:
+        - composite_schemas
+        - fields
+    stock-schema-fragments-list-response:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          format: text
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          format: text
+        result:
+          type: array
+          description: The stock schema fragments.
+          items:
+            $ref: '#/components/schemas/stock-schema-fragment'
+      required:
+        - result
+      title: stock-schema-fragments-list-response
+      x-go-name: StockSchemaFragmentsListResponseBody
     survey:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -13911,6 +15850,7 @@ components:
       type: string
       description: The type of object that the Timeline entry belongs to.
       enum:
+        - article
         - capability
         - conversation
         - enhancement
@@ -14015,6 +15955,46 @@ components:
         surface:
           $ref: '#/components/schemas/command-surface-surface'
       title: update-command-surface
+    update-stage-node:
+      type: object
+      properties:
+        is_deprecated:
+          type: boolean
+          description: Whether this stage is deprecated.
+        is_start:
+          type: boolean
+          description: Whether this is the start stage.
+        stage_id:
+          type: string
+          description: The ID of the stage.
+          format: id
+        transitions:
+          type: array
+          description: List of transitions from this stage.
+          items:
+            $ref: '#/components/schemas/update-stage-transition'
+      required:
+        - stage_id
+      title: update-stage-node
+    update-stage-transition:
+      type: object
+      properties:
+        target_stage_id:
+          type: string
+          description: The ID of the target stage.
+          format: id
+        ui:
+          $ref: '#/components/schemas/update-stage-ui-metadata'
+      required:
+        - target_stage_id
+      title: update-stage-transition
+    update-stage-ui-metadata:
+      type: object
+      properties:
+        is_hidden:
+          type: boolean
+          description: Whether the stage is hidden.
+      title: update-stage-ui-metadata
     user-base:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -14115,6 +16095,178 @@ components:
         - rev_user
         - service_account
         - sys_user
+    view-override:
+      type: object
+      description: UI hint overrides for a view.
+      properties:
+        decimal_places:
+          type: integer
+          description: |
+            Number of decimal places to show. Only applicable for number
+            fields.
+          format: int32
+        display_name:
+          type: string
+          description: The display name of the field.
+          format: text
+        is_groupable:
+          type: boolean
+          description: Whether the field is groupable in the UI.
+        is_hidden:
+          type: boolean
+          description: Whether the field is hidden in the UI.
+        order:
+          type: integer
+          description: Relative order in which the field is shown.
+          format: int32
+        placeholder:
+          type: string
+          description: A placeholder for the field.
+          format: text
+        tooltip:
+          type: string
+          description: Tooltip for the field.
+          format: text
+        use_shorthand_notation:
+          type: boolean
+          description: |
+            Whether to use shorthand notation. Example, 1K instead of 1000.
+            Only applicable for number fields.
+        view_name:
+          type: string
+          description: The name of the view.
+          format: text
+      title: view-override
+    vista:
+      type: object
+      description: Represents a collection of DevRev objects.
+      discriminator:
+        mapping:
+          curated: '#/components/schemas/curated-vista'
+          dynamic: '#/components/schemas/dynamic-vista'
+          grouped: '#/components/schemas/grouped-vista'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/curated-vista'
+        - $ref: '#/components/schemas/dynamic-vista'
+        - $ref: '#/components/schemas/grouped-vista'
+      properties:
+        type:
+          $ref: '#/components/schemas/vista-type'
+      required:
+        - type
+      title: vista
+    vista-base:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            is_default:
+              type: boolean
+              description: Boolean to specify whether it's a default Vista or not.
+            name:
+              type: string
+              description: Name of the vista.
+              format: text
+            shared_with:
+              type: array
+              description: Users and groups associated with vista.
+              items:
+                $ref: '#/components/schemas/shared-with-membership'
+          required:
+            - name
+      title: vista-base
+    vista-flavor:
+      type: string
+      description: Denotes the use case of the vista.
+      enum:
+        - nnl
+        - sprint_board
+        - support_inbox
+    vista-group:
+      type: object
+      description: Represents a vista group item.
+      discriminator:
+        mapping:
+          conversations: '#/components/schemas/conversations-vista-group-item'
+          parts: '#/components/schemas/parts-vista-group-item'
+          works: '#/components/schemas/works-vista-group-item'
+        propertyName: object_type
+      oneOf:
+        - $ref: '#/components/schemas/conversations-vista-group-item'
+        - $ref: '#/components/schemas/parts-vista-group-item'
+        - $ref: '#/components/schemas/works-vista-group-item'
+      properties:
+        object_type:
+          $ref: '#/components/schemas/grouped-vista-filter-type'
+      required:
+        - object_type
+      title: vista-group
+    vista-group-base:
+      type: object
+      properties:
+        end_date:
+          type: string
+          description: Timestamp when the vista group item ends.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        id:
+          type: string
+          description: Globally unique object ID.
+          format: id
+        name:
+          type: string
+          description: Name of the group.
+          format: text
+        parent:
+          $ref: '#/components/schemas/vista-group-base-vista-parent-composite'
+        start_date:
+          type: string
+          description: Timestamp when the vista group item starts.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        state:
+          $ref: '#/components/schemas/vista-group-item-state'
+      required:
+        - id
+        - name
+      title: vista-group-base
+    vista-group-base-vista-parent-composite:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of the parent vista.
+          format: text
+        display_id:
+          type: string
+          description: Human-readable object ID unique to the Dev organization.
+          format: text
+        flavor:
+          $ref: '#/components/schemas/vista-flavor'
+        id:
+          type: string
+          description: Parent vista ID.
+          example: VISTA-12345
+          format: id
+        name:
+          type: string
+          description: Name of the parent vista.
+          format: text
+      required:
+        - display_id
+        - id
+        - name
+        - type
+      title: vista-group-base-vista-parent-composite
+    vista-group-item-group-object-type:
+      type: string
+      description: |
+        Type of DevRev object for which the vista group item is applicable.
+      enum:
+        - conversation
+        - part
+        - work
     vista-group-item-state:
       type: string
       description: Defines the state of the group item.
@@ -14159,6 +16311,288 @@ components:
       enum:
         - curated
         - dynamic
+    vista-type:
+      type: string
+      description: Type of vista object.
+      enum:
+        - curated
+        - dynamic
+        - grouped
+    vistas-delete-request:
+      type: object
+      description: The request to delete a vista.
+      properties:
+        id:
+          type: string
+          description: The ID of the vista to delete.
+          example: VISTA-12345
+          format: id
+      required:
+        - id
+      title: vistas-delete-request
+    vistas-delete-response:
+      type: object
+      additionalProperties: false
+      description: The response when deleting a vista.
+      title: vistas-delete-response
+      x-go-name: VistasDeleteResponseBody
+    vistas-get-request:
+      type: object
+      description: The request to get a vista's information.
+      properties:
+        id:
+          type: string
+          description: The vista's ID.
+          example: VISTA-12345
+          format: id
+      required:
+        - id
+      title: vistas-get-request
+    vistas-get-response:
+      type: object
+      description: The response to getting a vista's information.
+      properties:
+        vista:
+          $ref: '#/components/schemas/vista'
+      required:
+        - vista
+      title: vistas-get-response
+      x-go-name: VistasGetResponseBody
+    vistas-groups-delete-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the vista group item to be deleted.
+          format: id
+      required:
+        - id
+      title: vistas-groups-delete-request
+    vistas-groups-delete-response:
+      type: object
+      additionalProperties: false
+      title: vistas-groups-delete-response
+      x-go-name: VistasGroupsDeleteResponseBody
+    vistas-groups-get-request:
+      type: object
+      description: The request to get a vista group item's information.
+      properties:
+        id:
+          type: string
+          description: The vista group item's ID.
+          format: id
+      required:
+        - id
+      title: vistas-groups-get-request
+    vistas-groups-get-response:
+      type: object
+      description: The response to getting a vista group item's information.
+      properties:
+        vista_group:
+          $ref: '#/components/schemas/vista-group'
+      required:
+        - vista_group
+      title: vistas-groups-get-response
+      x-go-name: VistasGroupsGetResponseBody
+    vistas-groups-list-request:
+      type: object
+      properties:
+        type:
+          type: array
+          description: Filters for vista group items of the specific type.
+          items:
+            $ref: '#/components/schemas/group-item-type'
+        ancestor_part:
+          type: array
+          description: |
+            Filters for vista group items which have one of the parts linked as
+            its ancestor part or primary part.
+          example:
+            - PROD-12345
+          items:
+            type: string
+            format: id
+        applies_to_part:
+          $ref: '#/components/schemas/applies-to-part-filter'
+        created_by:
+          type: array
+          description: |
+            Filter for vistas group item created by any of these users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          format: text
+        end_date:
+          $ref: '#/components/schemas/date-filter'
+        group_object_type:
+          type: array
+          description: |
+            Filters for vista group items of the specific group object type.
+          items:
+            $ref: '#/components/schemas/vista-group-item-group-object-type'
+        limit:
+          type: integer
+          description: |
+            The request to get information about a list of vista groups.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        parent_id:
+          type: array
+          description: Parent ID of the vista group item.
+          example:
+            - VISTA-12345
+          items:
+            type: string
+            format: id
+        sort_by:
+          type: array
+          description: Comma-separated fields to sort the objects by.
+          items:
+            type: string
+            format: sort-by
+        start_date:
+          $ref: '#/components/schemas/date-filter'
+        state:
+          type: array
+          description: Denotes the state of the vista group item.
+          items:
+            $ref: '#/components/schemas/vista-group-item-state'
+      title: vistas-groups-list-request
+    vistas-groups-list-response:
+      type: object
+      description: The response to listing the vistas group items.
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          format: text
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          format: text
+        vista_group:
+          type: array
+          description: List of vista group items.
+          items:
+            $ref: '#/components/schemas/vista-group'
+      title: vistas-groups-list-response
+      x-go-name: VistasGroupsListResponseBody
+    vistas-list-request:
+      type: object
+      description: The request to get information about a list of vistas.
+      properties:
+        type:
+          type: array
+          description: Filters for vistas of the specific type.
+          items:
+            $ref: '#/components/schemas/vista-type'
+        created_by:
+          type: array
+          description: Filters for vistas created by any of these users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          format: text
+        flavor:
+          type: array
+          description: Filters for vistas of specific flavor.
+          items:
+            $ref: '#/components/schemas/grouped-vista-flavor'
+        is_default:
+          type: boolean
+          description: Whether the default vistas should be fetched or not.
+        limit:
+          type: integer
+          description: |
+            The maximum number of vistas to return. The default is '50', the
+            maximum is '100'.
+          format: int32
+        members:
+          type: array
+          description: Filters for vistas accessible to the input members.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+            format: id
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        object_type:
+          type: array
+          description: |
+            Filters for vistas of specific object types like works, parts etc.
+          items:
+            $ref: '#/components/schemas/dynamic-vista-filter-type'
+        shared_with:
+          type: array
+          description: Filter for vistas accessible to the input members.
+          items:
+            $ref: '#/components/schemas/shared-with-membership-filter'
+        skip_items:
+          type: boolean
+          description: |
+            Denotes whether to skip items of vista_group_item in response.
+        sort_by:
+          type: array
+          description: |
+            Fields to sort the vistas by and the direction to sort them.
+          items:
+            type: string
+            format: sort-by
+        state:
+          type: array
+          description: Denotes the state of the vista group item.
+          items:
+            $ref: '#/components/schemas/vista-group-item-state'
+      title: vistas-list-request
+    vistas-list-response:
+      type: object
+      description: The response to listing the vistas.
+      properties:
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          format: text
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          format: text
+        vistas:
+          type: array
+          description: The list of vistas.
+          items:
+            $ref: '#/components/schemas/vista'
+      required:
+        - vistas
+      title: vistas-list-response
+      x-go-name: VistasListResponseBody
     web-crawler-job:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -14308,6 +16742,7 @@ components:
           items:
             type: string
             format: text
+          maxItems: 100
         applies_to_parts:
           type: array
           description: |
@@ -14362,24 +16797,28 @@ components:
           items:
             type: string
             format: text
+          maxItems: 100
         sitemap_index_urls:
           type: array
           description: The list of sitemap index URLs to crawl.
           items:
             type: string
             format: text
+          maxItems: 2
         sitemap_urls:
           type: array
           description: The list of sitemap URLs to crawl.
           items:
             type: string
             format: text
+          maxItems: 2
         urls:
           type: array
           description: The list of URLs to crawl.
           items:
             type: string
             format: text
+          maxItems: 50
         user_agent:
           type: string
           description: User agent to use for crawling websites in this job.
@@ -14514,6 +16953,12 @@ components:
           $ref: '#/components/schemas/event-account-updated'
         ai_agent_response:
           $ref: '#/components/schemas/event-ai-agent-response'
+        article_created:
+          $ref: '#/components/schemas/event-article-created'
+        article_deleted:
+          $ref: '#/components/schemas/event-article-deleted'
+        article_updated:
+          $ref: '#/components/schemas/event-article-updated'
         conversation_created:
           $ref: '#/components/schemas/event-conversation-created'
         conversation_deleted:
@@ -14679,6 +17124,9 @@ components:
         - account_deleted
         - account_updated
         - ai_agent_response
+        - article_created
+        - article_deleted
+        - article_updated
         - conversation_created
         - conversation_deleted
         - conversation_updated
@@ -16017,12 +18465,31 @@ components:
         - work
       title: works-update-response
       x-go-name: WorksUpdateResponseBody
+    works-vista-group-item:
+      allOf:
+        - $ref: '#/components/schemas/vista-group-base'
+        - type: object
+          discriminator:
+            propertyName: type
+          properties:
+            type:
+              $ref: '#/components/schemas/works-vista-group-item-type'
+          required:
+            - type
+      description: Represents a nested works vista group object.
+      title: works-vista-group-item
+    works-vista-group-item-type:
+      type: string
+      description: Type of works vista group item.
+      enum:
+        - curated
+        - dynamic
   securitySchemes:
     auth-token:
       type: http
       description: |-
         All the DevRev APIs require a token to authenticate the user. Provide `Authorization: Bearer <TOKEN>` as a header to every API request.
-         [How do I find my token?](https://devrev.ai/docs/apis/auth)
+        [How do I find my token?](https://devrev.ai/docs/apis/auth)
       scheme: bearer
       x-fern-bearer:
         env: DEVREV_TOKEN
@@ -16736,14 +19203,6 @@ paths:
             type: string
             example: ARTICLE-12345
             format: id
-        - description: Optional Dev Org ID for the unauthenticated user.
-          explode: false
-          in: query
-          name: dev_org
-          schema:
-            type: string
-            example: DEV-AbCdEfGh
-            format: id
       responses:
         "200":
           content:
@@ -16878,14 +19337,6 @@ paths:
           schema:
             type: string
             format: text
-        - description: Optional Dev Org ID for the unauthenticated user.
-          explode: false
-          in: query
-          name: dev_org
-          schema:
-            type: string
-            example: DEV-AbCdEfGh
-            format: id
         - description: |
             The maximum number of articles to return. The default is '50'.
           explode: false
@@ -19123,6 +21574,402 @@ paths:
         - docs
         - sdks
       x-fern-availability: generally-available
+  /custom-objects.count:
+    get:
+      description: Counts custom objects.
+      operationId: custom-objects-count
+      parameters:
+        - description: Leaf type to filter.
+          explode: false
+          in: query
+          name: leaf_type
+          required: true
+          schema:
+            type: string
+            format: text
+        - description: List of filters to apply.
+          explode: false
+          in: query
+          name: filters
+          schema:
+            type: array
+            items: {}
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Count Custom Objects
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomObjectsCountQuery
+    post:
+      description: Counts custom objects.
+      operationId: custom-objects-count-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-count-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Count Custom Objects (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /custom-objects.create:
+    post:
+      description: Creates a custom object.
+      operationId: custom-objects-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Custom Object
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /custom-objects.delete:
+    post:
+      description: Deletes a custom object.
+      operationId: custom-objects-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-delete-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Delete Custom Object
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /custom-objects.get:
+    get:
+      description: Gets a custom object.
+      operationId: custom-objects-get
+      parameters:
+        - description: The ID of the custom object to get.
+          explode: false
+          in: query
+          name: id
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Custom Object
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomObjectsGetQuery
+    post:
+      description: Gets a custom object.
+      operationId: custom-objects-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Custom Object (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /custom-objects.list:
+    get:
+      description: Lists custom objects.
+      operationId: custom-objects-list
+      parameters:
+        - description: Leaf type to filter.
+          explode: false
+          in: query
+          name: leaf_type
+          required: true
+          schema:
+            type: string
+            format: text
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: List of filters to apply.
+          explode: false
+          in: query
+          name: filter
+          schema:
+            type: array
+            items: {}
+        - description: List of filters to apply.
+          explode: false
+          in: query
+          name: filters
+          schema:
+            type: array
+            items: {}
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-list-response'
+          description: |
+            The response to listing all custom objects matching the filter
+            criteria.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Custom Objects
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomObjectsListQuery
+    post:
+      description: Lists custom objects.
+      operationId: custom-objects-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-list-response'
+          description: |
+            The response to listing all custom objects matching the filter
+            criteria.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Custom Objects (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /custom-objects.update:
+    post:
+      description: Updates a custom object.
+      operationId: custom-objects-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-objects-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-objects-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Custom Object
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
   /dev-orgs.auth-connections.create:
     post:
       description: |
@@ -20280,14 +23127,6 @@ paths:
           schema:
             type: string
             format: id
-        - description: Optional Dev Org ID for the unauthenticated user.
-          explode: false
-          in: query
-          name: dev_org
-          schema:
-            type: string
-            example: DEV-AbCdEfGh
-            format: id
       responses:
         "200":
           content:
@@ -20379,14 +23218,6 @@ paths:
           schema:
             type: string
             format: text
-        - description: Optional Dev Org ID for the unauthenticated user.
-          explode: false
-          in: query
-          name: dev_org
-          schema:
-            type: string
-            example: DEV-AbCdEfGh
-            format: id
         - description: |
             The maximum number of directories to return. The default is '50'.
           explode: false
@@ -23267,6 +26098,16 @@ paths:
               type: string
               format: id
             minItems: 1
+        - description: |
+            Fields to sort the parts by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
         - description: Filters for part with any of the provided tags.
           explode: false
           in: query
@@ -24548,6 +27389,636 @@ paths:
         - docs
         - sdks
       x-fern-availability: generally-available
+  /schemas.aggregated.get:
+    get:
+      description: Gets the aggregated schema.
+      operationId: aggregated-schema-get
+      parameters:
+        - description: List of apps.
+          explode: false
+          in: query
+          name: custom_schema_spec.apps
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Name of the subtype.
+          explode: false
+          in: query
+          name: custom_schema_spec.subtype
+          schema:
+            type: string
+            format: text
+        - description: Whether the leaf type corresponds to a custom object.
+          explode: false
+          in: query
+          name: is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: |
+            The leaf type. Used for inferring the default stage diagram and
+            tenant fragment ID.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: string
+            format: text
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/aggregated-schema-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Schemas Aggregated
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: AggregatedSchemaGetQuery
+    post:
+      description: Gets the aggregated schema.
+      operationId: aggregated-schema-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/aggregated-schema-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/aggregated-schema-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Schemas Aggregated (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /schemas.custom.get:
+    get:
+      description: Gets a custom schema fragment.
+      operationId: custom-schema-fragments-get
+      parameters:
+        - description: The ID of the custom schema fragment.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-schema-fragments-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Schemas Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomSchemaFragmentsGetQuery
+    post:
+      description: Gets a custom schema fragment.
+      operationId: custom-schema-fragments-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-schema-fragments-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-schema-fragments-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Schemas Custom (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /schemas.custom.list:
+    get:
+      description: Lists custom schema fragments.
+      operationId: custom-schema-fragments-list
+      parameters:
+        - description: The list of app names.
+          explode: false
+          in: query
+          name: app
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - deprecated: true
+          description: Whether only deprecated fragments should be filtered.
+          explode: false
+          in: query
+          name: deprecated
+          schema:
+            type: boolean
+            deprecated: true
+        - description: Whether the leaf type corresponds to a custom object
+          explode: false
+          in: query
+          name: is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: Whether the fragment has been deprecated.
+          explode: false
+          in: query
+          name: is_deprecated
+          schema:
+            type: boolean
+        - description: The list of leaf types.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            List of fields which are not required in the payload and can be
+            pruned away.
+          explode: false
+          in: query
+          name: prune
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/custom-schema-fragments-list-request-prune'
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+        - description: The list of subtypes.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for custom schema fragment of the provided types.
+          explode: false
+          in: query
+          name: types
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/custom-schema-fragment-type'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-schema-fragments-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Schemas Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomSchemaFragmentsListQuery
+    post:
+      description: Lists custom schema fragments.
+      operationId: custom-schema-fragments-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-schema-fragments-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-schema-fragments-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Schemas Custom (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /schemas.custom.set:
+    post:
+      description: Creates or updates a custom schema fragment.
+      operationId: custom-schema-fragments-set
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-schema-fragments-set-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-schema-fragments-set-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Set Schemas Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /schemas.stock.get:
+    get:
+      description: Gets a stock schema fragment.
+      operationId: stock-schema-fragments-get
+      parameters:
+        - description: The ID of the stock schema fragment.
+          explode: false
+          in: query
+          name: id
+          schema:
+            type: string
+            format: id
+        - description: The leaf type this fragment applies to.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: string
+            format: text
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Schemas Stock
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: StockSchemaFragmentsGetQuery
+    post:
+      description: Gets a stock schema fragment.
+      operationId: stock-schema-fragments-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stock-schema-fragments-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Schemas Stock (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /schemas.stock.list:
+    get:
+      description: Lists stock schema fragments.
+      operationId: stock-schema-fragments-list
+      parameters:
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: |
+            Filter preset to specify whether to filter only customization enabled
+            leaf types.
+          explode: false
+          in: query
+          name: filter_preset
+          schema:
+            $ref: '#/components/schemas/stock-schema-fragments-list-request-filter-preset'
+        - description: The list of leaf types.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            List of fields which are not required in the payload and can be
+            pruned away.
+          explode: false
+          in: query
+          name: prune
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/stock-schema-fragments-list-request-prune'
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Schemas Stock
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: StockSchemaFragmentsListQuery
+    post:
+      description: Lists stock schema fragments.
+      operationId: stock-schema-fragments-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stock-schema-fragments-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Schemas Stock (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /schemas.subtypes.prepare-update:
+    post:
+      description: |
+        Gets the new fragment IDs and fields resulting from changing a subtype.
+      operationId: schemas-subtype-prepare-update-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/schemas-subtype-prepare-update-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/schemas-subtype-prepare-update-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Prepare-Update Schemas Subtypes
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
   /service-accounts.create:
     post:
       description: Creates a service account.
@@ -25330,6 +28801,821 @@ paths:
       summary: Create Snap Widget
       tags:
         - snap-widgets
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stage-diagrams.create:
+    post:
+      description: Creates a stage diagram.
+      operationId: stage-diagrams-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Stage Diagram
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stage-diagrams.get:
+    get:
+      description: Gets a stage diagram.
+      operationId: stage-diagrams-get
+      parameters:
+        - description: The ID of the stage diagram to get.
+          explode: false
+          in: query
+          name: id
+          schema:
+            type: string
+            format: id
+        - description: |
+            Whether the leaf type corresponds to a custom object. Specify this
+            along with leaf_type to get the default custom object stage diagram.
+          explode: false
+          in: query
+          name: is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: |
+            The leaf type. Should be specified to retrieve the default stage
+            diagram for the leaf type. If not provided, then id is used.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: string
+            format: text
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Stage Diagram
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: StageDiagramsGetQuery
+    post:
+      description: Gets a stage diagram.
+      operationId: stage-diagrams-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Stage Diagram (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stage-diagrams.list:
+    get:
+      description: Lists stage diagrams.
+      operationId: stage-diagrams-list
+      parameters:
+        - description: |
+            The cursor to resume iteration from, otherwise if not provided, then
+            iteration starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: |
+            Whether only custom object stage diagrams should be filtered.
+          explode: false
+          in: query
+          name: is_custom_leaf_type
+          schema:
+            type: boolean
+        - description: The list of leaf types.
+          explode: false
+          in: query
+          name: leaf_type
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: The list of stage diagram names.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Stage Diagrams
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: StageDiagramsListQuery
+    post:
+      description: Lists stage diagrams.
+      operationId: stage-diagrams-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Stage Diagrams (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stage-diagrams.update:
+    post:
+      description: Updates a stage diagram.
+      operationId: stage-diagrams-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stage-diagrams-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage-diagrams-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Stage Diagram
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stages.custom.create:
+    post:
+      description: Creates a custom stage.
+      operationId: custom-stages-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Stages Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stages.custom.get:
+    get:
+      description: Gets a custom stage.
+      operationId: custom-stages-get
+      parameters:
+        - description: The ID of the custom stage to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Stages Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomStagesGetQuery
+    post:
+      description: Gets a custom stage.
+      operationId: custom-stages-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Stages Custom (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stages.custom.list:
+    get:
+      description: Lists custom stages.
+      operationId: custom-stages-list
+      parameters:
+        - description: |
+            The cursor to resume iteration from, otherwise if not provided, then
+            iteration starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: The list of stage names.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: The list of stage ordinals.
+          explode: false
+          in: query
+          name: ordinal
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Stages Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomStagesListQuery
+    post:
+      description: Lists custom stages.
+      operationId: custom-stages-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Stages Custom (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /stages.custom.update:
+    post:
+      description: Updates a custom stage.
+      operationId: custom-stages-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update Stages Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /states.custom.create:
+    post:
+      description: Creates a custom state.
+      operationId: custom-states-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create States Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /states.custom.get:
+    get:
+      description: Gets a custom state.
+      operationId: custom-states-get
+      parameters:
+        - description: The ID of the custom state to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get States Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomStatesGetQuery
+    post:
+      description: Gets a custom state.
+      operationId: custom-states-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get States Custom (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /states.custom.list:
+    get:
+      description: Lists custom states.
+      operationId: custom-states-list
+      parameters:
+        - description: |
+            The cursor to resume iteration from, otherwise if not provided, then
+            iteration starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: Whether only final states should be filtered.
+          explode: false
+          in: query
+          name: is_final
+          schema:
+            type: boolean
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: The list of state names.
+          explode: false
+          in: query
+          name: name
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: The list of state ordinals.
+          explode: false
+          in: query
+          name: ordinal
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List States Custom
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: CustomStatesListQuery
+    post:
+      description: Lists custom states.
+      operationId: custom-states-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List States Custom (POST)
+      tags:
+        - customization
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /states.custom.update:
+    post:
+      description: Updates a custom state.
+      operationId: custom-states-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Update States Custom
+      tags:
+        - customization
       x-fern-audiences:
         - docs
         - sdks
@@ -26662,6 +30948,605 @@ paths:
       summary: Update Timeline Entry
       tags:
         - timeline-entries
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /vistas.delete:
+    post:
+      description: Deletes the requested vista.
+      operationId: vistas-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vistas-delete-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-delete-response'
+          description: The response when deleting a vista.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Delete Vista
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /vistas.get:
+    get:
+      description: Gets the requested vistas's information.
+      operationId: vistas-get
+      parameters:
+        - description: The vista's ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            example: VISTA-12345
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-get-response'
+          description: The response to getting a vista's information.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Vista
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: VistasGetQuery
+    post:
+      description: Gets the requested vistas's information.
+      operationId: vistas-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vistas-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-get-response'
+          description: The response to getting a vista's information.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Vista (POST)
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /vistas.groups.delete:
+    post:
+      description: Deletes the requested vista group item
+      operationId: vistas-groups-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vistas-groups-delete-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-groups-delete-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Delete Vistas Group
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /vistas.groups.get:
+    get:
+      description: Gets the requested vista group item's information.
+      operationId: vistas-groups-get
+      parameters:
+        - description: The vista group item's ID.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+            format: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-groups-get-response'
+          description: The response to getting a vista group item's information.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Vistas Group
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: VistasGroupsGetQuery
+    post:
+      description: Gets the requested vista group item's information.
+      operationId: vistas-groups-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vistas-groups-get-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-groups-get-response'
+          description: The response to getting a vista group item's information.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Get Vistas Group (POST)
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /vistas.groups.list:
+    get:
+      description: 'Lists the available vista group items. '
+      operationId: vistas-groups-list
+      parameters:
+        - description: |
+            Filters for vista group items which have one of the parts linked as
+            its ancestor part or primary part.
+          explode: false
+          in: query
+          name: ancestor_part
+          schema:
+            type: array
+            example:
+              - PROD-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Whether to include items belonging to children of any of the provided
+            parts.
+          explode: false
+          in: query
+          name: applies_to_part.include_child_parts
+          schema:
+            type: boolean
+        - description: |
+            Part IDs to filter on. Required if any applies_to_part.* fields are
+            provided.
+          explode: false
+          in: query
+          name: applies_to_part.parts
+          schema:
+            type: array
+            example:
+              - PROD-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            Filter for vistas group item created by any of these users.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: |
+            Filters for vista group items of the specific group object type.
+          explode: false
+          in: query
+          name: group_object_type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/vista-group-item-group-object-type'
+        - description: |
+            The request to get information about a list of vista groups.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: Parent ID of the vista group item.
+          explode: false
+          in: query
+          name: parent_id
+          schema:
+            type: array
+            example:
+              - VISTA-12345
+            items:
+              type: string
+              format: id
+        - description: Comma-separated fields to sort the objects by.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+        - description: Denotes the state of the vista group item.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/vista-group-item-state'
+        - description: Filters for vista group items of the specific type.
+          explode: false
+          in: query
+          name: type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/group-item-type'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-groups-list-response'
+          description: The response to listing the vistas group items.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Vistas Groups
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: VistasGroupsListQuery
+    post:
+      description: 'Lists the available vista group items. '
+      operationId: vistas-groups-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vistas-groups-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-groups-list-response'
+          description: The response to listing the vistas group items.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Vistas Groups (POST)
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: generally-available
+  /vistas.list:
+    get:
+      description: Lists the available vistas.
+      operationId: vistas-list
+      parameters:
+        - description: Filters for vistas created by any of these users.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+            format: text
+        - description: Filters for vistas of specific flavor.
+          explode: false
+          in: query
+          name: flavor
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/grouped-vista-flavor'
+        - description: Whether the default vistas should be fetched or not.
+          explode: false
+          in: query
+          name: is_default
+          schema:
+            type: boolean
+        - description: |
+            The maximum number of vistas to return. The default is '50', the
+            maximum is '100'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: Filters for vistas accessible to the input members.
+          explode: false
+          in: query
+          name: members
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+              format: id
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: |
+            Filters for vistas of specific object types like works, parts etc.
+          explode: false
+          in: query
+          name: object_type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/dynamic-vista-filter-type'
+        - description: ID of the group/member with whom the item is shared.
+          explode: false
+          in: query
+          name: shared_with.member
+          schema:
+            type: string
+            format: id
+        - description: Role ID of the group/member with whom the item is shared.
+          explode: false
+          in: query
+          name: shared_with.role
+          schema:
+            type: string
+            format: id
+        - description: |
+            Denotes whether to skip items of vista_group_item in response.
+          explode: false
+          in: query
+          name: skip_items
+          schema:
+            type: boolean
+        - description: |
+            Fields to sort the vistas by and the direction to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+              format: sort-by
+        - description: Denotes the state of the vista group item.
+          explode: false
+          in: query
+          name: state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/vista-group-item-state'
+        - description: Filters for vistas of the specific type.
+          explode: false
+          in: query
+          name: type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/vista-type'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-list-response'
+          description: The response to listing the vistas.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Vistas
+      tags:
+        - vistas
+      x-fern-audiences:
+        - docs
+      x-fern-availability: generally-available
+      x-request-name: VistasListQuery
+    post:
+      description: Lists the available vistas.
+      operationId: vistas-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vistas-list-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-list-response'
+          description: The response to listing the vistas.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: List Vistas (POST)
+      tags:
+        - vistas
       x-fern-audiences:
         - docs
         - sdks
@@ -28290,6 +33175,8 @@ tags:
     name: commands
   - description: DevRev conversation interaction.
     name: conversations
+  - description: DevRev customization.
+    name: customization
   - description: Dev organization interactions.
     name: dev-orgs
   - description: Dev user interactions.
@@ -28328,6 +33215,8 @@ tags:
     name: tags
   - description: APIs to manage timeline entries for objects.
     name: timeline-entries
+  - description: DevRev vista interactions.
+    name: vistas
   - description: Web Crawler Jobs APIs.
     name: web-crawler-job
   - description: Webhook event APIs.

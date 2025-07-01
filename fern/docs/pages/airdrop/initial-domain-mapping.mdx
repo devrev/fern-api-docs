@@ -76,11 +76,6 @@ eval $(chef-cli ctx init); chef-cli ctx show > ctx.json
 chef-cli configure-mappings --env prod
 ```
 
-If you are also creating a bidirectional sync (DevRev to external system), to enable mapping in both directions, use:
-```bash
-chef-cli configure-mappings --env prod --reverse
-```
-
 If your org is not in `US-East-1`, you h ave to override an environment variable to make sure the tool reaches the right server. For example:
 ```bash
 ACTIVE_PARTITION=dvrv-in-1 chef-cli configure-mappings --env prod

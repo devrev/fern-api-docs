@@ -19,5 +19,5 @@ navigation:
       - page: Agents async API
         slug: agents-async-api
         path: ../docs/pages/interact-agent.mdx
-      - page: Custom links
+      - page: Links
         path: ../docs/pages/custom-links.mdx

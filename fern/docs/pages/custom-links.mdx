@@ -23,7 +23,7 @@ A link type defines a relationship between two types of objects. It specifies:
 
 Links can be created between the following object types:
 - custom object
-- issue, ticket, task, opportunity
+- work (issue, ticket, task, opportunity)
 - account, user
 - part (product, capability, feature, enhancement)
 
@@ -81,8 +81,8 @@ curl --location 'https://api.devrev.ai/links.create' \
 --data '{
     "custom_link_type": "don:core:dvrv-us-1:devo/demo:custom_link_type/1",
     "link_type": "custom_link",
-    "source": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1",
-    "target": "don:core:dvrv-us-1:devo/demo:issue/1"
+    "source": "don:core:dvrv-us-1:devo/demo:ticket/1",
+    "target": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1"
 }'
 ```
 
@@ -104,8 +104,7 @@ curl --location 'https://api.devrev.ai/link-types.custom.list' \
 --data '{
     "source_types_v2": [
         {
-            "leaf_type": "issue",
-            "leaf_only": false
+            "leaf_type": "ticket,
         }
     ]
 }'
@@ -175,6 +174,7 @@ This configuration:
 - Rejects attempts to link issues with no subtype or with other subtypes
 
 <Callout intent="tip">
+The subtype should exist for the corresponding source type.
 To add more valid source subtypes, use the update endpoint to add them to the `source_types` array.
 </Callout>
 

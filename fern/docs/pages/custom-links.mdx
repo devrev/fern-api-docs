@@ -3,10 +3,11 @@ This feature enables you to define meaningful connections with custom names that
 
 This section provides an overview of custom links and walks you through the process of creating and managing them. 
 By the end of this section, you'll be able to:
-1. Create custom link types between different objects
-2. Update existing custom link types
-3. Create links between objects using custom link types
-4. List and filter custom link types
+1. Define custom link types
+2. Create links between objects
+3. List custom link types
+4. Update custom link types
+5. Deprecate custom link types
 
 ## Concepts
 
@@ -18,10 +19,6 @@ A custom link type defines a relationship between two types of objects. It speci
 - A forward name describing the relationship from source to target
 - A backward name describing the relationship from target to source
 
-For more details on customization or custom object concepts, please refer to the documentation below:
-- [Customization](./object-customization)
-- [Custom objects](./custom-objects)
-
 ### Supported object types
 
 Custom links can be created between the following object types:
@@ -30,10 +27,9 @@ Custom links can be created between the following object types:
 - account, user
 - part (product, capability, feature, enhancement)
 
-<Callout intent="note">
-Custom link types cannot be deleted, only deprecated. This ensures that existing links maintain 
-referential integrity and prevents data corruption.
-</Callout>
+For more details on customization or custom object concepts, please refer to the documentation below:
+- [Customization](./object-customization)
+- [Custom objects](./custom-objects)
 
 ## Create custom link types
 
@@ -181,3 +177,21 @@ This configuration:
 <Callout intent="tip">
 To add more valid source subtypes, use the update endpoint to add them to the `source_types` array.
 </Callout>
+
+## Deprecate custom link types
+
+<Callout intent="note">
+Custom link types cannot be deleted, only deprecated. This ensures that existing links maintain 
+referential integrity and prevents data corruption.
+</Callout>
+
+To deprecate a custom link type, use the update endpoint and set `deprecated` to `true`:
+```curl {6}
+curl --location 'https://api.devrev.ai/link-types.custom.update' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "id": "don:core:dvrv-us-1:devo/demo:custom_link_type/1",
+    "deprecated": true
+}'
+```

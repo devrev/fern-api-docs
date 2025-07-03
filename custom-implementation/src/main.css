@@ -28,8 +28,7 @@
 
 #fern-sidebar {
   padding: 42px 0px !important;
-  max-height: 900px !important;
-  position: sticky !important;
+  position: absolute !important;
 }
 
 

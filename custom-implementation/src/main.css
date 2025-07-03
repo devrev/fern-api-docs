@@ -18,10 +18,6 @@
   }
 }
 
-.fern-sidebar-fixed {
-  position: absolute !important;
-}
-
 #fern-docs {
   margin: 64px 0px !important; /* Push content below header */
 }
@@ -32,6 +28,9 @@
 
 #fern-sidebar {
   padding: 42px 0px !important;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto; 
+  box-sizing: border-box;
 }
 
 

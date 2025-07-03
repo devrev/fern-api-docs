@@ -1,0 +1,194 @@
+Links allow you to create organization-specific relationships between any two objects in DevRev. 
+This feature enables you to define meaningful connections with custom names that reflect your business processes.
+
+This section provides an overview of links and walks you through the process of creating and managing them. 
+By the end of this section, you'll be able to:
+1. Define link types
+2. Create links between objects
+3. List link types
+4. Update link types
+5. Deprecate link types
+
+## Concepts
+
+### Link type
+
+A link type defines a relationship between two types of objects. It specifies:
+- The source object types that the link initiates from
+- The target object types that the link can be created to
+- A forward name describing the relationship from source to target
+- A backward name describing the relationship from target to source
+
+### Supported object types
+
+Links can be created between the following object types:
+- custom object
+- work (issue, ticket, task, opportunity)
+- account, user
+- part (product, capability, feature, enhancement)
+
+For more details on customization or custom object concepts, please refer to the documentation below:
+- [Customization](./object-customization)
+- [Custom objects](./custom-objects) 
+
+## Create link types
+
+<Callout intent="note">
+Let's say you want to establish a parent-child relationship between tickets and a custom object 
+type called "Campaign". This relationship helps track which tickets are assigned to which campaigns.
+</Callout>
+
+To create this relationship, make an API call to create a link type:
+
+```curl
+curl --location 'https://api.devrev.ai/link-types.custom.create' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "name": "Link between ticket and campaign",
+    "source_types": [
+        {
+            "leaf_type": "ticket"
+        }
+    ],
+    "target_types": [
+        {
+            "leaf_type": "campaign",
+            "is_custom_leaf_type": true
+        }
+    ],
+    "forward_name": "is parent of",
+    "backward_name": "is child of",
+    "deprecated": false
+}'
+```
+
+The link type above defines:
+- A descriptive name
+- Source types that the link can be created from (ticket)
+- Target types that the link can be created to (campaign custom object)
+- Forward name ("is parent of") describing the relationship from ticket to campaign
+- Backward name ("is child of") describing the relationship from campaign to ticket
+
+## Create links between objects
+
+Once you have defined a link type, you can create links between objects:
+
+```curl
+curl --location 'https://api.devrev.ai/links.create' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "custom_link_type": "don:core:dvrv-us-1:devo/demo:custom_link_type/1",
+    "link_type": "custom_link",
+    "source": "don:core:dvrv-us-1:devo/demo:ticket/1",
+    "target": "don:core:dvrv-us-1:devo/demo:custom_object/campaign/1"
+}'
+```
+
+<Callout intent="tip">
+When creating a link:
+- Set `link_type` to `"custom_link"`
+- Provide the link type ID in `custom_link_type`
+- Ensure both source and target objects exist
+</Callout>
+
+## List link types
+
+You can list link types in your organization, with optional filtering:
+
+```curl
+curl --location 'https://api.devrev.ai/link-types.custom.list' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "source_types_v2": [
+        {
+            "leaf_type": "ticket,
+        }
+    ]
+}'
+```
+
+## Update link types
+
+<Callout intent="note">
+Now, you want to expand the source types to allow both issues and tickets to have this relationship 
+with campaigns.
+</Callout>
+
+You can update the existing link type to include additional source types:
+
+```curl
+curl --location 'https://api.devrev.ai/link-types.custom.update' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "id": "don:core:dvrv-us-1:devo/demo:custom_link_type/1",
+    "name": "Link type between issue/ticket and campaign",
+    "source_types_v2": [
+        {
+            "leaf_type": "issue"
+        },
+        {
+            "leaf_type": "ticket"
+        }
+    ]
+}'
+```
+
+## Create links between objects with subtypes
+
+<Callout intent="note">
+You may want to restrict links to specific subtypes of objects. For example, only allowing issues 
+of a particular subtype to be linked to tickets.
+</Callout>
+
+```curl {9}
+curl --location 'https://api.devrev.ai/link-types.custom.create' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "name": "Link between social media issues and tickets",
+    "source_types": [
+        {
+            "leaf_type": "issue",
+            "subtype": "social_media"
+        }
+    ],
+    "target_types": [
+        {
+            "leaf_type": "ticket"
+        }
+    ],
+    "forward_name": "is related to",
+    "backward_name": "is related to"
+}'
+```
+
+This configuration:
+- Allows issues of subtype "social_media" to be linked to tickets
+- Rejects attempts to link issues with no subtype or with other subtypes
+
+<Callout intent="tip">
+The subtype should exist for the corresponding source type.
+To add more valid source subtypes, use the update endpoint to add them to the `source_types` array.
+</Callout>
+
+## Deprecate link types
+
+<Callout intent="note">
+Link types cannot be deleted, only deprecated. This ensures that existing links maintain 
+referential integrity and prevents data corruption.
+</Callout>
+
+To deprecate a link type, use the update endpoint and set `deprecated` to `true`:
+```curl {6}
+curl --location 'https://api.devrev.ai/link-types.custom.update' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "id": "don:core:dvrv-us-1:devo/demo:custom_link_type/1",
+    "deprecated": true
+}'
+```

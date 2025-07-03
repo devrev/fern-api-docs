@@ -18,10 +18,9 @@
   }
 }
 
-/* Constrain sidebar within fern-body but account for header
 .fern-sidebar-fixed {
   position: absolute !important;
-} */
+}
 
 #fern-docs {
   margin: 64px 0px !important; /* Push content below header */
@@ -33,7 +32,6 @@
 
 #fern-sidebar {
   padding: 42px 0px !important;
-  margin-bottom: 100px !important; /* Prevent overlap with footer */
 }
 
 

@@ -33,7 +33,16 @@ const render = async () => {
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
+  // DEBUG: Let's see what elements actually exist
+  console.log('DEBUG: Looking for sidebar elements...')
+  console.log('DEBUG: button.fern-search-bar found:', document.querySelector('button.fern-search-bar'))
+  console.log('DEBUG: sidenav parent found:', sidenav)
+  console.log('DEBUG: #fern-sidebar found:', document.getElementById('fern-sidebar'))
+  console.log('DEBUG: All elements with fern- classes:', document.querySelectorAll('[class*="fern-"]'))
+  console.log('DEBUG: All elements with fern- ids:', document.querySelectorAll('[id*="fern-"]'))
+
   if (!sidenavRendered && !document.getElementById('sidenav-header-wrapper') && sidenav) {
+    console.log('DEBUG: Found sidenav element, rendering search and theme switch...')
     sidenavRendered = true
     
     const sidenavHeaderWrapper = document.createElement('div')
@@ -53,6 +62,11 @@ const render = async () => {
     themeRoot.render(React.createElement(ThemeSwitch))
 
     sidenav.replaceWith(sidenavHeaderWrapper)
+  } else {
+    console.log('DEBUG: ❌ NOT rendering sidenav components because:')
+    console.log('  - sidenavRendered:', sidenavRendered)
+    console.log('  - sidenav-header-wrapper exists:', !!document.getElementById('sidenav-header-wrapper'))
+    console.log('  - sidenav element found:', !!sidenav)
   }
 
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)

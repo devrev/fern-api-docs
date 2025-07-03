@@ -33,6 +33,7 @@
 
 #fern-sidebar {
   padding: 42px 0px !important;
+  margin-bottom: 100px !important; /* Prevent overlap with footer */
 }
 
 

@@ -26,10 +26,10 @@ js:
   - path: ./dist/output.js
     strategy: beforeInteractive
 
-# layout:
-#   searchbar-placement: sidebar
-#   tabs-placement: sidebar
-#   disable-header: true
+layout:
+  searchbar-placement: sidebar
+  tabs-placement: sidebar
+  disable-header: true
 
 typography:
   bodyFont:

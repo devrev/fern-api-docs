@@ -58,16 +58,9 @@ const render = async () => {
   const fernHeaderId = document.getElementById(FERN_CONTENT_WRAPPER_ID)
   const devrevHeaderId = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
 
-  // DEBUG: Check header state
-  console.log('DEBUG: Header check:')
-  console.log('  - headerRendered:', headerRendered)
-  console.log('  - fernHeaderId exists:', !!fernHeaderId)
-  console.log('  - devrevHeaderId exists:', !!devrevHeaderId)
-  console.log('  - Will render header:', !headerRendered && !fernHeaderId && !devrevHeaderId)
-
   // GUARD: Only render header once
   if (!headerRendered && !fernHeaderId && !devrevHeaderId) {
-    console.log('DEBUG: Starting header render...')
+    console.log('DEBUG: Rendering header...')
     headerRendered = true
     
     //  Main Container
@@ -102,10 +95,6 @@ const render = async () => {
     }
 
     // Render header component
-    console.log('DEBUG: Rendering DevRev header component...')
-    console.log('DEBUG: devrevContentWrapper:', devrevContentWrapper)
-    console.log('DEBUG: header data:', data.header)
-    
     const headerRoot = ReactDOM.createRoot(devrevContentWrapper)
     headerRoot.render(
       React.createElement(Header, {
@@ -114,26 +103,12 @@ const render = async () => {
       })
     )
     
-    console.log('DEBUG: DevRev header rendered, making visible...')
-    
     // Make header visible immediately
     setTimeout(() => {
       const header = document.getElementById(FERN_HEADER_CONTAINER_ID)
-      console.log('DEBUG: Final header element:', header)
-              if (header) {
-          header.style.display = 'block'
-          console.log('DEBUG: Header display set to block')
-          
-          // Check if DevRev wrapper is visible
-          const devrevWrapper = document.getElementById(DEVREV_CONTENT_WRAPPER_ID)
-          if (devrevWrapper) {
-            const styles = window.getComputedStyle(devrevWrapper)
-            console.log('DEBUG: DevRev wrapper styles:')
-            console.log('  - display:', styles.display)
-            console.log('  - visibility:', styles.visibility)
-            console.log('  - opacity:', styles.opacity)
-          }
-        }
+      if (header) {
+        header.style.display = 'block'
+      }
     }, 0)
   }
 

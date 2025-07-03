@@ -28,10 +28,11 @@
 }
 
 #fern-toc {
-  margin: 64px  0px!important; /* Push TOC below header */
+  padding: 42px 0px !important;
 }
 
 #fern-sidebar {
-  margin: 32px 0px !important; /* Push TOC and sidebar below header */
+  padding: 42px 0px !important;
 }
+
 

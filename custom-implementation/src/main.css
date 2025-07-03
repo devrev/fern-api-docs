@@ -10,6 +10,11 @@
   }
 }
 
+/* Make sidenav components visible on all screen sizes */
+#sidenav-header-wrapper {
+  display: block !important;
+}
+
 #devrev-header-content-wrapper {
   display: none; /* Hide the wrapper by default */
   

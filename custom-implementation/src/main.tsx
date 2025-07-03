@@ -28,14 +28,14 @@ const render = async () => {
 
   const data = await getPageData()
 
-  const sidenav = document.querySelector('button.fern-search-bar')
+  const sidenav = document.querySelector('button#fern-search-button')
     ?.parentElement as HTMLElement
 
   const theme = document.getElementsByTagName('html')[0].getAttribute('class')
 
   // DEBUG: Let's see what elements actually exist
   console.log('DEBUG: Looking for sidebar elements...')
-  console.log('DEBUG: button.fern-search-bar found:', document.querySelector('button.fern-search-bar'))
+  console.log('DEBUG: button#fern-search-button found:', document.querySelector('button#fern-search-button'))
   console.log('DEBUG: sidenav parent found:', sidenav)
   console.log('DEBUG: #fern-sidebar found:', document.getElementById('fern-sidebar'))
   console.log('DEBUG: All elements with fern- classes:', document.querySelectorAll('[class*="fern-"]'))

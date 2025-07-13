@@ -54,6 +54,7 @@ ue.startRecording("<your_unique_app_id>")
 
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
+   disable_plug_chat_window: true,
 });
 window.plugSDK.onEvent((payload) => {
 	if (payload.type === 'ON_OBSERVABILITY_READY') {
@@ -61,6 +62,13 @@ window.plugSDK.onEvent((payload) => {
 	}
 });
 ```
+  If you have configured Content Security Policy (CSP) in your application, then you need to allow access to the following domains.
+  - https://api.devrev.ai
+  - https://plug-platform.devrev.ai
+  - https://ingestion-useast1.devrev.ai - For organizations in the US East region.
+  - https://ingestion-eucentral1.devrev.ai - For organizations in the EU Central region.
+  - https://ingestion-apsouth1.devrev.ai - For organizations in the AP South region.
+
   </Tab>
  
 </Tabs>
@@ -110,6 +118,7 @@ ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 
 window.plugSDK.init({
     app_id: "<your_unique_app_id>",
+    disable_plug_chat_window: true,
     session_recording_options: {
 			sessionReplay: {
 				maskAllInputs?: boolean;
@@ -135,7 +144,6 @@ window.plugSDK.init({
 				captureConsoleLogs?: boolean;
 			}
     },
-    enable_session_recording: true,
 })
 ```
   </Tab>
@@ -268,7 +276,7 @@ Terminate the current session recording and start a new one.
 await window.plugSDK.shutdown();
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
-   enable_session_recording: true,
+   disable_plug_chat_window: true,
 });
 ```
   </Tab>

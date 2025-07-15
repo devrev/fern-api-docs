@@ -799,6 +799,13 @@ components:
     aggregated-schema-get-request:
       type: object
       properties:
+        custom_schema_fragments:
+          type: array
+          description: |
+            The custom schema fragment IDs which are to be aggregated.
+          items:
+            type: string
+            format: id
         custom_schema_spec:
           $ref: '#/components/schemas/custom-schema-spec-for-read'
         is_custom_leaf_type:
@@ -810,6 +817,10 @@ components:
             The leaf type. Used for inferring the default stage diagram and
             tenant fragment ID.
           format: text
+        stock_schema_fragment:
+          type: string
+          description: The stock schema fragment which is to be aggregated.
+          format: id
       title: aggregated-schema-get-request
     aggregated-schema-get-response:
       type: object
@@ -1549,6 +1560,13 @@ components:
           items:
             type: string
             format: id
+        parent:
+          type: array
+          description: |
+            Filters for articles with the provided parent directories.
+          items:
+            type: string
+            format: id
         scope:
           type: array
           description: Filter for the scope of the articles.
@@ -1845,6 +1863,13 @@ components:
           description: Filters for articles owned by any of the provided users.
           example:
             - DEVU-12345
+          items:
+            type: string
+            format: id
+        parent:
+          type: array
+          description: |
+            Filters for articles with the provided parent directories.
           items:
             type: string
             format: id
@@ -3828,6 +3853,14 @@ components:
       allOf:
         - $ref: '#/components/schemas/part-base-summary'
       title: capability-summary
+    caveat-operator:
+      type: string
+      description: The operator used to compare the key and the value.
+      enum:
+        - eq
+        - in
+        - intersects
+        - not_eq
     chat:
       type: object
       discriminator:
@@ -5378,13 +5411,6 @@ components:
           type: string
           description: The title for the conversation.
           format: text
-        user_sessions:
-          type: array
-          description: |
-            The IDs of user sessions associated with the conversation.
-          items:
-            type: string
-            format: id
       required:
         - type
       title: conversations-create-request
@@ -5870,8 +5896,6 @@ components:
           type: string
           description: The updated title of the conversation.
           format: text
-        user_sessions:
-          $ref: '#/components/schemas/conversations-update-request-user-sessions'
       required:
         - id
       title: conversations-update-request
@@ -5947,17 +5971,6 @@ components:
           items:
             $ref: '#/components/schemas/set-tag-with-value'
       title: conversations-update-request-tags
-    conversations-update-request-user-sessions:
-      type: object
-      properties:
-        set:
-          type: array
-          description: |
-            The updated user sessions that the conversation is associated with.
-          items:
-            type: string
-            format: id
-      title: conversations-update-request-user-sessions
     conversations-update-response:
       type: object
       description: The response for updating a conversation.
@@ -7847,6 +7860,33 @@ components:
       additionalProperties: false
       description: Path component for rendering custom type lists in tree form.
       title: custom-type-path-component
+    custom-view:
+      type: object
+      properties:
+        column_properties:
+          type: array
+          description: A list of vista's column preferences in order.
+          items:
+            $ref: '#/components/schemas/custom-view-column-properties'
+        show_groups:
+          type: boolean
+          description: Boolean to specify whether to show groups or not.
+      title: custom-view
+    custom-view-column-properties:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the column.
+          format: text
+        width:
+          type: string
+          description: Width of the column.
+          format: text
+          maxLength: 10
+      required:
+        - name
+      title: custom-view-column-properties
     dashboard:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -8484,6 +8524,8 @@ components:
               description: Job history of the user.
               items:
                 $ref: '#/components/schemas/job-history-item'
+            reports_to:
+              $ref: '#/components/schemas/user-summary'
             skills:
               type: array
               description: Array of skills of the user.
@@ -8975,10 +9017,6 @@ components:
           type: string
           description: Description for the directory.
           format: text
-        icon:
-          type: string
-          description: Icon for the directory.
-          format: text
         language:
           type: string
           description: Language of the directory.
@@ -9240,13 +9278,20 @@ components:
         - $ref: '#/components/schemas/chat-base'
         - type: object
           properties:
+            groups:
+              type: array
+              description: |
+                The groups in the direct message. Only these groups have access to
+                the chat's history and can send new messages.
+              items:
+                $ref: '#/components/schemas/group-summary'
             users:
               type: array
               description: |
-                The users in the direct message. Only these users have access the
-                chat's history and can send new messages.
+                The users in the direct message. Only these users have access to
+                the chat's history and can send new messages.
               items:
-                $ref: '#/components/schemas/atom-summary'
+                $ref: '#/components/schemas/user-summary'
           required:
             - users
       title: dm
@@ -9255,13 +9300,20 @@ components:
         - $ref: '#/components/schemas/chat-base-summary'
         - type: object
           properties:
+            groups:
+              type: array
+              description: |
+                The groups in the direct message. Only these groups have access to
+                the chat's history and can send new messages.
+              items:
+                $ref: '#/components/schemas/group-summary'
             users:
               type: array
               description: |
-                The users in the direct message. Only these users have access the
-                chat's history and can send new messages.
+                The users in the direct message. Only these users have access to
+                the chat's history and can send new messages.
               items:
-                $ref: '#/components/schemas/atom-summary'
+                $ref: '#/components/schemas/user-summary'
           required:
             - users
       title: dm-summary
@@ -9342,7 +9394,11 @@ components:
         - $ref: '#/components/schemas/vista-base'
         - type: object
           discriminator:
+            mapping:
+              meetings: '#/components/schemas/dynamic-vista-meetings-vista'
             propertyName: filter_type
+          oneOf:
+            - $ref: '#/components/schemas/dynamic-vista-meetings-vista'
           properties:
             filter_type:
               $ref: '#/components/schemas/dynamic-vista-filter-type'
@@ -9370,6 +9426,27 @@ components:
         - rev_orgs
         - rev_users
         - works
+    dynamic-vista-meetings-vista:
+      type: object
+      properties:
+        filter:
+          $ref: '#/components/schemas/meetings-vista-filter'
+        items:
+          type: array
+          description: Pinned items associated with the vista.
+          items:
+            $ref: '#/components/schemas/dynamic-vista-meetings-vista-item-value'
+      required:
+        - filter
+      title: dynamic-vista-meetings-vista
+    dynamic-vista-meetings-vista-item-value:
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/meeting-summary'
+      required:
+        - item
+      title: dynamic-vista-meetings-vista-item-value
     dynamic-vista-summary:
       allOf:
         - $ref: '#/components/schemas/vista-base-summary'
@@ -11700,11 +11777,22 @@ components:
       type: object
       description: Request object to get a log's information.
       properties:
+        categories:
+          type: array
+          description: Categories of the logs to filter by.
+          items:
+            type: string
+            format: text
         from:
           type: string
           description: Time from which logs are to be retrieved.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+        operation_types:
+          type: array
+          description: Operation type to filter the logs by.
+          items:
+            $ref: '#/components/schemas/export-audit-logs-request-operation-type'
         to:
           type: string
           description: Time till which logs are to be retrieved.
@@ -11714,6 +11802,14 @@ components:
         - from
         - to
       title: export-audit-logs-request
+    export-audit-logs-request-operation-type:
+      type: string
+      enum:
+        - create
+        - delete
+        - other
+        - read
+        - update
     export-audit-logs-response:
       type: object
       additionalProperties: false
@@ -11754,6 +11850,7 @@ components:
         - github
         - hubspot
         - jira
+        - jira_data_center
         - linear
         - rocketlane
         - salesforce_sales
@@ -13613,6 +13710,10 @@ components:
               description: Parts associated based on git events.
               items:
                 $ref: '#/components/schemas/part-summary'
+            estimated_effort:
+              type: number
+              description: Estimated effort to complete the issue.
+              format: double
             priority:
               $ref: '#/components/schemas/issue-priority'
             priority_v2:
@@ -14387,6 +14488,8 @@ components:
               type: string
               description: Description of the meeting.
               format: text
+            direction:
+              $ref: '#/components/schemas/meeting-direction'
             ended_date:
               type: string
               description: Time at which meeting ended.
@@ -14459,6 +14562,16 @@ components:
         - other
         - teams
         - zoom
+    meeting-direction:
+      type: string
+      description: |
+        Direction of meeting - meetings within an organization are internal.
+        Meetings with external customers can be incoming or outgoing depending
+        on who initiates them.
+      enum:
+        - incoming
+        - internal
+        - outgoing
     meeting-state:
       type: string
       description: The state of meeting.
@@ -14541,6 +14654,14 @@ components:
           description: Filters for meeting on specified state or outcomes.
           items:
             $ref: '#/components/schemas/meeting-state'
+        subtype:
+          type: array
+          description: Subtypes of meeting to be filtered.
+          items:
+            type: string
+            format: text
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
         tags:
           type: array
           description: Filters for meeting by tags.
@@ -14791,6 +14912,14 @@ components:
           description: Filters for meeting on specified state or outcomes.
           items:
             $ref: '#/components/schemas/meeting-state'
+        subtype:
+          type: array
+          description: Subtypes of meeting to be filtered.
+          items:
+            type: string
+            format: text
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
         tags:
           type: array
           description: Filters for meeting by tags.
@@ -14926,6 +15055,93 @@ components:
         - meeting
       title: meetings-update-response
       x-go-name: MeetingsUpdateResponseBody
+    meetings-vista-filter:
+      type: object
+      properties:
+        channel:
+          type: array
+          description: Filters for meeting on specified channels.
+          items:
+            $ref: '#/components/schemas/meeting-channel'
+        created_by:
+          type: array
+          description: Filters for meetings created by the specified user(s).
+          items:
+            type: string
+            format: id
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        custom_fields:
+          type: object
+          description: Filters for meeting on custom fields.
+        ended_date:
+          $ref: '#/components/schemas/date-filter'
+        external_ref:
+          type: array
+          description: Filters for meetings with the provided external_ref(s).
+          items:
+            type: string
+            format: text
+        group_by:
+          type: string
+          description: The field to group the collection by.
+          format: text
+        links:
+          type: array
+          description: Filters for links associated with the meeting.
+          items:
+            $ref: '#/components/schemas/meetings-filter-link-summary-filter'
+        members:
+          type: array
+          description: Filter for meeting on specified Member Ids.
+          items:
+            type: string
+            format: id
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        organizer:
+          type: array
+          description: Filter for meeting on specified organizers.
+          items:
+            type: string
+            format: id
+        parent:
+          type: array
+          deprecated: true
+          description: Filters for meetings with the provided parent.
+          example:
+            - ACC-12345
+          items:
+            type: string
+            format: id
+        scheduled_date:
+          $ref: '#/components/schemas/date-filter'
+        sort_by:
+          type: array
+          description: Comma-separated fields to sort the objects by.
+          items:
+            type: string
+            format: sort-by
+        state:
+          type: array
+          description: Filters for meeting on specified state or outcomes.
+          items:
+            $ref: '#/components/schemas/meeting-state'
+        subtype:
+          type: array
+          description: Subtypes of meeting to be filtered.
+          items:
+            type: string
+            format: text
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
+        tags:
+          type: array
+          description: Filters for meeting by tags.
+          items:
+            type: string
+            format: tag-filter
+      title: meetings-vista-filter
     member-summary:
       type: object
       discriminator:
@@ -15429,6 +15645,13 @@ components:
       allOf:
         - $ref: '#/components/schemas/content-template-base-summary'
       title: notification-content-template-summary
+    notification-priority:
+      type: string
+      description: Priority of the notification.
+      enum:
+        - high
+        - low
+        - medium
     notifications-send-request:
       type: object
       properties:
@@ -17092,6 +17315,20 @@ components:
         - preferences
       title: preferences-update-response
       x-go-name: PreferencesUpdateResponseBody
+    primitive-value-type:
+      type: string
+      description: Type of the value.
+      enum:
+        - attribute
+        - bool
+        - id
+        - id_list
+        - int
+        - int_list
+        - overridable_enum
+        - overridable_enum_list
+        - string
+        - string_list
     product:
       allOf:
         - $ref: '#/components/schemas/part-base'
@@ -18894,6 +19131,11 @@ components:
       type: object
       description: A request to create a new role.
       properties:
+        caveats:
+          type: array
+          description: The caveats on the role.
+          items:
+            $ref: '#/components/schemas/roles-create-request-caveat'
         description:
           type: string
           description: The description of the role.
@@ -18922,6 +19164,65 @@ components:
       required:
         - target
       title: roles-create-request
+    roles-create-request-caveat:
+      type: object
+      description: Caveat under which the role applies.
+      properties:
+        key:
+          $ref: '#/components/schemas/selector'
+        operator:
+          $ref: '#/components/schemas/caveat-operator'
+        value:
+          $ref: '#/components/schemas/roles-create-request-primitive-value'
+      required:
+        - key
+        - operator
+        - value
+      title: roles-create-request-caveat
+    roles-create-request-primitive-value:
+      type: object
+      description: Primitive Value.
+      properties:
+        type:
+          $ref: '#/components/schemas/primitive-value-type'
+        attribute_value:
+          $ref: '#/components/schemas/selector'
+        bool_value:
+          type: boolean
+          description: Boolean value.
+        id_list_value:
+          type: array
+          description: List of ID values.
+          items:
+            type: string
+            format: id
+        id_value:
+          type: string
+          description: ID value.
+          format: id
+        int_list_value:
+          type: array
+          description: List of integer values.
+          items:
+            type: integer
+            format: int64
+        int_value:
+          type: integer
+          description: Integer value.
+          format: int64
+        string_list_value:
+          type: array
+          description: List of string values.
+          items:
+            type: string
+            format: text
+        string_value:
+          type: string
+          description: String value.
+          format: text
+      required:
+        - type
+      title: roles-create-request-primitive-value
     roles-create-response:
       type: object
       description: A response to a request to create a new role.
@@ -20294,6 +20595,26 @@ components:
             This may contain duplicate content.
           format: text
       title: search-summary-base
+    selector:
+      type: object
+      description: Selector.
+      properties:
+        attribute:
+          type: string
+          description: Attribute of the object.
+          format: text
+        object:
+          $ref: '#/components/schemas/selector-object'
+      required:
+        - attribute
+        - object
+      title: selector
+    selector-object:
+      type: string
+      description: The object.
+      enum:
+        - actor
+        - target
     send-notification:
       type: object
       discriminator:
@@ -20310,6 +20631,8 @@ components:
           description: |
             The ID of the parent object associated with the notification.
           format: id
+        priority:
+          $ref: '#/components/schemas/notification-priority'
         receiver:
           type: string
           description: |
@@ -24360,6 +24683,7 @@ components:
         - engagement
         - enhancement
         - feature
+        - group
         - incident
         - issue
         - linkable
@@ -25765,6 +26089,84 @@ components:
         - curated
         - dynamic
         - grouped
+    vistas-create-request:
+      type: object
+      description: The request to create new vista.
+      discriminator:
+        mapping:
+          dynamic: '#/components/schemas/vistas-create-request-dynamic-vista'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/vistas-create-request-dynamic-vista'
+      properties:
+        type:
+          $ref: '#/components/schemas/vista-type'
+        custom_view:
+          $ref: '#/components/schemas/custom-view'
+        description:
+          type: string
+          description: Description of the vista.
+          format: text
+        name:
+          type: string
+          description: Name of the vista.
+          format: text
+        shared_with:
+          type: array
+          description: Users and groups associated with vista.
+          items:
+            $ref: '#/components/schemas/set-shared-with-membership'
+      required:
+        - name
+        - type
+      title: vistas-create-request
+    vistas-create-request-dynamic-vista:
+      type: object
+      discriminator:
+        mapping:
+          meetings: '#/components/schemas/vistas-create-request-dynamic-vista-meetings-vista'
+        propertyName: filter_type
+      oneOf:
+        - $ref: '#/components/schemas/vistas-create-request-dynamic-vista-meetings-vista'
+      properties:
+        filter_type:
+          $ref: '#/components/schemas/dynamic-vista-filter-type'
+      required:
+        - filter_type
+      title: vistas-create-request-dynamic-vista
+    vistas-create-request-dynamic-vista-meetings-vista:
+      type: object
+      properties:
+        filter:
+          $ref: '#/components/schemas/meetings-vista-filter'
+        items:
+          type: array
+          description: Pinned items associated with the vista.
+          items:
+            $ref: '#/components/schemas/vistas-create-request-dynamic-vista-meetings-vista-item-value'
+      required:
+        - filter
+      title: vistas-create-request-dynamic-vista-meetings-vista
+    vistas-create-request-dynamic-vista-meetings-vista-item-value:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the item.
+          format: id
+      required:
+        - id
+      title: vistas-create-request-dynamic-vista-meetings-vista-item-value
+    vistas-create-response:
+      type: object
+      description: The response to vista creation.
+      properties:
+        vista:
+          $ref: '#/components/schemas/vista'
+      required:
+        - vista
+      title: vistas-create-response
+      x-go-name: VistasCreateResponseBody
     vistas-delete-request:
       type: object
       description: The request to delete a vista.
@@ -29984,6 +30386,15 @@ paths:
             items:
               type: string
               format: id
+        - description: Filters for articles with the provided parent directories.
+          explode: false
+          in: query
+          name: parent
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: Filter for the scope of the articles.
           explode: false
           in: query
@@ -30340,6 +30751,15 @@ paths:
             type: array
             example:
               - DEVU-12345
+            items:
+              type: string
+              format: id
+        - description: Filters for articles with the provided parent directories.
+          explode: false
+          in: query
+          name: parent
+          schema:
+            type: array
             items:
               type: string
               format: id
@@ -37979,6 +38399,86 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/meeting-state'
+        - description: Subtypes of meeting to be filtered.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for issues synced from this specific origin system.
+          explode: false
+          in: query
+          name: sync_metadata.origin_system
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Filters for meeting by tags.
           explode: false
           in: query
@@ -38335,6 +38835,86 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/meeting-state'
+        - description: Subtypes of meeting to be filtered.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for issues synced from this specific origin system.
+          explode: false
+          in: query
+          name: sync_metadata.origin_system
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Filters for meeting by tags.
           explode: false
           in: query
@@ -42341,6 +42921,15 @@ paths:
       description: Gets the aggregated schema.
       operationId: aggregated-schema-get
       parameters:
+        - description: The custom schema fragment IDs which are to be aggregated.
+          explode: false
+          in: query
+          name: custom_schema_fragments
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: List of apps.
           explode: false
           in: query
@@ -42372,6 +42961,13 @@ paths:
           schema:
             type: string
             format: text
+        - description: The stock schema fragment which is to be aggregated.
+          explode: false
+          in: query
+          name: stock_schema_fragment
+          schema:
+            type: string
+            format: id
       responses:
         "200":
           content:
@@ -47084,6 +47680,44 @@ paths:
       summary: Update UOM
       tags:
         - uoms
+      x-fern-audiences:
+        - docs
+        - sdks
+      x-fern-availability: beta
+  /vistas.create:
+    post:
+      description: Creates a vista.
+      operationId: vistas-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vistas-create-request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vistas-create-response'
+          description: The response to vista creation.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "409":
+          $ref: '#/components/responses/conflict'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      summary: Create Vista
+      tags:
+        - vistas
       x-fern-audiences:
         - docs
         - sdks

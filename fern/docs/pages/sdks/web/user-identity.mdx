@@ -4,6 +4,8 @@ For users who are logged into your website, you can identify them in PLuG to ena
 
 To implement user identification, you need to generate a session token for each user who visits your website. This token is created using your application access token combined with customer information, and must be generated on your backend to keep the application token secure.
 
+<img src="../../../img/plug-verified-user-identification.png" width="400" />
+
 ## Generate an application access token
 
 1. In DevRev, go to **Settings > Support > PLuG Tokens** through the settings icon on the top-left corner.
@@ -159,11 +161,12 @@ While initializing the PLuG widget you pass the session token for DevRev to iden
 const sessionToken = '<SESSION_TOKEN>'
 <script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
 <script>
-    (() => {
-      window.plugSDK.init({
-          app_id: '<your_unique_app_id>',
-          session_token: sessionToken
-        })})();
+  (() => {
+    window.plugSDK.init({
+      app_id: '<your_unique_app_id>',
+      session_token: sessionToken
+    })
+  })();
 </script>
 ```
 
@@ -208,3 +211,60 @@ window.plugSDK.updateIdentity({
   }
 })
 ```
+<Callout intent="note">
+Note that `updateIdentity` method cannot be used to update the `user_ref` of the user. In order to change the identity of the user completely to a new one, you need to re-initialize PLuG. See the [Changing the user identity](#changing-the-user-identity) section for more details.
+</Callout>
+
+## Changing the user identity
+
+As described in the above sections, to identify a user, you need to initialize the PLuG SDK with the relevant user information. PLuG can only be initialized once per page load.
+
+In most cases, this works as expected—user identification typically happens after login or signup, which causes a page reload and clears any previous PLuG instance.
+
+However, if your application needs to update the user identity without a full page refresh, you'll need to explicitly delete the existing PLuG instance before initializing it again with the new user information.
+
+```jsx
+// Delete the existing PLuG instance if it exists
+if (window.plugSDK.isPlugInitialized) {
+  window.plugSDK.shutdown();
+}
+
+// Re-initialize PLuG
+window.plugSDK.init({
+  app_id: appId,
+
+  // With session token
+  session_token: sessionToken,
+
+  // Or without session token
+  identity: {},
+});
+```
+<Callout intent="note">
+If you're using the PLuG SDK for recording user sessions, calling the `shutdown()` method will stop the ongoing session recording. Re-initializing with the `init()` method will then start a new session recording. To avoid losing continuity, you can pass the details of the ongoing session recording when re-initializing PLuG.
+```jsx
+// Get the ongoing session details
+const { sessionId, tabId } = window.plugSDK.getSessionDetails();
+
+if (window.plugSDK.isPlugInitialized) {
+  window.plugSDK.shutdown();
+}
+window.plugSDK.init({
+  app_id: appId,
+  
+  // Pass the session details
+  session_recording_options: {
+    sessionDetails: {
+      sessionId: sessionId,
+      tabId: tabId,
+    },
+  },
+
+  // With session token
+  session_token: sessionToken,
+  // Or without session token
+  identity: {},
+});
+```
+</Callout>
+

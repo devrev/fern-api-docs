@@ -5,6 +5,12 @@ For users who are logged into your website, you can identify them in PLuG to ena
 To implement user identification, you need to generate a session token for each user who visits your website. This token is created using your application access token combined with customer information, and must be generated on your backend to keep the application token secure.
 
 ```mermaid
+---
+config:
+  theme: 'base'
+  themeVariables:
+    fontFamily: 'Segoe UI'
+---
 sequenceDiagram
   participant User as Your User
   participant Frontend as Your Frontend

@@ -4,7 +4,20 @@ For users who are logged into your website, you can identify them in PLuG to ena
 
 To implement user identification, you need to generate a session token for each user who visits your website. This token is created using your application access token combined with customer information, and must be generated on your backend to keep the application token secure.
 
-<img src="../../../img/plug-verified-user-identification.png" width="400" />
+```mermaid
+sequenceDiagram
+  participant User as Your User
+  participant Frontend as Your Frontend
+  participant Backend as Your Backend
+  participant DevRev as DevRev's Backend
+
+  User->>Frontend: (1) User is known<br/>(via Signup, Login)
+  Frontend->>Backend: (2) Send user details
+  Backend->>DevRev: (3) auth-tokens.create API call
+  DevRev-->>Backend: (4) Return RevUser Session Token
+  Backend-->>Frontend: (5) Return Session Token
+  Frontend->>Frontend: (6) Call plugSDK.init() with token
+```
 
 ## Generate an application access token
 
@@ -240,7 +253,6 @@ window.plugSDK.init({
   identity: {},
 });
 ```
-<Callout intent="note">
 If you're using the PLuG SDK for recording user sessions, calling the `shutdown()` method will stop the ongoing session recording. Re-initializing with the `init()` method will then start a new session recording. To avoid losing continuity, you can pass the details of the ongoing session recording when re-initializing PLuG.
 ```jsx
 // Get the ongoing session details
@@ -266,5 +278,4 @@ window.plugSDK.init({
   identity: {},
 });
 ```
-</Callout>
 

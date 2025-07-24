@@ -240,7 +240,7 @@ As described in the above sections, to identify a user, you need to initialize t
 
 In most cases, this works as expected—user identification typically happens after login or signup, which causes a page reload and clears any previous PLuG instance.
 
-However, if your application needs to update the user identity without a full page refresh, you'll need to explicitly delete the existing PLuG instance before initializing it again with the new user information.
+However, if your application needs to update the user identity without a full page refresh, you need to explicitly delete the existing PLuG instance before initializing it again with the new user information.
 
 ```jsx
 // Delete the existing PLuG instance if it exists

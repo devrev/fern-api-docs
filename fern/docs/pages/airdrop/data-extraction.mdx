@@ -243,3 +243,38 @@ await spawn<DummyExtractorState>({
     }
 });
 ```
+
+## Timeout handling
+
+To prevent long-running or blocked worker threads from stalling the sync process, the Airdrop SDK implements a two-tier timeout mechanism.
+
+- The **soft timeout** (default: 10 minutes, configurable) sends an exit message to the worker thread, allowing it to gracefully shut down via the `onTimeout` function.
+- If the worker does not respond within the **hard timeout** (default: 13 minutes), it is forcefully terminated.
+
+This mechanism ensures that the snap-in does not hang indefinitely, and the system can recover cleanly in case of stuck or slow code execution.
+
+The most common reason for missed soft timeouts is code that blocks the Node.js event loop. This can prevent the worker thread from processing the exit signal, leading to a hard timeout and forced termination.
+
+To keep the worker thread responsive and ensure soft timeout handling works as intended:
+
+- Avoid long synchronous loops or CPU-heavy operations that block the event loop.
+- Use `async/await` for I/O operations such as API calls or file reads.
+- Add periodic async breaks in tight loops using `Promise.resolve()`, `setTimeout()`, or `setImmediate()`.
+
+You can find examples of correct timeout-safe code in the [timeout-handling test suite](https://github.com/devrev/adaas-sdk/tree/main/src/tests/timeout-handling).
+
+To test how your snap-in responds to timeouts, you can configure a shorter timeout using the `spawn` function:
+
+```typescript
+await spawn({
+  event,
+  initialState,
+  workerPath,
+  initialDomainMapping,
+  options: {
+    timeout: 5 * 1000, // 5 seconds
+    isLocalDevelopment: true,
+  },
+});
+
+This lets you quickly simulate a soft timeout and validate that your worker shuts down gracefully.

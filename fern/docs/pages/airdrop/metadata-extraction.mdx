@@ -370,39 +370,6 @@ be changed by the end user at any time, such as mandatory fields or custom field
   Assigning a `reference_type` helps Airdrop correctly handle such fields in case the end-user
   decides to filter some of the parent records out.
 
-  - Sometimes the external system uses references besides the primary key of records, for example
-  when referring to a case by serial number, or to a user by their email.
-  To correctly resolve such references, they must be marked with `by_field`, which must be a field
-  existing in that record type, marked `is_identifier`. For example:
-  ```json {7,16-20}
-  {
-    "record_types": {
-      "users": {
-        "fields": {
-          "email": {
-            "type": "text",
-            "is_identifier":true
-          }
-        }
-      },
-      "comments": {
-        "fields": {
-          "user_email": {
-            "type": "reference",
-            "reference": {
-              "refers_to": {
-                "#record:users": {
-                  "by_field": "email"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  ```
-
   ### Define field attributes
 
   External system fields that shouldn't be mapped in reverse should be marked as `is_read_only`. 

@@ -1,0 +1,4 @@
+components: 
+  schemas: 
+    vistas-create-request:
+      discriminator: null

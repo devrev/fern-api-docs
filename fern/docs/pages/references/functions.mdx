@@ -27,13 +27,13 @@ functions:
 - `name`: It is the function name that should match the corresponding function name in the folder.
 - `description`: It describes the function.
 
-### Synchronous Execution with Synchronization Key
+### Synchronous execution with synchronization key
 
-To ensure that function executions are processed in order (FIFO) for a given context (such as a user or conversation), you can enable synchronization support in your function’s manifest and use a synchronization key (sync-id).
+To ensure that function executions are processed in order, FIFO, for a given context such as a user or conversation, enable synchronization support in your function’s manifest and use a synchronization key, sync-id.
 
-#### How it Works
+#### How it works
 
-1. **Enable Synchronization in Manifest**
+1. Enable synchronization in manifest
    - In your function’s manifest, add the field:
      ```yaml
      functions:
@@ -43,8 +43,8 @@ To ensure that function executions are processed in order (FIFO) for a given con
      ```
    - This tells the platform to use a FIFO queue for this function.
 
-1. **Set the Synchronization Key**
-   - When triggering an automation, include the sync-id in your rego policy along with the event_key. For example:
+1. Set the synchronization key
+   - When triggering an automation, include the sync-id in your rego policy along with the `event_key`. For example:
      ```rego focus
      package rego
 
@@ -63,20 +63,20 @@ To ensure that function executions are processed in order (FIFO) for a given con
    - The sync-id groups related executions for ordered processing.
 
 
-3. **Execution Behavior**
-   - If supports_synchronization is true and a sync-id is provided, executions with the same sync-id are processed in order.
+3. Execution behavior
+   - If `supports_synchronization` is true and a sync-id is provided, executions with the same sync-id are processed in order.
    - If no sync-id is provided, executions are grouped by a random string.
-   - If supports_synchronization is false, the sync-id is ignored and executions are processed as usual.
+   - If `supports_synchronization` is false, the sync-id is ignored and executions are processed as usual.
 
-#### Platform Behavior
+#### Platform behavior
 
 - The platform uses the sync-id as the message group for FIFO processing.
 - This ensures that all executions with the same sync-id are processed in order, preventing race conditions or duplicate conversations.
 
-#### Use Cases
+#### Use cases
 
 - Ensuring order of message processing for chatbots or messaging integrations.
-- Preventing duplicate or out-of-order actions when multiple events are triggered rapidly.
+- Preventing duplicate or out-of-order actions when multiple events are triggered.
 
 
 

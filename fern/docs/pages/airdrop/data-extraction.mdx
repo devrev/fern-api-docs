@@ -4,11 +4,11 @@ to retrieve all the items that should be synced with DevRev.
 If the current run is an initial sync, this means all the items should be extracted.
 Otherwise the extractor should retrieve all the items that were changed since the start of the last extraction.
 
-Each snap-in invocation runs in a separate runtime instance with a maximum execution time of 13 minutes. 
+Each snap-in invocation runs in a separate runtime instance with a maximum execution time of 13 minutes.
 After 10 minutes, the Airdrop platform sends a message to the snap-in to gracefully exit.
 
-If a large amount of data needs to be extracted, it might not all be extracted within this time frame. 
-To handle such situations, the snap-in uses a state object. 
+If a large amount of data needs to be extracted, it might not all be extracted within this time frame.
+To handle such situations, the snap-in uses a state object.
 This state object is shared across all invocations and keeps track of where the previous snap-in invocations ended in the extraction process.
 
 ## Triggering event
@@ -68,20 +68,20 @@ await adapter.emit(ExtractorEventType.ExtractionDataError, {
 ### Extracting and storing the data
 
 The SDK library includes a repository system for handling extracted items.
-Each item type, such as users, tasks, or issues, has its own repository. 
-These are defined in the `repos` array as `itemType`. 
+Each item type, such as users, tasks, or issues, has its own repository.
+These are defined in the `repos` array as `itemType`.
 The `itemType` name should match the `record_type` specified in the provided metadata.
 
 ```typescript
 const repos = [
   {
-    itemType: 'todos',
+    itemType: "todos",
   },
   {
-    itemType: 'users',
+    itemType: "users",
   },
   {
-    itemType: 'attachments',
+    itemType: "attachments",
   },
 ];
 ```
@@ -104,14 +104,14 @@ After initialization of repositories using `initializeRepos`,
 items should be then retrieved from the external system and stored in the correct repository by calling the `push` function.
 
 ```typescript
-await adapter.getRepo('users')?.push(items);
+await adapter.getRepo("users")?.push(items);
 ```
 
 Behind the scenes, the SDK library stores items pushed to the repository and uploads them in batches to the Airdrop platform.
 
 ### Data normalization
 
-Extracted data must be normalized to fit the domain metadata defined in the `external-domain-metadata.json` file. 
+Extracted data must be normalized to fit the domain metadata defined in the `external-domain-metadata.json` file.
 More details on this process are provided in the [Metadata extraction](/public/snapin-development/adaas/metadata-extraction) section.
 
 Normalization rules:
@@ -130,15 +130,15 @@ Extracted items are automatically normalized when pushed to the `repo` if a norm
 ```typescript
 const repos = [
   {
-    itemType: 'todos',
+    itemType: "todos",
     normalize: normalizeTodo,
   },
   {
-    itemType: 'users',
+    itemType: "users",
     normalize: normalizeUser,
   },
   {
-    itemType: 'attachments',
+    itemType: "attachments",
     normalize: normalizeAttachment,
   },
 ];
@@ -161,15 +161,15 @@ All other fields are contained within the `data` attribute.
     "owner": "A3A",
     "rca": null,
     "severity": "fatal",
-    "summary": "Lorem ipsum",
+    "summary": "Lorem ipsum"
   }
 }
 ```
 
 If the item you are normalizing is a work item (a ticket, task, issue, or similar),
-it should also contain the `item_url_field` within the `data` attribute. 
+it should also contain the `item_url_field` within the `data` attribute.
 This field should be assigned a URL that points to the item in the external system.
-This link is visible in the airdropped item in the DevRev app, 
+This link is visible in the airdropped item in the DevRev app,
 helping users to easily locate the item in the external system.
 
 ```json {12}
@@ -205,13 +205,13 @@ echo '{}' | chef-cli fuzz-extracted -r issue -m external_domain_metadata.json > 
 
 ## State handling
 
-To enable information passing between invocations and runs, a limited amount of data can be saved as the snap-in `state`. 
+To enable information passing between invocations and runs, a limited amount of data can be saved as the snap-in `state`.
 Snap-in `state` persists between phases in one sync run as well as between multiple sync runs.
 
 You can access the `state` through SDK's `adapter` object.
 
 ```typescript
-adapter.state['users'].completed = true;
+adapter.state["users"].completed = true;
 ```
 
 A snap-in must consult its state to obtain information on when the last successful forward sync started.
@@ -243,3 +243,39 @@ await spawn<DummyExtractorState>({
     }
 });
 ```
+
+## Handling lambda timeout
+
+When a worker thread is busy with other work and doesn't respond to exit messages from the main thread, it becomes blocked and can stall the sync process. To prevent this, the Airdrop SDK implements a two-tier timeout mechanism.
+
+- The **soft timeout**, default of 10 minutes and configurable, sends an exit message to the worker thread, allowing it to gracefully shut down via the `onTimeout` function. How to configure this is shown in the example below.
+- If the worker does not respond within the **hard timeout**, default of 13 minutes, it is forcefully terminated.
+
+This mechanism ensures that the snap-in does not hang indefinitely, and the system can recover cleanly in case of stuck or slow code execution.
+
+The most common reason for missed soft timeouts is code that blocks the Node.js event loop. This can prevent the worker thread from processing the exit signal, leading to a hard timeout and forced termination.
+
+To keep the worker thread responsive and ensure soft timeout handling works as intended:
+
+- Avoid long synchronous loops or CPU-heavy operations that block the event loop.
+- Use `async/await` for I/O operations such as API calls or file reads.
+- Add periodic async breaks in tight loops using `Promise.resolve()`, `setTimeout()`, or `setImmediate()`.
+
+You can find examples of correct timeout-safe code in the [timeout-handling test suite](https://github.com/devrev/adaas-sdk/tree/main/src/tests/timeout-handling).
+
+To test how your snap-in responds to timeouts, you can configure a shorter timeout using the `spawn` function:
+
+```typescript
+await spawn({
+  event,
+  initialState,
+  workerPath,
+  initialDomainMapping,
+  options: {
+    timeout: 5 * 1000, // 5 seconds
+    isLocalDevelopment: true,
+  },
+});
+```
+
+This lets you simulate a soft timeout and validate that your worker shuts down.

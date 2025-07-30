@@ -27,6 +27,52 @@ functions:
 - `name`: It is the function name that should match the corresponding function name in the folder.
 - `description`: It describes the function.
 
+### Synchronous execution with synchronization key
+
+To ensure that function executions are processed in order, FIFO, for a given context such as a user or conversation, enable synchronization support in your function’s manifest and use a synchronization key, sync_id.
+
+The platform uses the sync_id as the message group for FIFO processing. This ensures that all executions with the same sync_id are processed in order, preventing race conditions or duplicate conversations.
+Use cases for synchronous execution include:
+
+- Ensuring order of message processing for chatbots or messaging integrations.
+- Preventing duplicate or out-of-order actions when multiple events are triggered.
+
+To enable this: 
+
+1. Enable synchronization in manifest
+   - In your function’s manifest, add the field:
+     ```yaml
+     functions:
+      - name: function_name
+        description: Let me execute
+        supports_synchronization: true
+     ```
+   - This tells the platform to use a FIFO queue for this function.
+
+1. Set the synchronization key
+   - When triggering an automation, include the sync_id in your rego policy along with the `event_key`. For example:
+     ```rego rego
+     package rego
+
+     output = {"event": event, "event_key": event_key, "sync_id": sync_id} {
+         input.request.method == "POST"
+         event := input.request.body
+         event_key := "user-enter"
+         sync_id := "1234567890"
+     } else = {"response": response }{
+         response := {
+             "status_code": 400
+         }
+     }
+     ```
+
+   - The sync_id groups related executions for ordered processing.
+
+3. Execution behavior
+   - If `supports_synchronization` is true and a sync_id is provided, executions with the same sync_id are processed in order.
+   - If no sync_id is provided, executions are grouped by a random string.
+   - If `supports_synchronization` is false, the sync_id is ignored and executions are processed as usual.
+
 
 <Callout intent="note">
 Each function should be registered in `src/function-factory.ts` to be available for execution.

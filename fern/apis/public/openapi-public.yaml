@@ -605,6 +605,13 @@ components:
     aggregated-schema-get-request:
       type: object
       properties:
+        custom_schema_fragments:
+          type: array
+          description: |
+            The custom schema fragment IDs which are to be aggregated.
+          items:
+            type: string
+            format: id
         custom_schema_spec:
           $ref: '#/components/schemas/custom-schema-spec-for-read'
         is_custom_leaf_type:
@@ -616,6 +623,10 @@ components:
             The leaf type. Used for inferring the default stage diagram and
             tenant fragment ID.
           format: text
+        stock_schema_fragment:
+          type: string
+          description: The stock schema fragment which is to be aggregated.
+          format: id
       title: aggregated-schema-get-request
     aggregated-schema-get-response:
       type: object
@@ -1253,6 +1264,13 @@ components:
           description: Filters for articles owned by any of the provided users.
           example:
             - DEVU-12345
+          items:
+            type: string
+            format: id
+        parent:
+          type: array
+          description: |
+            Filters for articles with the provided parent directories.
           items:
             type: string
             format: id
@@ -3758,13 +3776,6 @@ components:
           type: string
           description: The title for the conversation.
           format: text
-        user_sessions:
-          type: array
-          description: |
-            The IDs of user sessions associated with the conversation.
-          items:
-            type: string
-            format: id
       required:
         - type
       title: conversations-create-request
@@ -4076,8 +4087,6 @@ components:
           type: string
           description: The updated title of the conversation.
           format: text
-        user_sessions:
-          $ref: '#/components/schemas/conversations-update-request-user-sessions'
       required:
         - id
       title: conversations-update-request
@@ -4153,17 +4162,6 @@ components:
           items:
             $ref: '#/components/schemas/set-tag-with-value'
       title: conversations-update-request-tags
-    conversations-update-request-user-sessions:
-      type: object
-      properties:
-        set:
-          type: array
-          description: |
-            The updated user sessions that the conversation is associated with.
-          items:
-            type: string
-            format: id
-      title: conversations-update-request-user-sessions
     conversations-update-response:
       type: object
       description: The response for updating a conversation.
@@ -5844,6 +5842,8 @@ components:
               description: Job history of the user.
               items:
                 $ref: '#/components/schemas/job-history-item'
+            reports_to:
+              $ref: '#/components/schemas/user-summary'
             skills:
               type: array
               description: Array of skills of the user.
@@ -6323,10 +6323,6 @@ components:
           type: string
           description: Description for the directory.
           format: text
-        icon:
-          type: string
-          description: Icon for the directory.
-          format: text
         language:
           type: string
           description: Language of the directory.
@@ -6587,7 +6583,11 @@ components:
         - $ref: '#/components/schemas/vista-base'
         - type: object
           discriminator:
+            mapping:
+              meetings: '#/components/schemas/dynamic-vista-meetings-vista'
             propertyName: filter_type
+          oneOf:
+            - $ref: '#/components/schemas/dynamic-vista-meetings-vista'
           properties:
             filter_type:
               $ref: '#/components/schemas/dynamic-vista-filter-type'
@@ -6615,6 +6615,27 @@ components:
         - rev_orgs
         - rev_users
         - works
+    dynamic-vista-meetings-vista:
+      type: object
+      properties:
+        filter:
+          $ref: '#/components/schemas/meetings-vista-filter'
+        items:
+          type: array
+          description: Pinned items associated with the vista.
+          items:
+            $ref: '#/components/schemas/dynamic-vista-meetings-vista-item-value'
+      required:
+        - filter
+      title: dynamic-vista-meetings-vista
+    dynamic-vista-meetings-vista-item-value:
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/meeting-summary'
+      required:
+        - item
+      title: dynamic-vista-meetings-vista-item-value
     empty:
       type: object
       additionalProperties: false
@@ -8927,6 +8948,10 @@ components:
               description: Parts associated based on git events.
               items:
                 $ref: '#/components/schemas/part-summary'
+            estimated_effort:
+              type: number
+              description: Estimated effort to complete the issue.
+              format: double
             priority:
               $ref: '#/components/schemas/issue-priority'
             priority_v2:
@@ -9371,6 +9396,10 @@ components:
         - rescheduled
         - scheduled
         - waiting
+    meeting-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: meeting-summary
     meetings-count-request:
       type: object
       properties:
@@ -9430,6 +9459,14 @@ components:
           description: Filters for meeting on specified state or outcomes.
           items:
             $ref: '#/components/schemas/meeting-state'
+        subtype:
+          type: array
+          description: Subtypes of meeting to be filtered.
+          items:
+            type: string
+            format: text
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
       title: meetings-count-request
     meetings-count-response:
       type: object
@@ -9660,6 +9697,14 @@ components:
           description: Filters for meeting on specified state or outcomes.
           items:
             $ref: '#/components/schemas/meeting-state'
+        subtype:
+          type: array
+          description: Subtypes of meeting to be filtered.
+          items:
+            type: string
+            format: text
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
       title: meetings-list-request
     meetings-list-response:
       type: object
@@ -9789,6 +9834,84 @@ components:
         - meeting
       title: meetings-update-response
       x-go-name: MeetingsUpdateResponseBody
+    meetings-vista-filter:
+      type: object
+      properties:
+        channel:
+          type: array
+          description: Filters for meeting on specified channels.
+          items:
+            $ref: '#/components/schemas/meeting-channel'
+        created_by:
+          type: array
+          description: Filters for meetings created by the specified user(s).
+          items:
+            type: string
+            format: id
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        ended_date:
+          $ref: '#/components/schemas/date-filter'
+        external_ref:
+          type: array
+          description: Filters for meetings with the provided external_ref(s).
+          items:
+            type: string
+            format: text
+        group_by:
+          type: string
+          description: The field to group the collection by.
+          format: text
+        links:
+          type: array
+          description: Filters for links associated with the meeting.
+          items:
+            $ref: '#/components/schemas/meetings-filter-link-summary-filter'
+        members:
+          type: array
+          description: Filter for meeting on specified Member Ids.
+          items:
+            type: string
+            format: id
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        organizer:
+          type: array
+          description: Filter for meeting on specified organizers.
+          items:
+            type: string
+            format: id
+        parent:
+          type: array
+          deprecated: true
+          description: Filters for meetings with the provided parent.
+          example:
+            - ACC-12345
+          items:
+            type: string
+            format: id
+        scheduled_date:
+          $ref: '#/components/schemas/date-filter'
+        sort_by:
+          type: array
+          description: Comma-separated fields to sort the objects by.
+          items:
+            type: string
+            format: sort-by
+        state:
+          type: array
+          description: Filters for meeting on specified state or outcomes.
+          items:
+            $ref: '#/components/schemas/meeting-state'
+        subtype:
+          type: array
+          description: Subtypes of meeting to be filtered.
+          items:
+            type: string
+            format: text
+        sync_metadata:
+          $ref: '#/components/schemas/sync-metadata-filter'
+      title: meetings-vista-filter
     member-summary:
       type: object
       discriminator:
@@ -15855,6 +15978,7 @@ components:
         - conversation
         - enhancement
         - feature
+        - group
         - issue
         - product
         - rev_org
@@ -19373,6 +19497,15 @@ paths:
             type: array
             example:
               - DEVU-12345
+            items:
+              type: string
+              format: id
+        - description: Filters for articles with the provided parent directories.
+          explode: false
+          in: query
+          name: parent
+          schema:
+            type: array
             items:
               type: string
               format: id
@@ -24390,6 +24523,86 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/meeting-state'
+        - description: Subtypes of meeting to be filtered.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for issues synced from this specific origin system.
+          explode: false
+          in: query
+          name: sync_metadata.origin_system
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
       responses:
         "200":
           content:
@@ -24731,6 +24944,86 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/meeting-state'
+        - description: Subtypes of meeting to be filtered.
+          explode: false
+          in: query
+          name: subtype
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for issues with this specific external reference.
+          explode: false
+          in: query
+          name: sync_metadata.external_reference
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-in-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_in.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works with selected sync statuses.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/sync-metadata-filter-sync-out-filter-status'
+        - description: Filters for works modified with selected sync history.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_history
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: Filters for works modified with selected sync units.
+          explode: false
+          in: query
+          name: sync_metadata.last_sync_out.sync_unit
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
+        - description: |
+            Filters for issues synced from this specific origin system.
+          explode: false
+          in: query
+          name: sync_metadata.origin_system
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
       responses:
         "200":
           content:
@@ -27394,6 +27687,15 @@ paths:
       description: Gets the aggregated schema.
       operationId: aggregated-schema-get
       parameters:
+        - description: The custom schema fragment IDs which are to be aggregated.
+          explode: false
+          in: query
+          name: custom_schema_fragments
+          schema:
+            type: array
+            items:
+              type: string
+              format: id
         - description: List of apps.
           explode: false
           in: query
@@ -27425,6 +27727,13 @@ paths:
           schema:
             type: string
             format: text
+        - description: The stock schema fragment which is to be aggregated.
+          explode: false
+          in: query
+          name: stock_schema_fragment
+          schema:
+            type: string
+            format: id
       responses:
         "200":
           content:

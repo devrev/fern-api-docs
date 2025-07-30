@@ -1,6 +1,7 @@
 api:
   specs:
     - openapi: ./openapi-beta.yaml
+      overrides: ./overrides.yml
 groups:
   ts-sdk:
     audiences:

@@ -800,6 +800,12 @@ components:
             For completed metrics the time (in minutes) it took to complete
             them. (Taking into account the schedule if any).
           format: int32
+        completed_in_seconds:
+          type: integer
+          description: |
+            For completed metrics the time (in seconds) it took to complete
+            them. (Taking into account the schedule if any).
+          format: int32
         in_policy:
           type: boolean
           description: If true, the metric is part of the applied policy.
@@ -929,6 +935,13 @@ components:
               $ref: '#/components/schemas/resource'
             scope:
               $ref: '#/components/schemas/enum-value'
+            status:
+              $ref: '#/components/schemas/article-status'
+            tags:
+              type: array
+              description: Tags associated with the article.
+              items:
+                $ref: '#/components/schemas/tag-with-value'
             title:
               type: string
               description: Title of the article.
@@ -1868,6 +1881,7 @@ components:
           sys_user: '#/components/schemas/sys-user'
           tag: '#/components/schemas/tag'
           ticket: '#/components/schemas/ticket'
+          time_metric_tracker: '#/components/schemas/time-metric-tracker'
           timeline_comment: '#/components/schemas/timeline-comment'
           webhook: '#/components/schemas/webhook'
         propertyName: type
@@ -1891,6 +1905,7 @@ components:
         - $ref: '#/components/schemas/sys-user'
         - $ref: '#/components/schemas/tag'
         - $ref: '#/components/schemas/ticket'
+        - $ref: '#/components/schemas/time-metric-tracker'
         - $ref: '#/components/schemas/timeline-comment'
         - $ref: '#/components/schemas/webhook'
       properties:
@@ -1964,6 +1979,7 @@ components:
           sys_user: '#/components/schemas/sys-user-summary'
           tag: '#/components/schemas/tag-summary'
           ticket: '#/components/schemas/ticket-summary'
+          time_metric_tracker: '#/components/schemas/time-metric-tracker-summary'
           timeline_comment: '#/components/schemas/timeline-comment-summary'
           webhook: '#/components/schemas/webhook-summary'
         propertyName: type
@@ -1987,6 +2003,7 @@ components:
         - $ref: '#/components/schemas/sys-user-summary'
         - $ref: '#/components/schemas/tag-summary'
         - $ref: '#/components/schemas/ticket-summary'
+        - $ref: '#/components/schemas/time-metric-tracker-summary'
         - $ref: '#/components/schemas/timeline-comment-summary'
         - $ref: '#/components/schemas/webhook-summary'
       properties:
@@ -2017,6 +2034,7 @@ components:
         - sys_user
         - tag
         - ticket
+        - time_metric_tracker
         - timeline_comment
         - webhook
     atoms-get-request:
@@ -3631,6 +3649,11 @@ components:
         - $ref: '#/components/schemas/atom-base'
         - type: object
           properties:
+            applies_to_parts:
+              type: array
+              description: Details of the parts relevant to the conversation.
+              items:
+                $ref: '#/components/schemas/part-summary'
             channels:
               type: array
               description: Channel IDs of the conversation.
@@ -6089,6 +6112,13 @@ components:
           $ref: '#/components/schemas/list-mode'
         modified_date:
           $ref: '#/components/schemas/date-filter'
+        phone_numbers:
+          type: array
+          description: |
+            List of phone numbers, in E.164 format, to filter Dev users on.
+          items:
+            type: string
+            format: text
         sort_by:
           type: array
           description: |
@@ -8891,6 +8921,10 @@ components:
               $ref: '#/components/schemas/enum-value'
             severity:
               $ref: '#/components/schemas/enum-value'
+            sla_summary:
+              $ref: '#/components/schemas/archetype-sla-summary'
+            sla_tracker:
+              $ref: '#/components/schemas/sla-tracker-summary'
             source:
               $ref: '#/components/schemas/enum-value'
             stage:
@@ -9384,6 +9418,16 @@ components:
         - other
         - teams
         - zoom
+    meeting-direction:
+      type: string
+      description: |
+        Direction of meeting - meetings within an organization are internal.
+        Meetings with external customers can be incoming or outgoing depending
+        on who initiates them.
+      enum:
+        - incoming
+        - internal
+        - outgoing
     meeting-state:
       type: string
       description: The state of meeting.
@@ -9416,6 +9460,11 @@ components:
             format: id
         created_date:
           $ref: '#/components/schemas/date-filter'
+        direction:
+          type: array
+          description: Direction of the meetings to be fetched.
+          items:
+            $ref: '#/components/schemas/meeting-direction'
         ended_date:
           $ref: '#/components/schemas/date-filter'
         external_ref:
@@ -9641,6 +9690,11 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
+        direction:
+          type: array
+          description: Direction of the meetings to be fetched.
+          items:
+            $ref: '#/components/schemas/meeting-direction'
         ended_date:
           $ref: '#/components/schemas/date-filter'
         external_ref:
@@ -9850,6 +9904,11 @@ components:
             format: id
         created_date:
           $ref: '#/components/schemas/date-filter'
+        direction:
+          type: array
+          description: Direction of the meetings to be fetched.
+          items:
+            $ref: '#/components/schemas/meeting-direction'
         ended_date:
           $ref: '#/components/schemas/date-filter'
         external_ref:
@@ -9994,6 +10053,7 @@ components:
       description: The list of item types on which the metric might be applied.
       enum:
         - conversation
+        - incident
         - issue
         - ticket
     metric-definition-metric-type:
@@ -10201,15 +10261,29 @@ components:
     metric-tracker:
       type: object
       discriminator:
+        mapping:
+          time_metric_tracker: '#/components/schemas/time-metric-tracker'
         propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/time-metric-tracker'
       properties:
         type:
           $ref: '#/components/schemas/metric-tracker-type'
       required:
         - type
       title: metric-tracker
+    metric-tracker-base:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+      title: metric-tracker-base
+    metric-tracker-base-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: metric-tracker-base-summary
     metric-tracker-type:
       type: string
+      enum:
+        - time_metric_tracker
     metric-trackers-get-request:
       type: object
       properties:
@@ -10367,11 +10441,29 @@ components:
       title: org-schedule-fragment
     org-schedule-fragment-overview:
       type: object
-      additionalProperties: false
       description: |
         The representation of the organization schedule fragment embedded
         inside a organization schedule, used to quickly look up the schedule
         fragment for the right period.
+      properties:
+        from:
+          type: string
+          description: |
+            The date (inclusive) on which the organization schedule fragment
+            begins.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        id:
+          type: string
+          description: The organization schedule fragment referenced.
+          format: id
+        to:
+          type: string
+          description: |
+            The date (exclusive) on which the organization schedule fragment's
+            validity ends.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
       title: org-schedule-fragment-overview
     org-schedule-fragment-status:
       type: string
@@ -10476,8 +10568,31 @@ components:
       x-go-name: OrgScheduleFragmentsTransitionResponseBody
     org-schedule-interval:
       type: object
-      additionalProperties: false
       description: An optionally named period on day granularity.
+      properties:
+        from:
+          type: string
+          description: The date (inclusive) on which the interval begins.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        is_excluded:
+          type: boolean
+          description: |
+            If true, no schedule is looked up for these days, instead it is a
+            fully off day.
+        name:
+          type: string
+          description: |
+            The name of the period, for example the event or holiday it
+            represents. Used to connect it to a specific weekly schedule.
+          format: text
+        to:
+          type: string
+          description: |
+            The date (exclusive) on which the interval ends. If omitted, it is
+            a single day interval.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
       title: org-schedule-interval
     org-schedule-status:
       type: string
@@ -13464,6 +13579,7 @@ components:
         type.
       enum:
         - conversation
+        - incident
         - issue
         - ticket
     sla-assign-result:
@@ -13509,6 +13625,7 @@ components:
       description: The item type for which the SLA policy applies.
       enum:
         - conversation
+        - incident
         - issue
         - ticket
     sla-selector-priority:
@@ -13626,6 +13743,7 @@ components:
       description: The type of the object on which the SLA is being tracked.
       enum:
         - conversation
+        - incident
         - issue
         - ticket
     sla-tracker-summary:
@@ -15623,6 +15741,14 @@ components:
             severity:
               $ref: '#/components/schemas/ticket-severity'
       title: ticket-summary
+    time-metric-tracker:
+      allOf:
+        - $ref: '#/components/schemas/metric-tracker-base'
+      title: time-metric-tracker
+    time-metric-tracker-summary:
+      allOf:
+        - $ref: '#/components/schemas/metric-tracker-base-summary'
+      title: time-metric-tracker-summary
     timeline-comment:
       allOf:
         - $ref: '#/components/schemas/timeline-entry-base'
@@ -17508,9 +17634,36 @@ components:
       x-go-name: WebhooksUpdateResponseBody
     weekly-org-schedule:
       type: object
-      additionalProperties: false
       description: The schedule for each week.
+      properties:
+        intervals:
+          type: array
+          description: The 'on' intervals of the week.
+          items:
+            $ref: '#/components/schemas/weekly-org-schedule-interval'
+        period_name:
+          type: string
+          description: Describes in which named period the schedule applies.
+          format: text
       title: weekly-org-schedule
+    weekly-org-schedule-interval:
+      type: object
+      description: |
+        A time interval within a week when the schedule is 'on'. It is defined
+        in minutes counting from Sunday midnight to Sunday midnight. (that is,
+        0 is Sunday 00:00).
+      properties:
+        from:
+          type: integer
+          description: The time (in minutes) when the interval starts.
+          format: int32
+        to:
+          type: integer
+          description: |
+            The time (in minutes) when the interval ends. Should be larger than
+            'from'.
+          format: int32
+      title: weekly-org-schedule-interval
     widget:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -17547,6 +17700,13 @@ components:
               type: string
               description: Body of the work object.
               format: text
+            external_ref:
+              type: string
+              description: |
+                An opaque key that's associated with the work item that's
+                guaranteed to be unique across all work items of same type (issue,
+                ticket, etc).
+              format: text
             owned_by:
               type: array
               description: The users that own the work.
@@ -17559,6 +17719,10 @@ components:
                 $ref: '#/components/schemas/user-summary'
             stage:
               $ref: '#/components/schemas/legacy-stage'
+            state_display_name:
+              type: string
+              description: Display name for current state.
+              format: text
             tags:
               type: array
               description: Tags associated with the object.
@@ -17589,6 +17753,10 @@ components:
                 $ref: '#/components/schemas/user-summary'
             stage:
               $ref: '#/components/schemas/legacy-stage-summary'
+            state_display_name:
+              type: string
+              description: Display name for current state.
+              format: text
             title:
               type: string
               description: Title of the work object.
@@ -17645,6 +17813,14 @@ components:
           description: Body of the work object.
           format: text
           maxLength: 65536
+        external_ref:
+          type: string
+          description: |
+            The external reference for the work item. This must be unique
+            within the type of work item.
+          format: text
+          maxLength: 512
+          minLength: 1
         owned_by:
           type: array
           description: The users that own the work.
@@ -17863,6 +18039,13 @@ components:
             format: id
         created_date:
           $ref: '#/components/schemas/date-filter'
+        external_ref:
+          type: array
+          description: |
+            Filters for work with any of the provided external references.
+          items:
+            type: string
+            format: text
         first:
           type: integer
           description: |
@@ -18105,6 +18288,13 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           format: text
+        external_ref:
+          type: array
+          description: |
+            Filters for work with any of the provided external references.
+          items:
+            type: string
+            format: text
         issue:
           $ref: '#/components/schemas/works-filter-issue'
         limit:
@@ -22823,6 +23013,16 @@ paths:
           schema:
             $ref: '#/components/schemas/list-mode'
         - description: |
+            List of phone numbers, in E.164 format, to filter Dev users on.
+          explode: false
+          in: query
+          name: phone_numbers
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: |
             Fields to sort the Dev users by and the direction to sort them.
           explode: false
           in: query
@@ -24451,6 +24651,14 @@ paths:
             items:
               type: string
               format: id
+        - description: Direction of the meetings to be fetched.
+          explode: false
+          in: query
+          name: direction
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/meeting-direction'
         - description: Filters for meetings with the provided external_ref(s).
           explode: false
           in: query
@@ -24847,6 +25055,14 @@ paths:
           schema:
             type: string
             format: text
+        - description: Direction of the meetings to be fetched.
+          explode: false
+          in: query
+          name: direction
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/meeting-direction'
         - description: Filters for meetings with the provided external_ref(s).
           explode: false
           in: query
@@ -32522,6 +32738,16 @@ paths:
               type: string
               format: id
         - description: |
+            Filters for work with any of the provided external references.
+          explode: false
+          in: query
+          name: external_ref
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
+        - description: |
             The number of work items to return. The default is '50', the maximum
             is '5000'.
           explode: false
@@ -33016,6 +33242,16 @@ paths:
           schema:
             type: string
             format: text
+        - description: |
+            Filters for work with any of the provided external references.
+          explode: false
+          in: query
+          name: external_ref
+          schema:
+            type: array
+            items:
+              type: string
+              format: text
         - description: Filters for issues with any of the provided accounts.
           explode: false
           in: query

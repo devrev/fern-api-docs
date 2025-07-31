@@ -260,6 +260,41 @@ If any previously masked views need to be unmasked, you can use the following me
 DevRev.unmarkSensitiveViews(_:)
 ```
 
+### Custom masking provider
+For advanced use cases, you can provide a custom masking provider to specify exactly which regions of the UI should be masked in snapshots.
+
+You can implement your own masking logic by conforming to the `DevRev.MaskLocationProviding` protocol and setting your custom object as the masking provider. This allows you to specify explicit regions to be masked or to skip snapshots entirely.
+
+- `DevRev.setMaskingLocationProvider(_:)`: Sets the external view masking provider used to determine which areas of the UI should be masked for privacy during snapshots. The provider must conform to the `DevRev.MaskLocationProviding` protocol.
+- `DevRev.MaskLocationProviding`: Protocol for providing explicit masking locations for UI snapshots.
+- `DevRev.SnapshotMask`: Describes the regions of a snapshot to be masked.
+- `DevRev.SnapshotMask.Location`: Describes a masked region.
+
+#### Example
+```swift
+import Foundation
+import UIKit
+import DevRevSDK
+
+class MyMaskingProvider: NSObject, DevRev.MaskLocationProviding {
+    func provideSnapshotMask(_ completionHandler: @escaping (DevRev.SnapshotMask) -> Void) {
+        // Example: Mask a specific region
+        let region = CGRect(x: 10, y: 10, width: 100, height: 40)
+        let location = DevRev.SnapshotMask.Location(location: region)
+        let mask = DevRev.SnapshotMask(locations: [location], shouldSkip: false)
+        completionHandler(mask)
+    }
+}
+```
+
+```swift
+DevRev.setMaskingLocationProvider(MyMaskingProvider())
+```
+
+<Callout intent="note">
+Setting a new provider will override any previously set masking location provider.
+</Callout>
+
 ### Timers
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.

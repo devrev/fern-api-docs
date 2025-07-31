@@ -630,6 +630,70 @@ For example:
 <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
 ```
 
+### Custom Masking Provider
+
+For advanced use cases, you can provide a custom masking provider to explicitly specify which regions of the UI should be masked during snapshots.
+
+You can implement your own masking logic by creating a class that implements the `MaskLocationProvider` interface and setting it via `DevRev.setMaskLocationProvider(...)`. This allows you to define exact areas to mask or skip snapshots entirely for privacy and security.
+
+- `DevRev.setMaskLocationProvider(maskLocationProvider: MaskLocationProvider)`  
+  Sets a custom provider that determines which UI regions should be masked during snapshots. This overrides any previously set provider.
+
+- `MaskLocationProvider`  
+  Interface that must be implemented to return a `SnapshotMask` object containing masked regions and snapshot behavior.
+
+- `SnapshotMask`  
+  Class used to describe regions of the screen to be masked and whether a snapshot should be skipped.
+
+- `SnapshotMask.Location`  
+  Represents a specific rectangular area of the screen that should be masked.
+
+#### Example
+
+<Tabs>
+  <Tab title="Kotlin">  
+  ```kotlin
+  import com.userexperior.bridge.model.MaskLocationProvider
+  import com.userexperior.bridge.model.SnapshotMask
+  import com.userexperior.bridge.model.SnapshotMask.Location
+  import com.devrev.sdk.DevRev
+
+  class MyMaskingProvider : MaskLocationProvider {
+      override fun provideSnapshotMask(): SnapshotMask {
+          val region = SnapshotMask.Location(x = 10, y = 10, width = 100, height = 40)
+          return SnapshotMask(
+              locations = listOf(region),
+              shouldSkip = false
+          )
+      }
+  }
+
+  DevRev.setMaskLocationProvider(MyMaskingProvider())
+  ```
+</Tab>
+  <Tab title="Java">
+  ```java
+  import com.userexperior.bridge.model.MaskLocationProvider;
+  import com.userexperior.bridge.model.SnapshotMask;
+  import com.userexperior.bridge.model.SnapshotMask.Location;
+  import com.devrev.sdk.DevRev;
+
+  public class MyMaskingProvider implements MaskLocationProvider {
+      @Override
+      public SnapshotMask provideSnapshotMask() {
+          Location region = new Location(10, 10, 100, 40);
+          return new SnapshotMask(
+              Arrays.asList(region),
+              false
+          );
+      }
+  }
+
+  DevRev.setMaskLocationProvider(new MyMaskingProvider());
+  ```
+  </Tab>
+</Tabs>
+
 ### Timers
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.

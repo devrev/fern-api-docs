@@ -391,7 +391,8 @@ allowing for future tenant-specific field additions.
 #### Bulk Upgrades
 
 All objects of a given type can be upgraded to the latest fragment version using the 
-`objects.bulk-upgrade` API.
+`objects.bulk-upgrade` API. It is an async API that schedules a job to scan all the 
+objects of the given type and upgrade them.
 
 ```curl {16-18, 21}
 curl --location 'https://api.devrev.ai/internal/objects.bulk-upgrade' \

@@ -388,6 +388,21 @@ The object now references the latest fragment version (`custom_type_fragment/2`)
 the optional release notes field is absent, the tenant fragment remains attached,
 allowing for future tenant-specific field additions.
 
+#### Bulk upgrades
+
+All objects of a given type can be upgraded to the latest fragment version using the 
+`objects.bulk-upgrade` API. It is an async API that schedules a job to scan all the 
+objects of the given type and upgrade them.
+
+```curl {16-18, 21}
+curl --location 'https://api.devrev.ai/internal/objects.bulk-upgrade' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <TOKEN>' \
+--data '{
+    "type": "issue"
+}
+```
+
 ## Deprecate custom schema fragments
 
 Custom schema fragments can be deprecated to avoid creating work items using them. The

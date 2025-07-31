@@ -265,7 +265,7 @@ For advanced use cases, you can provide a custom masking provider to specify exa
 
 You can implement your own masking logic by conforming to the `DevRev.MaskLocationProviding` protocol and setting your custom object as the masking provider. This allows you to specify explicit regions to be masked or to skip snapshots entirely.
 
-- `DevRev.setMaskingLocationProvider(_:)`: Sets the external view masking provider used to determine which areas of the UI should be masked for privacy during snapshots. The provider must conform to the `DevRev.MaskLocationProviding` protocol.
+- `DevRev.setMaskingLocationProvider(MyMaskingProvider())`: Sets the external view masking provider used to determine which areas of the UI should be masked for privacy during snapshots. The provider must conform to the `DevRev.MaskLocationProviding` protocol.
 - `DevRev.MaskLocationProviding`: Protocol for providing explicit masking locations for UI snapshots.
 - `DevRev.SnapshotMask`: Describes the regions of a snapshot to be masked.
 - `DevRev.SnapshotMask.Location`: Describes a masked region.

@@ -634,7 +634,7 @@ For example:
 
 For advanced use cases, you can provide a custom masking provider to explicitly specify which regions of the UI should be masked during snapshots.
 
-You can implement your own masking logic by creating a class that implements the `MaskLocationProvider` interface and setting it via `DevRev.setMaskLocationProvider(MyMaskingProvider())`. This allows you to define exact areas to mask or skip snapshots entirely for privacy and security.
+You can implement your own masking logic by creating a class that implements the `MaskLocationProvider` interface and setting your custom object as the masking provider. This allows you to specify explicit regions to be masked or to skip snapshots entirely.
 
 - `DevRev.setMaskLocationProvider(maskLocationProvider: MaskLocationProvider)`  
   Sets a custom provider that determines which UI regions should be masked during snapshots. This overrides any previously set provider.

@@ -144,6 +144,71 @@ await DevRev.updateUser(Identity(organizationID: "organization-1337"))
 await DevRev.logout(deviceID: "dvc32423")
 ```
 
+### Identity model
+
+The `Identity` interface is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser` and `updateUser` methods.
+
+#### Properties
+
+The `Identity` class contains the following properties:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `userRef` | `String` | ✅ | A unique identifier for the user |
+| `organizationRef` | `String?` | ❌ | An identifier for the user's organization |
+| `accountRef` | `String?` | ❌ | An identifier for the user's account |
+| `userTraits` | `UserTraits?` | ❌ | Additional information about the user |
+| `organizationTraits` | `OrganizationTraits?` | ❌ | Additional information about the organization |
+| `accountTraits` | `AccountTraits?` | ❌ | Additional information about the account |
+
+> [!NOTE]
+> The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+
+##### UserTraits
+
+The `UserTraits` class contains detailed information about the user:
+
+> [!NOTE]
+> All properties in `UserTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the user |
+| `email` | `String?` | The user's email address |
+| `fullName` | `String?` | The user's full name |
+| `description` | `String?` | A description of the user |
+| `customFields` | `{ [key: String]: any }` | Dictionary of custom fields configured in DevRev |
+
+##### OrganizationTraits
+
+The `OrganizationTraits` class contains detailed information about the organization:
+
+> [!NOTE]
+> All properties in `OrganizationTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the organization |
+| `domain` | `String?` | The organization's domain |
+| `description` | `String?` | A description of the organization |
+| `phoneNumbers` | `String[]?` | Array of the organization's phone numbers |
+| `tier` | `String?` | The organization's tier or plan level |
+| `customFields` | `{ [key: String]: any }` | Dictionary of custom fields configured in DevRev |
+
+##### AccountTraits
+
+The `AccountTraits` class contains detailed information about the account:
+
+> [!NOTE]
+> All properties in `AccountTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the account |
+| `domains` | `String[]?` | Array of domains associated with the account |
+| `description` | `String?` | A description of the account |
+| `phoneNumbers` | `String[]?` | Array of the account's phone numbers |
+| `websites` | `String[]?` | Array of websites associated with the account |
+| `tier` | `String?` | The account's tier or plan level |
+| `customFields` | `{ [key: String]: any }` | Dictionary of custom fields configured in DevRev |
+
 ## PLuG support chat
 
 Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
@@ -425,7 +490,7 @@ if (messageJson != null) {
 On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
 
 ```dart
-DevRev.processPushNotification(payload: string)
+DevRev.processPushNotification(payload: String)
 ```
 
 ##### Example

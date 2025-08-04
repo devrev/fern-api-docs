@@ -183,6 +183,72 @@ You can perform a logout of the current user by calling the following method:
 
 The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
 
+### Identity model
+
+The `Identity` class is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser(_:)` and `updateUser(_:)` methods.
+
+#### Properties
+
+The `Identity` class contains the following properties:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `userID` | `String` | ✅ | A unique identifier for the user |
+| `organizationID` | `String?` | ❌ | An identifier for the user's organization |
+| `accountID` | `String?` | ❌ | An identifier for the user's account |
+| `userTraits` | `UserTraits?` | ❌ | Additional information about the user |
+| `organizationTraits` | `OrganizationTraits?` | ❌ | Additional information about the organization |
+| `accountTraits` | `AccountTraits?` | ❌ | Additional information about the account |
+
+> [!NOTE]
+> The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+
+##### UserTraits
+
+The `UserTraits` class contains detailed information about the user:
+
+> [!NOTE]
+> All properties in `UserTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the user |
+| `email` | `String?` | The user's email address |
+| `fullName` | `String?` | The user's full name |
+| `userDescription` | `String?` | A description of the user |
+| `phoneNumbers` | `[String]?` | Array of the user's phone numbers |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
+
+##### OrganizationTraits
+
+The `OrganizationTraits` class contains detailed information about the organization:
+
+> [!NOTE]
+> All properties in `OrganizationTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the organization |
+| `domain` | `String?` | The organization's domain |
+| `organizationDescription` | `String?` | A description of the organization |
+| `phoneNumbers` | `[String]?` | Array of the organization's phone numbers |
+| `tier` | `String?` | The organization's tier or plan level |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
+
+##### AccountTraits
+
+The `AccountTraits` class contains detailed information about the account:
+
+> [!NOTE]
+> All properties in `AccountTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the account |
+| `domains` | `[String]?` | Array of domains associated with the account |
+| `accountDescription` | `String?` | A description of the account |
+| `phoneNumbers` | `[String]?` | Array of the account's phone numbers |
+| `websites` | `[String]?` | Array of websites associated with the account |
+| `tier` | `String?` | The account's tier or plan level |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
+
 ## PLuG support chat
 
 Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. To open the chat dialog, your application should use the `showSupport` API, as shown in the following example:

@@ -106,6 +106,71 @@ You can log out the current user by using the following method:
 DevRev.logout(deviceID, successCallback, errorCallback)
 ```
 
+### Identity model
+
+The `Identity` interface is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser` and `updateUser` methods.
+
+#### Properties
+
+The `Identity` class contains the following properties:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `userRef` | `string` | ✅ | A unique identifier for the user |
+| `organizationRef` | `string OR null` | ❌ | An identifier for the user's organization |
+| `accountRef` | `string OR null` | ❌ | An identifier for the user's account |
+| `userTraits` | `UserTraits OR null` | ❌ | Additional information about the user |
+| `organizationTraits` | `OrganizationTraits OR null` | ❌ | Additional information about the organization |
+| `accountTraits` | `AccountTraits OR null` | ❌ | Additional information about the account |
+
+> [!NOTE]
+> The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+
+##### UserTraits
+
+The `UserTraits` class contains detailed information about the user:
+
+> [!NOTE]
+> All properties in `UserTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `string OR null` | The displayed name of the user |
+| `email` | `string OR null` | The user's email address |
+| `fullName` | `string OR null` | The user's full name |
+| `description` | `string OR null` | A description of the user |
+| `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
+
+##### OrganizationTraits
+
+The `OrganizationTraits` class contains detailed information about the organization:
+
+> [!NOTE]
+> All properties in `OrganizationTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `string OR null` | The displayed name of the organization |
+| `domain` | `string OR null` | The organization's domain |
+| `description` | `string OR null` | A description of the organization |
+| `phoneNumbers` | `string[] OR null` | Array of the organization's phone numbers |
+| `tier` | `string OR null` | The organization's tier or plan level |
+| `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
+
+##### AccountTraits
+
+The `AccountTraits` class contains detailed information about the account:
+
+> [!NOTE]
+> All properties in `AccountTraits` are optional.
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `string or null` | The displayed name of the account |
+| `domains` | `string[] OR null` | Array of domains associated with the account |
+| `description` | `string OR null` | A description of the account |
+| `phoneNumbers` | `string[] OR null` | Array of the account's phone numbers |
+| `websites` | `string[] OR null` | Array of websites associated with the account |
+| `tier` | `string OR null` | The account's tier or plan level |
+| `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
+
 The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
 
 ## PLuG support chat

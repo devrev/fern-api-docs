@@ -6,11 +6,11 @@ To access certain features of the DevRev SDK, user identification is required.
 
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID)` method.
 
-<Callout intent="note">
+<Callout intent="tip">
 On iOS, if you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
 </Callout>
 
-<Callout intent="note">
+<Callout intent="tip">
 The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
 </Callout>
 
@@ -41,8 +41,9 @@ The steps to identify a verified user are as follows:
 2. Exchange your AAT for a session token for each user of your system.
 3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(_:sessionToken:)` method.
 
-> [!CAUTION]
-> For security reasons we **strongly recommend** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
+<Callout intent="warning">
+For security reasons we **strongly recommend** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
+</Callout>
 
 #### Generate an AAT
 
@@ -50,16 +51,20 @@ The steps to identify a verified user are as follows:
 2. Open the **PLuG Tokens** page.
 3. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
 
-> [!IMPORTANT]
-> Ensure that you copy the generated application access token, as you cannot view it again.
+<Callout intent="warning">
+Ensure that you copy the generated application access token, as you cannot view it again.
+</Callout>
 
 #### Exchange your AAT for a session token
 
 In order to proceed with identifying the user, you need to exchange your AAT for a session token. This step will help you identify a user of your own system within the DevRev platform.
 
 Here is a simple example of an API request to the DevRev backend to exchange your AAT for a session token:
-> [!CAUTION]
-> Make sure that you replace the `<AAT>` and `<YOUR_USER_ID>` with the actual values.
+
+<Callout intent="warning">
+Make sure that you replace the `<AAT>` and `<YOUR_USER_ID>` with the actual values.
+</Callout>
+
 ```bash
 curl \
 --location 'https://api.devrev.ai/auth-tokens.create' \
@@ -75,8 +80,9 @@ curl \
 
 The response of the API call will contain a session token that you can use with the verified identification method in your app.
 
-> [!NOTE]
-> As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
+<Callout intent="warning">
+As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
+</Callout>
 
 #### Identifying the verified user
 
@@ -94,7 +100,7 @@ You can update the user's information using the following method:
 DevRev.updateUser(identity, successCallback, errorCallback)
 ```
 
-<Callout intent="note">
+<Callout intent="warning">
 The `userID` property cannot be updated.
 </Callout>
 
@@ -123,15 +129,18 @@ The `Identity` class contains the following properties:
 | `organizationTraits` | `OrganizationTraits OR null` | ❌ | Additional information about the organization |
 | `accountTraits` | `AccountTraits OR null` | ❌ | Additional information about the account |
 
-> [!NOTE]
-> The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+<Callout intent="note">
+The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+</Callout>
 
 ##### UserTraits
 
 The `UserTraits` class contains detailed information about the user:
 
-> [!NOTE]
-> All properties in `UserTraits` are optional.
+<Callout intent="note">
+All properties in `UserTraits` are optional.
+</Callout>
+
 | Property | Type | Description |
 |----------|------|-------------|
 | `displayName` | `string OR null` | The displayed name of the user |
@@ -144,8 +153,10 @@ The `UserTraits` class contains detailed information about the user:
 
 The `OrganizationTraits` class contains detailed information about the organization:
 
-> [!NOTE]
-> All properties in `OrganizationTraits` are optional.
+<Callout intent="note">
+All properties in `OrganizationTraits` are optional.
+</Callout>
+
 | Property | Type | Description |
 |----------|------|-------------|
 | `displayName` | `string OR null` | The displayed name of the organization |
@@ -159,8 +170,10 @@ The `OrganizationTraits` class contains detailed information about the organizat
 
 The `AccountTraits` class contains detailed information about the account:
 
-> [!NOTE]
-> All properties in `AccountTraits` are optional.
+<Callout intent="note">
+All properties in `AccountTraits` are optional.
+</Callout>
+
 | Property | Type | Description |
 |----------|------|-------------|
 | `displayName` | `string or null` | The displayed name of the account |
@@ -176,10 +189,6 @@ The user will be logged out by clearing their credentials, as well as unregister
 ## PLuG support chat
 
 Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
-
-<Callout intent="note">
-This functionality requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
-</Callout>
 
 To show the support chat screen in your app, you can use the following method:
 
@@ -214,10 +223,6 @@ DevRev.setShouldDismissModalsOnOpenLink(value, successCallback, errorCallback)
 ## Analytics
 
 The DevRev SDK allows you to send custom analytic events by using a properties map. You can track these events using the following function:
-
-<Callout intent="note">
-This functionality requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
-</Callout>
 
 ```javascript
 DevRev.trackEvent(name, properties, successCallback, errorCallback)
@@ -266,7 +271,7 @@ You can add custom properties to the session recording to help you understand th
 DevRev.addSessionProperties(properties, successCallback, errorCallback)
 ```
 
-To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method:
 
 ```javascript
 DevRev.clearSessionProperties(successCallback, errorCallback)
@@ -340,7 +345,7 @@ On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FC
 
 ### Unregister from push notifications
 
-If your app no longer needs to receive push notifications, you can unregister the device. 
+If your app no longer needs to receive push notifications, you can unregister the device.
 
 Use the following method to unregister the device:
 
@@ -387,7 +392,7 @@ DevRev.processPushNotification(messageJson, function() {
 
 #### iOS
 
-On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions. 
+On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
 
 ```javascript
 DevRev.processPushNotification(payload, successCallback, errorCallback)

@@ -10,16 +10,19 @@
 ## Installation
 
 To install the DevRev SDK, run the following command:
+```sh
+flutter pub add devrev_sdk_flutter
+```
 
+It automatically fetches the latest version of our package and adds it to your project's pubspec.yaml file:
 ```yaml
 dependencies:
-  flutter:
-    sdk: devrev_sdk_flutter
+    devrev_sdk_flutter: <version>
 ```
 
-```sh
-flutter pub get
-```
+Alternatively, you can add the dependency manually by adding the package to your `pubspec.yaml` file under the `dependencies` section and run `flutter pub get` to install the package.
+
+To get the latest version of the SDK, you can check the [pub.dev page](https://pub.dev/packages/devrev_sdk_flutter).
 
 ## Set up the DevRev SDK
 

@@ -6,11 +6,11 @@ To access certain features of the DevRev SDK, user identification is required.
 
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID:)` method.
 
-<Callout intent="note">
+<Callout intent="tip">
 On iOS, if you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
 </Callout>
 
-<Callout intent="note">
+<Callout intent="tip">
 The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be used. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
 </Callout>
 
@@ -43,7 +43,7 @@ The steps to identify a verified user are as follows:
 3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(userID, sessionToken)` method.
 
 <Callout intent="warning">
-For security reasons we **strongly recommend** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
+For security reasons, it is **strongly recommended** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
 </Callout>
 
 #### Generate an AAT
@@ -52,13 +52,13 @@ For security reasons we **strongly recommend** that the token exchange is execut
 2. Open the **PLuG Tokens** page.
 3. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
 
-<Callout intent="note">
+<Callout intent="warning">
 Ensure that you copy the generated application access token, as you cannot view it again.
 </Callout>
 
 #### Exchange your AAT for a session token
 
-In order to proceed with identifying the user, you need to exchange your AAT for a session token. This step will help you identify a user of your own system within the DevRev platform.
+To proceed with identifying the user, you need to exchange your AAT for a session token. This step helps you identify a user of your own system within the DevRev platform.
 
 Here is a simple example of an API request to the DevRev backend to exchange your AAT for a session token:
 
@@ -79,9 +79,9 @@ curl \
 }'
 ```
 
-The response of the API call will contain a session token that you can use with the verified identification method in your app.
+The response of the API call contains a session token that you can use with the verified identification method in your app.
 
-<Callout intent="note">
+<Callout intent="warning">
 As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
 </Callout>
 
@@ -101,11 +101,11 @@ You can update the user's information using the following method:
 DevRev.updateUser(identity)
 ```
 
-<Callout intent="note">
+<Callout intent="warning">
 The `userID` property cannot be updated.
 </Callout>
 
-<Callout intent="note">
+<Callout intent="tip">
 The identification functions are asynchronous. Ensure you wrap them in a `Task` when calling from synchronous contexts.
 </Callout>
 
@@ -123,7 +123,7 @@ You can perform a logout of the current user by calling the following method:
 DevRev.logout(deviceID);
 ```
 
-The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
+The user is logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
 
 For example:
 
@@ -161,15 +161,18 @@ The `Identity` class contains the following properties:
 | `organizationTraits` | `OrganizationTraits?` | ❌ | Additional information about the organization |
 | `accountTraits` | `AccountTraits?` | ❌ | Additional information about the account |
 
-> [!NOTE]
-> The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+<Callout intent="note">
+The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+</Callout>
 
-#### UserTraits
+#### User traits
 
 The `UserTraits` class contains detailed information about the user:
 
-> [!NOTE]
-> All properties in `UserTraits` are optional.
+<Callout intent="note">
+All properties in `UserTraits` are optional.
+</Callout>
+
 | Property | Type | Description |
 |----------|------|-------------|
 | `displayName` | `String?` | The displayed name of the user |
@@ -182,8 +185,10 @@ The `UserTraits` class contains detailed information about the user:
 
 The `OrganizationTraits` class contains detailed information about the organization:
 
-> [!NOTE]
-> All properties in `OrganizationTraits` are optional.
+<Callout intent="note">
+All properties in `OrganizationTraits` are optional.
+</Callout>
+
 | Property | Type | Description |
 |----------|------|-------------|
 | `displayName` | `String?` | The displayed name of the organization |
@@ -197,8 +202,10 @@ The `OrganizationTraits` class contains detailed information about the organizat
 
 The `AccountTraits` class contains detailed information about the account:
 
-> [!NOTE]
-> All properties in `AccountTraits` are optional.
+<Callout intent="note">
+All properties in `AccountTraits` are optional.
+</Callout>
+
 | Property | Type | Description |
 |----------|------|-------------|
 | `displayName` | `String?` | The displayed name of the account |
@@ -212,10 +219,6 @@ The `AccountTraits` class contains detailed information about the account:
 ## PLuG support chat
 
 Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
-
-<Callout intent="note">
-This feature requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
-</Callout>
 
 ```dart
 DevRev.showSupport();
@@ -240,10 +243,6 @@ DevRev.setShouldDismissModalsOnOpenLink(value);
 Setting this flag to true applies the system's default behavior for opening links, which includes dismissing any DevRev modal screens to facilitate handling your own deep links.
 
 ## Analytics
-
-<Callout intent="note">
-This feature requires the SDK to be configured and the user to be identified, whether they are unverified or anonymous.
-</Callout>
 
 The DevRev SDK allows you to send custom analytic events by using a properties map. You can track these events using the following function:
 
@@ -301,7 +300,7 @@ You can add custom properties to the session recording to help you understand th
 DevRev.addSessionProperties(properties);
 ```
 
-To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method:
 
 ```dart
 DevRev.clearSessionProperties();
@@ -422,7 +421,7 @@ The DevRev backend sends push notifications to your app to notify users about ne
 
 ### Configuration
 
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notification) section.
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notifications) section.
 
 ### Register for push notifications
 

@@ -187,8 +187,8 @@ navigation:
             slug: troubleshooting
             path: ../docs/pages/sdks/mobile/flutter/troubleshooting.mdx
       - page: Push notifications for mobile
-        slug: push-notification
-        path: ../docs/pages/sdks/mobile/push-notification.mdx
+        slug: push-notifications
+        path: ../docs/pages/sdks/mobile/push-notifications.mdx
   - section: Snap-in development
     slug: snapin-development
     contents:

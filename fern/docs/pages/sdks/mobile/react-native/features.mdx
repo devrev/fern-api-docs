@@ -42,7 +42,7 @@ The steps to identify a verified user are as follows:
 3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(_:sessionToken:)` method.
 
 <Callout intent="warning">
-For security reasons we **strongly recommend** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
+For security reasons, it is **strongly recommended** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
 </Callout>
 
 #### Generate an AAT
@@ -57,7 +57,7 @@ Ensure that you copy the generated application access token, as you cannot view 
 
 #### Exchange your AAT for a session token
 
-In order to proceed with identifying the user, you need to exchange your AAT for a session token. This step will help you identify a user of your own system within the DevRev platform.
+To proceed with identifying the user, you need to exchange your AAT for a session token. This step helps you identify a user of your own system within the DevRev platform.
 
 Here is a simple example of an API request to the DevRev backend to exchange your AAT for a session token:
 
@@ -78,7 +78,7 @@ curl \
 }'
 ```
 
-The response of the API call will contain a session token that you can use with the verified identification method in your app.
+The response of the API call contains a session token that you can use with the verified identification method in your app.
 
 <Callout intent="warning">
 As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
@@ -132,7 +132,7 @@ The `Identity` class contains the following properties:
 The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
 </Callout>
 
-##### UserTraits
+##### User traits
 
 The `UserTraits` class contains detailed information about the user:
 
@@ -148,7 +148,7 @@ All properties in `UserTraits` are optional.
 | `description` | `string?` | A description of the user |
 | `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
 
-##### OrganizationTraits
+##### Organization traits
 
 The `OrganizationTraits` class contains detailed information about the organization:
 
@@ -165,7 +165,7 @@ All properties in `OrganizationTraits` are optional.
 | `tier` | `string?` | The organization's tier or plan level |
 | `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
 
-##### AccountTraits
+##### Account traits
 
 The `AccountTraits` class contains detailed information about the account:
 

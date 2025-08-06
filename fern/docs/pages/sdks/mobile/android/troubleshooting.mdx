@@ -6,7 +6,7 @@
 - **Issue**: How does the DevRev SDK handle errors?
   **Solution**: The DevRev SDK reports all errors using Android's logging utility. Look for error messages in Android Studio's Logcat after applying `DEVREV SDK` filter.
 
-- **Issue**: Support chat doesn't show.
+- **Issue**: Support chat won't show.
   **Solution**: Ensure you have correctly called one of the identification methods: `DevRev.identifyUnverifiedUser(...)`, `DevRev.identifyVerifiedUser(...)`, or `DevRev.identifyAnonymousUser(...)`.
 
 - **Issue**: Not receiving push notifications.
@@ -17,11 +17,10 @@
 - **Issue**: Missing class `com.google.android.play.core.splitcompat.SplitCompatApplication`.
   **Solution**: Add the following line to your `proguard-rules.pro` file: `-dontwarn com.google.android.play.core.**`.
 
-- **Issue**: Missing class issue due to transitive Flutter dependencies. 
+- **Issue**: Missing class issue due to transitive Flutter dependencies.
   **Solution**: Add the following lines to your `proguard-rules.pro` file:
   ```bash
   -keep class io.flutter.** { *; }
   -keep class io.flutter.plugins.** { *; }
   -keep class GeneratedPluginRegistrant { *; }
   ```
-

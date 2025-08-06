@@ -6,7 +6,7 @@ To access certain features of the DevRev SDK, user identification is required.
 
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(context, appID)` method.
 
-<Callout intent="note">
+<Callout intent="tip">
 The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
 </Callout>
 
@@ -48,7 +48,7 @@ The unverified identification method identifies users with a unique identifier, 
    DevRev.INSTANCE.identifyUnverifiedUser(
        Identity identity
    );
-   ```   
+   ```
   </Tab>
 </Tabs>
 
@@ -73,10 +73,61 @@ For example:
   </Tab>
 </Tabs>
 
-
 ### Verified identification
 
-The verified identification method is used to identify the user with a unique identifier and verify the user's identity with the DevRev backend.
+The verified identification method is used to identify users with an identifier unique to your system within the DevRev platform. The verification is done through a token exchange process between you and the DevRev backend.
+
+The steps to identify a verified user are as follows:
+1. Generate an AAT for your system (preferably through your backend).
+2. Exchange your AAT for a session token for each user of your system.
+3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(_:sessionToken:)` method.
+
+<Callout intent="warning">
+For security reasons, it is **strongly recommended** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
+</Callout>
+
+#### Generate an AAT
+
+1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
+2. Open the **PLuG Tokens** page.
+3. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
+
+<Callout intent="warning">
+Ensure that you copy the generated application access token, as you cannot view it again.
+</Callout>
+
+#### Exchange your AAT for a session token
+
+To proceed with identifying the user, you need to exchange your AAT for a session token. This step helps you identify a user of your own system within the DevRev platform.
+
+Here is a simple example of an API request to the DevRev backend to exchange your AAT for a session token:
+
+<Callout intent="warning">
+Make sure that you replace the `<AAT>` and `<YOUR_USER_ID>` with the actual values.
+</Callout>
+
+```bash
+curl \
+--location 'https://api.devrev.ai/auth-tokens.create' \
+--header 'accept: application/json, text/plain, */*' \
+--header 'content-type: application/json' \
+--header 'authorization: <AAT>' \
+--data '{
+  "rev_info": {
+    "user_ref": "<YOUR_USER_ID>"
+  }
+}'
+```
+
+The response of the API call contains a session token that you can use with the verified identification method in your app.
+
+<Callout intent="warning">
+As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
+</Callout>
+
+#### Identifying the verified user
+
+Pass the user identifier and the exchanged session token to the verified identification method:
 
 <Tabs>
   <Tab title="Kotlin">
@@ -114,7 +165,7 @@ DevRev.INSTANCE.updateUser(
 
 The function accepts the `DevRev.Identity` ojbect.
 
-<Callout intent="note">
+<Callout intent="warning">
 The `userID` property cannot be updated.
 </Callout>
 
@@ -135,7 +186,80 @@ You can perform a logout of the current user by calling the following method:
   </Tab>
 </Tabs>
 
-The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
+The user is logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
+
+### Identity model
+
+The `Identity` class is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser(_:)` and `updateUser(_:)` methods.
+
+#### Properties
+
+The `Identity` class contains the following properties:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `userID` | `String` | ✅ | A unique identifier for the user |
+| `organizationID` | `String?` | ❌ | An identifier for the user's organization |
+| `accountID` | `String?` | ❌ | An identifier for the user's account |
+| `userTraits` | `UserTraits?` | ❌ | Additional information about the user |
+| `organizationTraits` | `OrganizationTraits?` | ❌ | Additional information about the organization |
+| `accountTraits` | `AccountTraits?` | ❌ | Additional information about the account |
+
+<Callout intent="note">
+The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+</Callout>
+
+##### User traits
+
+The `UserTraits` class contains detailed information about the user:
+
+<Callout intent="note">
+All properties in `UserTraits` are optional.
+</Callout>
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the user |
+| `email` | `String?` | The user's email address |
+| `fullName` | `String?` | The user's full name |
+| `userDescription` | `String?` | A description of the user |
+| `phoneNumbers` | `[String]?` | Array of the user's phone numbers |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
+
+##### Organization traits
+
+The `OrganizationTraits` class contains detailed information about the organization:
+
+<Callout intent="note">
+All properties in `OrganizationTraits` are optional.
+</Callout>
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the organization |
+| `domain` | `String?` | The organization's domain |
+| `organizationDescription` | `String?` | A description of the organization |
+| `phoneNumbers` | `[String]?` | Array of the organization's phone numbers |
+| `tier` | `String?` | The organization's tier or plan level |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
+
+##### Account traits
+
+The `AccountTraits` class contains detailed information about the account:
+
+<Callout intent="note">
+All properties in `AccountTraits` are optional.
+</Callout>
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the account |
+| `domains` | `[String]?` | Array of domains associated with the account |
+| `accountDescription` | `String?` | A description of the account |
+| `phoneNumbers` | `[String]?` | Array of the account's phone numbers |
+| `websites` | `[String]?` | Array of websites associated with the account |
+| `tier` | `String?` | The account's tier or plan level |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
 
 ## PLuG support chat
 
@@ -145,12 +269,12 @@ Once user identification is complete, you can start using the chat (conversation
   <Tab title="Kotlin">
    ```kotlin
    DevRev.showSupport(context: Context)
-   ```    
+   ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRevExtKt.showSupport(DevRev.INSTANCE, context);
-   ```    
+   ```
   </Tab>
 </Tabs>
 
@@ -162,12 +286,12 @@ You have the ability to create a new conversation from within your app. The meth
   <Tab title="Kotlin">
    ```kotlin
    DevRev.createSupportConversation(context: Context)
-   ```    
+   ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.createSupportConversation(context);
-   ```    
+   ```
   </Tab>
 </Tabs>
 
@@ -367,12 +491,12 @@ Using this property will return the status of the session recording:
   <Tab title="Kotlin">
    ```kotlin
    DevRev.isRecording
-   ```    
+   ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRevObservabilityExtKt.isRecording(DevRev.INSTANCE);
-   ```    
+   ```
   </Tab>
 </Tabs>
 
@@ -382,12 +506,12 @@ To check if on-demand sessions are enabled, use:
   <Tab title="Kotlin">
    ```kotlin
    DevRev.areOnDemandSessionsEnabled
-   ```    
+   ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRevObservabilityExtKt.areOnDemandSessionsEnabled(DevRev.INSTANCE);
-   ```    
+   ```
   </Tab>
 </Tabs>
 
@@ -399,12 +523,12 @@ You can add custom properties to the session recording to help you understand th
   <Tab title="Kotlin">
    ```kotlin
    DevRev.addSessionProperties(properties: HashMap<String, Any>)
-   ```    
+   ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRevObservabilityExtKt.addSessionProperties(DevRev.INSTANCE, HashMap<String, Object> properties);
-   ```    
+   ```
   </Tab>
 </Tabs>
 
@@ -433,8 +557,8 @@ While the auto-masking feature may be sufficient for most situations, you can ma
 
 ##### Using tag
 
-<Callout intent="note">
-Use Tag method only when you don't have any other tag already applied to your UI element.
+<Callout intent="tip">
+Use the tag method only when you don't have any other tag already applied to your UI element.
 </Callout>
 
 ```xml
@@ -468,7 +592,6 @@ You can also set the tag programmatically:
    ```
   </Tab>
 </Tabs>
-
 
 ##### Using API
 
@@ -514,8 +637,8 @@ For example:
 
 ##### Using tag
 
-<Callout intent="note">
-Use Tag method only when you don't have any other tag already applied to your UI element.
+<Callout intent="tip">
+Use the tag method only when you don't have any other tag already applied to your UI element.
 </Callout>
 
 ```xml
@@ -630,6 +753,74 @@ For example:
 <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
 ```
 
+### Custom masking provider
+
+For advanced use cases, you can provide a custom masking provider to explicitly specify which regions of the UI should be masked during snapshots.
+
+You can implement your own masking logic by creating a class that implements the `MaskLocationProvider` interface and setting your custom object as the masking provider. This allows you to specify explicit regions to be masked or to skip snapshots entirely.
+
+- `DevRev.setMaskLocationProvider(maskLocationProvider: MaskLocationProvider)`
+  Sets a custom provider that determines which UI regions should be masked during snapshots. This overrides any previously set provider.
+
+- `MaskLocationProvider`
+  Interface that must be implemented to return a `SnapshotMask` object containing masked regions and snapshot behavior.
+
+- `SnapshotMask`
+  Class used to describe regions of the screen to be masked and whether a snapshot should be skipped.
+
+- `SnapshotMask.Location`
+  Represents a specific rectangular area of the screen that should be masked.
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+  ```kotlin
+  import com.userexperior.bridge.model.MaskLocationProvider
+  import com.userexperior.bridge.model.SnapshotMask
+  import com.userexperior.bridge.model.SnapshotMask.Location
+  import ai.devrev.sdk.DevRev
+
+  class MyMaskingProvider : MaskLocationProvider {
+      override fun provideSnapshotMask(): SnapshotMask {
+          val region = SnapshotMask.Location(x = 10, y = 10, width = 100, height = 40)
+          return SnapshotMask(
+              locations = listOf(region),
+              shouldSkip = false
+          )
+      }
+  }
+
+  DevRev.setMaskLocationProvider(MyMaskingProvider())
+  ```
+  </Tab>
+  <Tab title="Java">
+  ```java
+  import com.userexperior.bridge.model.MaskLocationProvider;
+  import com.userexperior.bridge.model.SnapshotMask;
+  import com.userexperior.bridge.model.SnapshotMask.Location;
+  import ai.devrev.sdk.DevRev;
+
+  public class MyMaskingProvider implements MaskLocationProvider {
+      @Override
+      public SnapshotMask provideSnapshotMask() {
+          Location region = new Location(10, 10, 100, 40);
+          return new SnapshotMask(
+              Arrays.asList(region),
+              false
+          );
+      }
+  }
+
+  DevRev.setMaskLocationProvider(new MyMaskingProvider());
+  ```
+  </Tab>
+</Tabs>
+
+<Callout intent="tip">
+Setting a new provider overrides any previously set masking location provider.
+</Callout>
+
 ### Timers
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
@@ -642,12 +833,12 @@ To start a timer, use the following method:
   <Tab title="Kotlin">
     ```kotlin
    DevRev.startTimer(name: String, properties: HashMap<String, String>)
-   ```  
+   ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, String name, HashMap<String, String> properties);
-   ```    
+   ```
   </Tab>
 </Tabs>
 
@@ -672,18 +863,18 @@ For example:
   <Tab title="Kotlin">
    ```kotlin
    DevRev.startTimer("response-time", properties: {"id": "task-1337"})
-   
+
    // Perform the task that you want to measure.
-   
+
    DevRev.endTimer("response-time", properties: {"id": "task-1337"})
-   ``` 
+   ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRevObservabilityExtKt.startTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "task-1337"));
-   
+
    // Perform the task that you want to measure.
-           
+
    DevRevObservabilityExtKt.endTimer(DevRev.INSTANCE, "response-time", new HashMap<String, String>().put("id", "task-1337"));
    ```
   </Tab>
@@ -764,16 +955,15 @@ You can configure your app to receive push notifications from the DevRev SDK. Th
 
 The DevRev backend sends push notifications to your app to notify users about new messages in the PLuG support chat.
 
-<Callout intent="note">
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notification) section.
+### Configuration
 
-You need to ensure that your Android app is configured to receive push notifications. To set it up, follow the [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/android/client).
-</Callout>
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notifications) section.
 
+You need to ensure that your Android app is configured to receive push notifications. You can follow the [Android documentation](https://developer.android.com/training/notify-user/build-notification) for guidance on registering your app with Firebase Cloud Messaging (FCM).
 
 ### Register for push notifications
 
-<Callout intent="note">
+<Callout intent="tip">
 Push notifications require that the SDK has been configured and the user has been identified (unverified and anonymous users). The user identification is required to send the push notification to the correct user.
 </Callout>
 
@@ -825,7 +1015,7 @@ The method requires the device identifier, which should be the same as the one u
   <Tab title="Kotlin">
    ```kotlin
    DevRev.unregisterDevice(
-     context: Context, 
+     context: Context,
      deviceId: String
    )
    ```
@@ -833,7 +1023,7 @@ The method requires the device identifier, which should be the same as the one u
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.unregisterDevice(
-     Context context, 
+     Context context,
      String deviceId
    );
    ```
@@ -893,7 +1083,7 @@ For example:
    ```kotlin
    class MyFirebaseMessagingService: FirebaseMessagingService {
        // ...
-     
+
        override fun onMessageReceived(remoteMessage: RemoteMessage) {
            // ...
            val messageData = remoteMessage.data["message"]
@@ -906,7 +1096,7 @@ For example:
    ```java
    public class MyFirebaseMessagingService extends FirebaseMessagingService {
        // ...
-   
+
        @Override
        public void onMessageReceived(RemoteMessage remoteMessage) {
            // ...

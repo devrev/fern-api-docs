@@ -6,11 +6,11 @@ To access certain features of the DevRev SDK, user identification is required.
 
 The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID:)` method.
 
-<Callout intent="note">
+<Callout intent="tip">
 If you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
 </Callout>
 
-<Callout intent="note">
+<Callout intent="tip">
 The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
 </Callout>
 
@@ -36,7 +36,59 @@ The function accepts the `DevRev.Identity` structure, with the user identifier (
 
 ### Verified identification
 
-The verified identification method is used to identify the user with a unique identifier and verify the user's identity with the DevRev backend.
+The verified identification method is used to identify users with an identifier unique to your system within the DevRev platform. The verification is done through a token exchange process between you and the DevRev backend.
+
+The steps to identify a verified user are as follows:
+1. Generate an AAT for your system (preferably through your backend).
+2. Exchange your AAT for a session token for each user of your system.
+3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(_:sessionToken:)` method.
+
+<Callout intent="warning">
+For security reasons, it is **strongly recommended** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
+</Callout>
+
+#### Generate an AAT
+
+1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
+2. Open the **PLuG Tokens** page.
+3. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
+
+<Callout intent="warning">
+Ensure that you copy the generated application access token, as you cannot view it again.
+</Callout>
+
+#### Exchange your AAT for a session token
+
+To proceed with identifying the user, you need to exchange your AAT for a session token. This step helps you identify a user of your own system within the DevRev platform.
+
+Here is a simple example of an API request to the DevRev backend to exchange your AAT for a session token:
+
+<Callout intent="warning">
+Make sure that you replace the `<AAT>` and `<YOUR_USER_ID>` with the actual values.
+</Callout>
+
+```bash
+curl \
+--location 'https://api.devrev.ai/auth-tokens.create' \
+--header 'accept: application/json, text/plain, */*' \
+--header 'content-type: application/json' \
+--header 'authorization: <AAT>' \
+--data '{
+  "rev_info": {
+    "user_ref": "<YOUR_USER_ID>"
+  }
+}'
+```
+
+The response of the API call contains a session token that you can use with the verified identification method in your app.
+
+<Callout intent="warning">
+As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
+</Callout>
+
+#### Identifying the verified user
+
+Pass the user identifier and the exchanged session token to the verified identification method:
 
 ```swift
 DevRev.identifyVerifiedUser(_:sessionToken:)
@@ -54,11 +106,11 @@ DevRev.updateUser(_:)
 
 This function accepts the `DevRev.Identity` structure.
 
-<Callout intent="note">
+<Callout intent="warning">
 The `userID` property cannot be updated.
 </Callout>
 
-<Callout intent="note">
+<Callout intent="tip">
 The identification functions are asynchronous. Ensure you wrap them in a `Task` when calling from synchronous contexts.
 </Callout>
 
@@ -68,7 +120,7 @@ Use this property to check whether the user is identified in the current session
 await DevRev.isUserIdentified
 ```
 
-#### Logout
+### Logout
 
 You can perform a logout of the current user by calling the following method:
 
@@ -76,7 +128,7 @@ You can perform a logout of the current user by calling the following method:
 DevRev.logout(deviceID:)
 ```
 
-The user will be logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
+The user is logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
 
 For example:
 
@@ -96,6 +148,79 @@ await DevRev.updateUser(Identity(organizationID: "organization-1337"))
 // Logout the identified user.
 await DevRev.logout(deviceID: "dvc32423")
 ```
+
+### Identity model
+
+The `Identity` class is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser(_:)` and `updateUser(_:)` methods.
+
+#### Properties
+
+The `Identity` class contains the following properties:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `userID` | `String` | ✅ | A unique identifier for the user |
+| `organizationID` | `String?` | ❌ | An identifier for the user's organization |
+| `accountID` | `String?` | ❌ | An identifier for the user's account |
+| `userTraits` | `UserTraits?` | ❌ | Additional information about the user |
+| `organizationTraits` | `OrganizationTraits?` | ❌ | Additional information about the organization |
+| `accountTraits` | `AccountTraits?` | ❌ | Additional information about the account |
+
+<Callout intent="note">
+The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
+</Callout>
+
+##### User traits
+
+The `UserTraits` class contains detailed information about the user:
+
+<Callout intent="note">
+All properties in `UserTraits` are optional.
+</Callout>
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the user |
+| `email` | `String?` | The user's email address |
+| `fullName` | `String?` | The user's full name |
+| `userDescription` | `String?` | A description of the user |
+| `phoneNumbers` | `[String]?` | Array of the user's phone numbers |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
+
+##### Organization traits
+
+The `OrganizationTraits` class contains detailed information about the organization:
+
+<Callout intent="note">
+All properties in `OrganizationTraits` are optional.
+</Callout>
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the organization |
+| `domain` | `String?` | The organization's domain |
+| `organizationDescription` | `String?` | A description of the organization |
+| `phoneNumbers` | `[String]?` | Array of the organization's phone numbers |
+| `tier` | `String?` | The organization's tier or plan level |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
+
+##### Account traits
+
+The `AccountTraits` class contains detailed information about the account:
+
+<Callout intent="note">
+All properties in `AccountTraits` are optional.
+</Callout>
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `displayName` | `String?` | The displayed name of the account |
+| `domains` | `[String]?` | Array of domains associated with the account |
+| `accountDescription` | `String?` | A description of the account |
+| `phoneNumbers` | `[String]?` | Array of the account's phone numbers |
+| `websites` | `[String]?` | Array of websites associated with the account |
+| `tier` | `String?` | The account's tier or plan level |
+| `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
 
 ## PLuG support chat
 
@@ -218,7 +343,7 @@ DevRev.resumeAllMonitoring()
 You can enable session recording to capture user interactions with your app.
 
 <Callout intent="note">
-The session recording feature is opt-in and is enabled by default.
+The session recording feature is opt-out and is enabled by default.
 </Callout>
 
 The session recording feature includes the following methods to control the recording:
@@ -238,7 +363,7 @@ You can add custom properties to the session recording to help you understand th
 DevRev.addSessionProperties(_:)
 ```
 
-To clear the session properties in scenarios such as user logout or when the session ends, use the following method: 
+To clear the session properties in scenarios such as user logout or when the session ends, use the following method:
 
 ```swift
 DevRev.clearSessionProperties()
@@ -259,6 +384,41 @@ If any previously masked views need to be unmasked, you can use the following me
 ```swift
 DevRev.unmarkSensitiveViews(_:)
 ```
+
+### Custom masking provider
+For advanced use cases, you can provide a custom masking provider to specify exactly which regions of the UI should be masked in snapshots.
+
+You can implement your own masking logic by conforming to the `DevRev.MaskLocationProviding` protocol and setting your custom object as the masking provider. This allows you to specify explicit regions to be masked or to skip snapshots entirely.
+
+- `DevRev.setMaskingLocationProvider(_ provider: DevRev.MaskLocationProviding)`: Sets the external view masking provider used to determine which areas of the UI should be masked for privacy during snapshots. The provider must conform to the `DevRev.MaskLocationProviding` protocol.
+- `DevRev.MaskLocationProviding`: Protocol for providing explicit masking locations for UI snapshots.
+- `DevRev.SnapshotMask`: Describes the regions of a snapshot to be masked.
+- `DevRev.SnapshotMask.Location`: Describes a masked region.
+
+#### Example
+```swift
+import Foundation
+import UIKit
+import DevRevSDK
+
+class MyMaskingProvider: NSObject, DevRev.MaskLocationProviding {
+    func provideSnapshotMask(_ completionHandler: @escaping (DevRev.SnapshotMask) -> Void) {
+        // Example: Mask a specific region
+        let region = CGRect(x: 10, y: 10, width: 100, height: 40)
+        let location = DevRev.SnapshotMask.Location(location: region)
+        let mask = DevRev.SnapshotMask(locations: [location], shouldSkip: false)
+        completionHandler(mask)
+    }
+}
+```
+
+```swift
+DevRev.setMaskingLocationProvider(MyMaskingProvider())
+```
+
+<Callout intent="tip">
+Setting a new provider overrides any previously set masking location provider.
+</Callout>
 
 ### Timers
 
@@ -310,13 +470,13 @@ The DevRev backend sends push notifications to your app to notify users about ne
 
 ### Configuration
 
-To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notification) section.
+To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notifications) section.
 
 You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNs).
 
 ### Register for push notifications
 
-<Callout intent="note">
+<Callout intent="tip">
 Push notifications require that the SDK has been configured and the user has been identified (unverified and anonymous users). The user identification is required to send the push notification to the correct user.
 </Callout>
 
@@ -386,7 +546,7 @@ Push notifications coming to the DevRev SDK need to be handled manually. To prop
 DevRev.processPushNotification(_:)
 ```
 
-<Callout intent="note">
+<Callout intent="tip">
 For convenience, this method provides two overloads that accept `userInfo` as either `[AnyHashable: Any]` or `[String: any Sendable]` dictionary types.
 </Callout>
 

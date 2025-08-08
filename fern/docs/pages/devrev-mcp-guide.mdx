@@ -1,0 +1,1029 @@
+---
+title: "DevRev MCP Guide: Supercharge Your AI Assistant with DevRev Integration"
+description: "Transform your AI workflow with seamless DevRev integration through Model Context Protocol"
+---
+
+_Transform your AI workflow with seamless DevRev integration through Model Context Protocol_
+
+---
+
+## Table of Contents
+
+1. [Introduction to Model Context Protocol](#introduction-to-model-context-protocol)
+2. [Prerequisites & Setup](#prerequisites--setup)
+3. [DevRev MCP Installation & Configuration](#devrev-mcp-installation--configuration)
+4. [Tool Categories Overview](#tool-categories-overview)
+5. [Detailed Tool Documentation](#detailed-tool-documentation)
+6. [Practical Use Cases & Examples](#practical-use-cases--examples)
+7. [Best Practices](#best-practices)
+8. [Troubleshooting](#troubleshooting)
+9. [Advanced Workflows](#advanced-workflows)
+10. [FAQ](#faq)
+
+---
+
+## Introduction to Model Context Protocol
+
+### What is Model Context Protocol (MCP)?
+
+Model Context Protocol (MCP) is a revolutionary standard that enables AI assistants to securely connect with external data sources and tools. Think of it as a bridge that allows your AI assistant to interact with your business systems in real-time, providing contextual and up-to-date information.
+
+### Key Benefits of MCP
+
+🔗 **Seamless Integration**: Connect AI assistants directly to your DevRev workspace
+🔄 **Real-time Data**: Access live data without manual imports or exports  
+🛡️ **Secure Access**: Controlled permissions and secure API connections
+🚀 **Enhanced Productivity**: Reduce context switching between tools
+🎯 **Contextual Responses**: AI gets full context from your DevRev data
+
+### Why DevRev MCP?
+
+The DevRev MCP server transforms how teams interact with their DevRev workspace through AI assistants. Instead of manually switching between your AI assistant and DevRev, you can:
+
+- **Query DevRev data** directly through natural language
+- **Create and update work items** without leaving your AI conversation
+- **Search across all DevRev entities** (issues, tickets, parts, users, etc.)
+- **Manage sprints and workflows** with intelligent assistance
+- **Get instant insights** from your DevRev data
+
+---
+
+## Prerequisites & Setup
+
+### System Requirements
+
+- **Operating System**: macOS, Linux, or Windows
+- **Python**: 3.8+ (handled automatically by uv)
+- **AI Assistant**: Claude Desktop, Cursor, or any MCP-compatible client
+- **DevRev Account**: Active DevRev workspace with API access
+
+### Installing uv (Required)
+
+The DevRev MCP server requires `uv` - a fast Python package installer and project manager.
+
+#### Installation Methods
+
+**macOS and Linux (Recommended):**
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows:**
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+**Using Homebrew (macOS):**
+
+```bash
+brew install uv
+```
+
+#### Verify Installation
+
+```bash
+# Check uv version
+uv --version
+
+# Check uvx version (should be included)
+uvx --version
+```
+
+Both commands should return version information.
+
+### Get Your DevRev API Key
+
+1. **Sign in to DevRev**: Go to [app.devrev.ai](https://app.devrev.ai)
+2. **Navigate to Settings**: Click your profile → Settings
+3. **Generate API Key**: Go to Developer Settings → Personal Access Tokens
+4. **Create Token**: Click "Generate New Token" and copy the key
+5. **Store Securely**: Save this key - you'll need it for configuration
+
+<Callout type="warning">
+  **Security Note**: Keep your API key secure and never share it publicly.
+</Callout>
+
+---
+
+## DevRev MCP Installation & Configuration
+
+### For Cursor IDE
+
+Cursor has built-in MCP support, making it the easiest way to get started with DevRev MCP.
+
+#### Step 1: Open Cursor Settings
+
+1. Open Cursor IDE
+2. Press `Cmd/Ctrl + ,` to open settings
+3. Navigate to "Features" → "Rules for AI"
+4. Click on "Edit in JSON" or find the MCP configuration section
+
+#### Step 2: Add DevRev MCP Configuration
+
+Add the following configuration to your Cursor settings:
+
+```json
+{
+  "mcpServers": {
+    "devrev": {
+      "command": "uvx",
+      "args": ["devrev-mcp"],
+      "env": {
+        "DEVREV_API_KEY": "YOUR_DEVREV_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+#### Step 3: Restart Cursor
+
+1. Save the configuration file
+2. Restart Cursor completely
+3. Open a new chat session
+
+### For Claude Desktop
+
+#### Step 1: Locate Configuration File
+
+**macOS:**
+
+```bash
+~/Library/Application\ Support/Claude/claude_desktop_config.json
+```
+
+**Windows:**
+
+```bash
+%APPDATA%/Claude/claude_desktop_config.json
+```
+
+#### Step 2: Add Configuration
+
+Create or edit the file with:
+
+```json
+{
+  "mcpServers": {
+    "devrev": {
+      "command": "uvx",
+      "args": ["devrev-mcp"],
+      "env": {
+        "DEVREV_API_KEY": "YOUR_DEVREV_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+#### Step 3: Restart Claude Desktop
+
+### Development Setup (Advanced)
+
+For development or unpublished versions:
+
+```json
+{
+  "mcpServers": {
+    "devrev": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/devrev-mcp-source",
+        "run",
+        "devrev-mcp"
+      ],
+      "env": {
+        "DEVREV_API_KEY": "YOUR_DEVREV_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+### Verification
+
+Test your setup by asking your AI assistant:
+
+```
+"Can you search for recent issues in DevRev?"
+```
+
+If configured correctly, you should see the AI assistant use DevRev tools to search your workspace.
+
+---
+
+## Tool Categories Overview
+
+The DevRev MCP provides 18 powerful tools organized into 5 categories:
+
+### 🔍 Search & Discovery
+
+**Tools**: `search`, `get_current_user`, `get_vista`
+**Purpose**: Find information and explore your DevRev workspace
+
+### 📋 Work Items Management
+
+**Tools**: `get_work`, `create_work`, `update_work`, `list_works`
+**Purpose**: Manage issues and tickets throughout their lifecycle
+
+### 🔧 Parts Management
+
+**Tools**: `get_part`, `create_part`, `update_part`, `list_parts`  
+**Purpose**: Handle enhancements and feature development
+
+### 👥 Meetings & Communication
+
+**Tools**: `list_meetings`
+**Purpose**: Access meeting information and communication history
+
+### ⚡ Workflow Management
+
+**Tools**: `valid_stage_transition`, `add_timeline_entry`, `get_sprints`, `list_subtypes`
+**Purpose**: Control workflows, track progress, and manage processes
+
+---
+
+## Detailed Tool Documentation
+
+### 🔍 Search & Discovery Tools
+
+#### `search` - Hybrid Search Across DevRev
+
+**Purpose**: Search for information across all DevRev entities using advanced hybrid search.
+
+**Parameters**:
+
+- `query` (required): Search terms or natural language query
+- `namespace` (optional): Specific area to search in
+- `limit` (optional): Number of results to return (default: 10)
+
+**Supported Namespaces**:
+
+- `articles` - Knowledge base articles
+- `issues` - Work item issues
+- `tickets` - Work item tickets
+- `parts` - Enhancement parts
+- `dev_users` - DevRev users
+- `accounts` - Customer accounts
+- `rev_orgs` - Revenue organizations
+- `vistas` - Sprint boards
+- `incidents` - Incident reports
+
+**Example Usage**:
+
+```
+"Search for all high-priority tickets related to authentication"
+"Find articles about API integration"
+"Search for parts assigned to the mobile team"
+```
+
+#### `get_current_user` - User Information
+
+**Purpose**: Retrieve information about the currently authenticated DevRev user.
+
+**Parameters**: None
+
+**Returns**: User details including name, email, role, and workspace information.
+
+**Example Usage**:
+
+```
+"Who am I in DevRev?"
+"Show my user details and permissions"
+```
+
+#### `get_vista` - Sprint Board Information
+
+**Purpose**: Retrieve detailed information about a vista (sprint board) including its sprints and configuration.
+
+**Parameters**:
+
+- `vista_id` (required): The ID of the vista to retrieve
+
+**Returns**: Vista details, sprint information, and board configuration.
+
+**Example Usage**:
+
+```
+"Show me details for vista VISTA-123"
+"Get information about the mobile team's sprint board"
+```
+
+### 📋 Work Items Management Tools
+
+#### `get_work` - Retrieve Work Item Details
+
+**Purpose**: Get comprehensive information about a specific work item (issue or ticket).
+
+**Parameters**:
+
+- `work_id` (required): The ID of the work item
+
+**Returns**: Complete work item details including title, description, assignees, status, comments, and relationships.
+
+**Example Usage**:
+
+```
+"Show me details for ticket ISS-123"
+"Get information about work item TICKET-456"
+```
+
+#### `create_work` - Create New Work Items
+
+**Purpose**: Create new issues or tickets in DevRev.
+
+**Key Parameters**:
+
+- `title` (required): Work item title
+- `body` (optional): Detailed description
+- `type`: "issue" or "ticket"
+- `assignees` (optional): User IDs to assign
+- `parts` (optional): Associated part IDs
+- `stage` (optional): Initial stage
+- `priority` (optional): Priority level
+
+**Example Usage**:
+
+```
+"Create a high-priority ticket titled 'Login page not loading' assigned to john@company.com"
+"Create an issue for implementing user authentication feature"
+```
+
+#### `update_work` - Modify Existing Work Items
+
+**Purpose**: Update properties of existing work items.
+
+**Key Parameters**:
+
+- `work_id` (required): The work item to update
+- `title` (optional): New title
+- `body` (optional): Updated description
+- `assignees` (optional): New assignee list
+- `stage` (optional): Stage transition
+- `priority` (optional): Priority change
+
+**Example Usage**:
+
+```
+"Update ticket ISS-123 to high priority and assign to sarah@company.com"
+"Move work item TICKET-456 to 'In Progress' stage"
+```
+
+#### `list_works` - Query Work Items
+
+**Purpose**: List and filter work items based on various criteria.
+
+**Key Filters**:
+
+- `assignees`: Filter by assigned users
+- `stage`: Filter by current stage
+- `priority`: Filter by priority level
+- `created_date`: Date range filters
+- `parts`: Filter by associated parts
+- `type`: Filter by issue/ticket type
+
+**Example Usage**:
+
+```
+"List all high-priority tickets assigned to my team"
+"Show me open issues created in the last week"
+"Find all tickets in 'Review' stage"
+```
+
+### 🔧 Parts Management Tools
+
+#### `get_part` - Retrieve Part Details
+
+**Purpose**: Get detailed information about a specific part (enhancement).
+
+**Parameters**:
+
+- `part_id` (required): The ID of the part
+
+**Returns**: Complete part details including name, description, assignees, parent/child relationships, and associated work items.
+
+**Example Usage**:
+
+```
+"Show me details for part PART-789"
+"Get information about the mobile authentication enhancement"
+```
+
+#### `create_part` - Create New Parts
+
+**Purpose**: Create new parts (enhancements) for feature development.
+
+**Key Parameters**:
+
+- `name` (required): Part name
+- `description` (optional): Detailed description
+- `assignees` (optional): User IDs to assign
+- `parent_part` (optional): Parent part ID for hierarchy
+- `target_date` (optional): Target completion date
+
+**Example Usage**:
+
+```
+"Create a part for implementing OAuth 2.0 integration"
+"Create a child part under PART-123 for mobile UI improvements"
+```
+
+#### `update_part` - Modify Existing Parts
+
+**Purpose**: Update properties of existing parts.
+
+**Key Parameters**:
+
+- `part_id` (required): The part to update
+- `name` (optional): New name
+- `description` (optional): Updated description
+- `assignees` (optional): New assignee list
+- `stage` (optional): Stage transition
+- `target_date` (optional): Updated target date
+
+**Example Usage**:
+
+```
+"Update part PART-789 target date to next month"
+"Move part to 'Development' stage and assign to mobile team"
+```
+
+#### `list_parts` - Query Parts
+
+**Purpose**: List and filter parts based on various criteria.
+
+**Key Filters**:
+
+- `assignees`: Filter by assigned users
+- `parent_part`: Filter by parent part
+- `stage`: Filter by current stage
+- `created_date`: Date range filters
+- `target_date`: Target date filters
+
+**Example Usage**:
+
+```
+"List all parts assigned to the backend team"
+"Show me parts targeting completion this quarter"
+"Find all child parts under the authentication feature"
+```
+
+### 👥 Meetings & Communication Tools
+
+#### `list_meetings` - Query Meetings
+
+**Purpose**: List and filter meetings across your DevRev workspace.
+
+**Key Filters**:
+
+- `channel`: Filter by meeting channel
+- `participants`: Filter by meeting participants
+- `start_date`: Filter by meeting date range
+- `state`: Filter by meeting state (scheduled, completed, etc.)
+
+**Example Usage**:
+
+```
+"List all meetings from last week"
+"Show meetings where john@company.com was a participant"
+"Find upcoming meetings for the mobile team"
+```
+
+### ⚡ Workflow Management Tools
+
+#### `valid_stage_transition` - Check Valid Transitions
+
+**Purpose**: Get valid stage transitions for work items or parts before attempting updates.
+
+**Parameters**:
+
+- `work_id` or `part_id` (required): The item to check transitions for
+
+**Returns**: List of valid stages that the item can transition to.
+
+**Example Usage**:
+
+```
+"What stages can ticket ISS-123 move to?"
+"Show valid transitions for part PART-456"
+```
+
+#### `add_timeline_entry` - Add Progress Updates
+
+**Purpose**: Add timeline entries to track progress and updates on work items or parts.
+
+**Key Parameters**:
+
+- `object_id` (required): Work item or part ID
+- `body` (required): Timeline entry content
+- `type` (optional): Entry type (comment, status_update, etc.)
+
+**Example Usage**:
+
+```
+"Add a timeline entry to ticket ISS-123 saying 'Investigation completed, fix in progress'"
+"Log progress update on part PART-789 about completion of design phase"
+```
+
+#### `get_sprints` - Sprint Information
+
+**Purpose**: Get active or planned sprints for parts, useful for sprint planning.
+
+**Parameters**:
+
+- `part_id` (required): The part to get sprints for
+
+**Returns**: Sprint information including dates, status, and associated work items.
+
+**Example Usage**:
+
+```
+"Show me sprints for the mobile features part"
+"Get sprint information for part PART-123"
+```
+
+#### `list_subtypes` - Available Subtypes
+
+**Purpose**: List available subtypes for proper categorization of work items.
+
+**Parameters**:
+
+- `leaf_type` (required): "issue" or "ticket"
+
+**Returns**: Available subtypes for the specified work item type.
+
+**Example Usage**:
+
+```
+"What subtypes are available for tickets?"
+"Show me all issue subtypes for proper categorization"
+```
+
+---
+
+## Practical Use Cases & Examples
+
+### 👔 Project Manager Workflows
+
+#### Sprint Planning & Management
+
+**Scenario**: Planning and managing team sprints
+
+```
+PM: "Show me all open issues assigned to the mobile team"
+AI: [Uses list_works to filter by mobile team assignees]
+
+PM: "What's the current sprint for the mobile authentication part?"
+AI: [Uses get_sprints with mobile authentication part ID]
+
+PM: "Create a new high-priority ticket for fixing the login bug and assign it to Sarah"
+AI: [Uses create_work with type=ticket, priority=high, assignee=Sarah]
+
+PM: "Move ticket ISS-234 to 'In Review' stage"
+AI: [Uses valid_stage_transition first, then update_work]
+```
+
+#### Progress Tracking
+
+**Scenario**: Monitoring project progress and updating stakeholders
+
+```
+PM: "Search for all parts targeting completion this month"
+AI: [Uses list_parts with target_date filter]
+
+PM: "Add a progress update to part PART-123 about the design review completion"
+AI: [Uses add_timeline_entry to log progress]
+
+PM: "What meetings did the team have last week about the authentication project?"
+AI: [Uses list_meetings with date and keyword filters]
+```
+
+### 👨‍💻 Developer Workflows
+
+#### Bug Investigation & Resolution
+
+**Scenario**: Developer investigating and fixing reported bugs
+
+```
+Dev: "Search for all tickets related to 'authentication errors'"
+AI: [Uses search with query='authentication errors' and namespace='tickets']
+
+Dev: "Show me details for ticket TICKET-567"
+AI: [Uses get_work to get complete ticket information]
+
+Dev: "Update ticket TICKET-567 with assignee set to me and stage to 'In Progress'"
+AI: [Uses update_work with developer's user ID and stage transition]
+
+Dev: "Add a timeline entry saying 'Identified root cause in OAuth flow'"
+AI: [Uses add_timeline_entry to log investigation findings]
+```
+
+#### Feature Development
+
+**Scenario**: Working on new feature development
+
+```
+Dev: "Show me all parts assigned to me"
+AI: [Uses list_parts filtered by developer's user ID]
+
+Dev: "What are the valid next stages for part PART-890?"
+AI: [Uses valid_stage_transition to show available transitions]
+
+Dev: "Create a child part under PART-890 for implementing the API endpoints"
+AI: [Uses create_part with parent_part set to PART-890]
+```
+
+### 🎧 Support Team Workflows
+
+#### Customer Issue Management
+
+**Scenario**: Support agent handling customer escalations
+
+```
+Support: "Search for tickets from customer account ACC-456 in the last month"
+AI: [Uses list_works with account and date filters]
+
+Support: "Create a high-priority ticket for the database connection issue reported by Acme Corp"
+AI: [Uses create_work with appropriate details and priority]
+
+Support: "What subtypes are available for tickets?"
+AI: [Uses list_subtypes with leaf_type='ticket']
+
+Support: "Update ticket status and add a customer communication log"
+AI: [Uses update_work and add_timeline_entry]
+```
+
+#### Escalation Management
+
+**Scenario**: Managing escalated issues and cross-team coordination
+
+```
+Support: "Find all high-priority tickets that haven't been updated in 3 days"
+AI: [Uses list_works with priority and last_updated filters]
+
+Support: "Search for similar issues to TICKET-789 in our knowledge base"
+AI: [Uses search with namespace='articles' and relevant keywords]
+
+Support: "Add timeline entry to ticket documenting customer call"
+AI: [Uses add_timeline_entry with call summary]
+```
+
+### 🎯 Cross-Team Collaboration
+
+#### Release Planning
+
+**Scenario**: Coordinating release planning across teams
+
+```
+Manager: "Show me all parts targeting release for Q1"
+AI: [Uses list_parts with target_date filter for Q1]
+
+Manager: "What work items are associated with the authentication part?"
+AI: [Uses get_part to show associated work items]
+
+Manager: "Create a part for the mobile app security improvements"
+AI: [Uses create_part with relevant details]
+
+Manager: "Get sprint information for all parts owned by the security team"
+AI: [Uses get_sprints for each security team part]
+```
+
+#### Incident Response
+
+**Scenario**: Coordinating response to production incidents
+
+```
+Incident Commander: "Search for any recent incidents related to payment processing"
+AI: [Uses search with namespace='incidents' and payment keywords]
+
+IC: "Create a high-priority ticket for the payment gateway timeout issue"
+AI: [Uses create_work with type=ticket, priority=critical]
+
+IC: "Add timeline entry documenting the incident resolution steps"
+AI: [Uses add_timeline_entry with resolution details]
+
+IC: "List all tickets created in the last 24 hours related to this incident"
+AI: [Uses list_works with date and keyword filters]
+```
+
+---
+
+## Best Practices
+
+### 🎯 Efficient Tool Usage
+
+#### Use Specific Searches
+
+- **Be specific**: Instead of "search for issues", use "search for high-priority authentication issues assigned to mobile team"
+- **Use namespaces**: Leverage namespace filters to get more targeted results
+- **Combine filters**: Use multiple parameters in list operations for precise results
+
+#### Batch Operations
+
+- **Group related actions**: When updating multiple items, describe them together
+- **Use timeline entries**: Document important updates and decisions
+- **Verify transitions**: Always check valid stage transitions before updating
+
+#### Smart Querying
+
+```
+Good: "List open tickets assigned to sarah@company.com with high priority"
+Better: "Show me Sarah's high-priority tickets that haven't been updated in 3 days"
+Best: "Find Sarah's overdue high-priority tickets and show their current stage transitions"
+```
+
+### 🔄 Workflow Optimization
+
+#### Standard Workflows
+
+**Creating Work Items**:
+
+1. Check available subtypes first
+2. Set appropriate priority and assignees
+3. Link to relevant parts if applicable
+4. Add initial timeline entry for context
+
+**Updating Items**:
+
+1. Check valid stage transitions
+2. Update status and assignees together
+3. Add timeline entry explaining the change
+4. Verify the update was successful
+
+**Sprint Planning**:
+
+1. List parts targeting the sprint period
+2. Check associated work items
+3. Review sprint capacity and assignments
+4. Create new items as needed
+
+### 🛡️ Security & Performance
+
+#### API Key Management
+
+- **Store securely**: Never commit API keys to version control
+- **Use environment variables**: Configure through MCP environment settings
+- **Rotate regularly**: Update API keys periodically for security
+- **Monitor usage**: Keep track of API usage and limits
+
+#### Rate Limiting Considerations
+
+- **Batch requests**: Group related queries when possible
+- **Cache results**: AI assistants naturally cache recent query results
+- **Avoid rapid-fire**: Don't make excessive consecutive requests
+- **Use specific filters**: Reduce data transfer with targeted queries
+
+#### Error Handling
+
+- **Check permissions**: Ensure API key has required permissions
+- **Validate IDs**: Verify work item and part IDs exist before operations
+- **Handle failures gracefully**: Use fallback strategies for failed operations
+
+---
+
+## Troubleshooting
+
+### Common Issues & Solutions
+
+#### 🚫 MCP Server Not Starting
+
+**Symptoms**: AI assistant doesn't recognize DevRev tools
+
+**Solutions**:
+
+1. **Check uv installation**: Run `uv --version` to verify installation
+2. **Verify configuration**: Ensure JSON syntax is correct in config file
+3. **Restart AI assistant**: Close and reopen your AI assistant completely
+4. **Check API key**: Verify the API key is valid and has proper permissions
+
+```bash
+# Test uv installation
+uv --version
+
+# Test uvx can run devrev-mcp
+uvx devrev-mcp --help
+```
+
+#### 🔑 Authentication Errors
+
+**Symptoms**: "Unauthorized" or "Invalid API key" errors
+
+**Solutions**:
+
+1. **Regenerate API key**: Create a new personal access token in DevRev
+2. **Check key format**: Ensure no extra spaces or characters in the key
+3. **Verify permissions**: Confirm the API key has required workspace access
+4. **Update configuration**: Replace the old key in your MCP configuration
+
+#### 📡 Connection Issues
+
+**Symptoms**: Timeouts or "Failed to connect" errors
+
+**Solutions**:
+
+1. **Check internet connection**: Verify network connectivity
+2. **Firewall settings**: Ensure DevRev API endpoints aren't blocked
+3. **Proxy configuration**: Configure proxy settings if required
+4. **Rate limiting**: Wait if you've hit API rate limits
+
+#### 🔧 Tool-Specific Issues
+
+**Search not finding results**:
+
+- Try different search terms or broader queries
+- Check if you have access to the specific namespace
+- Verify the data exists in your DevRev workspace
+
+**Work item operations failing**:
+
+- Confirm work item IDs are correct
+- Check stage transition validity before updating
+- Verify you have permissions to modify the items
+
+**Part management issues**:
+
+- Ensure part IDs exist and you have access
+- Check parent-child relationships for validity
+- Verify assignee user IDs are correct
+
+### Getting Help
+
+#### Log Analysis
+
+When reporting issues, include:
+
+- Your MCP configuration (without API key)
+- Error messages or unexpected behavior
+- Steps to reproduce the issue
+- Your operating system and AI assistant version
+
+#### DevRev Support Channels
+
+- **Documentation**: [developer.devrev.ai](https://developer.devrev.ai)
+- **Community**: DevRev community forums
+- **Support**: Direct support through your DevRev workspace
+
+---
+
+## Advanced Workflows
+
+### 🔄 Multi-Step Automation
+
+#### Automated Triage Workflow
+
+Create sophisticated workflows that combine multiple tools:
+
+```
+"Create a triage workflow for new tickets:
+1. Check if similar issues exist
+2. Assign based on component affected
+3. Set priority based on customer tier
+4. Add timeline entry with triage notes"
+```
+
+**Implementation**:
+
+1. Use `search` to find similar existing issues
+2. Use `list_subtypes` to categorize properly
+3. Use `create_work` with appropriate assignments
+4. Use `add_timeline_entry` to document decisions
+
+#### Release Coordination
+
+Complex release management across teams:
+
+```
+"Coordinate Q1 release planning:
+1. Find all parts targeting Q1 completion
+2. Check sprint status for each part
+3. Identify blockers and dependencies
+4. Create summary report with recommendations"
+```
+
+**Implementation**:
+
+1. Use `list_parts` with Q1 target date filter
+2. Use `get_sprints` for each part
+3. Use `get_part` to check dependencies
+4. Combine results for comprehensive analysis
+
+### 🔍 Advanced Search Strategies
+
+#### Cross-Entity Analysis
+
+Combine searches across different entities:
+
+```
+"Analyze authentication project:
+1. Find all authentication-related parts
+2. Get associated work items for each part
+3. Check recent meetings about authentication
+4. Search knowledge base for auth documentation"
+```
+
+#### Trend Analysis
+
+Use time-based filtering for insights:
+
+```
+"Weekly progress analysis:
+1. Compare work item completion this week vs last week
+2. Find parts that missed target dates
+3. Identify teams with highest ticket volume
+4. Check for recurring issue patterns"
+```
+
+### 🎛️ Custom Integrations
+
+#### Workflow Templates
+
+Create reusable workflow patterns:
+
+**Sprint Review Template**:
+
+```
+1. List completed work items in sprint
+2. Check remaining open items
+3. Get parts progress updates
+4. Generate sprint summary report
+```
+
+**Customer Escalation Template**:
+
+```
+1. Search for customer's previous issues
+2. Create high-priority ticket
+3. Assign to appropriate team lead
+4. Add customer context timeline entry
+```
+
+---
+
+## FAQ
+
+### General Questions
+
+**Q: Do I need a paid DevRev account to use the MCP server?**
+A: You need a DevRev workspace with API access. Most DevRev plans include API access, but check your specific plan details.
+
+**Q: Can multiple team members use the same MCP configuration?**
+A: Each user should use their own API key for proper attribution and permissions. You can share the configuration template but not the API key.
+
+**Q: Does the MCP server work offline?**
+A: No, the MCP server requires internet connectivity to access DevRev APIs in real-time.
+
+### Technical Questions
+
+**Q: What happens if my API key expires?**
+A: You'll receive authentication errors. Generate a new API key in DevRev and update your MCP configuration.
+
+**Q: Can I customize which tools are available?**
+A: The current version provides all tools by default. Future versions may include tool filtering options.
+
+**Q: How do I handle rate limits?**
+A: The MCP server includes automatic rate limiting. If you hit limits, wait a few minutes before making more requests.
+
+### Workflow Questions
+
+**Q: Can I create custom fields through the MCP?**
+A: Currently, the MCP supports standard DevRev fields. Custom fields may be supported in future versions.
+
+**Q: How do I handle bulk operations?**
+A: Describe bulk operations to your AI assistant, which will use appropriate tools to handle them efficiently.
+
+**Q: Can I integrate with other tools alongside DevRev MCP?**
+A: Yes! MCP servers can be used together. You can have DevRev MCP alongside other MCP servers.
+
+---
+
+## Summary
+
+The DevRev MCP server transforms how teams interact with their DevRev workspace through AI assistants. By providing seamless, real-time access to DevRev's powerful project management and customer relationship tools, teams can:
+
+✅ **Boost Productivity**: Reduce context switching between tools
+✅ **Improve Accuracy**: Access real-time data for better decision making  
+✅ **Enhance Collaboration**: Share insights and updates more effectively
+✅ **Streamline Workflows**: Automate routine tasks through natural language
+✅ **Scale Operations**: Handle complex multi-step processes efficiently
+
+### Next Steps
+
+1. **Install and Configure**: Follow the setup guide to get started
+2. **Explore Tools**: Try different tools with your real DevRev data
+3. **Build Workflows**: Create custom workflows for your team's needs
+4. **Share Knowledge**: Train your team on effective MCP usage
+5. **Provide Feedback**: Help improve the MCP server with your insights
+
+### Additional Resources
+
+- **DevRev Developer Documentation**: [developer.devrev.ai](https://developer.devrev.ai)
+- **MCP Specification**: [modelcontextprotocol.io](https://modelcontextprotocol.io)
+- **Community Examples**: [DevRev Community](https://community.devrev.ai)
+- **Video Tutorials**: [Coming Soon - placeholder for video links]
+
+---
+
+_Ready to supercharge your DevRev workflow? Get started with the setup guide above and experience the power of AI-assisted project management!_

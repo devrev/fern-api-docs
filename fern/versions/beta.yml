@@ -21,3 +21,6 @@ navigation:
         path: ../docs/pages/interact-agent.mdx
       - page: Links
         path: ../docs/pages/custom-links.mdx
+      - page: DevRev MCP Guide
+        slug: devrev-mcp-guide
+        path: ../docs/pages/devrev-mcp-guide.mdx

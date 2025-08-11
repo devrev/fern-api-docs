@@ -18,14 +18,14 @@ The anonymous identification method allows you to create an anonymous user with 
   <Tab title="Kotlin">
    ```kotlin
    DevRev.identifyAnonymousUser(
-       userId: String
+	   userId: String
    )
    ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.identifyAnonymousUser(
-       String userId
+	   String userId
    );
    ```
   </Tab>
@@ -39,14 +39,14 @@ The unverified identification method identifies users with a unique identifier, 
   <Tab title="Kotlin">
    ```kotlin
    DevRev.identifyUnverifiedUser(
-       identity: Identity
+	   identity: Identity
    )
    ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.identifyUnverifiedUser(
-       Identity identity
+	   Identity identity
    );
    ```
   </Tab>
@@ -67,7 +67,7 @@ For example:
    ```java
    // Identify an unverified user using their email address as the user identifier.
    DevRev.identifyUnverifiedUser(
-           new Identity("user@example.org", null, null, null, null, null)
+		   new Identity("user@example.org", null, null, null, null, null)
    );
    ```
   </Tab>
@@ -114,7 +114,7 @@ curl \
 --header 'authorization: <AAT>' \
 --data '{
   "rev_info": {
-    "user_ref": "<YOUR_USER_ID>"
+	"user_ref": "<YOUR_USER_ID>"
   }
 }'
 ```
@@ -150,14 +150,14 @@ To update a user's information, use the following method:
   <Tab title="Kotlin">
    ```kotlin
 DevRev.updateUser(
-    identity: Identity
+	identity: Identity
 )
 ```
   </Tab>
   <Tab title="Java">
   ```java
 DevRev.INSTANCE.updateUser(
-    Identity identity
+	Identity identity
 );
 ```
   </Tab>
@@ -299,12 +299,12 @@ The DevRev SDK also provides a support button, which can be integrated into your
 
 ```xml
 <ai.devrev.sdk.plug.view.PlugFloatingActionButton
-    android:id="@+id/plug_fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="24dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+	android:id="@+id/plug_fab"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_margin="24dp"
+	app:layout_constraintBottom_toBottomOf="parent"
+	app:layout_constraintEnd_toEndOf="parent" />
 ```
 The support button can be customized using default parameters, enabling you to tailor its appearance to your application's design.
 
@@ -359,7 +359,7 @@ For example:
   <Tab title="Kotlin">
    ```kotlin
    DevRev.setInAppLinkHandler { link ->
-      // Do something here
+	  // Do something here
    }
 
    DevRev.setShouldDismissModalsOnOpenLink(false)
@@ -368,12 +368,29 @@ For example:
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.setInAppLinkHandler(link -> {
-      // Do something here
-      return kotlin.Unit.INSTANCE;
+	  // Do something here
+	  return kotlin.Unit.INSTANCE;
    });
 
    DevRev.INSTANCE.setShouldDismissModalsOnOpenLink(false);
    ```
+  </Tab>
+</Tabs>
+
+## Dynamic theme configuration
+
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+
+<Tabs>
+  <Tab title="Kotlin">
+  ```kotlin
+  DevRev.setShouldPreferSystemTheme(value: Boolean)
+  ```
+  </Tab>
+  <Tab title="Java">
+  ```java
+  DevRev.INSTANCE.setShouldPreferSystemTheme(boolean value);
+  ```
   </Tab>
 </Tabs>
 
@@ -478,12 +495,26 @@ The session recording feature is opt-out and is enabled by default.
 
 Here are the available methods to help you control the session recording feature:
 
-|Action   |Kotlin (`DevRev`)    |Java (`DevRevObservabilityExtKt`)   |
-|---|---|---|
-|Starts the session recording.   |startRecording()   |startRecording(DevRev.INSTANCE, context);   |
-|Ends the session recording and uploads it to the portal.   |stopRecording()   |stopRecording(DevRev.INSTANCE);    |
-|Pauses the ongoing session recording.   |pauseRecording()   |pauseRecording(DevRev.INSTANCE);    |
-|Resumes a paused session recording.   |resumeRecording()   |resumeRecording(DevRev.INSTANCE);   |
+<Tabs>
+  <Tab title="Kotlin">
+   | Method | Action |
+   |-|-|
+   |`DevRev.startRecording()` | Starts the session recording. |
+   |`DevRev.stopRecording()` | Ends the session recording and uploads it to the portal. |
+   |`DevRev.pauseRecording()` | Pauses the ongoing session recording. |
+   |`DevRev.resumeRecording()` | Resumes a paused session recording. |
+   |`DevRev.processAllOnDemandSessions()` | Stops the ongoing user recording and sends all on-demand sessions along with the current recording. |
+  </Tab>
+  <Tab title="Java">
+   | Method | Action |
+   |-|-|
+   | `DevRevObservabilityExtKt.startRecording(DevRev.INSTANCE, context)` | Starts the session recording. |
+   | `DevRevObservabilityExtKt.stopRecording(DevRev.INSTANCE)` | Ends the session recording and uploads it to the portal. |
+   | `DevRevObservabilityExtKt.pauseRecording(DevRev.INSTANCE)` | Pauses the ongoing session recording. |
+   | `DevRevObservabilityExtKt.resumeRecording(DevRev.INSTANCE)` | Resumes a paused session recording. |
+   | `DevRevObservabilityExtKt.processAllOnDemandSessions(DevRev.INSTANCE)` | Stops the ongoing user recording and sends all on-demand sessions along with the current recording. |
+  </Tab>
+</Tabs>
 
 Using this property will return the status of the session recording:
 
@@ -522,12 +553,12 @@ You can add custom properties to the session recording to help you understand th
 <Tabs>
   <Tab title="Kotlin">
    ```kotlin
-   DevRev.addSessionProperties(properties: HashMap<String, Any>)
+   DevRev.addSessionProperties(properties: HashMap<String, String>)
    ```
   </Tab>
   <Tab title="Java">
    ```java
-   DevRevObservabilityExtKt.addSessionProperties(DevRev.INSTANCE, HashMap<String, Object> properties);
+   DevRevObservabilityExtKt.addSessionProperties(DevRev.INSTANCE, HashMap<String, String> properties);
    ```
   </Tab>
 </Tabs>
@@ -555,7 +586,7 @@ While the auto-masking feature may be sufficient for most situations, you can ma
 
 #### Mask
 
-##### Using tag
+##### Using tags
 
 <Callout intent="tip">
 Use the tag method only when you don't have any other tag already applied to your UI element.
@@ -569,11 +600,11 @@ For example:
 
 ```xml
 <WebView
-    android:id="@+id/webview2"
-    android:layout_width="fill_parent"
-    android:layout_height="200dp"
-    android:background="@android:color/transparent"
-    android:tag="devrev-mask"/>
+	android:id="@+id/webview2"
+	android:layout_width="fill_parent"
+	android:layout_height="200dp"
+	android:background="@android:color/transparent"
+	android:tag="devrev-mask"/>
 ```
 
 You can also set the tag programmatically:
@@ -593,7 +624,7 @@ You can also set the tag programmatically:
   </Tab>
 </Tabs>
 
-##### Using API
+##### Using the API
 
 <Tabs>
   <Tab title="Kotlin">
@@ -635,7 +666,7 @@ For example:
 
 #### Unmask
 
-##### Using tag
+##### Using tags
 
 <Callout intent="tip">
 Use the tag method only when you don't have any other tag already applied to your UI element.
@@ -649,11 +680,11 @@ For example:
 
 ```xml
 <WebView
-    android:id="@+id/webview2"
-    android:layout_width="fill_parent"
-    android:layout_height="200dp"
-    android:background="@android:color/transparent"
-    android:tag="devrev-unmask"/>
+	android:id="@+id/webview2"
+	android:layout_width="fill_parent"
+	android:layout_height="200dp"
+	android:background="@android:color/transparent"
+	android:tag="devrev-unmask"/>
 ```
 
 You can also set the tag programmatically:
@@ -673,7 +704,7 @@ You can also set the tag programmatically:
   </Tab>
 </Tabs>
 
-##### Using API
+##### Using the API
 
 <Tabs>
   <Tab title="Kotlin">
@@ -713,30 +744,30 @@ For example:
   </Tab>
 </Tabs>
 
-#### Mask jetpack compose views
+#### Masking Jetpack Compose views
 
-If you want to mask any Jetpack Compose UI element(s) or view(s), you can apply a mask on it using a modifier.
+If you want to mask any Jetpack Compose UI elements or views, you can apply a mask on it using a modifier.
 
 ```kotlin
-modifier = Modifier.markAsMaskedLocation("Name or ID of the Compose View")
+modifier = Modifier.markAsMaskedLocation("VIEW_NAME_OR_ID")
 ```
 
 For example:
 
 ```kotlin
 TextField(
-       modifier = Modifier
-             .markAsMaskedLocation("myTextField")
-             .padding(horizontal = 20.dp)
-             .onGloballyPositioned { coordinates = it },
-       value = input,
-       onValueChange = { input = it }
+	   modifier = Modifier
+			 .markAsMaskedLocation("myTextField")
+			 .padding(horizontal = 20.dp)
+			 .onGloballyPositioned { coordinates = it },
+	   value = input,
+	   onValueChange = { input = it }
 )
 ```
 
-#### Mask webView elements
+#### Masking web view elements
 
-If you wish to mask any WebView element on a Web page explicitly, you can mask it by using class 'devrev-mask'
+If you wish to explicitly mask any `WebView` element on a web page, you can do so by using the class `devrev-mask`.
 
 For example:
 
@@ -744,8 +775,9 @@ For example:
 <label class="devrev-mask">OTP: 12345</label>
 ```
 
-#### Unmask webView elements
-If you wish to explicitly un-mask any manually masked WebView element, you can un-mask it by using class 'devrev-unmask'
+#### Unmasking web view elements
+
+If you wish to explicitly unmask any manually masked `WebView` element, you can do so by using the class `devrev-unmask`.
 
 For example:
 
@@ -782,13 +814,13 @@ For example:
   import ai.devrev.sdk.DevRev
 
   class MyMaskingProvider : MaskLocationProvider {
-      override fun provideSnapshotMask(): SnapshotMask {
-          val region = SnapshotMask.Location(x = 10, y = 10, width = 100, height = 40)
-          return SnapshotMask(
-              locations = listOf(region),
-              shouldSkip = false
-          )
-      }
+	  override fun provideSnapshotMask(): SnapshotMask {
+		  val region = SnapshotMask.Location(x = 10, y = 10, width = 100, height = 40)
+		  return SnapshotMask(
+			  locations = listOf(region),
+			  shouldSkip = false
+		  )
+	  }
   }
 
   DevRev.setMaskLocationProvider(MyMaskingProvider())
@@ -802,14 +834,14 @@ For example:
   import ai.devrev.sdk.DevRev;
 
   public class MyMaskingProvider implements MaskLocationProvider {
-      @Override
-      public SnapshotMask provideSnapshotMask() {
-          Location region = new Location(10, 10, 100, 40);
-          return new SnapshotMask(
-              Arrays.asList(region),
-              false
-          );
-      }
+	  @Override
+	  public SnapshotMask provideSnapshotMask() {
+		  Location region = new Location(10, 10, 100, 40);
+		  return new SnapshotMask(
+			  Arrays.asList(region),
+			  false
+		  );
+	  }
   }
 
   DevRev.setMaskLocationProvider(new MyMaskingProvider());
@@ -831,7 +863,7 @@ To start a timer, use the following method:
 
 <Tabs>
   <Tab title="Kotlin">
-    ```kotlin
+	```kotlin
    DevRev.startTimer(name: String, properties: HashMap<String, String>)
    ```
   </Tab>
@@ -846,7 +878,7 @@ To stop a timer, use the following method:
 
 <Tabs>
   <Tab title="Kotlin">
-    ```kotlin
+	```kotlin
    DevRev.endTimer(name: String, properties: HashMap<String, String>)
    ```
   </Tab>
@@ -912,12 +944,12 @@ For example:
   </Tab>
 </Tabs>
 
-## Screen transition management
+### Screen transition management
 
-The DevRev SDK allows tracking of screen transitions to understand user navigation within your app.
+The DevRev SDK allows tracking of screen transitions to understand the user navigation within your app.
 You can check if a screen transition is in progress and manually update the state using the following methods:
 
-### Check if the screen is transitioning
+#### Check if the screen is transitioning
 
 <Tabs>
   <Tab title="Kotlin">
@@ -937,14 +969,20 @@ You can check if a screen transition is in progress and manually update the stat
 <Tabs>
   <Tab title="Kotlin">
    ```kotlin
-   DevRev.setInScreenTransitioning(true) // start transition
-   DevRev.setInScreenTransitioning(false) // stop transition
+   // Mark the transition as started.
+   DevRev.setInScreenTransitioning(true)
+
+   // Mark the transition as ended.
+   DevRev.setInScreenTransitioning(false)
    ```
   </Tab>
   <Tab title="Java">
    ```java
-   DevRevObservabilityExtKt.setInScreenTransitioning(DevRev.INSTANCE, true) // Start transition
-   DevRevObservabilityExtKt.setInScreenTransitioning(DevRev.INSTANCE, false) //Stop transition
+   // Mark the transition as started.
+   DevRevObservabilityExtKt.setInScreenTransitioning(DevRev.INSTANCE, true)
+
+   // Mark the transition as ended.
+   DevRevObservabilityExtKt.setInScreenTransitioning(DevRev.INSTANCE, false)
    ```
   </Tab>
 </Tabs>
@@ -973,18 +1011,18 @@ The DevRev SDK offers a method to register your device for receiving push notifi
   <Tab title="Kotlin">
    ```kotlin
    DevRev.registerDeviceToken(
-     context: Context,
-     deviceId: String,
-     deviceToken: String
+	 context: Context,
+	 deviceId: String,
+	 deviceToken: String
    )
    ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.registerDeviceToken(
-     Context context,
-     String deviceId,
-     String deviceToken
+	 Context context,
+	 String deviceId,
+	 String deviceToken
    );
    ```
   </Tab>
@@ -1015,16 +1053,16 @@ The method requires the device identifier, which should be the same as the one u
   <Tab title="Kotlin">
    ```kotlin
    DevRev.unregisterDevice(
-     context: Context,
-     deviceId: String
+	 context: Context,
+	 deviceId: String
    )
    ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.unregisterDevice(
-     Context context,
-     String deviceId
+	 Context context,
+	 String deviceId
    );
    ```
   </Tab>
@@ -1040,16 +1078,16 @@ The DevRev SDK currently does not support automatic handling of push notificatio
   <Tab title="Kotlin">
    ```kotlin
    DevRev.processPushNotification(
-       context: Context,
-       userInfo: String
+	   context: Context,
+	   userInfo: String
    )
    ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.processPushNotification(
-       Context context,
-       String userInfo
+	   Context context,
+	   String userInfo
    );
    ```
   </Tab>
@@ -1082,27 +1120,27 @@ For example:
   <Tab title="Kotlin">
    ```kotlin
    class MyFirebaseMessagingService: FirebaseMessagingService {
-       // ...
+	   // ...
 
-       override fun onMessageReceived(remoteMessage: RemoteMessage) {
-           // ...
-           val messageData = remoteMessage.data["message"]
-           DevRev.processPushNotification(messageData)
-       }
+	   override fun onMessageReceived(remoteMessage: RemoteMessage) {
+		   // ...
+		   val messageData = remoteMessage.data["message"]
+		   DevRev.processPushNotification(messageData)
+	   }
    }
    ```
   </Tab>
   <Tab title="Java">
    ```java
    public class MyFirebaseMessagingService extends FirebaseMessagingService {
-       // ...
+	   // ...
 
-       @Override
-       public void onMessageReceived(RemoteMessage remoteMessage) {
-           // ...
-           String messageData = remoteMessage.getData().get("message");
-           DevRev.processPushNotification(messageData);
-       }
+	   @Override
+	   public void onMessageReceived(RemoteMessage remoteMessage) {
+		   // ...
+		   String messageData = remoteMessage.getData().get("message");
+		   DevRev.processPushNotification(messageData);
+	   }
    }
    ```
  </Tab>

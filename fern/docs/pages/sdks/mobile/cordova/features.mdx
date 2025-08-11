@@ -21,7 +21,7 @@ You can select from the following methods to identify users within your applicat
 The anonymous identification method allows you to create an anonymous user with an optional user identifier, ensuring that no other data is stored or associated with the user.
 
 ```javascript
-DevRev.identifyAnonymousUser(successCallback, errorCallback)
+DevRev.identifyAnonymousUser(userID, successCallback, errorCallback)
 ```
 
 ### Unverified identification
@@ -89,7 +89,7 @@ As a good practice, **your** app should retrieve the exchanged session token fro
 Pass the user identifier and the exchanged session token to the verified identification method:
 
 ```javascript
-DevRev.identifyVerifiedUser(identity, successCallback, errorCallback)
+DevRev.identifyVerifiedUser(userID, sessionToken, successCallback, errorCallback)
 ```
 
 ### Update the user
@@ -111,6 +111,8 @@ You can log out the current user by using the following method:
 ```javascript
 DevRev.logout(deviceID, successCallback, errorCallback)
 ```
+
+The user is logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
 
 ### Identity model
 
@@ -183,8 +185,6 @@ All properties in `AccountTraits` are optional.
 | `websites` | `string[] OR null` | Array of websites associated with the account |
 | `tier` | `string OR null` | The account's tier or plan level |
 | `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
-
-The user is logged out by clearing their credentials, as well as unregistering the device from receiving push notifications, and stopping the session recording.
 
 ## PLuG support chat
 
@@ -262,6 +262,7 @@ The session recording feature includes the following methods to control the reco
 |`DevRev.stopRecording(successCallback, errorCallback)`    | Ends the session recording and uploads it to the portal. |
 |`DevRev.pauseRecording(successCallback, errorCallback)`   | Pauses the ongoing session recording.                     |
 |`DevRev.resumeRecording(successCallback, errorCallback)`  | Resumes a paused session recording.                       |
+|`DevRev.processAllOnDemandSessions(successCallback, errorCallback)`  | Manually triggers processing of all on-demand sessions. |
 
 ### Session properties
 
@@ -316,7 +317,28 @@ DevRev.endTimer(name, properties, successCallback, errorCallback)
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although view controllers are automatically tracked, you can manually track screens using the following method:
 
 ```javascript
-DevRev.trackScreenName(screenName, successCallback, errorCallback)
+DevRev.trackScreenName(name, successCallback, errorCallback)
+```
+
+### Screen transition management (Android only)
+
+The DevRev SDK allows tracking of screen transitions to understand the user navigation within your app.
+You can manually update the state using the following methods:
+
+```javascript
+// Mark the transition as started.
+DevRev.setInScreenTransitioning(true)
+
+// Mark the transition as ended.
+DevRev.setInScreenTransitioning(false)
+```
+
+## Dynamic theme configuration
+
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+
+```javascript
+DevRev.setPrefersSystemTheme(value, successCallback, errorCallback)
 ```
 
 ## Push notifications

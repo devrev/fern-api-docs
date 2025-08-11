@@ -244,6 +244,12 @@ If you want to display the support chat screen from the top-most view controller
 await DevRev.showSupport(isAnimated:)
 ```
 
+To create a new support conversation directly, use the following method:
+
+```swift
+await DevRev.createSupportConversation(isAnimated:)
+```
+
 For example:
 
 ```swift
@@ -255,6 +261,9 @@ await DevRev.showSupport(from: settingsViewController)
 
 // Show the support chat screen from the top-most view controller, without an animation.
 await DevRev.showSupport(isAnimated: false)
+
+// Create a new support conversation directly from the top-most view controller.
+await DevRev.createSupportConversation()
 ```
 ### SwiftUI
 
@@ -354,6 +363,20 @@ The session recording feature includes the following methods to control the reco
 |`DevRev.stopRecording()`    | Ends the session recording and uploads it to the portal. |
 |`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
 |`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
+|`DevRev.processAllOnDemandSessions()`  | Stops the ongoing user recording and sends all on-demand sessions along with the current recording. |
+
+You can also check the following flags for session recording:
+
+```swift
+// Check if session recording is currently active.
+let isRecording = DevRev.isRecording
+
+// Check if session monitoring is enabled.
+let isMonitoringEnabled = DevRev.isMonitoringEnabled
+
+// Check if on-demand sessions are enabled.
+let areOnDemandSessionsEnabled = DevRev.areOnDemandSessionsEnabled
+```
 
 ### Session properties
 
@@ -395,7 +418,7 @@ You can implement your own masking logic by conforming to the `DevRev.MaskLocati
 - `DevRev.SnapshotMask`: Describes the regions of a snapshot to be masked.
 - `DevRev.SnapshotMask.Location`: Describes a masked region.
 
-#### Example
+For example:
 ```swift
 import Foundation
 import UIKit
@@ -435,7 +458,7 @@ DevRev.startTimer(_:properties:)
 To stop a timer, use the following method:
 
 ```swift
-DevRev.stopTimer(_:properties:)
+DevRev.endTimer(_:properties:)
 ```
 
 For example:
@@ -445,7 +468,7 @@ DevRev.startTimer("response-time", properties: ["id": "task-1337"])
 
 // Perform the task that you want to measure.
 
-DevRev.stopTimer("response-time", properties: ["id": "task-1337"])
+DevRev.endTimer("response-time", properties: ["id": "task-1337"])
 ```
 
 ### Screen tracking

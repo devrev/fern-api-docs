@@ -172,7 +172,7 @@ navigation:
             path: ../docs/pages/sdks/mobile/cordova/troubleshooting.mdx
       - section: DevRev SDK for Flutter
         slug: flutter
-        icon: fa-regular fa-code
+        icon: fa-brands fa-flutter
         contents:
           - page: Quickstart guide
             slug: quickstart

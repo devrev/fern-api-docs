@@ -29,7 +29,7 @@ DevRev.identifyAnonymousUser(userID);
 The unverified identification method identifies users with a unique identifier, but it does not verify their identity with the DevRev backend.
 
 ```dart
-DevRev.identifyUnverifiedUser(identity);
+DevRev.identifyUnverifiedUser(userID, organizationID);
 ```
 
 ### Verified identification
@@ -98,21 +98,17 @@ DevRev.identifyVerifiedUser(userID, sessionToken);
 You can update the user's information using the following method:
 
 ```dart
-DevRev.updateUser(identity)
+DevRev.updateUser(identity);
 ```
 
 <Callout intent="warning">
 The `userID` property cannot be updated.
 </Callout>
 
-<Callout intent="tip">
-The identification functions are asynchronous. Ensure you wrap them in a `Task` when calling from synchronous contexts.
-</Callout>
-
 Use this property to check whether the user is identified in the current session:
 
 ```dart
-await DevRev.isUserIdentified
+DevRev.isUserIdentified;
 ```
 
 #### Logout
@@ -128,29 +124,29 @@ The user is logged out by clearing their credentials, as well as unregistering t
 For example:
 
 ```dart
-// Identify an anonymous user without a user identifier.
-await DevRev.identifyAnonymousUser()
+// Identify an anonymous user with a user identifier.
+DevRev.identifyAnonymousUser("user@example.org");
 
 // Identify an unverified user using their email address as the user identifier.
-await DevRev.identifyUnverifiedUser(Identity(userID: "user@example.org"))
+DevRev.identifyUnverifiedUser("user@example.org", "organization-1337");
 
 // Identify a verified user using their email address as the user identifier.
-await DevRev.identifyVerifiedUser("foo@example.org", sessionToken: "bar-1337")
+DevRev.identifyVerifiedUser("foo@example.org", "bar-1337");
 
 // Update the user's information.
-await DevRev.updateUser(Identity(organizationID: "organization-1337"))
+DevRev.updateUser({"organizationRef": "organization-1337"});
 
 // Logout the identified user.
-await DevRev.logout(deviceID: "dvc32423")
+DevRev.logout("dvc32423");
 ```
 
 ### Identity model
 
-The `Identity` interface is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser` and `updateUser` methods.
+User identity information is passed as a `Map<String, dynamic>` to the `updateUser` method. The map can contain user, organization, and account information.
 
 #### Properties
 
-The `Identity` class contains the following properties:
+The identity map can contain the following properties:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
@@ -242,6 +238,14 @@ DevRev.setShouldDismissModalsOnOpenLink(value);
 
 Setting this flag to true applies the system's default behavior for opening links, which includes dismissing any DevRev modal screens to facilitate handling your own deep links.
 
+## Dynamic theme configuration
+
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+
+```dart
+DevRev.setPrefersSystemTheme(value: boolean);
+```
+
 ## Analytics
 
 The DevRev SDK allows you to send custom analytic events by using a properties map. You can track these events using the following function:
@@ -253,7 +257,7 @@ DevRev.trackEvent(name, properties);
 For example:
 
 ```dart
-await DevRev.trackEvent(name: "open-message-screen", properties: ["id": "message-1337"])
+DevRev.trackEvent("open-message-screen", {"id": "message-1337"});
 ```
 
 ## Session analytics
@@ -310,7 +314,7 @@ DevRev.clearSessionProperties();
 
 To protect sensitive data, you can mask sensitive UI elements such as text fields, text views, and web views using `DevRevMask` widget, as shown below.
 
-#### Example (masked element):
+For example:
 
 ```dart
 DevRevMask(
@@ -320,9 +324,11 @@ DevRevMask(
 )
 ```
 
+### Unmasking sensitive data
+
 You can also manually unmask UI elements that would otherwise be automatically masked using `DevRevUnmask`:
 
-#### Example (unmasked element):
+For example:
 
 ```dart
 DevRevUnmask(
@@ -332,7 +338,7 @@ DevRevUnmask(
   )
 ```
 
-#### Advanced session recording control while masking
+### Advanced session recording control while masking
 
 For enhanced session recording and screen transition handling, you can use `DevRevMonitoredApp` as a drop-in replacement for `MaterialApp`. This widget automatically handles screen transition states and ensures proper masking during navigation.
 
@@ -364,23 +370,23 @@ The mechanism uses balanced start and stop methods, both of which accept a timer
 To start a timer, use the following method:
 
 ```dart
-DevRev.startTimer(name, properties)
+DevRev.startTimer(name, properties);
 ```
 
 To stop a timer, use the following method:
 
 ```dart
-DevRev.stopTimer(name, properties)
+DevRev.endTimer(name, properties);
 ```
 
 For example:
 
 ```dart
-DevRev.startTimer("response-time", properties: ["id": "task-1337"])
+DevRev.startTimer("response-time", {"id": "task-1337"});
 
 // Perform the task that you want to measure.
 
-DevRev.stopTimer("response-time", properties: ["id": "task-1337"])
+DevRev.endTimer("response-time", {"id": "task-1337"});
 ```
 
 ### Screen tracking
@@ -394,23 +400,20 @@ DevRev.trackScreenName(screenName);
 For example:
 
 ```dart
-DevRev.trackScreenName("profile-screen")
+DevRev.trackScreenName("profile-screen");
 ```
 
-#### Screen transition tracking (Android only)
+### Screen transition management (Android only)
 
-On Android, the DevRev SDK provides methods to manually track the screen transitions.
-
-When a screen transition begins, you must call the following method:
-
-```dart
-DevRev.setInScreenTransitioning(true)
-```
-
-When a screen transition ends, you must call the following method:
+The DevRev SDK allows tracking of screen transitions to understand the user navigation within your app.
+You can manually update the state using the following methods:
 
 ```dart
-DevRev.setInScreenTransitioning(false)
+// Mark the transition as started.
+DevRev.setInScreenTransitioning(true);
+
+// Mark the transition as ended.
+DevRev.setInScreenTransitioning(false);
 ```
 
 ## Push notifications
@@ -432,7 +435,7 @@ Push notifications require that the SDK has been configured and the user has bee
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
 
 ```dart
-DevRev.registerDeviceToken(deviceID, deviceToken);
+DevRev.registerDeviceToken(deviceToken, deviceID);
 ```
 
 On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
@@ -461,54 +464,10 @@ To process the notification, use the following method:
 DevRev.processPushNotification(payload);
 ```
 
-Here, the `message` object from the notification payload needs to be passed to this function.
-
-##### Example
-
-```dart
-const notificationPayload = {
-    "message": {
-        "title": "New Message",
-        "body": "You have received a new message.",
-        "data": {
-            "messageId": "12345",
-            "sender": "John Doe"
-        }
-    }
-};
-
-const messageJson = notificationPayload["message"];
-
-if (messageJson != null) {
-  DevRev.processPushNotification(jsonEncode(messageJson));
-}
-```
-
 #### iOS
 
 On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
 
 ```dart
-DevRev.processPushNotification(payload: String)
-```
-
-##### Example
-
-```dart
-const notificationPayload = {
-    "message": {
-        "title": "New Message",
-        "body": "You have received a new message.",
-        "data": {
-            "messageId": "12345",
-            "sender": "John Doe"
-        }
-    }
-};
-
-const messageJson = notificationPayload["message"];
-
-if (messageJson != null) {
-  DevRev.processPushNotification(jsonEncode(messageJson));
-}
+DevRev.processPushNotification(payload);
 ```

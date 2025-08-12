@@ -218,7 +218,7 @@ This feature is supported only on Android.
 For scenarios where custom handling is needed, links from the support chat can be captured with the following method:
 
 ```typescript
-DevRevSDK.setInAppLinkHandler((url) => {
+DevRev.setInAppLinkHandler((url) => {
 	// Perform an action here.
 });
 ```
@@ -227,16 +227,16 @@ DevRevSDK.setInAppLinkHandler((url) => {
 
 The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
 
-```swift
+```typescript
 DevRev.setPrefersSystemTheme(value: boolean)
 ```
 
- ## Analytics
+## Analytics
 
 The DevRev SDK allows you to send custom analytic events by using a properties map. You can track these events using the following function:
 
 ```typescript
-DevRev.trackEvent(name: string, properties?: Map<string, string>)
+DevRev.trackEvent(name: string, properties?: { [key: string]: string })
 ```
 
 ## Session analytics
@@ -273,14 +273,14 @@ The session recording feature includes the following methods to control the reco
 |`DevRev.stopRecording()`    | Stops the session recording and uploads it to the portal. |
 |`DevRev.pauseRecording()`   | Pauses the ongoing session recording.                     |
 |`DevRev.resumeRecording()`  | Resumes a paused session recording.                       |
-|`DevRev.processAllOnDemandSessions()`  | Stops the ongoing session recording and uploads all offline sessions on demand, including the current one.|
+|`DevRev.processAllOnDemandSessions()`  | Stops the ongoing user recording and sends all on-demand sessions along with the current recording. |
 
 ### Session properties
 
 You can add custom properties to the session recording to help you understand the context of the session. The properties are defined as a map of string values.
 
 ```typescript
-DevRev.addSessionProperties(properties: Map<string, string>)
+DevRev.addSessionProperties(properties: { [key: string]: string })
 ```
 
 To clear the session properties in scenarios such as user logout or when the session ends, use the following method:
@@ -314,13 +314,13 @@ The mechanism uses balanced start and stop methods, both of which accept a timer
 To start a timer, use the following method:
 
 ```typescript
-DevRev.startTimer(name: string, properties: Map<string, string>)
+DevRev.startTimer(name: string, properties: { [key: string]: string })
 ```
 
 To stop a timer, use the following method:
 
 ```typescript
-DevRev.stopTimer(name: string, properties: Map<string, string>)
+DevRev.endTimer(name: string, properties: { [key: string]: string })
 ```
 
 ### Screen tracking
@@ -328,7 +328,20 @@ DevRev.stopTimer(name: string, properties: Map<string, string>)
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although view controllers are automatically tracked, you can manually track screens using the following method:
 
 ```typescript
-DevRev.trackScreen(name: string)
+DevRev.trackScreenName(name: string)
+```
+
+### Screen transition management (Android only)
+
+The DevRev SDK allows tracking of screen transitions to understand the user navigation within your app.
+You can manually update the state using the following methods:
+
+```javascript
+// Mark the transition as started.
+DevRev.setInScreenTransitioning(true)
+
+// Mark the transition as ended.
+DevRev.setInScreenTransitioning(false)
 ```
 
 ## Push notifications
@@ -350,7 +363,7 @@ Push notifications require that the SDK has been configured and the user has bee
 The DevRev SDK offers a method to register your device for receiving push notifications. You can register for push notifications using the following method:
 
 ```typescript
-DevRevSDK.registerDeviceToken(deviceToken: string, deviceID: string)
+DevRev.registerDeviceToken(deviceToken: string, deviceID: string)
 ```
 
 On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
@@ -362,11 +375,10 @@ If your app no longer needs to receive push notifications, you can unregister th
 Use the following method to unregister the device:
 
 ```typescript
-DevRevSDK.unregisterDevice(deviceID: string)
+DevRev.unregisterDevice(deviceID: string)
 ```
 
 The method requires the device identifier, which should be the same as the one used when registering the device.
-
 
 ### Processing push notifications
 
@@ -377,7 +389,7 @@ On Android, notifications are implemented as data messages to offer flexibility.
 To process the notification, use the following method:
 
 ```typescript
-DevRevSDK.processPushNotification(payload: string)
+DevRev.processPushNotification(payload: string)
 ```
 
 Here, the `message` object from the notification payload needs to be passed to this function.
@@ -392,34 +404,18 @@ const notificationPayload = {
 	}
 };
 const messageJson = notificationPayload["message"];
-DevRevSDK.processPushNotification(JSON.stringify(messageJson));
+DevRev.processPushNotification(JSON.stringify(messageJson));
 ```
 #### iOS
 
 On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
 
 ```typescript
-DevRevSDK.processPushNotification(payload: string)
+DevRev.processPushNotification(payload: string)
 ```
 
 For example:
 
 ```typescript
-DevRevSDK.processPushNotification(JSON.stringify(payload));
-```
-
-### Screen transition tracking (Android only)
-
-On Android, the DevRev SDK provides methods to manually track the screen transitions.
-
-When a screen transition begins, you must call the following method:
-
-```typescript
-DevRev.startScreenTransition()
-```
-
-When a screen transition ends, you must call the following method:
-
-```typescript
-DevRev.endScreenTransition()
+DevRev.processPushNotification(JSON.stringify(payload));
 ```

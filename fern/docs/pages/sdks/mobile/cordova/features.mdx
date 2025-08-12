@@ -292,14 +292,14 @@ To protect sensitive data, the DevRev SDK provides an auto-masking feature that 
 
 While the auto-masking feature may be sufficient for most situations, you can manually mark additional views as sensitive using the following method:
 
-```javascript
-DevRev.markSensitiveViews(tags, successCallback, errorCallback)
+```html
+<label class="devrev-mask">Foo: Bar</label>
 ```
 
 If any previously masked views need to be unmasked, you can use the following method:
 
-```javascript
-DevRev.unmarkSensitiveViews(tags, successCallback, errorCallback)
+```html
+<input type="text" placeholder="Enter Foo" name="foo" required class="devrev-unmask">
 ```
 
 ### Timers

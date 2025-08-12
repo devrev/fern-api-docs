@@ -115,7 +115,7 @@ The identification functions are asynchronous. Ensure you wrap them in a `Task` 
 Use this property to check whether the user is identified in the current session:
 
 ```swift
-await DevRev.isUserIdentified
+DevRev.isUserIdentified
 ```
 
 ### Logout
@@ -229,7 +229,7 @@ The support chat feature can be shown as a modal screen from a specific view con
 To show the support chat screen in your app, you can use the following overloaded method:
 
 ```swift
-await DevRev.showSupport(from:isAnimated:)
+DevRev.showSupport(from:isAnimated:)
 ```
 
 - When a `UIViewController` is passed as the `from` parameter, the screen is shown modally.
@@ -239,13 +239,13 @@ await DevRev.showSupport(from:isAnimated:)
 If you want to display the support chat screen from the top-most view controller, use the following method:
 
 ```swift
-await DevRev.showSupport(isAnimated:)
+DevRev.showSupport(isAnimated:)
 ```
 
 To create a new support conversation directly, use the following method:
 
 ```swift
-await DevRev.createSupportConversation(isAnimated:)
+DevRev.createSupportConversation(isAnimated:)
 ```
 
 For example:
@@ -261,7 +261,7 @@ await DevRev.showSupport(from: settingsViewController)
 await DevRev.showSupport(isAnimated: false)
 
 // Create a new support conversation directly from the top-most view controller.
-await DevRev.createSupportConversation()
+await DevRev.createSupportConversation(isAnimated: true)
 ```
 ### SwiftUI
 

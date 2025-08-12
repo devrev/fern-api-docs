@@ -279,3 +279,65 @@ await spawn({
 ```
 
 This lets you simulate a soft timeout and validate that your worker shuts down.
+
+## Time-scoped syncs
+
+Time-scoped syncs allow users to specify a particular timestamp to control the scope of data extraction. This capability enables more granular control over which data gets synchronized between external systems and DevRev.
+
+### Configuration
+
+Enable time-scoped syncs by adding the capability to your manifest:
+
+```yaml
+imports:
+  - # slug and other import information ...
+    capabilities:
+      - TIME_SCOPED_SYNCS
+```
+
+### Implementation
+
+Your data extraction implementation must handle two optional parameters from the event's `EventContext`:
+
+- **`extract_from`**: Timestamp indicating extraction starting point (applies to both initial and incremental syncs)
+- **`reset_extract_from`**: Boolean flag for incremental syncs that determines extraction behavior
+
+<Info>Both parameters are optional and only provided when users specify time-scoped sync parameters.</Info>
+
+#### Extraction logic
+
+The extraction logic depends on the sync type and parameter combination:
+
+**Initial syncs**: Use `extract_from` as the starting timestamp for data extraction.
+
+**Incremental syncs**: 
+- If `reset_extract_from` is `true`: Start from `extract_from` (if provided) or extract all data
+- If `reset_extract_from` is `false` or not provided: Use `lastSuccessfulSyncStarted` timestamp
+
+```typescript focus={1-2,6-8,12-16,20-22}
+const { reset_extract_from, extract_from } = adapter.event.payload.event_context;
+
+// The start of a new sync.
+if (adapter.event.payload.event_type === EventType.ExtractionDataStart) {
+  
+  // Handle extract_from parameter for any sync type
+  if (extract_from) {
+    console.log(`Starting extraction from given timestamp: ${extract_from}.`);
+    // ...
+  }
+
+  // Handle incremental sync logic
+  if (adapter.event.payload.event_context.mode === SyncMode.INCREMENTAL) {
+
+    // If `reset_extract_from` is true, the extraction should start from extract_from (if provided)
+    // or from the beginning (if extract_from is not provided).
+    if (reset_extract_from) {
+      console.log(`reset_extract_from is true. Starting extraction from provided timestamp (${extract_from}) or from the beginning.`);
+    // If reset_extract_from is false or not provided, it should use the lastSuccessfulSyncStarted timestamp to get only the new or updated data.
+    } else {
+      console.log(`Starting extraction from lastSuccessfulSyncStarted: (${adapter.state.lastSuccessfulSyncStarted}).`);
+      // ...
+    }
+  }
+}
+```

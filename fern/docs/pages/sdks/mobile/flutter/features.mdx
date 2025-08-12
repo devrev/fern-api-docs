@@ -153,9 +153,9 @@ The identity map can contain the following properties:
 | `userRef` | `String` | ✅ | A unique identifier for the user |
 | `organizationRef` | `String?` | ❌ | An identifier for the user's organization |
 | `accountRef` | `String?` | ❌ | An identifier for the user's account |
-| `userTraits` | `UserTraits?` | ❌ | Additional information about the user |
-| `organizationTraits` | `OrganizationTraits?` | ❌ | Additional information about the organization |
-| `accountTraits` | `AccountTraits?` | ❌ | Additional information about the account |
+| `userTraits` | `Map<String, dynamic>?` | ❌ | Additional information about the user |
+| `organizationTraits` | `Map<String, dynamic>?` | ❌ | Additional information about the organization |
+| `accountTraits` | `Map<String, dynamic>?` | ❌ | Additional information about the account |
 
 <Callout intent="note">
 The custom fields properties defined as part of the user, organization and account traits, must be configured in the DevRev web app **before** they can be used. See [Object customization](https://devrev.ai/docs/product/object-customization) for more information.
@@ -163,10 +163,10 @@ The custom fields properties defined as part of the user, organization and accou
 
 #### User traits
 
-The `UserTraits` class contains detailed information about the user:
+The `userTraits` map contains detailed information about the user:
 
 <Callout intent="note">
-All properties in `UserTraits` are optional.
+All properties in `userTraits` are optional.
 </Callout>
 
 | Property | Type | Description |
@@ -175,14 +175,14 @@ All properties in `UserTraits` are optional.
 | `email` | `String?` | The user's email address |
 | `fullName` | `String?` | The user's full name |
 | `description` | `String?` | A description of the user |
-| `customFields` | `{ [key: String]: any }` | Dictionary of custom fields configured in DevRev |
+| `customFields` | `Map<String, dynamic>?` | Dictionary of custom fields configured in DevRev |
 
 #### Organization traits
 
-The `OrganizationTraits` class contains detailed information about the organization:
+The `organizationTraits` map contains detailed information about the organization:
 
 <Callout intent="note">
-All properties in `OrganizationTraits` are optional.
+All properties in `organizationTraits` are optional.
 </Callout>
 
 | Property | Type | Description |
@@ -190,27 +190,27 @@ All properties in `OrganizationTraits` are optional.
 | `displayName` | `String?` | The displayed name of the organization |
 | `domain` | `String?` | The organization's domain |
 | `description` | `String?` | A description of the organization |
-| `phoneNumbers` | `String[]?` | Array of the organization's phone numbers |
+| `phoneNumbers` | `List<String>?` | Array of the organization's phone numbers |
 | `tier` | `String?` | The organization's tier or plan level |
-| `customFields` | `{ [key: String]: any }` | Dictionary of custom fields configured in DevRev |
+| `customFields` | `Map<String, dynamic>?` | Dictionary of custom fields configured in DevRev |
 
 #### Account traits
 
-The `AccountTraits` class contains detailed information about the account:
+The `accountTraits` map contains detailed information about the account:
 
 <Callout intent="note">
-All properties in `AccountTraits` are optional.
+All properties in `accountTraits` are optional.
 </Callout>
 
 | Property | Type | Description |
 |----------|------|-------------|
 | `displayName` | `String?` | The displayed name of the account |
-| `domains` | `String[]?` | Array of domains associated with the account |
+| `domains` | `List<String>?` | Array of domains associated with the account |
 | `description` | `String?` | A description of the account |
-| `phoneNumbers` | `String[]?` | Array of the account's phone numbers |
-| `websites` | `String[]?` | Array of websites associated with the account |
+| `phoneNumbers` | `List<String>?` | Array of the account's phone numbers |
+| `websites` | `List<String>?` | Array of websites associated with the account |
 | `tier` | `String?` | The account's tier or plan level |
-| `customFields` | `{ [key: String]: any }` | Dictionary of custom fields configured in DevRev |
+| `customFields` | `Map<String, dynamic>?` | Dictionary of custom fields configured in DevRev |
 
 ## PLuG support chat
 

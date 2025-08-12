@@ -201,7 +201,7 @@ DevRev.showSupport(successCallback, errorCallback)
 You can initiate a new support conversation directly from your app. This method displays the support chat screen and simultaneously creates a new conversation.
 
 ```javascript
-DevRev.createSupportConversation(isAnimated, successCallback, errorCallback)
+DevRev.createSupportConversation(successCallback, errorCallback)
 ```
 
 ## In-app link handling
@@ -218,6 +218,14 @@ You can further customize the behavior by setting the `setShouldDismissModalsOnO
 
 ```javascript
 DevRev.setShouldDismissModalsOnOpenLink(value, successCallback, errorCallback)
+```
+
+## Dynamic theme configuration
+
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+
+```javascript
+DevRev.setPrefersSystemTheme(value, successCallback, errorCallback)
 ```
 
 ## Analytics
@@ -262,7 +270,7 @@ The session recording feature includes the following methods to control the reco
 |`DevRev.stopRecording(successCallback, errorCallback)`    | Ends the session recording and uploads it to the portal. |
 |`DevRev.pauseRecording(successCallback, errorCallback)`   | Pauses the ongoing session recording.                     |
 |`DevRev.resumeRecording(successCallback, errorCallback)`  | Resumes a paused session recording.                       |
-|`DevRev.processAllOnDemandSessions(successCallback, errorCallback)`  | Manually triggers processing of all on-demand sessions. |
+|`DevRev.processAllOnDemandSessions(successCallback, errorCallback)`  | Stops the ongoing user recording and sends all on-demand sessions along with the current recording. |
 
 ### Session properties
 
@@ -327,18 +335,10 @@ You can manually update the state using the following methods:
 
 ```javascript
 // Mark the transition as started.
-DevRev.setInScreenTransitioning(true)
+DevRev.setInScreenTransitioning(true, successCallback, errorCallback)
 
 // Mark the transition as ended.
-DevRev.setInScreenTransitioning(false)
-```
-
-## Dynamic theme configuration
-
-The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
-
-```javascript
-DevRev.setPrefersSystemTheme(value, successCallback, errorCallback)
+DevRev.setInScreenTransitioning(false, successCallback, errorCallback)
 ```
 
 ## Push notifications

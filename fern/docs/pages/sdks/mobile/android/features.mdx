@@ -430,7 +430,7 @@ For example:
 
 The DevRev SDK provides observability features to help you understand how your users are interacting with your app.
 
-### Opt in or out
+### Opting-in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -914,7 +914,7 @@ For example:
 
 ### Screen tracking
 
-The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although view controllers are automatically tracked, you can manually track screens using the following method:
+The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although activities and fragments are automatically tracked, you can manually track screens using the following method:
 
 <Tabs>
   <Tab title="Kotlin">
@@ -997,7 +997,7 @@ The DevRev backend sends push notifications to your app to notify users about ne
 
 To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notifications) section.
 
-You need to ensure that your Android app is configured to receive push notifications. You can follow the [Android documentation](https://developer.android.com/training/notify-user/build-notification) for guidance on registering your app with Firebase Cloud Messaging (FCM).
+You need to ensure that your Android app is configured to receive push notifications. To set it up, follow the [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/android/client).
 
 ### Register for push notifications
 
@@ -1011,18 +1011,18 @@ The DevRev SDK offers a method to register your device for receiving push notifi
   <Tab title="Kotlin">
    ```kotlin
    DevRev.registerDeviceToken(
-	 context: Context,
-	 deviceId: String,
-	 deviceToken: String
+  	 context: Context,
+  	 deviceToken: String,
+  	 deviceId: String
    )
    ```
   </Tab>
   <Tab title="Java">
    ```java
    DevRev.INSTANCE.registerDeviceToken(
-	 Context context,
-	 String deviceId,
-	 String deviceToken
+  	 Context context,
+  	 String deviceToken,
+  	 String deviceId
    );
    ```
   </Tab>

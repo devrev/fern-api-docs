@@ -6,7 +6,7 @@ This guide and chart should help facilitate the transition from the legacy UserE
 
 | Feature | UserExperior SDK | DevRev SDK |
 |-|-|-|
-| Installation | `pod 'UserExperior', '~> <version>` | SPM: `https://github.com/devrev/devrev-sdk-ios`<br />CocoaPods: `pod 'DevRevSDK', '~> <version>` |
+| Installation | `pod 'UserExperior', '~> <VERSION>` | SPM: `https://github.com/devrev/devrev-sdk-ios`<br />CocoaPods: `pod 'DevRevSDK', '~> <VERSION>` |
 | Initialization | `UserExperior.startRecording(_ versionKey: String)` | `DevRev.configure(appID: String)` |
 | User Identification | `UserExperior.setUserIdentifier(_ userIdentifier: String)` | `DevRev.identifyAnonymousUser(userID: String)`<br />`DevRev.identifyUnverifiedUser(_ identity: Identity)`<br />`DevRev.updateUser(_ identity: Identity)`<br /> `identifyVerifiedUser( _ userID: String, sessionToken: String)`<br />`DevRev.logout(deviceID: String)` |
 | Event Tracking | `UserExperior.logEvent(_ eventName: String)` | `DevRev.trackEvent(name: String, properties: [String: String])` |

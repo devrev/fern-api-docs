@@ -282,11 +282,9 @@ This lets you simulate a soft timeout and validate that your worker shuts down.
 
 ## Time-scoped syncs
 
-Time-scoped syncs allow users to specify a particular timestamp to control the scope of data extraction. This capability enables more granular control over which data gets synchronized between external systems and DevRev.
+Time-scoped syncs allow users to specify a custom timestamp to control the scope of data extraction. This capability enables more granular control over which data gets synchronized between external systems and DevRev.
 
-### Configuration
-
-Enable time-scoped syncs by adding the capability to your manifest:
+Enable time-scoped syncs by first adding the capability to your manifest:
 
 ```yaml
 imports:
@@ -295,16 +293,12 @@ imports:
       - TIME_SCOPED_SYNCS
 ```
 
-### Implementation
-
 Your data extraction implementation must handle two optional parameters from the event's `EventContext`:
 
 - **`extract_from`**: Timestamp indicating extraction starting point (applies to both initial and incremental syncs)
-- **`reset_extract_from`**: Boolean flag for incremental syncs that determines extraction behavior
+- **`reset_extract_from`**: Boolean flag for incremental syncs that determines whether data should be reextracted
 
 <Info>Both parameters are optional and only provided when users specify time-scoped sync parameters.</Info>
-
-#### Extraction logic
 
 The extraction logic depends on the sync type and parameter combination:
 

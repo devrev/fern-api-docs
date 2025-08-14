@@ -225,7 +225,7 @@ DevRev.setInAppLinkHandler((url) => {
 
 ## Dynamic theme configuration
 
-The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme is dynamic and follows the system appearance.
 
 ```typescript
 DevRev.setPrefersSystemTheme(value: boolean)
@@ -408,7 +408,7 @@ DevRev.processPushNotification(JSON.stringify(messageJson));
 ```
 #### iOS
 
-On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
+On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK handles the notification and executes the necessary actions.
 
 ```typescript
 DevRev.processPushNotification(payload: string)

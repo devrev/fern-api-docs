@@ -240,7 +240,7 @@ Setting this flag to true applies the system's default behavior for opening link
 
 ## Dynamic theme configuration
 
-The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme will be dynamic and follow the system appearance.
+The DevRev SDK allows you to configure the theme dynamically based on the system appearance, or use the theme configured on the DevRev portal. By default, the theme is dynamic and follows the system appearance.
 
 ```dart
 DevRev.setPrefersSystemTheme(value: boolean);
@@ -466,7 +466,7 @@ DevRev.processPushNotification(payload);
 
 #### iOS
 
-On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK will then handle the notification and execute the necessary actions.
+On iOS devices, you must pass the received push notification payload to the DevRev SDK for processing. The SDK handles the notification and executes the necessary actions.
 
 ```dart
 DevRev.processPushNotification(payload);

@@ -4,7 +4,7 @@
 
 To access certain features of the DevRev SDK, user identification is required.
 
-The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID:)` method.
+The identification function should be placed appropriately in your app after the user logs in. If you have the user information available at app launch, call the function after the `DevRev.configure(appID: string)` method.
 
 <Callout intent="tip">
 On iOS, if you haven't previously identified the user, the DevRev SDK will automatically create an anonymous user for you immediately after the SDK is configured.
@@ -39,7 +39,7 @@ The verified identification method is used to identify users with an identifier 
 The steps to identify a verified user are as follows:
 1. Generate an AAT for your system (preferably through your backend).
 2. Exchange your AAT for a session token for each user of your system.
-3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(_:sessionToken:)` method.
+3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(userID: string, sessionToken: string)` method.
 
 <Callout intent="warning">
 For security reasons, it is **strongly recommended** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).

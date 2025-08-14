@@ -80,7 +80,7 @@ The verified identification method is used to identify users with an identifier 
 The steps to identify a verified user are as follows:
 1. Generate an AAT for your system (preferably through your backend).
 2. Exchange your AAT for a session token for each user of your system.
-3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(_:sessionToken:)` method.
+3. Pass the user identifier and the exchanged session token to the `DevRev.identifyVerifiedUser(userId: String, sessionToken: String)` method.
 
 <Callout intent="warning">
 For security reasons, it is **strongly recommended** that the token exchange is executed on your backend to prevent exposing your application access token (AAT).
@@ -148,18 +148,18 @@ To update a user's information, use the following method:
 
 <Tabs>
   <Tab title="Kotlin">
-   ```kotlin
-DevRev.updateUser(
-	identity: Identity
-)
-```
+  ```kotlin
+  DevRev.updateUser(
+    identity: Identity
+  )
+  ```
   </Tab>
   <Tab title="Java">
   ```java
-DevRev.INSTANCE.updateUser(
-	Identity identity
-);
-```
+  DevRev.INSTANCE.updateUser(
+    Identity identity
+  );
+  ```
   </Tab>
 </Tabs>
 
@@ -190,7 +190,7 @@ The user is logged out by clearing their credentials, as well as unregistering t
 
 ### Identity model
 
-The `Identity` class is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser(_:)` and `updateUser(_:)` methods.
+The `Identity` class is used to provide user, organization, and account information when identifying users or updating their details. This class is used primarily with the `identifyUnverifiedUser(identity: Identity)` and `updateUser(identity: Identity)` methods.
 
 #### Properties
 

@@ -295,16 +295,16 @@ imports:
 
 Your data extraction implementation must handle two optional parameters from the event's `EventContext`:
 
-- **`extract_from`**: Timestamp (in format RFC3339) indicating extraction starting point (applies to both initial and incremental syncs)
-- **`reset_extract_from`**: Boolean flag for incremental syncs that determines whether data should be reextracted
+- **`extract_from`**: Timestamp in RFC3339 format indicating the starting point of extraction. This applies to both initial and incremental syncs.
+- **`reset_extract_from`**: A boolean flag for incremental syncs that determines whether data should be re-extracted.
 
 The extraction logic depends on the sync type and parameter combination:
 
 **Initial syncs**: Use `extract_from` as the starting timestamp for data extraction.
 
 **Incremental syncs**: 
-- If `reset_extract_from` is `true`: Start from `extract_from` (if provided) or extract all data
-- If `reset_extract_from` is `false` or not provided: Use `adapter.state.lastSuccessfulSyncStarted` timestamp
+- If `reset_extract_from` is `true`: Start from `extract_from` if it is provided; otherwise, extract all data.
+- If `reset_extract_from` is `false` or not provided: Use the `adapter.state.lastSuccessfulSyncStarted` timestamp.
 
 ```typescript
 const { reset_extract_from, extract_from } = adapter.event.payload.event_context;

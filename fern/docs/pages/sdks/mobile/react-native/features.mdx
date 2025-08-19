@@ -16,7 +16,7 @@ The `Identity` structure allows for custom fields in the user, organization, and
 
 You can select from the following methods to identify users within your application:
 
-### Anonymous identification
+### Identify an anonymous user
 
 The anonymous identification method allows you to create an anonymous user with an optional user identifier, ensuring that no other data is stored or associated with the user.
 
@@ -24,7 +24,7 @@ The anonymous identification method allows you to create an anonymous user with 
 DevRev.identifyAnonymousUser(userID: string)
 ```
 
-### Unverified identification
+### Identify an unverified user
 
 The unverified identification method identifies users with a unique identifier, but it does not verify their identity with the DevRev backend.
 
@@ -32,7 +32,7 @@ The unverified identification method identifies users with a unique identifier, 
 DevRev.identifyUnverifiedUser(userID: string, organizationID?: string)
 ```
 
-### Verified identification
+### Identify a verified user
 
 The verified identification method is used to identify users with an identifier unique to your system within the DevRev platform. The verification is done through a token exchange process between you and the DevRev backend.
 
@@ -84,7 +84,7 @@ The response of the API call contains a session token that you can use with the 
 As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
 </Callout>
 
-#### Identifying the verified user
+#### Identify the verified user
 
 Pass the user identifier and the exchanged session token to the verified identification method:
 
@@ -243,7 +243,7 @@ DevRev.trackEvent(name: string, properties?: { [key: string]: string })
 
 The DevRev SDK offers session analytics features to help you understand how users interact with your app.
 
-### Opting-in or out
+### Opt-in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -323,7 +323,7 @@ To stop a timer, use the following method:
 DevRev.endTimer(name: string, properties: { [key: string]: string })
 ```
 
-### Screen tracking
+### Track screens
 
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although screens are automatically tracked, you can manually track screens using the following method:
 
@@ -331,7 +331,7 @@ The DevRev SDK offers automatic screen tracking to help you understand how users
 DevRev.trackScreenName(name: string)
 ```
 
-### Screen transition management (Android only)
+### Manage screen transitions (Android only)
 
 The DevRev SDK allows tracking of screen transitions to understand the user navigation within your app.
 You can manually update the state using the following methods:

@@ -10,7 +10,7 @@ The identification function should be placed appropriately in your app after the
 The `Identity` structure allows for custom fields in the user, organization, and account traits. These fields must be configured through the DevRev app before they can be utilized. For more information, refer to [Object customization](https://devrev.ai/docs/product/object-customization).
 </Callout>
 
-### Anonymous identification
+### Identify an anonymous user
 
 The anonymous identification method allows you to create an anonymous user with an optional user identifier, ensuring that no other data is stored or associated with the user.
 
@@ -31,7 +31,7 @@ The anonymous identification method allows you to create an anonymous user with 
   </Tab>
 </Tabs>
 
-### Unverified identification
+### Identify an unverified user
 
 The unverified identification method identifies users with a unique identifier, but it does not verify their identity with the DevRev backend.
 
@@ -73,7 +73,7 @@ For example:
   </Tab>
 </Tabs>
 
-### Verified identification
+### Identify a verified user
 
 The verified identification method is used to identify users with an identifier unique to your system within the DevRev platform. The verification is done through a token exchange process between you and the DevRev backend.
 
@@ -125,7 +125,7 @@ The response of the API call contains a session token that you can use with the 
 As a good practice, **your** app should retrieve the exchanged session token from **your** backend at app launch or any relevant app lifecycle event.
 </Callout>
 
-#### Identifying the verified user
+#### Identify the verified user
 
 Pass the user identifier and the exchanged session token to the verified identification method:
 
@@ -430,7 +430,7 @@ For example:
 
 The DevRev SDK provides observability features to help you understand how your users are interacting with your app.
 
-### Opting-in or out
+### Opt-in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -744,7 +744,7 @@ For example:
   </Tab>
 </Tabs>
 
-#### Masking Jetpack Compose views
+#### Mask Jetpack Compose views
 
 If you want to mask any Jetpack Compose UI elements or views, you can apply a mask on it using a modifier.
 
@@ -765,7 +765,7 @@ TextField(
 )
 ```
 
-#### Masking web view elements
+#### Mask web view elements
 
 If you wish to explicitly mask any `WebView` element on a web page, you can do so by using the class `devrev-mask`.
 
@@ -775,7 +775,7 @@ For example:
 <label class="devrev-mask">OTP: 12345</label>
 ```
 
-#### Unmasking web view elements
+#### Unmask web view elements
 
 If you wish to explicitly unmask any manually masked `WebView` element, you can do so by using the class `devrev-unmask`.
 
@@ -791,17 +791,12 @@ For advanced use cases, you can provide a custom masking provider to explicitly 
 
 You can implement your own masking logic by creating a class that implements the `MaskLocationProvider` interface and setting your custom object as the masking provider. This allows you to specify explicit regions to be masked or to skip snapshots entirely.
 
-- `DevRev.setMaskLocationProvider(maskLocationProvider: MaskLocationProvider)`
-  Sets a custom provider that determines which UI regions should be masked during snapshots. This overrides any previously set provider.
-
-- `MaskLocationProvider`
-  Interface that must be implemented to return a `SnapshotMask` object containing masked regions and snapshot behavior.
-
-- `SnapshotMask`
-  Class used to describe regions of the screen to be masked and whether a snapshot should be skipped.
-
-- `SnapshotMask.Location`
-  Represents a specific rectangular area of the screen that should be masked.
+| Symbol | Description |
+|-|-|
+|`DevRev.setMaskLocationProvider(maskLocationProvider: MaskLocationProvider)`|A custom provider that determines which UI regions should be masked for privacy during snapshots (this overrides any previously set provider).|
+|`MaskLocationProvider`|An interface for providing explicit masking locations for UI snapshots.|
+|`SnapshotMask`|An object that describes the regions of a snapshot to be masked.|
+|`SnapshotMask.Location`|An object that describes a masked region.|
 
 For example:
 
@@ -912,7 +907,7 @@ For example:
   </Tab>
 </Tabs>
 
-### Screen tracking
+### Track screens
 
 The DevRev SDK offers automatic screen tracking to help you understand how users navigate through your app. Although activities and fragments are automatically tracked, you can manually track screens using the following method:
 
@@ -944,7 +939,7 @@ For example:
   </Tab>
 </Tabs>
 
-### Screen transition management
+### Manage screen transitions
 
 The DevRev SDK allows tracking of screen transitions to understand the user navigation within your app.
 You can check if a screen transition is in progress and manually update the state using the following methods:

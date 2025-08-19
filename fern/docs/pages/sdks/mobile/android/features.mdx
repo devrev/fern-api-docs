@@ -278,9 +278,9 @@ Once user identification is complete, you can start using the chat (conversation
   </Tab>
 </Tabs>
 
-### Creating a new conversation
+### Create a new conversation
 
-You have the ability to create a new conversation from within your app. The method will show the support chat screen and create a new conversation at the same time.
+You have the ability to create a new conversation from within your app. The method shows the support chat screen and creates a new conversation at the same time.
 
 <Tabs>
   <Tab title="Kotlin">
@@ -427,7 +427,7 @@ For example:
 
 The DevRev SDK provides observability features to help you understand how your users are interacting with your app.
 
-### Opt-in or out
+### Opt in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -999,7 +999,7 @@ The method requires a device identifier that persists across device restarts and
 1. Use the `FirebaseMessaging` object.
 2. Call the `firebaseMessaging.token.await()` method.
 
-This method will generate and return the device token.
+This method generates and returns the device token.
 ```kotlin
 val firebaseMessaging = FirebaseMessaging.getInstance()
 val token = firebaseMessaging.token.await()

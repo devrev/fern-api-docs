@@ -196,7 +196,7 @@ To show the support chat screen in your app, you can use the following method:
 DevRev.showSupport(successCallback, errorCallback)
 ```
 
-### Creating a new support conversation
+### Create a new support conversation
 
 You can initiate a new support conversation directly from your app. This method displays the support chat screen and simultaneously creates a new conversation.
 
@@ -240,7 +240,7 @@ DevRev.trackEvent(name, properties, successCallback, errorCallback)
 
 The DevRev SDK offers session analytics features to help you understand how users interact with your app.
 
-### Opt-in or out
+### Opt in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -306,7 +306,7 @@ If any previously masked views need to be unmasked, you can use the following me
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.
 
-The mechanism utilizes balanced start and stop methods, both of which accept a timer name and an optional dictionary of properties.
+The mechanism works using balanced start and stop methods that both accept a timer name and an optional dictionary of properties.
 
 To start a timer, use the following method:
 
@@ -375,7 +375,7 @@ Use the following method to unregister the device:
 DevRev.unregisterDevice(deviceID, successCallback, errorCallback)
 ```
 
-### Processing push notifications
+### Handle push notifications
 
 #### Android
 

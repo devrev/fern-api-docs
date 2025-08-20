@@ -1,0 +1,89 @@
+# Quickstart guide
+
+## Requirements
+
+- Flutter 3.3.0 or later.
+- Dart SDK 3.7.0 or later.
+- Android: minimum API level 24.
+- iOS: minimum deployment target 15.0.
+- Recommended: An SSH key configured locally and registered with [GitHub](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
+
+## Installation
+
+To install the DevRev SDK, run the following command:
+```sh
+flutter pub add devrev_sdk_flutter
+```
+
+It automatically fetches the latest version of our package and adds it to your project's pubspec.yaml file:
+```yaml
+dependencies:
+    devrev_sdk_flutter: <VERSION>
+```
+
+Alternatively, you can add the dependency manually by adding the package to your `pubspec.yaml` file under the `dependencies` section and run `flutter pub get` to install the package.
+
+To get the latest version of the SDK, you can check the [pub.dev page](https://pub.dev/packages/devrev_sdk_flutter).
+
+## Set up the DevRev SDK
+
+1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
+2. Under **PLuG settings** copy the value under **Your unique App ID**.
+3. Configure the DevRev SDK in your app using the obtained credentials.
+
+<Callout intent="warning">
+The DevRev SDK must be configured before you can use any of its features.
+</Callout>
+
+The SDK becomes ready for use once the following configuration method is executed.
+
+```dart
+DevRev.configure(appID);
+```
+
+For example:
+
+```dart
+DevRev.configure("abcdefg12345");
+```
+
+## Sample app
+
+A sample app with use cases for the DevRev SDK for Flutter has been provided as a part of our [public repository](https://github.com/devrev/devrev-sdk-flutter). To set up and run the sample app:
+
+1. Go to the `sample` directory:
+   ```sh
+   cd sample
+   flutter clean
+   rm -rf ios android web linux macos windows
+   flutter create --platforms=android,ios .
+   ```
+
+2. Install dependencies:
+   ```sh
+   flutter pub get
+   ```
+
+3. iOS app:
+   Open the `ios/Runner.xcworkspace` in Xcode for running the iOS app or run the following command.
+   ```sh
+   flutter run -d ios
+   ```
+
+   Additional Steps for iOS before running the app:
+   1. Change the minimum iOS deployment target version to `15.0`.
+   2. Go to the `ios` directory and perform `pod install`.
+   3. Open `ios/Runner.xcodeproj` in Xcode and select `Package dependencies -> FlutterGeneratedPluginSwiftPackage -> Package.swift` set iOS version from `12` to `15`.
+      ```swift
+      platforms: [
+         .iOS("15.0")
+      ]
+      ```
+   4. Perform `File -> Packages -> Resolve package versions`.
+   5. Build and run the app.
+
+4. Android app:
+   Open the `android` directory in Android Studio or run the following command.
+   ```sh
+   flutter run -d android
+   ```

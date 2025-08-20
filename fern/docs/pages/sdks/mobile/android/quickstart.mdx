@@ -2,10 +2,10 @@
 
 ## Requirements
 
-- Android Studio 2022.1.1 or later
-- Android Gradle plugin version 7.4 or later
-- Gradle version 7.6 or later
-- Minimum Android SDK 24
+- Android Studio 2025.1.1 or later.
+- Android Gradle Plugin 8.2 or later.
+- Gradle 8.9 or later.
+- Minimum Android API level 24.
 
 ## Integration
 
@@ -17,7 +17,7 @@ To integrate the latest version of our SDK into your app, follow these steps:
 
    ```kotlin
    dependencies {
-    implementation("ai.devrev.sdk:devrev-sdk:<version>")
+    implementation("ai.devrev.sdk:devrev-sdk:<VERSION>")
    }
    ```
 2. Add `mavenCentral` to your root `build.gradle.kts` file:
@@ -32,7 +32,7 @@ To integrate the latest version of our SDK into your app, follow these steps:
 
    ```groovy
    dependencies {
-    implementation 'ai.devrev.sdk:devrev-sdk:<version>'
+    implementation 'ai.devrev.sdk:devrev-sdk:<VERSION>'
    }
    ```
 
@@ -45,9 +45,9 @@ To integrate the latest version of our SDK into your app, follow these steps:
 </Tab>
 </Tabs>
 
-### Proguard rules
+### ProGuard rules
 
-If you are using Proguard in your project, add the following lines to your configuration:
+If you are using ProGuard in your project, add the following lines to your configuration:
    ```bash
    -keep class ai.devrev.** { *; }
    -keep class com.userexperior.* { *; }
@@ -57,9 +57,13 @@ If you are using Proguard in your project, add the following lines to your confi
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
 2. Under **PLuG settings** copy the value under **Your unique App ID**.
-3. After obtaining the credentials, you can configure the DevRev SDK in your app.
+3. Configure the DevRev SDK in your app using the obtained credentials.
 
-The SDK will be ready for use once you execute the following configuration method.
+<Callout intent="warning">
+The DevRev SDK must be configured before you can use any of its features.
+</Callout>
+
+The SDK becomes ready for use once the following configuration method is executed.
 
 <Tabs>
   <Tab title="Kotlin">
@@ -97,13 +101,13 @@ Use this property to check whether the DevRev SDK has been configured:
   </Tab>
 </Tabs>
 
-<Callout intent="note">
-`prefersDialogMode`, if set to true, enables the SDK to open the screens in the app's main task/activity
+<Callout intent="tip">
+The property `prefersDialogMode`, when set to `true`, enables the SDK to open the screens in the app's main task/activity.
 </Callout>
 
-4. To configure the SDK, you need to call the following method inside your `Application` class:
+4. Call the following method inside your `Application` class to configure the SDK:
 
-<Callout intent="note">
+<Callout intent="tip">
 If you don’t have a custom `Application` class, create one as shown below.
 </Callout>
 

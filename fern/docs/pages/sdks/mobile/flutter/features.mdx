@@ -264,7 +264,7 @@ DevRev.trackEvent("open-message-screen", {"id": "message-1337"});
 
 The DevRev SDK offers session analytics features to help you understand how users interact with your app.
 
-### Opt-in or out
+### Opt in or out
 
 Session analytics features are opted-in by default, enabling them from the start. However, you can opt-out using the following method:
 
@@ -343,7 +343,7 @@ DevRevUnmask(
 For enhanced session recording and screen transition handling, you can use `DevRevMonitoredApp` as a drop-in replacement for `MaterialApp`. This widget automatically handles screen transition states and ensures proper masking during navigation.
 
 <Callout intent="note">
-`DevRevMonitoredApp` is particularly useful when users want to avoid capturing snapshots during screen navigations, especially if any glitches occur. However, in most cases, this won't be necessary, as most of masking scenarios are not affected by standard navigation. This is an optional solution for enhanced control over session recording behavior.
+`DevRevMonitoredApp` is particularly useful when you want to avoid capturing snapshots during screen navigations, especially if any glitches occur. However, in most cases, this won't be necessary, as most of masking scenarios are not affected by standard navigation. This is an optional solution for enhanced control over session recording behavior.
 </Callout>
 
 ```dart
@@ -452,7 +452,7 @@ DevRev.unregisterDevice(deviceID);
 
 The method requires the device identifier, which should be the same as the one used when registering the device.
 
-### Process push notifications
+### Handle push notifications
 
 #### Android
 

@@ -178,7 +178,7 @@ All properties in `AccountTraits` are optional.
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `displayName` | `string or null` | The displayed name of the account |
+| `displayName` | `string OR null` | The displayed name of the account |
 | `domains` | `string[] OR null` | Array of domains associated with the account |
 | `description` | `string OR null` | A description of the account |
 | `phoneNumbers` | `string[] OR null` | Array of the account's phone numbers |
@@ -363,7 +363,7 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRev.registerDeviceToken(deviceToken, deviceID, successCallback, errorCallback)
 ```
 
-On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNS) token.
+On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification service (APNs) token.
 
 ### Unregister from push notifications
 

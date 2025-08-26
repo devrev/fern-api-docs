@@ -242,12 +242,6 @@ If you want to display the support chat screen from the top-most view controller
 DevRev.showSupport(isAnimated:)
 ```
 
-To create a new support conversation directly, use the following method:
-
-```swift
-DevRev.createSupportConversation(isAnimated:)
-```
-
 For example:
 
 ```swift
@@ -259,10 +253,8 @@ await DevRev.showSupport(from: settingsViewController)
 
 // Show the support chat screen from the top-most view controller, without an animation.
 await DevRev.showSupport(isAnimated: false)
-
-// Create a new support conversation directly from the top-most view controller.
-await DevRev.createSupportConversation(isAnimated: true)
 ```
+
 ### SwiftUI
 
 To display the support chat screen in a SwiftUI app, you can use the following view:
@@ -271,9 +263,24 @@ To display the support chat screen in a SwiftUI app, you can use the following v
 DevRev.supportView
 ```
 
+### Create a new support conversation
+
+You can initiate a new support conversation directly from your app. This method displays the support chat screen and simultaneously creates a new conversation.
+
+```swift
+DevRev.createSupportConversation(isAnimated:)
+```
+
+For example:
+
+```swift
+// Create a new support conversation directly from the top-most view controller.
+await DevRev.createSupportConversation(isAnimated: true)
+```
+
 ### New conversation closure
 
-You can receive a callback when a new conversation is created by setting the following closure:
+You can receive a callback when a user creates a new conversation by setting the following closure:
 
 ```swift
 DevRev.conversationCreatedCompletion

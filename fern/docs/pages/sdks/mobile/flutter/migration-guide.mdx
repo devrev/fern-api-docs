@@ -15,5 +15,5 @@ This guide helps you transition from the legacy UserExperior SDK to the new DevR
 | Session properties | `userExperior.setUserProperties(properties)` | `DevRev.addSessionProperties(properties)`<br />`DevRev.clearSessionProperties()` |
 | Masking sensitive data | `UEMarker(child: TextField(controller: provider.fieldController, decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),)` | `DevRevMask(child: TextField(decoration: InputDecoration(labelText: "foo-bar"),),)`<br />`DevRevUnmask(child: TextField(decoration: InputDecoration(labelText: "foo-bar"),),)` |
 | Timers | `userExperior.startTimer(timerName, properties)`<br />`userExperior.endTimer(timerName, properties)` | `DevRev.startTimer(name, properties)`<br />`DevRev.endTimer(name, properties)` |
-| PLuG support chat | Not supported. | `DevRev.showSupport()`<br /> `DevRev.createSupportConversation()` |
+| Support chat | Not supported. | `DevRev.showSupport()`<br /> `DevRev.createSupportConversation()` |
 | Push notifications | Not supported. | `DevRev.registerDeviceToken(deviceToken, deviceID)`<br />`DevRev.unregisterDevice(deviceID)` |

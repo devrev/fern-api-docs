@@ -2,14 +2,14 @@ During the attachments extraction phase of an Airdrop import, use `WorkerAdapter
 By default, it processes items from the attachments repo, which contains the URLs to stream the attachments.
 You can specify the `batchSize` parameter to control how many attachments are processed simultaneously.
 
-## Custom processing
+## Customize processing
 
 Sometimes custom logic is needed for attachment processing.
 For example, when attachment URLs have short expiration times and would expire before the sync reaches the attachments extraction phase.
 
 In such cases, you can provide custom processors to the `streamAttachments` function:
-- **reducer**: Transforms attachments into the format you need (grouping, filtering, batching, etc.)
-- **iterator**: Processes the transformed data and calls `adapter.processAttachment()` for each attachment
+- **reducer**: Transforms attachments into the format you need (grouping, filtering, batching, etc.).
+- **iterator**: Processes the transformed data and calls `adapter.processAttachment()` for each attachment.
 
 ### Implementation example
 

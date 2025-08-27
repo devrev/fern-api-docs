@@ -4,9 +4,8 @@ Follow these steps:
 
 1. Copy `.env.example` to a new file named `.env` and fill in the required variables.
 2. Deploy a draft version of your snap-in to your organization by using `make deploy`.
-3. Install the snap-in in your DevRev by going to **Settings** > **Snap-ins** > **Install snap-in**.
-4. Set up the connection under **Settings** > **Airdrops** > **Connections**.
-5. Create an import at **Settings** > **Airdrops** > **Airdrop**.
+3. Install the snap-in by going to **Settings** > **Snap-ins** > **Install snap-in** or by running `devrev snap_in activate`.
+4. Start an import by clicking the **Start Airdrop** button in the top right corner.
 
 This step is also a prerequisite for publishing the snap-in on the DevRev marketplace.
 
@@ -25,3 +24,13 @@ devrev snap_in_package logs | code -
 ```
 
 For more information, refer to [Debugging](/snapin-development/debugging).
+
+### Uninstall
+
+When you need to remove your snap-in from the organization, you can use the uninstall command to delete the most recently deployed snap-in package and version.
+
+Run the following command from the root directory of your snap-in:
+
+```bash
+make uninstall
+```

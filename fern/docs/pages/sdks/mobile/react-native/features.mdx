@@ -289,7 +289,7 @@ To clear the session properties in scenarios such as user logout or when the ses
 DevRev.clearSessionProperties()
 ```
 
-### Masking sensitive data
+### Mask sensitive data
 
 To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as password text fields are automatically masked.
 
@@ -297,28 +297,6 @@ While the auto-masking feature is sufficient for most situations, you can manual
 
 ```typescript
 DevRev.markSensitiveViews(tags: any[])
-```
-
-For example:
-
-```typescript
-import { View, findNodeHandle } from "react-native";
-import { useRef, useEffect } from "react";
-
-const YourComponent = () => {
-  const sensitiveViewRef = useRef(null);
-
-  useEffect(() => {
-    const id = findNodeHandle(sensitiveViewRef.current);
-    if (id) DevRev.markSensitiveViews([id]);
-  }, []);
-
-  return (
-    <View ref={sensitiveViewRef}>
-      {/* Sensitive content goes here */}
-    </View>
-  );
-};
 ```
 
 If any previously masked views need to be unmasked, you can use the following method:
@@ -330,23 +308,41 @@ DevRev.unmarkSensitiveViews(tags: any[])
 For example:
 
 ```typescript
-import { View, findNodeHandle } from "react-native";
+import * as DevRev from '@devrev/sdk-react-native';
+import { View, Text, findNodeHandle } from "react-native";
 import { useRef, useEffect } from "react";
 
 const YourComponent = () => {
-  const viewRef = useRef(null);
+  const sensitiveViewRef = useRef(null);
+  const insensitiveViewRef = useRef(null);
 
   useEffect(() => {
-    const id = findNodeHandle(viewRef.current);
-    if (id) DevRev.unmarkSensitiveViews([id]);
+    // Mark sensitive view
+    const sensitiveId = findNodeHandle(sensitiveViewRef.current);
+    if (sensitiveId) {
+      DevRev.markSensitiveViews([sensitiveId]);
+    }
+
+    // Unmark insensitive view
+    const insensitiveId = findNodeHandle(insensitiveViewRef.current);
+    if (insensitiveId) {
+      DevRev.unmarkSensitiveViews([insensitiveId]);
+    }
   }, []);
 
   return (
-    <View ref={viewRef}>
-      {/* Insensitive content goes here */}
+    <View>
+      <View ref={sensitiveViewRef}>
+        <Text>Sensitive content (masked in recordings)</Text>
+      </View>
+      <View ref={insensitiveViewRef}>
+        <Text>Insensitive content (visible in recordings)</Text>
+      </View>
     </View>
   );
 };
+
+export default YourComponent;
 ```
 
 ### Timers

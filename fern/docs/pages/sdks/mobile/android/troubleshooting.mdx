@@ -14,13 +14,28 @@
 
 ## ProGuard
 
+When trying to build your app with ProGuard enabled, refer to these common issues and their solutions.
+
+<Callout type="note">
+You can always refer to the [Android ProGuard documentation](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization#proguard) for more information.
+</Callout>
+
 - **Issue**: Missing class `com.google.android.play.core.splitcompat.SplitCompatApplication`.
-  **Solution**: Add the following line to your `proguard-rules.pro` file: `-dontwarn com.google.android.play.core.**`.
+  **Solution**: Add the following line to your `proguard-rules.pro` file:
+  ```proguard
+  -dontwarn com.google.android.play.core.**
+  ```
 
 - **Issue**: Missing class issue due to transitive Flutter dependencies.
   **Solution**: Add the following lines to your `proguard-rules.pro` file:
-  ```bash
+  ```proguard
   -keep class io.flutter.** { *; }
   -keep class io.flutter.plugins.** { *; }
   -keep class GeneratedPluginRegistrant { *; }
+  ```
+
+- **Issue**: Missing class `org.s1f4j.impl.StaticLoggerBinder`.
+  **Solution**: Add the following line to your `proguard-rules.pro` file:
+  ```proguard
+  -dontwarn org.slf4j.impl.StaticLoggerBinder
   ```

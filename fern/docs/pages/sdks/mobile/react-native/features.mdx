@@ -345,6 +345,19 @@ const YourComponent = () => {
 export default YourComponent;
 ```
 
+### Mask elements inside web views
+
+Masking elements inside web views (`WebView`) can be achieved by using the CSS class `devrev-mask` to mask an element and `devrev-unmask` to unmask an element.
+
+- Mark an element as masked:
+  ```html
+  <label class="devrev-mask">OTP: 12345</label>
+  ```
+- Mark an element as unmasked:
+  ```html
+  <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
+  ```
+
 ### Timers
 
 The DevRev SDK offers a timer mechanism to measure the time spent on specific tasks, allowing you to track events such as response time, loading time, or any other duration-based metrics.

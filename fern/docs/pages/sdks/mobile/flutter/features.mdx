@@ -310,7 +310,7 @@ To clear the session properties in scenarios such as user logout or when the ses
 DevRev.clearSessionProperties();
 ```
 
-### Masking sensitive data
+### Mask sensitive data
 
 To protect sensitive data, you can mask sensitive UI elements such as text fields, text views, and web views using `DevRevMask` widget, as shown below.
 
@@ -324,7 +324,7 @@ DevRevMask(
 )
 ```
 
-### Unmasking sensitive data
+### Unmask sensitive data
 
 You can also manually unmask UI elements that would otherwise be automatically masked using `DevRevUnmask`:
 
@@ -337,6 +337,19 @@ DevRevUnmask(
     ),
   )
 ```
+
+### Mask elements inside web views
+
+Masking elements inside web views (`WebView`) can be achieved by using the CSS class `devrev-mask` to mask an element and `devrev-unmask` to unmask an element.
+
+- Mark an element as masked:
+  ```html
+  <label class="devrev-mask">OTP: 12345</label>
+  ```
+- Mark an element as unmasked:
+  ```html
+  <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
+  ```
 
 ### Advanced session recording control while masking
 

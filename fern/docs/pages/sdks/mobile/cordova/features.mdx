@@ -161,21 +161,22 @@ To clear the session properties in scenarios such as user logout or when the ses
 DevRev.clearSessionProperties(successCallback, errorCallback)
 ```
 
-### Masking sensitive data
+### Mask sensitive data
 
-To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as text fields, text views, and web views are automatically masked.
+To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as password text fields are automatically masked.
 
-While the auto-masking feature may be sufficient for most situations, you can manually mark additional views as sensitive using the following method:
+While the auto-masking feature is sufficient for most situations, you can manually mark/unmark additional views as sensitive.
 
-```javascript
-DevRev.markSensitiveViews(tags, successCallback, errorCallback)
-```
+Masking elements can be achieved by using the CSS class `devrev-mask` to mask an element and `devrev-unmask` to unmask an element.
 
-If any previously masked views need to be unmasked, you can use the following method:
-
-```javascript
-DevRev.unmarkSensitiveViews(tags, successCallback, errorCallback)
-```
+- Mark an element as masked:
+  ```html
+  <label class="devrev-mask">OTP: 12345</label>
+  ```
+- Mark an element as unmasked:
+  ```html
+  <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
+  ```
 
 ### Timers
 

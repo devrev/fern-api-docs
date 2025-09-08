@@ -78,17 +78,17 @@ navigation:
     slug: sdks
     path: ../docs/pages/sdks/index.mdx
     contents:
-      - section: PLuG Web SDK
+      - section: Plug Web SDK
         slug: web
         icon: fa-globe
         contents:
           - page: Install the Web SDK
             slug: installation
             path: ../docs/pages/sdks/web/install.mdx
-          - page: Install PLuG search
+          - page: Install Plug search
             slug: install-search
             path: ../docs/pages/sdks/web/search.mdx
-          - page: Identify your users with PLuG
+          - page: Identify your users with Plug
             slug: user-identity
             path: ../docs/pages/sdks/web/user-identity.mdx
           - page: Track events

@@ -1,8 +1,8 @@
-The PLuG SDK is a robust tool designed to elevate your website or application by enhancing our widget’s capabilities. With our SDK, you can integrate our feature-rich widget, creating a dynamic and personalized user experience.
+The Plug SDK is a robust tool designed to elevate your website or application by enhancing our widget’s capabilities. With our SDK, you can integrate our feature-rich widget, creating a dynamic and personalized user experience.
 
 ## Initialize SDK
 
-To get started with the PLuG SDK on your website, call the `init()` method. This method is essential for enabling the SDK’s functionality, including session recording, the chat widget, and the search agent. Initialization is required before you can perform any other actions using the PLuG SDK.
+To get started with the Plug SDK on your website, call the `init()` method. This method is essential for enabling the SDK’s functionality, including session recording, the chat widget, and the search agent. Initialization is required before you can perform any other actions using the Plug SDK.
 
 ```jsx 
 useEffect(() => {
@@ -15,19 +15,19 @@ The `init()` method can accept multiple inputs, which are explained below:
 
 |Input parameter   |Description   |Values   |
 |---|---|---|
-|`app_id`   |The unique identifier for your PLuG SDK. This parameter is required.   |String   |
+|`app_id`   |The unique identifier for your Plug SDK. This parameter is required.   |String   |
 |`disable_plug_chat_window`   |The chat widget is enabled by default. Use this option if you want to disable the chat widget.   |Boolean (True or False)   |
-|`enable_default_launcher`   |Show/hide the default PLuG widget launcher.   |Boolean (True or False)   |
+|`enable_default_launcher`   |Show/hide the default Plug widget launcher.   |Boolean (True or False)   |
 |`session_recording_key`   |Identifies your session recording account and is required to enable the  SDK session recording features.    |String   |
 |`enable_session_recording`   |Instructs the widget to determine whether to start the session recording.   |Boolean (True or False)   |
 |`session_token`   |Identifies the user interacting with your app.   |String   |
 |`primary_text_color`   |The color of the launcher, button text for new tickets and conversations, conversation user text, and more. It must be a valid hex color code, such as `#f0f0f0`.    |String   |
 |`session_recording_options`    |Options for recording observability sessions.   |Refer to [Session recording options](https://devrev.ai/docs/plug/session-recording)    |
-|`accent_color`   |The accent color of the PLuG affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |
-|`custom_launcher_selector`   |A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the PLuG settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source.   |Boolean (True or False)   |
-|`spacing`   |Padding from the launcher: This padding can also be set in the PLuG settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |object `{bottom: string; side: string;}`  |
+|`accent_color`   |The accent color of the Plug affects the launcher, new ticket and conversation buttons, conversation user text, and more.   |String   |
+|`custom_launcher_selector`   |A CSS selector string is used to match the element to which the widget will be attached. You can also set this selector from the Plug settings on app.devrev.ai. If both sources are set, this value will be considered the definitive source.   |Boolean (True or False)   |
+|`spacing`   |Padding from the launcher: This padding can also be set in the Plug settings on app.devrev.ai. If a value is specified in both places, this value will be considered the definitive source. Bottom: Padding from the bottom of the launcher. Side: Spacing from the sides of the launcher   |object `{bottom: string; side: string;}`  |
 |`theme`   |The color scheme for the launcher and widget.   |`light` or `dark`         |
-|`widget_alignment`   |The PLuG widget can be positioned on either the left or right side of the launcher. You can also adjust the widget alignment through the PLuG settings at app.devrev.ai. If alignment settings are configured in both places, the value from app.devrev.ai will override the launcher setting.    |left or right   |
+|`widget_alignment`   |The Plug widget can be positioned on either the left or right side of the launcher. You can also adjust the widget alignment through the Plug settings at app.devrev.ai. If alignment settings are configured in both places, the value from app.devrev.ai will override the launcher setting.    |left or right   |
 
 <Callout intent="note">
 When React is in Strict mode, you may receive a warning about `window.plugSDK.init()` being called multiple times. These warnings do not affect the widget's installation or functionality.
@@ -35,7 +35,7 @@ When React is in Strict mode, you may receive a warning about `window.plugSDK.in
 
 ## Toggle widget theme
 
-The toggle theme method lets you dynamically adjust the PLuG SDK’s theme, even after the widget has been initialized. This feature allows for real-time theme changes based on your users' preferences.
+The toggle theme method lets you dynamically adjust the Plug SDK’s theme, even after the widget has been initialized. This feature allows for real-time theme changes based on your users' preferences.
 
 The method accepts the input options: `light` and `dark`.
 
@@ -46,12 +46,12 @@ window.plugSDK.toggleTheme('light | dark');
 Calling `toggleTheme()` switches between the current themes. Specifying a theme as a parameter allows you to toggle directly to that specific theme.
 
 <Callout intent="note">
-The theme specified in this method takes precedence over the theme configured in the PLuG settings in your DevRev app.
+The theme specified in this method takes precedence over the theme configured in the Plug settings in your DevRev app.
 </Callout>
 
 ## Toggle widget
 
-The `toggleWidget` method allows you to control the visibility of the PLuG chat widget.
+The `toggleWidget` method allows you to control the visibility of the Plug chat widget.
 
 Passing `true` opens the chat widget.
 
@@ -71,16 +71,16 @@ window.plugSDK.isWidgetOpen
 
 This returns `true` if the chat widget is open and `false` if it is closed.
 
-## Take action from PLuG chat events
+## Take action from Plug chat events
 
-This method allows you to listen for events from the PLuG widget. Below are the available values for `PAYLOAD_TYPE`.
-- `ON_PLUG_WIDGET_CLOSED`: Triggered when the PLuG widget is closed.
-- `ON_PLUG_WIDGET_OPENED`: Triggered when the PLuG widget is opened.
-- `ON_PLUG_WIDGET_READY`: Triggered when the PLuG widget is ready.
+This method allows you to listen for events from the Plug widget. Below are the available values for `PAYLOAD_TYPE`.
+- `ON_PLUG_WIDGET_CLOSED`: Triggered when the Plug widget is closed.
+- `ON_PLUG_WIDGET_OPENED`: Triggered when the Plug widget is opened.
+- `ON_PLUG_WIDGET_READY`: Triggered when the Plug widget is ready.
 - `ON_PLUG_WIDGET_UNREAD_COUNT_CHANGE`: Triggered when the user receives a new message. You can also track the number of unread messages and display them to the user.
 - `ON_CONVERSATION_START`: Indicates that the user has started a new conversation.
-- `ON_SEARCH_AGENT_QUERY`: Indicates that a new search query has been made in the PLuG search agent.
-- `ON_OBSERVABILITY_READY`: Triggered when the session analytics capabilities of PLuG are initialized.
+- `ON_SEARCH_AGENT_QUERY`: Indicates that a new search query has been made in the Plug search agent.
+- `ON_OBSERVABILITY_READY`: Triggered when the session analytics capabilities of Plug are initialized.
 
 ```jsx
 useEffect(() => {
@@ -94,7 +94,7 @@ useEffect(() => {
 
 ## Start conversation
 
-The `startConversationContent` method opens the PLuG widget directly to the conversation creation view. It replicates the action of clicking the **Send us a message** button, launching the widget to the conversation initiation screen.
+The `startConversationContent` method opens the Plug widget directly to the conversation creation view. It replicates the action of clicking the **Send us a message** button, launching the widget to the conversation initiation screen.
 
 This method also accepts an optional input parameter to pre-fill a message on the conversation creation screen, providing your users with a prompt to start a conversation with your team.
 
@@ -106,12 +106,12 @@ plugSDK.toggleWidget(true, 'create_conversation', {
 
 ## Shutdown
 
-The `shutdown()` method is used to end the current user session in the PLuG widget. It allows you to clear users' conversations and tickets when they log out of your application.
+The `shutdown()` method is used to end the current user session in the Plug widget. It allows you to clear users' conversations and tickets when they log out of your application.
 
 ```jsx
 await window.plugSDK.shutdown();
 ```
-After calling the `shutdown()` method, you can use the `init()` method to reinitialize the PLuG widget on your website if you want to display it again in the logged-out version of your application.
+After calling the `shutdown()` method, you can use the `init()` method to reinitialize the Plug widget on your website if you want to display it again in the logged-out version of your application.
 
 <Callout intent="note">
 Once the `shutdown()` method is called, all other widget functionalities, such as session recording and Nudges, will also be stopped. You will need to reinitialize the widget to reactivate these features.
@@ -119,7 +119,7 @@ Once the `shutdown()` method is called, all other widget functionalities, such a
 
 ## Initialize the search agent
 
-Calling the `initSearchAgent()` method sets up the PLuG search agent on your website. This initialization is required before performing any other actions with the PLuG widget SDK.
+Calling the `initSearchAgent()` method sets up the Plug search agent on your website. This initialization is required before performing any other actions with the Plug widget SDK.
 
 ```jsx
 useEffect(() => {
@@ -185,7 +185,7 @@ const { sessionId, tabId } = window.plugSDK.getSessionDetails();
 
 ## Track events
 
-To track user events using PLuG, utilize the `trackEvent` method available in the PLuG SDK. This method automatically links the event to the active user profile within the widget. For more details on user identification within the PLuG widget, refer to [Identify your users with PLuG](./user-identity).
+To track user events using Plug, utilize the `trackEvent` method available in the Plug SDK. This method automatically links the event to the active user profile within the widget. For more details on user identification within the Plug widget, refer to [Identify your users with Plug](./user-identity).
 
 ```jsx
 window.plugSDK.trackEvent(event_name, properties)

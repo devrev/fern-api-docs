@@ -19,7 +19,7 @@ A link type defines a relationship between two types of objects. It specifies:
 - A forward name describing the relationship from source to target
 - A backward name describing the relationship from target to source
 
-A link has a forward and a backward name. The example below shows an issue that is dependent on a ticket; the backward name is shown in the reverse direction.
+The example below shows a ticket that is dependent on an issue. The backward name for the relationship "is dependency of" is shown in the reverse direction.
 
 ```mermaid Link concept
 flowchart LR
@@ -29,10 +29,18 @@ flowchart LR
         'fontFamily': 'Segoe UI',
         'lineColor': '#7d7f7c'
 }}}%%
-iss((ISS-1))
+accTitle: Link concept
+accDescr: A link has a forward and a backward name. The example shows a ticket that is dependent on an issue, and the backward name "is dependency of" is shown in the reverse direction.
+
+subgraph source
 tkt((TKT-1))
-iss -- "is dependent on" --> tkt
-tkt -- "is dependency of" --> iss
+end
+subgraph target
+iss((ISS-1))
+end
+
+tkt -- "&nbsp; is dependent on &nbsp;" --> iss
+iss -- "&nbsp; is dependency of &nbsp;" --> tkt
 ```
 
 ### Supported object types
@@ -218,55 +226,31 @@ This section lists common links you can create from tickets and issues. It is no
 <Tabs>
   <Tab title="From a ticket">
 
-  ```mermaid Links from a ticket
-  flowchart LR
-  %%{init: {
-      'theme': 'base',
-      'themeVariables': {
-          'fontFamily': 'Segoe UI',
-          'lineColor': '#7d7f7c'
-  }}}%%
-  src[ticket]
-  t1[ticket]
-  art[article]
-  task[task]
-  iss[issue]
-  src -- "is related to" --> t1
-  src -- "is related to" --> art
-  src -- "is merged into" --> t1
-  src -- "is follow up of" --> t1
-  src -- "is parent of" --> t1
-  src -- "is parent of" --> task
-  src -- "is dependent on" --> iss
-  ```
+  | From source | Link type | To target |
+  | :---- | :---- | :---- |
+  | ticket | is related to | ticket, article |
+  | ticket | is parent of | ticket |
+  | ticket | is merged into | ticket |
+  | ticket | is dependent on | issue |
 
   <Callout intent="note">
-- Only ticket → issue links are allowed for "is dependent on".
-- Links cannot be created in reverse (issue → ticket); the UI automatically flips them.
+  Only ticket → issue is allowed for "is dependent on". Creating the link in reverse (issue → ticket) is not possible; but we can swap the source and target objects to achieve the same result.
+  </Callout>
 
   </Tab>
 
   <Tab title="From an issue">
 
-  ```mermaid Links from an issue
-  flowchart LR
-  %%{init: {
-      'theme': 'base',
-      'themeVariables': {
-          'fontFamily': 'Segoe UI',
-          'lineColor': '#7d7f7c'
-  }}}%%
-  src[issue]
-  i2[issue]
-  task[task]
-  code[code change]
-  src -- "is related to" --> i2
-  src -- "is duplicate of" --> i2
-  src -- "is parent of" --> i2
-  src -- "is parent of" --> task
-  src -- "is dependent on" --> i2
-  src -- "is dependent on" --> code
-  ```
+  | From source | Link type | To target |
+  | :---- | :---- | :---- |
+  | issue | is parent of | issue, task |
+  | issue | is related to | issue |
+  | issue | is duplicate of | issue |
+  | issue | is dependent on | issue |
+
+  <Callout intent="note">
+  Only issue → task is allowed for "is parent of". task cannot be linked as a parent of an issue.
+  </Callout>
 
   </Tab>
 </Tabs>

@@ -19,6 +19,22 @@ A link type defines a relationship between two types of objects. It specifies:
 - A forward name describing the relationship from source to target
 - A backward name describing the relationship from target to source
 
+A link has a forward and a backward name. The example below shows an issue that is dependent on a ticket; the backward name is shown in the reverse direction.
+
+```mermaid Link concept
+flowchart LR
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
+iss((ISS-1))
+tkt((TKT-1))
+iss -- "is dependent on" --> tkt
+tkt -- "is dependency of" --> iss
+```
+
 ### Supported object types
 
 Links can be created between the following object types:
@@ -202,13 +218,27 @@ This section lists common links you can create from tickets and issues. It is no
 <Tabs>
   <Tab title="From a ticket">
 
-  | From source | Link type | To target |
-  | :---- | :---- | :---- |
-  | ticket | is related to | ticket, article |
-  | ticket | is merged into | ticket |
-  | ticket | is follow up of | ticket |
-  | ticket | is parent of | ticket, task |
-  | ticket | is dependent on | issue |
+  ```mermaid Links from a ticket
+  flowchart LR
+  %%{init: {
+      'theme': 'base',
+      'themeVariables': {
+          'fontFamily': 'Segoe UI',
+          'lineColor': '#7d7f7c'
+  }}}%%
+  src[ticket]
+  t1[ticket]
+  art[article]
+  task[task]
+  iss[issue]
+  src -- "is related to" --> t1
+  src -- "is related to" --> art
+  src -- "is merged into" --> t1
+  src -- "is follow up of" --> t1
+  src -- "is parent of" --> t1
+  src -- "is parent of" --> task
+  src -- "is dependent on" --> iss
+  ```
 
   <Callout intent="note">
   Only ticket → issue is allowed for "is dependent on". Creating the link in reverse (issue → ticket) is not allowed; the UI auto-flips it.
@@ -218,13 +248,25 @@ This section lists common links you can create from tickets and issues. It is no
 
   <Tab title="From an issue">
 
-  | From source | Link type | To target |
-  | :---- | :---- | :---- |
-  | issue | is related to | issue |
-  | issue | is duplicate of | issue |
-  | issue | is parent of | issue, task |
-  | issue | is dependent on | issue |
-  | issue | is dependent on | code change |
+  ```mermaid Links from an issue
+  flowchart LR
+  %%{init: {
+      'theme': 'base',
+      'themeVariables': {
+          'fontFamily': 'Segoe UI',
+          'lineColor': '#7d7f7c'
+  }}}%%
+  src[issue]
+  i2[issue]
+  task[task]
+  code[code change]
+  src -- "is related to" --> i2
+  src -- "is duplicate of" --> i2
+  src -- "is parent of" --> i2
+  src -- "is parent of" --> task
+  src -- "is dependent on" --> i2
+  src -- "is dependent on" --> code
+  ```
 
   </Tab>
 </Tabs>

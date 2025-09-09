@@ -1,17 +1,17 @@
-PLuG has a completely [no-code way](https://docs.devrev.ai/plug/customize#branding-style-and-layout) of changing the look and interaction of your widget. In case you wish to make your PLuG widget more interactive and customized to how your app is structured, you can use these customization properties to set up your widget.
+Plug has a completely [no-code way](https://docs.devrev.ai/plug/customize#branding-style-and-layout) of changing the look and interaction of your widget. In case you wish to make your Plug widget more interactive and customized to how your app is structured, you can use these customization properties to set up your widget.
 
 <Callout intent="info">
-If you have customized these properties of the widget through the PLuG settings page of DevRev, the values set in the initalization code take priority over those which you have updated in your PLuG settings.
+If you have customized these properties of the widget through the Plug settings page of DevRev, the values set in the initalization code take priority over those which you have updated in your Plug settings.
 </Callout>
 
-All of these properties have to be passed as parameters while initializing the PLuG widget using `plugSDK.init()`. For details, refer to the PLuG SDK for Web [methods documentation](./methods).
+All of these properties have to be passed as parameters while initializing the Plug widget using `plugSDK.init()`. For details, refer to the Plug SDK for Web [methods documentation](./methods).
 
 | Customization              | Description                                                                               |
 | -------------------------- | ----------------------------------------------------------------------------------------- |
 | `custom_launcher_selector` | Customize the widget launcher to best fit your website or app.                            |
 | `widget_alignment`         | Align the widget to be placed either on the left or right side, relative to the launcher. |
-| `enable_default_launcher`  | Show/hide the default PLuG Widget launcher.                                               |
-| `theme`                    | Set the theme of the PLuG Widget.                                                         |
+| `enable_default_launcher`  | Show/hide the default Plug Widget launcher.                                               |
+| `theme`                    | Set the theme of the Plug Widget.                                                         |
 
 ## Code sandbox
 
@@ -24,11 +24,11 @@ All of these properties have to be passed as parameters while initializing the P
 
 ## Properties
 
-### PLuG launcher
+### Plug launcher
 
-Customize the widget launcher to best fit your website or app; or show or hide the default PLuG widget launcher.
+Customize the widget launcher to best fit your website or app; or show or hide the default Plug widget launcher.
 
-To customize your PLuG launcher styles, specify the CSS selector in the `custom_launcher_selector` property. This CSS selector is the reference based on which your PLuG widget opens. This property accepts a string value. The selector can also be configured through the plug settings on app.devrev.ai.
+To customize your Plug launcher styles, specify the CSS selector in the `custom_launcher_selector` property. This CSS selector is the reference based on which your Plug widget opens. This property accepts a string value. The selector can also be configured through the plug settings on app.devrev.ai.
 
 ```jsx
 custom_launcher_selector?: '#my-plug-widget'
@@ -56,7 +56,7 @@ The default value is `right`.
 
 ### Spacing
 
-Adjust spacing of the PLuG widget.
+Adjust spacing of the Plug widget.
 
 Two properties are available to apply spacing.
 
@@ -86,7 +86,7 @@ spacing?:{
 
 ### Light/dark theme
 
-Set the theme of the PLuG widget.
+Set the theme of the Plug widget.
 
 ```jsx
 theme?: 'dark' | 'light';

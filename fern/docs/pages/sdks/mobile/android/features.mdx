@@ -89,7 +89,7 @@ For security reasons, it is **strongly recommended** that the token exchange is 
 #### Generate an AAT
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
-2. Open the **PLuG Tokens** page.
+2. Open the **Plug Tokens** page.
 3. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
 
 <Callout intent="warning">
@@ -261,7 +261,7 @@ All properties in `AccountTraits` are optional.
 | `tier` | `String?` | The account's tier or plan level |
 | `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
 
-## PLuG support chat
+## Plug support chat
 
 Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. To open the chat dialog, your application should use the `showSupport` API, as shown in the following example:
 
@@ -955,7 +955,7 @@ You can check if a screen transition is in progress and manually update the stat
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to notify users about new messages in the PLuG support chat.
+The DevRev backend sends push notifications to your app to notify users about new messages in the Plug support chat.
 
 ### Configuration
 
@@ -1035,7 +1035,7 @@ The method requires the device identifier, which should be the same as the one u
 
 ### Handle push notifications
 
-The DevRev SDK currently does not support automatic handling of push notifications. To open the PLuG chat and manage navigation internally, you must pass the message payload received in the notification to the SDK.
+The DevRev SDK currently does not support automatic handling of push notifications. To open the Plug chat and manage navigation internally, you must pass the message payload received in the notification to the SDK.
 
 <Tabs>
   <Tab title="Kotlin">

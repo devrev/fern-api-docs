@@ -14,5 +14,5 @@ This guide and chart should help facilitate the transition from the legacy UserE
 | Session Properties | `UserExperior.setUserProperties(Map<string, string>)` | `DevRev.addSessionProperties(properties: { [key: string]: string })`<br /> `DevRev.clearSessionProperties()` |
 | Masking Sensitive Data | `UserExperior.addInSecureViewBucket(any[])`<br />`UserExperior.removeFromSecureViewBucket(any[])` | `DevRev.markSensitiveViews(tags: any[])`<br />`DevRev.unmarkSensitiveViews(tags: any[])` |
 | Timers | Not supported. | `DevRev.startTimer(name: string, properties: { [key: string]: string })`<br /> `DevRev.endTimer(name: string, properties: { [key: string]: string })` |
-| PLuG support chat | Not supported. | `DevRev.showSupport()`<br /> `DevRev.createSupportConversation()`<br /> `DevRev.setShouldDismissModalsOnOpenLink()`<br /> `DevRev.setInAppLinkHandler()` |
+| Plug support chat | Not supported. | `DevRev.showSupport()`<br /> `DevRev.createSupportConversation()`<br /> `DevRev.setShouldDismissModalsOnOpenLink()`<br /> `DevRev.setInAppLinkHandler()` |
 | Push Notifications | Not supported. | `DevRev.registerDeviceToken()`<br /> `DevRev.unregisterDevice(deviceID: string)`<br /> `DevRev.processPushNotification()` |

@@ -83,8 +83,7 @@ curl --location 'https://api.devrev.ai/link-types.custom.create' \
         }
     ],
     "forward_name": "is parent of",
-    "backward_name": "is child of",
-    "deprecated": false
+    "backward_name": "is child of"
 }'
 ```
 
@@ -129,7 +128,7 @@ curl --location 'https://api.devrev.ai/link-types.custom.list' \
 --data '{
     "source_types_v2": [
         {
-            "leaf_type": "ticket,
+            "leaf_type": "ticket"
         }
     ]
 }'
@@ -197,7 +196,7 @@ This configuration:
 
 <Callout intent="tip">
 The subtype should exist for the corresponding source type.
-To add more valid source subtypes, use the update endpoint to add them to the `source_types` array.
+To add more valid source subtypes, use the update endpoint to add them to the `source_types_v2` array.
 </Callout>
 
 ## Deprecate link types
@@ -207,14 +206,14 @@ Link types cannot be deleted, only deprecated. This ensures that existing links 
 referential integrity and prevents data corruption.
 </Callout>
 
-To deprecate a link type, use the update endpoint and set `deprecated` to `true`:
+To deprecate a link type, use the update endpoint and set `is_deprecated` to `true`:
 ```curl {6}
 curl --location 'https://api.devrev.ai/link-types.custom.update' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "id": "don:core:dvrv-us-1:devo/demo:custom_link_type/1",
-    "deprecated": true
+    "is_deprecated": true
 }'
 ```
 
@@ -253,7 +252,7 @@ src -- "&nbsp; is merged into &nbsp;" --> t1
 ```
 
 <Callout intent="note">
-Only ticket → issue is allowed for creating a link with "is dependent on". Creating the link in reverse (issue → ticket) is not possible; but we can swap the source and target objects to achieve the same result.
+Only ticket → issue is allowed for creating a link with "is dependent on". Creating the link in reverse (issue → ticket) is not possible; however, you can swap the source and target objects to achieve the same result.
 </Callout>
 
 ### Links from issues
@@ -292,4 +291,4 @@ src -- "&nbsp; is duplicate of &nbsp;" --> t1
 | is merged into | Yes | No | No | 2 | Ticket merges (ticket → ticket) |
 | is follow up of | No | No | No | Not specified | Constraints are enforced only for ticket → ticket; outside that pair, constraints may not be checked |
 | is dependent on | Yes | Yes | Yes | No fixed limit | Ticket → issue, issue → issue, issue → code change |
-| is duplicate of | Not specified | Not specified | Not specified | Not specified | Allowed for issue → issue and incident → incident in Codex; no extra constraints configured |
+| is duplicate of | Not specified | Not specified | Not specified | Not specified | For example, issue → issue; no extra constraints configured |

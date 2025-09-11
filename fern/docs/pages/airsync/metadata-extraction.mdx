@@ -7,10 +7,10 @@ You can check which object types for AirSync DevRev supports [here](/public/airs
 
 ## Triggering event
 
-Airdrop initiates the metadata extraction by starting the snap-in with a message with an event
+AirSync initiates the metadata extraction by starting the snap-in with a message with an event
 of type `EXTRACTION_METADATA_START`.
 
-The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_METADATA_DONE`
+The snap-in must respond to AirSync with a message with an event of type `EXTRACTION_METADATA_DONE`
 when done, or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Implementation
@@ -219,7 +219,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
     ### Mark record types as loadable
 
     The record types that will be used in a 2-way sync must be marked with `is_loadable`. 
-    This will allow Airdrop to load the record types to the external system.
+    This will allow AirSync to load the record types to the external system.
 
     ```json {6,18}
     {
@@ -367,7 +367,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
   Some references have the role of parent or child.
   This means that the child record doesn't make sense without its parent, for example a comment
   attached to a ticket.
-  Assigning a `reference_type` helps Airdrop correctly handle such fields in case the end-user
+  Assigning a `reference_type` helps AirSync correctly handle such fields in case the end-user
   decides to filter some of the parent records out.
 
   ### Define field attributes

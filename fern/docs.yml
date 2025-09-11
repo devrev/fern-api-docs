@@ -77,11 +77,8 @@ redirects:
   - source: /:path*/sdks/mobile/:slug*
     destination: /:path*/sdks/:slug*
     permanent: true
-  - source: /:path*/snapin-development/adaas/:slug*
-    destination: /:path*/airdrop/:slug*
-    permanent: true
-  - source: /:path*/airdrop/overview
-    destination: /:path*/airdrop
+  - source: /:path*/airdrop/:slug*
+    destination: /:path*/airsync/:slug*
     permanent: true
   - source: /beta/guides/object-customization
     destination: /public/guides/object-customization

@@ -128,58 +128,119 @@ For `scope=external` articles, the expected behavior is that they are published 
 
 ## Authorization policy
 
-The *Authorization policy* object translates permission structures from an external system into DevRev's access control model. 
-It enables the import of external roles and their associated permissions, automatically creating corresponding roles, role sets, and access control entries (ACEs) within DevRev. 
-This allows defining CRUD (Create, Read, Update, Delete) permissions for specific record types, applying them to users and groups.
+The authorization policy object provides a scalable way to manage both object-level and field-level permissions. By combining object and field permissions and allowing multiple targets in a single policy, it simplifies permission management and reduces complexity.
+
+When you import an authorization policy object, DevRev automatically translates it into its own access control model. It creates the necessary roles, role sets, and access control entries (ACEs) to enforce the permissions you've defined. This allows you to mirror complex permission schemes from external systems within DevRev.
 
 <Info>
-Only 1-way sync (from the external system to DevRev) is supported for authorization policy.
+Only 1-way sync (from the external system to DevRev) is supported for the authorization policy.
 </Info>
 
-### Object fields
 
-The Authorization policy object supports the following fields:
+### Object structure
 
-- `groups` (optional): A list of group identifiers from the external system to which this policy applies.
-- `users` (optional): A list of user identifiers from the external system to which this policy applies.
-- `targets`: Defines the DevRev record types the permissions apply to. It uses the `type_key` type. The format differs between metadata definition and runtime import.
-- `privileges`: Specifies the permissions granted by the policy. These should be normalized to CRUD operations.
+The authorization policy object consists of four main fields:
+
+- `users` (optional): A list of user identifiers to whom this policy applies.
+- `groups` (optional): A list of group identifiers to whom this policy applies.
+- `object_access` (required): Defines object-level CRUD (Create, Read, Update, Delete) permissions for specified record types.
+- `field_access` (optional): Defines field-level read and write permissions for specified record types.
+
+#### Object-level permissions
+
+The `object_access` array defines which privileges (`create`, `read`, `update`, `delete`) are granted for which record types. You can group multiple record types under the same set of privileges.
+
+#### Field-level permissions
+
+The `field_access` array allows for more granular control. For each record type, you can specify:
+- `record_type`: The record type to which the field access applies.
+- `read_all_fields`: A boolean to grant read access to all fields.
+- `write_all_fields`: A boolean to grant write access to all fields.
+- `read_fields`: A list of specific fields that can be read if `read_all_fields` is false.
+- `write_fields`: A list of specific fields that can be written if `write_all_fields` is false.
+
+This provides fine-grained control over data visibility and modification within a record.
 
 ### External domain metadata
 
-To define the `targets` field in the external domain metadata use the `type_key` type to specify a list of strings representing the record types or record type categories the policy applies to.
-- Use the prefix `#record:` for specific record types (for example, `#record:document`).
-- Use the prefix `#category:` for record type categories (for example, `#category:users`).
+This is an example of how to define the authorization policy object in your external domain metadata. This structure defines the fields for `object_access` and `field_access`, linking them to specific record types.
 
-Example:
 ```json
-["#record:document", "#category:users"]
+"<external_record_type_name>": {
+  "name": "Authorization Policy",
+  "fields": {
+    "groups": {
+      "name": "Groups",
+      "type": "reference",
+      "collection": {},
+      "reference": { "refers_to": { "#record:groups": {} } }
+    },
+     "users": {
+      "name": "Users",
+      "type": "reference",
+      "collection": {},
+      "reference": { "refers_to": { "#record:users": {} } }
+    },
+    "object_access": {
+      "name": "Object access",
+      "type": "record_type_privilege",
+      "is_required": true,
+      "collection": {},
+      "record_type_privilege": { "type_keys": ["#category:issues", "#record:ext_bug"] }
+    },
+    "field_access": {
+      "name": "Field access",
+      "type": "field_privileges",
+      "collection": {},
+      "field_privileges": { "type_keys": ["#category:issues", "#record:ext_bug"] }
+    },
+  },
+  "is_snapshot": true
+}
 ```
-
-To define the `privileges` field in the external domain metadata, specify an `enum` field representing the distinct permission levels available in the external system. 
-Normalize these external permissions to their closest CRUD equivalents (create, read, update, delete).
-
-During initial domain mapping, you map these enum values to DevRev's standard CRUD permissions. End users can later customize this mapping if needed.
 
 <Warning>
-Authorization policies should always represent the current state of the external system. In each sync run, the entire policy should be recreated or not provided at all.
-
-The object must be marked as `is_snapshot` to indicate it represents the current state of the external system.
+Authorization policies must always represent the current state of the external system. In each sync run, the entire policy should be provided. The object must be marked as `is_snapshot: true` in the external domain metadata.
 </Warning>
 
-### Runtime import
+### Extracted data file
 
-The `targets` field is an array of strings containing the actual DevRev record type names. 
-If a category was specified in the metadata (for example, `#category:users`), it should be expanded into the list of all record types belonging to that category at runtime.
+During an import, the extracted data file must follow the structure defined in the metadata. This file contains the actual users, groups, and permission rules to be applied in DevRev.
 
-For example, if the `#category:users` includes "executives" and "developers", the runtime targets field should be:
 ```json
-["document", "executives", "developers"]
-```
-
-The `privileges` field is an array of strings representing the specific CRUD permissions granted by the policy, based on the mapping defined during domain setup (or as re-mapped by the user).
-
-For example, if the external role granted read and update access, the runtime privileges field should be:
-```json
-["read", "update"]
+{
+  "users": [
+    "ext_user-1",
+    "ext_user-2"
+  ],
+  "groups": [
+    "ext_group-1",
+    "ext_default_group"
+  ],
+  "object_access": [
+    {
+      "record_types": ["ext_bug", "ext_task"],
+      "privileges": ["create", "read", "update", "delete"]
+    },
+    {
+      "record_types": ["ext_todo", "ext_iss"],
+      "privileges": ["create", "read"]
+    }
+  ],
+  "field_access": [
+    {
+      "record_type": "ext_bug",
+      "read_all_fields": false,
+      "write_all_fields": false,
+      "read_fields": ["ext_field1", "field2"],
+      "write_fields": ["ext_field3", "field4"]
+    },
+    {
+      "record_type": "ext_task",
+      "read_all_fields": false,
+      "write_all_fields": true,
+      "read_fields": ["ext_field1", "field2"]
+    }
+  ]
+}
 ```

@@ -199,6 +199,14 @@ This is an example of how to define the authorization policy object in your exte
 }
 ```
 
+The `object_access` and `field_access` fields use `type_keys` to define which record types or categories the authorization policy applies to. Use these prefixes:
+
+- `#record:` for specific record types (example: `#record:document`)
+- `#category:` for record type categories (example: `#category:users`)
+
+Each record type must be included in the `type_keys` array for both `object_access` and `field_access` fields to ensure proper transformation during import.
+
+
 <Warning>
 Authorization policies must always represent the current state of the external system. In each sync run, the entire policy should be provided. The object must be marked as `is_snapshot: true` in the external domain metadata.
 </Warning>

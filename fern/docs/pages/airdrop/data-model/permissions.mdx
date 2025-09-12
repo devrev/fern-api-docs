@@ -149,6 +149,10 @@ The authorization policy object consists of four main fields:
 - `object_access` (required): Defines object-level CRUD (Create, Read, Update, Delete) permissions for specified record types.
 - `field_access` (optional): Defines field-level read and write permissions for specified record types.
 
+<Info>
+Apart from `object_access`, either `users` or `groups` field should be mapped and provided in each extracted file.
+</Info>
+
 #### Object-level permissions
 
 The `object_access` array defines which privileges (`create`, `read`, `update`, `delete`) are granted for which record types. 

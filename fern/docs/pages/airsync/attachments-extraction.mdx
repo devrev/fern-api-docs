@@ -4,31 +4,31 @@ During the attachments extraction phase, the snap-in retrieves attachments from 
 
 ```mermaid
 sequenceDiagram
-    participant Airdrop
+    participant AirSync
     participant Snap-in
     participant ExternalSystem
     
-    Airdrop->>Snap-in: EXTRACTION_ATTACHMENTS_START
+    AirSync->>Snap-in: EXTRACTION_ATTACHMENTS_START
     
     alt Success path
         Snap-in->>ExternalSystem: Request attachments
         ExternalSystem->>Snap-in: Return attachments
-        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_DONE
+        Snap-in->>AirSync: EXTRACTION_ATTACHMENTS_DONE
     
     else Runtime limit reached
-        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_PROGRESS
-        Airdrop->>Snap-in: EXTRACTION_ATTACHMENTS_CONTINUE
-        Note over Snap-in,Airdrop: Process continues where it left off
+        Snap-in->>AirSync: EXTRACTION_ATTACHMENTS_PROGRESS
+        AirSync->>Snap-in: EXTRACTION_ATTACHMENTS_CONTINUE
+        Note over Snap-in,AirSync: Process continues where it left off
     
     else Rate limiting required
-        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_DELAY (with back-off time)
-        Note over Airdrop: Waits for specified time
-        Airdrop->>Snap-in: EXTRACTION_ATTACHMENTS_CONTINUE
-        Note over Snap-in,Airdrop: Process resumes after delay
+        Snap-in->>AirSync: EXTRACTION_ATTACHMENTS_DELAY (with back-off time)
+        Note over AirSync: Waits for specified time
+        AirSync->>Snap-in: EXTRACTION_ATTACHMENTS_CONTINUE
+        Note over Snap-in,AirSync: Process resumes after delay
     
     else Error occurs
-        Snap-in->>Airdrop: EXTRACTION_ATTACHMENTS_ERROR
-        Note over Snap-in,Airdrop: Process terminates
+        Snap-in->>AirSync: EXTRACTION_ATTACHMENTS_ERROR
+        Note over Snap-in,AirSync: Process terminates
     end
 ```
 
@@ -36,12 +36,12 @@ sequenceDiagram
 
 | Event | Direction | Description |
 |-------|-----------|-------------|
-| `EXTRACTION_ATTACHMENTS_START` | Airdrop → Snap-in | Initiates the attachments extraction |
-| `EXTRACTION_ATTACHMENTS_PROGRESS` | Snap-in → Airdrop | Indicates process is ongoing but runtime limit (13 minutes) reached |
-| `EXTRACTION_ATTACHMENTS_DELAY` | Snap-in → Airdrop | Requests a delay due to rate limiting from external system |
-| `EXTRACTION_ATTACHMENTS_CONTINUE` | Airdrop → Snap-in | Resumes the extraction process after progress update or delay |
-| `EXTRACTION_ATTACHMENTS_DONE` | Snap-in → Airdrop | Signals successful completion of attachments extraction |
-| `EXTRACTION_ATTACHMENTS_ERROR` | Snap-in → Airdrop | Indicates that an error occurred during extraction |
+| `EXTRACTION_ATTACHMENTS_START` | AirSync → Snap-in | Initiates the attachments extraction |
+| `EXTRACTION_ATTACHMENTS_PROGRESS` | Snap-in → AirSync | Indicates process is ongoing but runtime limit (13 minutes) reached |
+| `EXTRACTION_ATTACHMENTS_DELAY` | Snap-in → AirSync | Requests a delay due to rate limiting from external system |
+| `EXTRACTION_ATTACHMENTS_CONTINUE` | AirSync → Snap-in | Resumes the extraction process after progress update or delay |
+| `EXTRACTION_ATTACHMENTS_DONE` | Snap-in → AirSync | Signals successful completion of attachments extraction |
+| `EXTRACTION_ATTACHMENTS_ERROR` | Snap-in → AirSync | Indicates that an error occurred during extraction |
 
 ## Implementation
 
@@ -102,7 +102,7 @@ async function getFileStream({
 
 ## Emitting responses
 
-The snap-in must send exactly one response to Airdrop when extraction is complete:
+The snap-in must send exactly one response to AirSync when extraction is complete:
 
 ```typescript Success response
 await adapter.emit(ExtractorEventType.ExtractionAttachmentsDone);

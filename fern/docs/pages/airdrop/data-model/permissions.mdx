@@ -212,7 +212,8 @@ The `object_access` and `field_access` fields use `type_keys` to define which re
 Each record type must be included in the `type_keys` array for both `object_access` and `field_access` fields to ensure proper transformation during import.
 
 <Warning>
-Authorization policies must always represent the current state of the external system. In each sync run, the entire policy should be provided.
+Authorization policies must always represent the current state of the external system. In each sync run, the entire policy should be provided. 
+If there were no changes since the last sync, the policy should not be provided.
 The object must be marked as `is_snapshot: true` in the external domain metadata.
 </Warning>
 

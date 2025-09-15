@@ -6,41 +6,41 @@ This document contains the list of all DevRev object types that are supported fo
 
 ## Summary
 
-| Object Type | Object Hierarchy | Loading | Extraction | Subtype | AppFragment | Comment |
-|-------|-------------|:-------:|:----------:|:-------:|:----------:|-------------|
-| [new_custom_object](#new_custom_object) | custom_object | ✔︎ | ✔︎ | ✔︎ |  | _Example of how custom objects look in the context of AirSync mapping_ |
+| Object Type | Object Hierarchy | Loading | Extraction | Subtype | Comment |
+|-------|-------------|:-------:|:----------:|:-------:|-------------|
+| [new_custom_object](#new_custom_object) | custom_object | ✔︎ | ✔︎ | ✔︎ | _Example of how custom objects look in the context of AirSync mapping_ |
 | [account](#account) | account | ✔︎ |  |  |  |  |
-| [airdrop_authorization_policy](#airdrop_authorization_policy) | airdrop_authorization_policy | ✔︎ |  |  |  | _The intermediate object type for creating MFZ object types_ |
-| [airdrop_platform_group](#airdrop_platform_group) | airdrop_platform_group | ✔︎ |  |  |  | _The representation of the default DevRev groups_ |
+| [airdrop_authorization_policy](#airdrop_authorization_policy) | airdrop_authorization_policy | ✔︎ |  |  | _The intermediate object type for creating MFZ object types_ |
+| [airdrop_platform_group](#airdrop_platform_group) | airdrop_platform_group | ✔︎ |  |  | _The representation of the default DevRev groups_ |
 | [article](#article) | article | ✔︎ |  |  |  |  |
-| [capability](#capability) | part→capability | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [channel](#channel) | chat→channel | ✔︎ |  |  |  |  |
-| [comment](#comment) | comment | ✔︎ | ✔︎ |  |  |  |
-| [component](#component) | part→component | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [conversation](#conversation) | conversation | ✔︎ |  | ✔︎ |  |  |
-| [custom_link](#custom_link) | link | ✔︎ | ✔︎ |  |  |  |
-| [custom_part](#custom_part) | part→custom_part | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [devu](#devu) | dev_user | ✔︎ |  |  |  |  |
-| [directory](#directory) | directory | ✔︎ |  |  |  |  |
+| [capability](#capability) | part→capability | ✔︎ | ✔︎ | ✔︎ |  |
+| [channel](#channel) | chat→channel | ✔︎ |  |  |  |
+| [comment](#comment) | comment | ✔︎ | ✔︎ |  |  |
+| [component](#component) | part→component | ✔︎ | ✔︎ | ✔︎ |  |
+| [conversation](#conversation) | conversation | ✔︎ |  | ✔︎ |  |
+| [custom_link](#custom_link) | link | ✔︎ | ✔︎ |  |  |
+| [custom_part](#custom_part) | part→custom_part | ✔︎ | ✔︎ | ✔︎ |  |
+| [devu](#devu) | dev_user | ✔︎ |  |  |  |
+| [directory](#directory) | directory | ✔︎ |  |  |  |
 | [dm](#dm) | chat→dm | ✔︎ |  |  |  |  |
-| [enhancement](#enhancement) | part→enhancement | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [feature](#feature) | part→feature | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [group](#group) | group | ✔︎ |  |  |  |  |
-| [incident](#incident) | incident | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [issue](#issue) | work→issue | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [link](#link) | link | ✔︎ | ✔︎ |  |  |  |
-| [linkable](#linkable) | part→linkable | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [meeting](#meeting) | meeting | ✔︎ |  |  |  |  |
-| [microservice](#microservice) | part→microservice | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [object_member](#object_member) | object_member | ✔︎ |  |  |  |  |
-| [opportunity](#opportunity) | work→opportunity | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [product](#product) | part→product | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [revu](#revu) | rev_user | ✔︎ |  |  |  |  |
-| [runnable](#runnable) | part→runnable | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [sysu](#sysu) | sys_user | ✔︎ |  |  |  |  |
-| [tag](#tag) | tag | ✔︎ |  |  |  |  |
-| [task](#task) | work→task | ✔︎ | ✔︎ | ✔︎ |  |  |
-| [ticket](#ticket) | work→ticket | ✔︎ | ✔︎ | ✔︎ |  |  |
+| [enhancement](#enhancement) | part→enhancement | ✔︎ | ✔︎ | ✔︎ |  |
+| [feature](#feature) | part→feature | ✔︎ | ✔︎ | ✔︎ |  |
+| [group](#group) | group | ✔︎ |  |  |  |
+| [incident](#incident) | incident | ✔︎ | ✔︎ | ✔︎ |  |
+| [issue](#issue) | work→issue | ✔︎ | ✔︎ | ✔︎ |  |
+| [link](#link) | link | ✔︎ | ✔︎ |  |  |
+| [linkable](#linkable) | part→linkable | ✔︎ | ✔︎ | ✔︎ |  |
+| [meeting](#meeting) | meeting | ✔︎ |  |  |  |
+| [microservice](#microservice) | part→microservice | ✔︎ | ✔︎ | ✔︎ |  |
+| [object_member](#object_member) | object_member | ✔︎ |  |  |  |
+| [opportunity](#opportunity) | work→opportunity | ✔︎ | ✔︎ | ✔︎ |  |
+| [product](#product) | part→product | ✔︎ | ✔︎ | ✔︎ |  |
+| [revu](#revu) | rev_user | ✔︎ |  |  |  |
+| [runnable](#runnable) | part→runnable | ✔︎ | ✔︎ | ✔︎ |  |
+| [sysu](#sysu) | sys_user | ✔︎ |  |  |  |
+| [tag](#tag) | tag | ✔︎ |  |  |  |
+| [task](#task) | work→task | ✔︎ | ✔︎ | ✔︎ |  |
+| [ticket](#ticket) | work→ticket | ✔︎ | ✔︎ | ✔︎ |  |
 
 ## Key capabilities
 

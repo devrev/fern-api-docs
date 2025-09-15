@@ -312,7 +312,7 @@ DevRev.clearSessionProperties();
 
 ### Mask sensitive data
 
-To protect sensitive data, you can mask sensitive UI elements such as text fields, text views using `DevRevMask` widget, as shown below.
+To protect sensitive data, you can mask sensitive UI elements such as text fields, text views using the `DevRevMask` widget.
 
 For example:
 
@@ -326,7 +326,7 @@ DevRevMask(
 
 ### Unmask sensitive data
 
-If any previously masked views need to be unmasked, you can unmask using `DevRevUnmask` widget:
+If any previously masked views need to be unmasked, you can unmask using the `DevRevUnmask` widget.
 
 For example:
 
@@ -340,11 +340,9 @@ DevRevUnmask(
 
 ### Mask elements inside web views
 
-Masking elements inside web views (`WebView`) can be achieved by using the CSS class `devrev-mask` to mask an element and `devrev-unmask` to unmask an element.
-
 Input views such as password text fields are automatically masked in web views.
 
-While the auto-masking feature is sufficient for most situations, you can manually mark/unmark additional views as sensitive.
+While the auto-masking feature is sufficient for most situations, you can manually mark or unmark additional views as sensitive.
 
 To mark elements as sensitive inside a web view (`WebView`), apply the `devrev-mask` CSS class. To unmark them, use `devrev-unmask`.
 

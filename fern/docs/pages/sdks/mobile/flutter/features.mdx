@@ -346,6 +346,8 @@ Input views such as password text fields are automatically masked in web views.
 
 While the auto-masking feature is sufficient for most situations, you can manually mark/unmark additional views as sensitive.
 
+To mark elements as sensitive inside a web view (`WebView`), apply the `devrev-mask` CSS class. To unmark them, use `devrev-unmask`.
+
 - Mark an element as masked:
   ```html
   <label class="devrev-mask">OTP: 12345</label>

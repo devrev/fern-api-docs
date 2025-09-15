@@ -19,6 +19,31 @@ A link type defines a relationship between two types of objects. It specifies:
 - A forward name describing the relationship from source to target
 - A backward name describing the relationship from target to source
 
+The example below shows a ticket that is dependent on an issue. The backward name for the relationship "is dependency of" is shown in the reverse direction.
+
+```mermaid
+flowchart LR
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
+
+accTitle: Link concept
+accDescr: A link has a forward and a backward name. The example shows a ticket that is dependent on an issue, and the backward name "is dependency of" is shown in the reverse direction.
+
+subgraph source
+tkt((TKT-1))
+end
+subgraph target
+iss((ISS-1))
+end
+
+tkt -- "&nbsp; is dependent on &nbsp;" --> iss
+iss -- "&nbsp; is dependency of &nbsp;" --> tkt
+```
+
 ### Supported object types
 
 Links can be created between the following object types:
@@ -58,8 +83,7 @@ curl --location 'https://api.devrev.ai/link-types.custom.create' \
         }
     ],
     "forward_name": "is parent of",
-    "backward_name": "is child of",
-    "deprecated": false
+    "backward_name": "is child of"
 }'
 ```
 
@@ -104,7 +128,7 @@ curl --location 'https://api.devrev.ai/link-types.custom.list' \
 --data '{
     "source_types_v2": [
         {
-            "leaf_type": "ticket,
+            "leaf_type": "ticket"
         }
     ]
 }'
@@ -172,7 +196,7 @@ This configuration:
 
 <Callout intent="tip">
 The subtype should exist for the corresponding source type.
-To add more valid source subtypes, use the update endpoint to add them to the `source_types` array.
+To add more valid source subtypes, use the update endpoint to add them to the `source_types_v2` array.
 </Callout>
 
 ## Deprecate link types
@@ -182,13 +206,89 @@ Link types cannot be deleted, only deprecated. This ensures that existing links 
 referential integrity and prevents data corruption.
 </Callout>
 
-To deprecate a link type, use the update endpoint and set `deprecated` to `true`:
+To deprecate a link type, use the update endpoint and set `is_deprecated` to `true`:
 ```curl {6}
 curl --location 'https://api.devrev.ai/link-types.custom.update' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <TOKEN>' \
 --data '{
     "id": "don:core:dvrv-us-1:devo/demo:custom_link_type/1",
-    "deprecated": true
+    "is_deprecated": true
 }'
 ```
+
+## Quick reference: links from tickets, and issues
+
+<Callout intent="info">
+This section lists common links you can create from tickets and issues. It is not an exhaustive list.
+</Callout>
+
+### Links from tickets
+```mermaid
+flowchart LR
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
+
+accTitle: Links from tickets
+
+subgraph source
+src[ticket]
+end
+subgraph target
+iss[issue]
+t1[ticket]
+art[article]
+end
+
+src -- "&nbsp; is dependent on &nbsp;" --> iss
+src -- "&nbsp; is related to &nbsp;" --> art
+src -- "&nbsp; is related to &nbsp;" --> t1
+src -- "&nbsp; is parent of &nbsp;" --> t1
+src -- "&nbsp; is merged into &nbsp;" --> t1
+```
+
+<Callout intent="note">
+Only ticket → issue is allowed for creating a link with "is dependent on". Creating the link in reverse (issue → ticket) is not possible; however, you can swap the source and target objects to achieve the same result.
+</Callout>
+
+### Links from issues
+```mermaid
+flowchart LR
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'lineColor': '#7d7f7c'
+}}}%%
+
+accTitle: Links from issues
+
+subgraph source
+src[issue]
+end
+subgraph target
+t1[issue]
+task[task]
+end
+
+src -- "&nbsp; is parent of &nbsp;" --> t1
+src -- "&nbsp; is parent of &nbsp;" --> task
+src -- "&nbsp; is dependent on &nbsp;" --> t1
+src -- "&nbsp; is related to &nbsp;" --> t1
+src -- "&nbsp; is duplicate of &nbsp;" --> t1
+```
+
+### Behavior and constraints by link type
+
+| Link type | Multiple incoming to a target | Multiple outgoing from a source | Cycles allowed | Max levels (depth) | Where these limits matter most |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| is parent of | No | Yes | No | 2 | Applies to ticket ↔ ticket and issue ↔ issue parent chains; also when parenting tasks |
+| is related to | Yes | Yes | Yes | No fixed limit | General “related” networks are flexible |
+| is merged into | Yes | No | No | 2 | Ticket merges (ticket → ticket) |
+| is follow up of | No | No | No | Not specified | Constraints are enforced only for ticket → ticket; outside that pair, constraints may not be checked |
+| is dependent on | Yes | Yes | Yes | No fixed limit | Ticket → issue, issue → issue, issue → code change |
+| is duplicate of | Not specified | Not specified | Not specified | Not specified | For example, issue → issue; no extra constraints configured |

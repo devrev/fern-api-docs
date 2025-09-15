@@ -6,12 +6,12 @@ with the completion message.
 
 ### Triggering event
 
-Airdrop initiates the data deletion phase when the import is deleted in the DevRev app.
+AirSync initiates the data deletion phase when the import is deleted in the DevRev app.
 It is started by sending the worker a message with an event of type `EXTRACTION_DATA_DELETE`.
 
 ### Response from the snap-in
 
-The worker must respond to Airdrop with a message with an event of type `EXTRACTION_DATA_DELETE_DONE`
+The worker must respond to AirSync with a message with an event of type `EXTRACTION_DATA_DELETE_DONE`
 when done or `EXTRACTION_DATA_DELETE_ERROR` in case of an error.
 
 ## Attachments deletion
@@ -19,11 +19,11 @@ when done or `EXTRACTION_DATA_DELETE_ERROR` in case of an error.
 
 ### Triggering event
 
-Airdrop initiates the attachments deletion phase when an import is deleted from the DevRev app,
+AirSync initiates the attachments deletion phase when an import is deleted from the DevRev app,
 after the data deletion has completed.
 It is started by sending the snap-in a message with an event of type `EXTRACTION_ATTACHMENTS_DELETE`.
 
 ### Response from the snap-in
 
-The snap-in must respond to Airdrop with a message with an event of type`EXTRACTION_ATTACHMENTS_DELETE_DONE`
+The snap-in must respond to AirSync with a message with an event of type`EXTRACTION_ATTACHMENTS_DELETE_DONE`
 when done, or `EXTRACTION_ATTACHMENTS_DELETE_ERROR` in case of an error.

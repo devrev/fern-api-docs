@@ -1,8 +1,8 @@
-Utilize the PLuG SDK for effective tracking of user interactions. This feature enables you to transmit customized events, defining how users engage with your product or website. Analyze these events to gain insights into product usage metrics, to deploy targeted campaigns, and to equip your customer experience team with precise information about customer interactions.
+Utilize the Plug SDK for effective tracking of user interactions. This feature enables you to transmit customized events, defining how users engage with your product or website. Analyze these events to gain insights into product usage metrics, to deploy targeted campaigns, and to equip your customer experience team with precise information about customer interactions.
 
-## How to track user events using PLuG
+## How to track user events using Plug
 
-To track user events through PLuG, employ the `trackEvent` method provided by the PLuG SDK, which automatically associates the event with the currently active user profile within the widget. To learn more about user identification in the PLuG widget, see [Identify your users with PLuG](./user-identity).
+To track user events through Plug, employ the `trackEvent` method provided by the Plug SDK, which automatically associates the event with the currently active user profile within the widget. To learn more about user identification in the Plug widget, see [Identify your users with Plug](./user-identity).
 
 ```
 window.plugSDK.trackEvent(event_name, properties)
@@ -15,7 +15,7 @@ window.plugSDK.trackEvent(event_name, properties)
 
 <Callout intent="note">
 
-DevRev doesn't recommend setting certain fields in the payload, such as `devrev_source_identifier` (event source), `plugSessionId` (UUID for tracking sessions), and `is_devrev_internal_event` (event auto-tracked by PLuG).
+DevRev doesn't recommend setting certain fields in the payload, such as `devrev_source_identifier` (event source), `plugSessionId` (UUID for tracking sessions), and `is_devrev_internal_event` (event auto-tracked by Plug).
 
 </Callout>
 
@@ -30,6 +30,6 @@ var properties = {
 window.plugSDK.trackEvent("signed_up",properties)
 ```
 
-**PLuG user context**: For each shared event, PLuG automatically includes user context properties. These properties encompass details such as event time, user browser information, locale, device specifications, timezone, operating system version, and the page URL from which the event originated.
+**Plug user context**: For each shared event, Plug automatically includes user context properties. These properties encompass details such as event time, user browser information, locale, device specifications, timezone, operating system version, and the page URL from which the event originated.
 
 **Viewing user events**: Go to the user profile and click the **Usage** tab. This data is refreshed every 24 hours. Events can also be viewed directly within user sessions, where the data is updated instantaneously.

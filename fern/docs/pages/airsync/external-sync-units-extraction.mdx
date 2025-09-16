@@ -1,19 +1,19 @@
-An _external sync unit_ refers to a single unit in the external system that is being airdropped to DevRev.
+An _external sync unit_ refers to a single unit in the external system that is being AirSynced to DevRev.
 In some systems, this is a project; in some it is a repository; in support systems it could be
 called a brand or an organization.
 What a unit of data is called and what it represents depends on the external system's domain model.
 It usually combines contacts, users, work-like items, and comments into a unit of domain objects.
 
 In the external sync unit extraction phase, the snap-in is expected to obtain a list of external
-sync units that it can extract from the external system API and send it to Airdrop in its response.
+sync units that it can extract from the external system API and send it to AirSync in its response.
 
 External sync unit extraction is executed only during the initial import.
 
 ## Triggering event
 
-Airdrop starts the external sync unit extraction by sending a message with the event type `EXTRACTION_EXTERNAL_SYNC_UNITS_START`.
+AirSync starts the external sync unit extraction by sending a message with the event type `EXTRACTION_EXTERNAL_SYNC_UNITS_START`.
 
-The snap-in must reply to Airdrop with an `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE` message when finished, 
+The snap-in must reply to AirSync with an `EXTRACTION_EXTERNAL_SYNC_UNITS_DONE` message when finished, 
 or `EXTRACTION_EXTERNAL_SYNC_UNITS_ERROR` if an error occurs.
 
 ## Implementation
@@ -41,7 +41,7 @@ const externalSyncUnits: ExternalSyncUnit[] = [
   If there is no such way to get it (for example, if the items would need to be extracted to count them),
   then the item count should be `-1` to avoid blocking the import with long-running queries.
 
-The snap-in must respond to Airdrop with a message, which contains a list of external sync units as a payload:
+The snap-in must respond to AirSync with a message, which contains a list of external sync units as a payload:
 
 ```typescript
 await adapter.emit(ExtractorEventType.ExtractionExternalSyncUnitsDone, {

@@ -4,7 +4,7 @@ This mapping is configured once and then becomes available to all users of your 
 allowing them to import data while maintaining semantic meaning from their source systems.
 
 The initial domain mapping is installed with your snap-in.
-On each snap-in version update, function to upload these mappings to the Airdrop
+On each snap-in version update, function to upload these mappings to the AirSync
 system is triggered.
 
 ## Approaches
@@ -53,7 +53,7 @@ The recommended method is to run:
 chef-cli ctx switch --env prod
 ```
 
-This prints the list of Airdrop imports in the org. Select the one you want by running:
+This prints the list of AirSync imports in the org. Select the one you want by running:
 ```bash
 eval $(chef-cli ctx switch --env prod --id <import_id>); chef-cli ctx show
 ```

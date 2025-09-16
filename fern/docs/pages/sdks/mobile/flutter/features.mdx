@@ -49,7 +49,7 @@ For security reasons, it is **strongly recommended** that the token exchange is 
 #### Generate an AAT
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
-2. Open the **PLuG Tokens** page.
+2. Open the **Plug Tokens** page.
 3. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
 
 <Callout intent="warning">
@@ -310,9 +310,9 @@ To clear the session properties in scenarios such as user logout or when the ses
 DevRev.clearSessionProperties();
 ```
 
-### Masking sensitive data
+### Mask sensitive data
 
-To protect sensitive data, you can mask sensitive UI elements such as text fields, text views, and web views using `DevRevMask` widget, as shown below.
+To protect sensitive data, you can mask sensitive UI elements such as text fields, text views using the `DevRevMask` widget.
 
 For example:
 
@@ -324,9 +324,9 @@ DevRevMask(
 )
 ```
 
-### Unmasking sensitive data
+### Unmask sensitive data
 
-You can also manually unmask UI elements that would otherwise be automatically masked using `DevRevUnmask`:
+If any previously masked views need to be unmasked, you can unmask using the `DevRevUnmask` widget.
 
 For example:
 
@@ -337,6 +337,21 @@ DevRevUnmask(
     ),
   )
 ```
+
+### Mask elements inside web views
+
+Input views such as password text fields are automatically masked in web views.
+
+To mark elements as sensitive inside a web view (`WebView`), apply the `devrev-mask` CSS class. To unmark them, use `devrev-unmask`.
+
+- Mark an element as masked:
+  ```html
+  <label class="devrev-mask">OTP: 12345</label>
+  ```
+- Mark an element as unmasked:
+  ```html
+  <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
+  ```
 
 ### Advanced session recording control while masking
 

@@ -2,14 +2,14 @@ The load data phase manages the creation and updating of items in the external s
 
 ## Triggering event
 
-Airdrop initiates data loading by sending a message with the event type `START_LOADING_DATA` to the snap-in.
+AirSync initiates data loading by sending a message with the event type `START_LOADING_DATA` to the snap-in.
 
-If the maximum Airdrop snap-in runtime (13 minutes) has been reached, 
-the snap-in must respond to Airdrop with a message with event type of `DATA_LOADING_PROGRESS`, together with an optional progress estimate.
+If the maximum AirSync snap-in runtime (13 minutes) has been reached, 
+the snap-in must respond to AirSync with a message with event type of `DATA_LOADING_PROGRESS`, together with an optional progress estimate.
 
-In case of `DATA_LOADING_PROGRESS`, Airdrop starts the snap-in with a message with event type `CONTINUE_LOADING_DATA`.
+In case of `DATA_LOADING_PROGRESS`, AirSync starts the snap-in with a message with event type `CONTINUE_LOADING_DATA`.
 
-Once the data extraction is done, the snap-in must respond to Airdrop with a message with event type `DATA_LOADING_DONE`.
+Once the data extraction is done, the snap-in must respond to AirSync with a message with event type `DATA_LOADING_DONE`.
 
 ## Implementation
 

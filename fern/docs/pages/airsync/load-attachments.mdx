@@ -2,14 +2,14 @@ In the load attachments phase, the snap-in saves each attachment to the external
 
 ## Triggering event
 
-Airdrop initiates data loading by sending a message with the event type `START_LOADING_ATTACHMENTS` to the snap-in.
+AirSync initiates data loading by sending a message with the event type `START_LOADING_ATTACHMENTS` to the snap-in.
 
-If the maximum Airdrop snap-in runtime (13 minutes) has been reached, 
-the snap-in must respond to Airdrop with a message with event type of `ATTACHMENT_LOADING_PROGRESS`, together with an optional progress estimate.
+If the maximum AirSync snap-in runtime (13 minutes) has been reached, 
+the snap-in must respond to AirSync with a message with event type of `ATTACHMENT_LOADING_PROGRESS`, together with an optional progress estimate.
 
-In case of `ATTACHMENT_LOADING_PROGRESS`, Airdrop starts the snap-in with a message with event type `CONTINUE_LOADING_ATTACHMENTS`.
+In case of `ATTACHMENT_LOADING_PROGRESS`, AirSync starts the snap-in with a message with event type `CONTINUE_LOADING_ATTACHMENTS`.
 
-Once the data extraction is done, the snap-in must respond to Airdrop with a message with event type `ATTACHMENT_LOADING_DONE`.
+Once the data extraction is done, the snap-in must respond to AirSync with a message with event type `ATTACHMENT_LOADING_DONE`.
 
 ## Implementation
 

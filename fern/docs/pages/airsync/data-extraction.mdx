@@ -5,7 +5,7 @@ If the current run is an initial sync, this means all the items should be extrac
 Otherwise the extractor should retrieve all the items that were changed since the start of the last extraction.
 
 Each snap-in invocation runs in a separate runtime instance with a maximum execution time of 13 minutes.
-After 10 minutes, the Airdrop platform sends a message to the snap-in to gracefully exit.
+After 10 minutes, the AirSync platform sends a message to the snap-in to gracefully exit.
 
 If a large amount of data needs to be extracted, it might not all be extracted within this time frame.
 To handle such situations, the snap-in uses a state object.
@@ -13,33 +13,33 @@ This state object is shared across all invocations and keeps track of where the 
 
 ## Triggering event
 
-Airdrop initiates data extraction by starting the snap-in with a message with event type
+AirSync initiates data extraction by starting the snap-in with a message with event type
 `EXTRACTION_DATA_START` when transitioning to the data extraction phase.
 
 During the data extraction phase, the snap-in extracts data from an external system,
 prepares batches of data and uploads them in the form of artifacts (files) to DevRev.
 
-The snap-in must respond to Airdrop with a message with event type of `EXTRACTION_DATA_PROGRESS`,
-together with an optional progress estimate when the maximum Airdrop snap-in runtime (13 minutes) has been reached.
+The snap-in must respond to AirSync with a message with event type of `EXTRACTION_DATA_PROGRESS`,
+together with an optional progress estimate when the maximum AirSync snap-in runtime (13 minutes) has been reached.
 
 If the extraction has been rate-limited by the external system and back-off is required, the snap-in
-must respond to Airdrop with a message with event type `EXTRACTION_DATA_DELAY` and specifying
+must respond to AirSync with a message with event type `EXTRACTION_DATA_DELAY` and specifying
 back-off time with `delay` attribute (in seconds as an integer).
 
-In both cases, Airdrop starts the snap-in with a message with event type `EXTRACTION_DATA_CONTINUE`.
+In both cases, AirSync starts the snap-in with a message with event type `EXTRACTION_DATA_CONTINUE`.
 In case of `EXTRACTION_DATA_PROGRESS` the restarting is immediate,
 meanwhile in case of `EXTRACTION_DATA_DELAY` the restarting is delayed for the given number of seconds.
 
-Once the data extraction is done, the snap-in must respond to Airdrop with a message with event type `EXTRACTION_DATA_DONE`.
+Once the data extraction is done, the snap-in must respond to AirSync with a message with event type `EXTRACTION_DATA_DONE`.
 
-If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a
+If data extraction failed in any moment of extraction, the snap-in must respond to AirSync with a
 message with event type `EXTRACTION_DATA_ERROR`.
 
 ## Implementation
 
 Data extraction should be implemented in the [data-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/data-extraction.ts) file.
 
-The snap-in must respond to Airdrop with a message, that signals either success, a delay, progress, or an error.
+The snap-in must respond to AirSync with a message, that signals either success, a delay, progress, or an error.
 
 ```typescript Success
 await adapter.emit(ExtractorEventType.ExtractionDataDone);
@@ -107,12 +107,12 @@ items should be then retrieved from the external system and stored in the correc
 await adapter.getRepo("users")?.push(items);
 ```
 
-Behind the scenes, the SDK library stores items pushed to the repository and uploads them in batches to the Airdrop platform.
+Behind the scenes, the SDK library stores items pushed to the repository and uploads them in batches to the AirSync platform.
 
 ### Data normalization
 
 Extracted data must be normalized to fit the domain metadata defined in the `external-domain-metadata.json` file.
-More details on this process are provided in the [Metadata extraction](/public/snapin-development/adaas/metadata-extraction) section.
+More details on this process are provided in the [Metadata extraction](/public/airsync/metadata-extraction) section.
 
 Normalization rules:
 
@@ -246,7 +246,7 @@ await spawn<DummyExtractorState>({
 
 ## Handling lambda timeout
 
-When a worker thread is busy with other work and doesn't respond to exit messages from the main thread, it becomes blocked and can stall the sync process. To prevent this, the Airdrop SDK implements a two-tier timeout mechanism.
+When a worker thread is busy with other work and doesn't respond to exit messages from the main thread, it becomes blocked and can stall the sync process. To prevent this, the AirSync SDK implements a two-tier timeout mechanism.
 
 - The **soft timeout**, default of 10 minutes and configurable, sends an exit message to the worker thread, allowing it to gracefully shut down via the `onTimeout` function. How to configure this is shown in the example below.
 - If the worker does not respond within the **hard timeout**, default of 13 minutes, it is forcefully terminated.

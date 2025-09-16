@@ -220,7 +220,7 @@ All properties in `AccountTraits` are optional.
 | `tier` | `String?` | The account's tier or plan level |
 | `customFields` | `[String: Any]?` | Dictionary of custom fields configured in DevRev |
 
-## Plug support chat
+## Support chat
 
 ### UIKit
 
@@ -242,12 +242,6 @@ If you want to display the support chat screen from the top-most view controller
 DevRev.showSupport(isAnimated:)
 ```
 
-To create a new support conversation directly, use the following method:
-
-```swift
-DevRev.createSupportConversation(isAnimated:)
-```
-
 For example:
 
 ```swift
@@ -259,10 +253,8 @@ await DevRev.showSupport(from: settingsViewController)
 
 // Show the support chat screen from the top-most view controller, without an animation.
 await DevRev.showSupport(isAnimated: false)
-
-// Create a new support conversation directly from the top-most view controller.
-await DevRev.createSupportConversation(isAnimated: true)
 ```
+
 ### SwiftUI
 
 To display the support chat screen in a SwiftUI app, you can use the following view:
@@ -271,9 +263,24 @@ To display the support chat screen in a SwiftUI app, you can use the following v
 DevRev.supportView
 ```
 
+### Create a new support conversation
+
+You can initiate a new support conversation directly from your app. This method displays the support chat screen and simultaneously creates a new conversation.
+
+```swift
+DevRev.createSupportConversation(isAnimated:)
+```
+
+For example:
+
+```swift
+// Create a new support conversation directly from the top-most view controller.
+await DevRev.createSupportConversation(isAnimated: true)
+```
+
 ### New conversation closure
 
-You can receive a callback when a new conversation is created by setting the following closure:
+You can receive a callback when a user creates a new conversation by setting the following closure:
 
 ```swift
 DevRev.conversationCreatedCompletion
@@ -489,13 +496,13 @@ DevRev.trackScreenName("profile-screen")
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to notify users about new messages in the Plug support chat.
+The DevRev backend sends push notifications to your app to notify users about new messages in the support chat.
 
 ### Configuration
 
 To receive push notifications, you need to configure your DevRev organization by following the instructions in the [push notifications](../push-notifications) section.
 
-You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification Service (APNs).
+You need to ensure that your iOS app is configured to receive push notifications. You can follow the [Apple documentation](https://developer.apple.com/documentation/usernotifications/registering_your_app_with_apns) for guidance on registering your app with Apple Push Notification service (APNs).
 
 ### Register for push notifications
 

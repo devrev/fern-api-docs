@@ -1,8 +1,10 @@
+# CLI installation
+
 The DevRev CLI is a command-line interface tool that simplifies working with the DevRev REST APIs.
 
 
 <Callout intent="note">
-    The installation of the DevRev CLI via Homebrew (for MAC), dpkg (for Linux), or manual methods (for Windows and Mac) is no longer supported.
+    The installation of the DevRev CLI via Homebrew (for MAC), dpkg (for Linux) is no longer supported.
 
     If you have previously installed the DevRev CLI using these deprecated methods, please uninstall the earlier version.
 </Callout>
@@ -17,19 +19,42 @@ The DevRev CLI is a command-line interface tool that simplifies working with the
         brew uninstall devrev
         ```
     </Tab>
+</Tabs>
+
+## Install the DevRev CLI
+
+<Tabs>
+    <Tab title='Mac/Linux'>
+        Install using npm:
+        ```bash
+        npm install -g devrev
+        ```
+        This installs the DevRev CLI globally, making it available from any directory.
+
+    </Tab>
     <Tab title='Windows'>
-        1. Remove the path from the environment variable. For example: `C:\Program Files\devrev\`.
-        2. Delete the downloaded executable file and its folder.
+        ## Supported architectures:
+
+        - Windows amd64
+
+        ## Installation
+
+        Download the [Windows executable](https://github.com/devrev/cli/releases/latest).
+
+        Unzip the downloaded file and add the path to the environment variable.
+
+        Add the directory to the system PATH variable under **System Properties** > **This PC** > **Properties**.
+
+        In the System window, click **Advanced system settings** > **Environment Variables** > **Path** > **Edit**.
+        In the **Edit environment variable** window, click **New**. Enter the path to the directory you want to add. For example: `C:\Program Files\devrev\`
+        Click **OK** to save the changes. Close all remaining windows by clicking **OK**.
+
+        <Callout intent="note">
+            You may need to restart your computer for the changes to take effect.
+        </Callout>
     </Tab>
 </Tabs>
 
-## Install the DevRev CLI using NPM
-
-To install the DevRev CLI, please utilize npm (Node Package Manager) by executing the following command:
-```bash
-npm install -g devrev
-```
-This command facilitates the global installation of the DevRev CLI on your system, enabling its use from any directory.
 
 Upon completion of the installation, confirm its success by checking the version of the DevRev CLI.
 ```bash
@@ -37,4 +62,16 @@ devrev --version
 ```
 This command presents the currently installed version of the DevRev CLI, thereby verifying its successful installation.
 
+## Uninstall the DevRev CLI
 
+<Tabs>
+    <Tab title='Mac/Linux'>
+        Uninstall using npm:
+        ```bash
+        npm uninstall -g devrev
+        ```
+    </Tab>
+    <Tab title='Windows'>
+        1. Remove the path from the environment variable.
+        2. Delete the downloaded executable file and its folder.
+    </Tab>

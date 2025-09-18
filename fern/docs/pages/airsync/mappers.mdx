@@ -1,17 +1,26 @@
 Mappers are a core component of AirSync that manage and track the relationships between items imported from external systems and their corresponding entities in DevRev. Think of Mappers as a comprehensive lookup table that maintains the synchronization state between external and DevRev objects.
 
+Each sync mapper record contains external system identifiers, corresponding DevRev entity IDs, sync unit scope, operational status, and additional metadata. This bidirectional mapping system enables AirSync to efficiently track which external items have been synchronized and locate their DevRev counterparts during ongoing operations. Mappers are available through the adapter object as `adapter.mappers` in your AirSync snap-in functions.
+
 ## When to use Mappers
 
 Mappers are essential in several AirSync scenarios:
 
-**During data extraction** - Check if items already exist to avoid duplicates, find related DevRev entities for nested objects like comments and attachments, and verify sync status.
+**During data extraction and relationship management** - Check if sync mapper records already exist to avoid duplicates, find related DevRev entities for nested objects like comments and attachments, and link child objects to their parent entities.
 
 ```typescript
-// Check if attachment already exists
-const existingMapping = await adapter.mappers.getByExternalId({
+// Check if sync mapper record for attachment already exists
+const existingSyncMapperRecord = await adapter.mappers.getByExternalId({
   sync_unit: syncUnit,
   external_id: attachment.id,
   target_type: SyncMapperRecordTargetType.ARTIFACT,
+});
+
+// Find parent work item for comment
+const parentSyncMapperRecord = await adapter.mappers.getByExternalId({
+  sync_unit: syncUnit,
+  external_id: externalComment.ticket_id,
+  target_type: SyncMapperRecordTargetType.WORK,
 });
 ```
 
@@ -19,26 +28,11 @@ const existingMapping = await adapter.mappers.getByExternalId({
 
 ```typescript
 // Find external ID to update external system
-const mapping = await adapter.mappers.getByTargetId({
+const syncMapperRecord = await adapter.mappers.getByTargetId({
   sync_unit: syncUnit,
   target: devrevWorkId,
 });
 ```
-
-**For relationship management** - Link child objects to their parent entities and maintain hierarchical relationships across systems.
-
-```typescript
-// Find parent work item for comment
-const parentMapping = await adapter.mappers.getByExternalId({
-  sync_unit: syncUnit,
-  external_id: externalComment.ticket_id,
-  target_type: SyncMapperRecordTargetType.WORK,
-});
-```
-
-## How to access Mappers
-
-Mappers are available through the adapter object as `adapter.mappers` in your AirSync snap-in functions.
 
 ## Mapper methods
 
@@ -69,9 +63,9 @@ const response = await adapter.mappers.getByExternalId({
 const devrevTargets = response.data.sync_mapper_record.targets;
 ```
 
-### Create new mapping
+### Create new sync mapper record
 
-Use `create` to establish a new relationship between external and DevRev entities:
+Use `create` to establish a new sync mapper record between external and DevRev entities:
 
 ```typescript
 const response = await adapter.mappers.create({
@@ -82,13 +76,13 @@ const response = await adapter.mappers.create({
 });
 ```
 
-### Update existing mapping
+### Update existing sync mapper record
 
-Use `update` to modify an existing mapping record:
+Use `update` to modify an existing sync mapper record:
 
 ```typescript
 const response = await adapter.mappers.update({
-  id: mappingRecordId,
+  id: syncMapperRecordId,
   sync_unit: syncUnitId,
   external_ids: {
     add: [newExternalId],

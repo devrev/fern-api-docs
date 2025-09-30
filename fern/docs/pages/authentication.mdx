@@ -1,3 +1,6 @@
+---
+title: Authentication
+---
 ## Security token types
 
 - **Application Access Token (AAT)**: Uniquely identifies an application belonging to a dev org. An AAT is obtained by a dev user with the right level of privileges for a given application. The AAT is issued against an application ID, which could represent the dev org's SaaS app. The AAT can only be used to obtain a session token; it does not reference any dev user or customer. At the time of the token generation, the corresponding dev user can define the expiration time of the token. The lifetime of an AAT is usually in days. The subject of the AAT is set to the DON of the application, which is service account (for example, `don:identity:dvrv-us-1:devo/0:svcacc/gG88A`).

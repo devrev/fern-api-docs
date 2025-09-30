@@ -1,3 +1,6 @@
+---
+title: Rate Limits
+---
 To ensure a consistent experience for all users, DevRev applies rate limits to its APIs. This helps prevent unintentionally proactive clients from impacting others’ accessibility.
 
 Rate limits are applied in aggregate to all requests made by an authenticated user. If a user exceeds their rate limit, they're throttled from further processing until their rate limit *window* elapses. At present, this window resets every five minutes. 

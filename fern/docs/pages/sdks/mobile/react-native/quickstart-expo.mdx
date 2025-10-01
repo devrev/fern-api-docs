@@ -1,7 +1,4 @@
-
 # Quickstart guide for Expo
-
-DevRev SDK, used for integrating DevRev services into your Expo app.
 
 ## Requirements
 
@@ -9,7 +6,7 @@ DevRev SDK, used for integrating DevRev services into your Expo app.
 - For Expo apps, Expo 50.0.0 or later.
 - Android: minimum API level 24.
 - iOS: minimum deployment target 15.1.
-- Recommended: A locally configured SSH key registered on [Github](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
+- Recommended: an SSH key configured locally and registered with [GitHub](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
 
 ## Installation
 
@@ -53,28 +50,24 @@ DevRev.configure(appID: string)
 A sample app with use cases for the DevRev SDK for Expo has been provided as a part of our [public repository](https://github.com/devrev/devrev-sdk-react-native). To set up and run the sample app:
 
 1. Go to the sample directory:
-	```sh
+	```bash
 	cd sample/expo
 	```
-
-2. Install dependencies:
-	```sh
+2. Install the dependencies:
+	```bash
 	yarn install
 	```
-
 3. Run clean and prebuild:
-	```sh
+	```bash
 	npx expo prebuild --clean
 	```
-
-4. Run the app On Android:
-	```sh
+4. Run the app on Android using:
+	```bash
 	npx expo run:android
 	```
-	OR open `android` in Android Studio and run the app.
-
-5. Run the app On iOS:
-	```sh
+	OR open the `android` directory in Android Studio and run the app.
+5. Run the app on iOS:
+	```bash
 	npx expo run:ios
 	```
 	OR open `ios/DevRevSDKSample.xcworkspace` in Xcode and run the app.

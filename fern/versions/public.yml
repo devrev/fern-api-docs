@@ -339,6 +339,9 @@ navigation:
             slug: data-attachments-deletion
             hidden: true
             path: ../docs/pages/airsync/data-attachments-deletion.mdx
+          - page: "Object Mappers"
+            slug: object-mappers
+            path: ../docs/pages/airsync/object-mappers.mdx
       - page: "Examples of snap-ins"
         slug: snap-in-examples
         path: ../docs/pages/airsync/snap-in-examples.mdx

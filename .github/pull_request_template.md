@@ -13,7 +13,7 @@ ISS-
 
 ## Craftsmanship, integrity, and devil’s advocacy
 <!-- Mark the appropriate options with an "x" -->
-- [ ] Net new content in an existing subject area
+- [ ] New content in an existing subject area
 - [ ] Content in new subject area
 - [ ] Updated explanations or definitions
 - [ ] Updated code samples

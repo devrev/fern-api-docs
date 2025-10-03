@@ -19,8 +19,8 @@ colors:
 
 logo: 
   href: https://developer.devrev.ai
-  dark: ./docs/assets/logo_black.png
-  light: ./docs/assets/logo_white.png
+  dark: ./docs/assets/logo_white.png
+  light: ./docs/assets/logo_black.png
 
 
 layout:

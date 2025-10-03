@@ -17,19 +17,10 @@ colors:
     dark: "#131414"
     light: '#ffffff'
 
-logo: {}
-
-css:
-  - ./dist/output.css
-
-js:
-  - path: ./dist/output.js
-    strategy: beforeInteractive
-
-layout:
-  searchbar-placement: sidebar
-  tabs-placement: sidebar
-  disable-header: true
+logo: 
+  href: https://developer.devrev.ai
+  dark: ./docs/assets/logo_white.png
+  light: ./docs/assets/logo_black.png
 
 typography:
   bodyFont:

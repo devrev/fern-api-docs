@@ -1,6 +1,6 @@
 # UserExperior migration
 
-The DevRev PLuG SDK serves as a direct replacement for the legacy UserExperior Web SDK. This section outlines the steps to facilitate a seamless migration from UserExperior to DevRev PLuG.
+The DevRev Plug SDK serves as a direct replacement for the legacy UserExperior Web SDK. This section outlines the steps to facilitate a seamless migration from UserExperior to DevRev Plug.
 
 <Callout intent="note">
 NPM package support is discontinued.
@@ -8,7 +8,7 @@ NPM package support is discontinued.
 
 ## Installation
 
-Update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
+Update your script tags as shown to migrate successfully to the DevRev Plug SDK.
  
 <Tabs>
   <Tab title="UserExperior implementation">
@@ -17,7 +17,7 @@ Update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
    <script src="https://unpkg.com/user-experior-web@latest/bundle/ue-web-bundle.js"></script>
    ```
   </Tab>
-  <Tab title="Replace with PLuG">
+  <Tab title="Replace with Plug">
    ```jsx
 
    <script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
@@ -27,7 +27,7 @@ Update your script tags as shown to migrate successfully to the DevRev PLuG SDK.
 
 ## Initialization
 
-Update your initialization code to work with the DevRev PLuG SDK, ensuring session recording is enabled and handling events appropriately.
+Update your initialization code to work with the DevRev Plug SDK, ensuring session recording is enabled and handling events appropriately.
 
 <Tabs>
   <Tab title="UserExperior implementation">
@@ -44,7 +44,7 @@ ue.startRecording("<your_unique_app_id>")
 });
 ```
   </Tab>
-  <Tab title="Replace with PLuG">
+  <Tab title="Replace with Plug">
 
  <Callout intent="note">
   To enable session recordings, go to **Settings** > **Support** > **Session Replays** and enable recordings for your desired platforms.
@@ -54,6 +54,7 @@ ue.startRecording("<your_unique_app_id>")
 
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
+   disable_plug_chat_window: true,
 });
 window.plugSDK.onEvent((payload) => {
 	if (payload.type === 'ON_OBSERVABILITY_READY') {
@@ -61,6 +62,15 @@ window.plugSDK.onEvent((payload) => {
 	}
 });
 ```
+  If you have configured Content Security Policy (CSP) in your application, you need to allow access to the following domains.
+  - https://api.devrev.ai
+  - https://plug-platform.devrev.ai
+  - https://ingestion-useast1.devrev.ai - For organizations in the US East region.
+  - https://ingestion-eucentral1.devrev.ai - For organizations in the EU Central region.
+  - https://ingestion-apsouth1.devrev.ai - For organizations in the AP South region.
+  - http://ingestion-apsoutheast1.devrev.ai - For organizations in the AP South East 1 region.
+  - http://ingestion-apsoutheast2.devrev.ai - For organizations in the AP South East 2 region.
+
   </Tab>
  
 </Tabs>
@@ -105,11 +115,12 @@ ue.startRecording("243b0f40-db67-4f3e-b51d-c52001dd858a", {
 });
 ```
 </Tab>
-  <Tab title="Replace with PLuG">
+  <Tab title="Replace with Plug">
   ```jsx
 
 window.plugSDK.init({
     app_id: "<your_unique_app_id>",
+    disable_plug_chat_window: true,
     session_recording_options: {
 			sessionReplay: {
 				maskAllInputs?: boolean;
@@ -135,7 +146,6 @@ window.plugSDK.init({
 				captureConsoleLogs?: boolean;
 			}
     },
-    enable_session_recording: true,
 })
 ```
   </Tab>
@@ -144,7 +154,7 @@ window.plugSDK.init({
 
 ## Masking
 
-The same CSS classes from UserExperior are compatible with the DevRev PLuG SDK without modifications.
+The same CSS classes from UserExperior are compatible with the DevRev Plug SDK without modifications.
 
 **Specific HTML elements**
 
@@ -186,7 +196,7 @@ ue.setUserIdentifier('unique-user-identifier', {
 });
  ```
 </Tab>
-<Tab title="Replace with PLuG">
+<Tab title="Replace with Plug">
   DevRev introduces the concept of a `RevUser` object for enhanced user identity management. Use this to associate sessions with users and attach properties. For more details, refer to the [DevRev user identity](https://developer.devrev.ai/sdks/web/user-identity).
 </Tab>
 </Tabs>
@@ -206,7 +216,7 @@ ue.logEvent("YOUR_EVENT", {
 })
 ```
   </Tab>
-  <Tab title="Replace with PLuG">
+  <Tab title="Replace with Plug">
 ```jsx
 
 window.plugSDK.trackEvent("YOUR_EVENT", {
@@ -238,7 +248,7 @@ ue.setUserProperties({
 })
 ```
   </Tab>
-  <Tab title="Replace with PLuG">
+  <Tab title="Replace with Plug">
 ```jsx
  
 window.plugSDK.addSessionProperties({
@@ -262,13 +272,13 @@ Terminate the current session recording and start a new one.
  ue.restartSession();
 ```  
 </Tab>
-  <Tab title="Replace with PLuG">
+  <Tab title="Replace with Plug">
 ```jsx
 
 await window.plugSDK.shutdown();
 window.plugSDK.init({
    app_id: "<your_unique_app_id>",
-   enable_session_recording: true,
+   disable_plug_chat_window: true,
 });
 ```
   </Tab>

@@ -1,16 +1,16 @@
 During the metadata extraction phase, the snap-in must provide an
-`external_domain_metadata.json` file to Airdrop.
+`external_domain_metadata.json` file to AirSync.
 This file provides a structured way of describing the external system's domain model,
 including its domain entities, types, relationships, and other metadata.
 
-You can check which object types for Airdrop DevRev supports [here](/public/snapin-development/adaas/supported-object-types).
+You can check which object types for AirSync DevRev supports [here](/public/airsync/supported-object-types).
 
 ## Triggering event
 
-Airdrop initiates the metadata extraction by starting the snap-in with a message with an event
+AirSync initiates the metadata extraction by starting the snap-in with a message with an event
 of type `EXTRACTION_METADATA_START`.
 
-The snap-in must respond to Airdrop with a message with an event of type `EXTRACTION_METADATA_DONE`
+The snap-in must respond to AirSync with a message with an event of type `EXTRACTION_METADATA_DONE`
 when done, or `EXTRACTION_METADATA_ERROR` in case of an error.
 
 ## Implementation
@@ -219,7 +219,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
     ### Mark record types as loadable
 
     The record types that will be used in a 2-way sync must be marked with `is_loadable`. 
-    This will allow Airdrop to load the record types to the external system.
+    This will allow AirSync to load the record types to the external system.
 
     ```json {6,18}
     {
@@ -364,44 +364,11 @@ be changed by the end user at any time, such as mandatory fields or custom field
     }
     ```
   
-  - Some references have the role of parent or child.
+  Some references have the role of parent or child.
   This means that the child record doesn't make sense without its parent, for example a comment
   attached to a ticket.
-  Assigning a `reference_type` helps Airdrop correctly handle such fields in case the end-user
+  Assigning a `reference_type` helps AirSync correctly handle such fields in case the end-user
   decides to filter some of the parent records out.
-
-  - Sometimes the external system uses references besides the primary key of records, for example
-  when referring to a case by serial number, or to a user by their email.
-  To correctly resolve such references, they must be marked with `by_field`, which must be a field
-  existing in that record type, marked `is_identifier`. For example:
-  ```json {7,16-20}
-  {
-    "record_types": {
-      "users": {
-        "fields": {
-          "email": {
-            "type": "text",
-            "is_identifier":true
-          }
-        }
-      },
-      "comments": {
-        "fields": {
-          "user_email": {
-            "type": "reference",
-            "reference": {
-              "refers_to": {
-                "#record:users": {
-                  "by_field": "email"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  ```
 
   ### Define field attributes
 

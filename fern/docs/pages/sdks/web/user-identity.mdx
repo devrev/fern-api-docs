@@ -1,12 +1,40 @@
-Once you have [installed PLuG](./installation), all your users who interact with the widget are created as anonymous users in the DevRev app with a random name since there is no information about the user.
+Once you have [installed Plug](./installation), all your users who interact with the widget are created as anonymous users in the DevRev app with a random name since there is no information about the user.
 
-For users who are logged into your website, you can identify them in PLuG to enable them to view their conversation history and receive more personalized engagement.
+For users who are logged into your website, you can identify them in Plug to enable them to view their conversation history and receive more personalized engagement.
 
 To implement user identification, you need to generate a session token for each user who visits your website. This token is created using your application access token combined with customer information, and must be generated on your backend to keep the application token secure.
 
+```mermaid
+---
+config:
+  theme: 'base'
+  themeVariables:
+    fontFamily: 'Segoe UI'
+---
+sequenceDiagram
+%%{init: {
+    'theme': 'base',
+    'themeVariables': {
+        'fontFamily': 'Segoe UI',
+        'signalColor': '#7d7f7c',
+        'signalTextColor': '#7d7f7c'
+}}}%%
+  participant User as Your User
+  participant Frontend as Your Frontend
+  participant Backend as Your Backend
+  participant DevRev as DevRev's Backend
+
+  User->>Frontend: (1) User is known<br/>(via Signup, Login)
+  Frontend->>Backend: (2) Send user details
+  Backend->>DevRev: (3) auth-tokens.create API call
+  DevRev-->>Backend: (4) Return RevUser Session Token
+  Backend-->>Frontend: (5) Return Session Token
+  Frontend->>Frontend: (6) Call plugSDK.init() with token
+```
+
 ## Generate an application access token
 
-1. In DevRev, go to **Settings > Support > PLuG Tokens** through the settings icon on the top-left corner.
+1. In DevRev, go to **Settings > Support > Plug Tokens** through the settings icon on the top-left corner.
 2. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
 
 <Callout intent="note">
@@ -152,18 +180,19 @@ This approach ensures efficient management and integration of objects within the
 
 ## Pass the session token
 
-While initializing the PLuG widget you pass the session token for DevRev to identify this user and thereby make the widget more customized for the user and their context.
+While initializing the Plug widget you pass the session token for DevRev to identify this user and thereby make the widget more customized for the user and their context.
 
 ```jsx
 // You can generate this session token using the above API in your backend
 const sessionToken = '<SESSION_TOKEN>'
 <script type="text/javascript" src="https://plug-platform.devrev.ai/static/plug.js"></script>
 <script>
-    (() => {
-      window.plugSDK.init({
-          app_id: '<your_unique_app_id>',
-          session_token: sessionToken
-        })})();
+  (() => {
+    window.plugSDK.init({
+      app_id: '<your_unique_app_id>',
+      session_token: sessionToken
+    })
+  })();
 </script>
 ```
 
@@ -196,7 +225,7 @@ window.plugSDK.init({
 });
 ```
 
-You can add or update the data in `user_traits` by using the `updateIdentity` method on the PLuG SDK. Attached is a sample code snippet for the same. 
+You can add or update the data in `user_traits` by using the `updateIdentity` method on the Plug SDK. Attached is a sample code snippet for the same. 
 
 ```jsx
 window.plugSDK.updateIdentity({
@@ -208,3 +237,58 @@ window.plugSDK.updateIdentity({
   }
 })
 ```
+<Callout intent="note">
+Note that the `updateIdentity` method cannot be used to update the `user_ref` of the user. In order to change the identity of the user completely to a new one, you need to re-initialize Plug. See the [Changing the user identity](#changing-the-user-identity) section for more details.
+</Callout>
+
+## Changing the user identity
+
+As described in the above sections, to identify a user, you need to initialize the Plug SDK with the relevant user information. Plug can only be initialized once per page load.
+
+In most cases, this works as expected—user identification typically happens after login or signup, which causes a page reload and clears any previous Plug instance.
+
+However, if your application needs to update the user identity without a full page refresh, you need to explicitly delete the existing Plug instance before initializing it again with the new user information.
+
+```jsx
+// Delete the existing Plug instance if it exists
+if (window.plugSDK.isPlugInitialized) {
+  window.plugSDK.shutdown();
+}
+
+// Re-initialize Plug
+window.plugSDK.init({
+  app_id: appId,
+
+  // With session token
+  session_token: sessionToken,
+
+  // Or without session token
+  identity: {},
+});
+```
+If you're using the Plug SDK for recording user sessions, calling the `shutdown()` method will stop the ongoing session recording. Re-initializing with the `init()` method will then start a new session recording. To avoid losing continuity, you can pass the details of the ongoing session recording when re-initializing Plug.
+```jsx
+// Get the ongoing session details
+const { sessionId, tabId } = window.plugSDK.getSessionDetails();
+
+if (window.plugSDK.isPlugInitialized) {
+  window.plugSDK.shutdown();
+}
+window.plugSDK.init({
+  app_id: appId,
+  
+  // Pass the session details
+  session_recording_options: {
+    sessionDetails: {
+      sessionId: sessionId,
+      tabId: tabId,
+    },
+  },
+
+  // With session token
+  session_token: sessionToken,
+  // Or without session token
+  identity: {},
+});
+```
+

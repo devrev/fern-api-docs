@@ -18,20 +18,16 @@
   }
 }
 
-/* Constrain sidebar within fern-body but account for header
-.fern-sidebar-fixed {
-  position: absolute !important;
-} */
-
 #fern-docs {
   margin: 64px 0px !important; /* Push content below header */
 }
 
 #fern-toc {
-  margin: 64px  0px!important; /* Push TOC below header */
+  padding: 42px 0px !important;
 }
 
 #fern-sidebar {
-  margin: 32px 0px !important; /* Push TOC and sidebar below header */
+  position: absolute !important;
 }
+
 

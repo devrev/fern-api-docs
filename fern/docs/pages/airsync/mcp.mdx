@@ -16,11 +16,10 @@ Testing shows good results with Cursor and Claude Code. The AI can prepare initi
 - Chef-cli installed and configured
 - MCP-compatible client (Cursor, Claude Code, etc.)
 - External domain metadata file
-- Empty or partially populated initial domain mapping file
 
 ## Configuration
 
-Create a `.mcp.json` file with the following content:
+Create a `mcp.json` file with the following content:
 
 ```json
 {
@@ -38,12 +37,14 @@ Create a `.mcp.json` file with the following content:
 ### Cursor setup
 
 1. Provide `.cursor/mcp.json` in your project root.
-2. Using the editor Agent mode point the AI to the initial domain mapping file.
+2. Using the editor Agent mode point the AI to the preferred initial domain mapping file location. 
+    - For best results, mention that file paths should be absolute.
+    - Alternatively, you can provide an existing initial domain mapping file.
 3. Use the editor to guide the AI to create the initial domain mappings.
 4. Use `initial-mapping check` to test the initial domain mappings against the local domain metadata file.
 
 <Tip>
-To assist you in creating the Airdrop snap-in you can add DevRev's documentation to your MCP server, just add `https://developer.devrev.ai/public/airdrop/` as a custom docs URL.
+To assist you in creating the AirSync snap-in you can add DevRev's documentation to your MCP server, just add `https://developer.devrev.ai/public/airdrop/` as a custom docs URL.
 
 See [Cursor documentation](https://docs.cursor.com/context/@-symbols/@-docs#add-custom-docs) for more information.
 </Tip>
@@ -51,7 +52,8 @@ See [Cursor documentation](https://docs.cursor.com/context/@-symbols/@-docs#add-
 ### Claude Code setup
 
 1. Provide `.mcp.json` in your project root.
-2. Using the editor point the AI to the initial domain mapping file.
+2. Using the editor point the AI to the preferred initial domain mapping file location.
+    - Alternatively, you can provide an existing initial domain mapping file.
 3. Use the editor to guide the AI to create the initial domain mappings.
 4. Use `initial-mapping check` to test the initial domain mappings against the local domain metadata file.
 
@@ -64,7 +66,7 @@ You can use the same `.mcp.json` file in other IDEs that support MCP.
 To guide the AI tool, provide the following instructions to your AI assistant:
 
 ```markdown
-When asked to perform Airdrop initial mapping:
+When asked to perform AirSync initial mapping:
 
 - Refer to the `metadata.json` for the external domain metadata.
 - Use `mappings.json` as your initial domain mapping file.
@@ -86,4 +88,3 @@ The MCP server provides tools for:
 - Field mapping and unmapping operations
 - Validation of mapping file structure
 - Testing initial domain mapping files against local metadata files
-

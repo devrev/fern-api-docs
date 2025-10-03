@@ -6,23 +6,23 @@ title: DevRev | Docs
 
 navbar-links: []
 
-experimental: 
+experimental:
   openapi-parser-v3: true
 
 colors:
-  accentPrimary: 
+  accentPrimary:
     dark: "#5D65EE1A"
     light: "#5D65EE1A"
-  background: 
+  background:
     dark: "#131414"
     light: '#ffffff'
 
 logo: {}
 
-# layout:
-#   searchbar-placement: sidebar
-#   tabs-placement: sidebar
-#   disable-header: true
+layout:
+  searchbar-placement: sidebar
+  tabs-placement: sidebar
+  disable-header: true
 
 typography:
   bodyFont:
@@ -33,13 +33,13 @@ typography:
     name: SF Pro Display
     path: ./fonts/SF-Pro-Display-Regular.woff2
     weight: "600"
-  codeFont: 
+  codeFont:
     name: SF mono
     path:  ./fonts/sf-mono-regular.woff2
 
 favicon: ./docs/assets/favicon.ico
 
-versions: 
+versions:
   - display-name: Public
     path: ./versions/public.yml
     slug: public
@@ -69,13 +69,10 @@ redirects:
     permanent: true
   - source: /:path*/sdks/mobile/:slug*
     destination: /:path*/sdks/:slug*
-    permanent: true    
-  - source: /:path*/snapin-development/adaas/:slug*
-    destination: /:path*/airdrop/:slug*
-    permanent: true 
-  - source: /:path*/airdrop/overview
-    destination: /:path*/airdrop
-    permanent: true   
+    permanent: true
+  - source: /:path*/airdrop/:slug*
+    destination: /:path*/airsync/:slug*
+    permanent: true
   - source: /beta/guides/object-customization
     destination: /public/guides/object-customization
     permanent: true

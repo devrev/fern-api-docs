@@ -4,42 +4,42 @@ to retrieve all the items that should be synced with DevRev.
 If the current run is an initial sync, this means all the items should be extracted.
 Otherwise the extractor should retrieve all the items that were changed since the start of the last extraction.
 
-Each snap-in invocation runs in a separate runtime instance with a maximum execution time of 13 minutes. 
-After 10 minutes, the Airdrop platform sends a message to the snap-in to gracefully exit.
+Each snap-in invocation runs in a separate runtime instance with a maximum execution time of 13 minutes.
+After 10 minutes, the AirSync platform sends a message to the snap-in to gracefully exit.
 
-If a large amount of data needs to be extracted, it might not all be extracted within this time frame. 
-To handle such situations, the snap-in uses a state object. 
+If a large amount of data needs to be extracted, it might not all be extracted within this time frame.
+To handle such situations, the snap-in uses a state object.
 This state object is shared across all invocations and keeps track of where the previous snap-in invocations ended in the extraction process.
 
 ## Triggering event
 
-Airdrop initiates data extraction by starting the snap-in with a message with event type
+AirSync initiates data extraction by starting the snap-in with a message with event type
 `EXTRACTION_DATA_START` when transitioning to the data extraction phase.
 
 During the data extraction phase, the snap-in extracts data from an external system,
 prepares batches of data and uploads them in the form of artifacts (files) to DevRev.
 
-The snap-in must respond to Airdrop with a message with event type of `EXTRACTION_DATA_PROGRESS`,
-together with an optional progress estimate when the maximum Airdrop snap-in runtime (13 minutes) has been reached.
+The snap-in must respond to AirSync with a message with event type of `EXTRACTION_DATA_PROGRESS`,
+together with an optional progress estimate when the maximum AirSync snap-in runtime (13 minutes) has been reached.
 
 If the extraction has been rate-limited by the external system and back-off is required, the snap-in
-must respond to Airdrop with a message with event type `EXTRACTION_DATA_DELAY` and specifying
+must respond to AirSync with a message with event type `EXTRACTION_DATA_DELAY` and specifying
 back-off time with `delay` attribute (in seconds as an integer).
 
-In both cases, Airdrop starts the snap-in with a message with event type `EXTRACTION_DATA_CONTINUE`.
+In both cases, AirSync starts the snap-in with a message with event type `EXTRACTION_DATA_CONTINUE`.
 In case of `EXTRACTION_DATA_PROGRESS` the restarting is immediate,
 meanwhile in case of `EXTRACTION_DATA_DELAY` the restarting is delayed for the given number of seconds.
 
-Once the data extraction is done, the snap-in must respond to Airdrop with a message with event type `EXTRACTION_DATA_DONE`.
+Once the data extraction is done, the snap-in must respond to AirSync with a message with event type `EXTRACTION_DATA_DONE`.
 
-If data extraction failed in any moment of extraction, the snap-in must respond to Airdrop with a
+If data extraction failed in any moment of extraction, the snap-in must respond to AirSync with a
 message with event type `EXTRACTION_DATA_ERROR`.
 
 ## Implementation
 
 Data extraction should be implemented in the [data-extraction.ts](https://github.com/devrev/airdrop-template/blob/main/code/src/functions/extraction/workers/data-extraction.ts) file.
 
-The snap-in must respond to Airdrop with a message, that signals either success, a delay, progress, or an error.
+The snap-in must respond to AirSync with a message, that signals either success, a delay, progress, or an error.
 
 ```typescript Success
 await adapter.emit(ExtractorEventType.ExtractionDataDone);
@@ -68,20 +68,20 @@ await adapter.emit(ExtractorEventType.ExtractionDataError, {
 ### Extracting and storing the data
 
 The SDK library includes a repository system for handling extracted items.
-Each item type, such as users, tasks, or issues, has its own repository. 
-These are defined in the `repos` array as `itemType`. 
+Each item type, such as users, tasks, or issues, has its own repository.
+These are defined in the `repos` array as `itemType`.
 The `itemType` name should match the `record_type` specified in the provided metadata.
 
 ```typescript
 const repos = [
   {
-    itemType: 'todos',
+    itemType: "todos",
   },
   {
-    itemType: 'users',
+    itemType: "users",
   },
   {
-    itemType: 'attachments',
+    itemType: "attachments",
   },
 ];
 ```
@@ -104,15 +104,15 @@ After initialization of repositories using `initializeRepos`,
 items should be then retrieved from the external system and stored in the correct repository by calling the `push` function.
 
 ```typescript
-await adapter.getRepo('users')?.push(items);
+await adapter.getRepo("users")?.push(items);
 ```
 
-Behind the scenes, the SDK library stores items pushed to the repository and uploads them in batches to the Airdrop platform.
+Behind the scenes, the SDK library stores items pushed to the repository and uploads them in batches to the AirSync platform.
 
 ### Data normalization
 
-Extracted data must be normalized to fit the domain metadata defined in the `external-domain-metadata.json` file. 
-More details on this process are provided in the [Metadata extraction](/public/snapin-development/adaas/metadata-extraction) section.
+Extracted data must be normalized to fit the domain metadata defined in the `external-domain-metadata.json` file.
+More details on this process are provided in the [Metadata extraction](/public/airsync/metadata-extraction) section.
 
 Normalization rules:
 
@@ -130,15 +130,15 @@ Extracted items are automatically normalized when pushed to the `repo` if a norm
 ```typescript
 const repos = [
   {
-    itemType: 'todos',
+    itemType: "todos",
     normalize: normalizeTodo,
   },
   {
-    itemType: 'users',
+    itemType: "users",
     normalize: normalizeUser,
   },
   {
-    itemType: 'attachments',
+    itemType: "attachments",
     normalize: normalizeAttachment,
   },
 ];
@@ -161,15 +161,15 @@ All other fields are contained within the `data` attribute.
     "owner": "A3A",
     "rca": null,
     "severity": "fatal",
-    "summary": "Lorem ipsum",
+    "summary": "Lorem ipsum"
   }
 }
 ```
 
 If the item you are normalizing is a work item (a ticket, task, issue, or similar),
-it should also contain the `item_url_field` within the `data` attribute. 
+it should also contain the `item_url_field` within the `data` attribute.
 This field should be assigned a URL that points to the item in the external system.
-This link is visible in the airdropped item in the DevRev app, 
+This link is visible in the airdropped item in the DevRev app,
 helping users to easily locate the item in the external system.
 
 ```json {12}
@@ -205,13 +205,13 @@ echo '{}' | chef-cli fuzz-extracted -r issue -m external_domain_metadata.json > 
 
 ## State handling
 
-To enable information passing between invocations and runs, a limited amount of data can be saved as the snap-in `state`. 
+To enable information passing between invocations and runs, a limited amount of data can be saved as the snap-in `state`.
 Snap-in `state` persists between phases in one sync run as well as between multiple sync runs.
 
 You can access the `state` through SDK's `adapter` object.
 
 ```typescript
-adapter.state['users'].completed = true;
+adapter.state["users"].completed = true;
 ```
 
 A snap-in must consult its state to obtain information on when the last successful forward sync started.
@@ -242,4 +242,94 @@ await spawn<DummyExtractorState>({
         timeout: 1 * 60 * 1000; // 1 minute in milliseconds
     }
 });
+```
+
+## Handling lambda timeout
+
+When a worker thread is busy with other work and doesn't respond to exit messages from the main thread, it becomes blocked and can stall the sync process. To prevent this, the AirSync SDK implements a two-tier timeout mechanism.
+
+- The **soft timeout**, default of 10 minutes and configurable, sends an exit message to the worker thread, allowing it to gracefully shut down via the `onTimeout` function. How to configure this is shown in the example below.
+- If the worker does not respond within the **hard timeout**, default of 13 minutes, it is forcefully terminated.
+
+This mechanism ensures that the snap-in does not hang indefinitely, and the system can recover cleanly in case of stuck or slow code execution.
+
+The most common reason for missed soft timeouts is code that blocks the Node.js event loop. This can prevent the worker thread from processing the exit signal, leading to a hard timeout and forced termination.
+
+To keep the worker thread responsive and ensure soft timeout handling works as intended:
+
+- Avoid long synchronous loops or CPU-heavy operations that block the event loop.
+- Use `async/await` for I/O operations such as API calls or file reads.
+- Add periodic async breaks in tight loops using `Promise.resolve()`, `setTimeout()`, or `setImmediate()`.
+
+You can find examples of correct timeout-safe code in the [timeout-handling test suite](https://github.com/devrev/adaas-sdk/tree/main/src/tests/timeout-handling).
+
+To test how your snap-in responds to timeouts, you can configure a shorter timeout using the `spawn` function:
+
+```typescript
+await spawn({
+  event,
+  initialState,
+  workerPath,
+  initialDomainMapping,
+  options: {
+    timeout: 5 * 1000, // 5 seconds
+    isLocalDevelopment: true,
+  },
+});
+```
+
+This lets you simulate a soft timeout and validate that your worker shuts down.
+
+## Time-scoped syncs
+
+Time-scoped syncs allow using a custom timestamp to control the scope of data extraction. This capability enables more granular control over which data gets synchronized between external systems and DevRev.
+
+Enable time-scoped syncs by first adding the capability to your manifest:
+
+```yaml
+imports:
+  - # slug and other import information ...
+    capabilities:
+      - TIME_SCOPED_SYNCS
+```
+
+Your data extraction implementation must handle two optional parameters from the event's `EventContext`:
+
+- **`extract_from`**: Timestamp in RFC3339 format indicating the starting point of extraction. This applies to both initial and incremental syncs.
+- **`reset_extract_from`**: A boolean flag for incremental syncs that determines whether data should be re-extracted.
+
+The extraction logic depends on the sync type and parameter combination:
+
+**Initial syncs**: Use `extract_from` as the starting timestamp for data extraction.
+
+**Incremental syncs**: 
+- If `reset_extract_from` is `true`: Start from `extract_from` if it is provided; otherwise, extract all data.
+- If `reset_extract_from` is `false` or not provided: Use the `adapter.state.lastSuccessfulSyncStarted` timestamp.
+
+```typescript
+const { reset_extract_from, extract_from } = adapter.event.payload.event_context;
+
+// The start of a new sync.
+if (adapter.event.payload.event_type === EventType.ExtractionDataStart) {
+  
+  // Handle extract_from parameter for any sync type
+  if (extract_from) {
+    console.log(`Starting extraction from given timestamp: ${extract_from}.`);
+    // ...
+  }
+
+  // Handle incremental sync logic
+  if (adapter.event.payload.event_context.mode === SyncMode.INCREMENTAL) {
+
+    // If `reset_extract_from` is true, the extraction should start from extract_from (if provided)
+    // or from the beginning (if extract_from is not provided).
+    if (reset_extract_from) {
+      console.log(`reset_extract_from is true. Starting extraction from provided timestamp (${extract_from}) or from the beginning.`);
+    // If reset_extract_from is false or not provided, it should use the lastSuccessfulSyncStarted timestamp to get only the new or updated data.
+    } else {
+      console.log(`Starting extraction from lastSuccessfulSyncStarted: (${adapter.state.lastSuccessfulSyncStarted}).`);
+      // ...
+    }
+  }
+}
 ```

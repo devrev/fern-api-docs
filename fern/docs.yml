@@ -17,7 +17,11 @@ colors:
     dark: "#131414"
     light: '#ffffff'
 
-logo: {}
+logo: 
+  href: https://developer.devrev.ai
+  dark: assets/logo_black.png
+  light: assets/logo_white.png
+
 
 layout:
   searchbar-placement: sidebar

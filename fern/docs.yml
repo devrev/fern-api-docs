@@ -22,11 +22,6 @@ logo:
   dark: ./docs/assets/logo_white.png
   light: ./docs/assets/logo_black.png
 
-
-layout:
-  searchbar-placement: sidebar
-  tabs-placement: sidebar
-
 typography:
   bodyFont:
     name: SF Pro

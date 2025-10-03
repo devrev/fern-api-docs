@@ -19,13 +19,6 @@ colors:
 
 logo: {}
 
-css:
-  - ./dist/output.css
-
-js:
-  - path: ./dist/output.js
-    strategy: beforeInteractive
-
 # layout:
 #   searchbar-placement: sidebar
 #   tabs-placement: sidebar

@@ -183,9 +183,9 @@ All properties in `AccountTraits` are optional.
 | `tier` | `string?` | The account's tier or plan level |
 | `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
 
-## Plug support chat
+## Support chat
 
-Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
+Once the user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
 
 ```typescript
 DevRev.showSupport()
@@ -401,7 +401,7 @@ DevRev.setInScreenTransitioning(false)
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is able to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to notify users about new messages in the Plug support chat.
+The DevRev backend sends push notifications to your app to notify users about new messages in the support chat.
 
 ### Configuration
 
@@ -419,7 +419,7 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRev.registerDeviceToken(deviceToken: string, deviceID: string)
 ```
 
-On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
+On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification service (APNs) token.
 
 ### Unregister from push notifications
 

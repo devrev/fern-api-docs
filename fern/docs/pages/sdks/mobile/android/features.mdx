@@ -951,6 +951,60 @@ You can check if a screen transition is in progress and manually update the stat
   </Tab>
 </Tabs>
 
+### Track handled exceptions
+
+The DevRev SDK allows you to report handled exceptions from catch blocks using the `sendException` function. This ensures that even if the exception is handled in your app, it will still be logged for diagnostics.
+
+<Tabs>
+  <Tab title="Kotlin">
+    ```kotlin
+    DevRev.sendException(
+      exceptionObj: Throwable,
+      exceptionTag: String
+    )
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    DevRevObservabilityExtKt.sendException(
+      DevRev.INSTANCE,
+      Throwable exceptionObj,
+      String exceptionTag
+    );
+    ```
+  </Tab>
+</Tabs>
+
+For example:
+
+<Tabs>
+  <Tab title="Kotlin">
+    ```kotlin
+    try {
+      // Your code that may produce an exception.
+    } catch (e: Throwable) {
+      DevRev.sendException(
+        exceptionObj = e,
+        exceptionTag = "login-failure"
+      )
+    }
+    ```
+  </Tab>
+  <Tab title="Java">
+    ```java
+    try {
+      // Your code that may throw an exception.
+    } catch (Throwable e) {
+      DevRevObservabilityExtKt.sendException(
+        DevRev.INSTANCE,
+        e,
+        "login-failure"
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
 ## Push notifications
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is designed to handle push notifications and execute actions based on the notification's content.

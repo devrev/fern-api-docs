@@ -150,7 +150,8 @@ The authorization policy object consists of four main fields:
 - `field_access` (optional): Defines field-level read and write permissions for specified record types.
 
 <Info>
-Apart from `object_access`, either `users` or `groups` field should be mapped and provided in each extracted file.
+Apart from `object_access`, at least one of the `users` or `groups` fields should be mapped and provided in each extracted file.
+If you wish to provide the `field_access` field, then you must ensure that the record types and record type categories referenced are also provided in the `object_access` field.
 </Info>
 
 #### Object-level permissions

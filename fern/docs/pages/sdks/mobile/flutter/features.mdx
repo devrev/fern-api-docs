@@ -212,9 +212,9 @@ All properties in `accountTraits` are optional.
 | `tier` | `String?` | The account's tier or plan level |
 | `customFields` | `Map<String, dynamic>?` | Dictionary of custom fields configured in DevRev |
 
-## Plug support chat
+## Support chat
 
-Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
+Once the user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
 
 ```dart
 DevRev.showSupport();
@@ -310,9 +310,9 @@ To clear the session properties in scenarios such as user logout or when the ses
 DevRev.clearSessionProperties();
 ```
 
-### Masking sensitive data
+### Mask sensitive data
 
-To protect sensitive data, you can mask sensitive UI elements such as text fields, text views, and web views using `DevRevMask` widget, as shown below.
+To protect sensitive data, you can mask sensitive UI elements such as text fields, text views using the `DevRevMask` widget.
 
 For example:
 
@@ -324,9 +324,9 @@ DevRevMask(
 )
 ```
 
-### Unmasking sensitive data
+### Unmask sensitive data
 
-You can also manually unmask UI elements that would otherwise be automatically masked using `DevRevUnmask`:
+If any previously masked views need to be unmasked, you can unmask using the `DevRevUnmask` widget.
 
 For example:
 
@@ -337,6 +337,21 @@ DevRevUnmask(
     ),
   )
 ```
+
+### Mask elements inside web views
+
+Input views such as password text fields are automatically masked in web views.
+
+To mark elements as sensitive inside a web view (`WebView`), apply the `devrev-mask` CSS class. To unmark them, use `devrev-unmask`.
+
+- Mark an element as masked:
+  ```html
+  <label class="devrev-mask">OTP: 12345</label>
+  ```
+- Mark an element as unmasked:
+  ```html
+  <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
+  ```
 
 ### Advanced session recording control while masking
 
@@ -420,7 +435,7 @@ DevRev.setInScreenTransitioning(false);
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is able to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to notify users about new messages in the Plug support chat.
+The DevRev backend sends push notifications to your app to notify users about new messages in the support chat.
 
 ### Configuration
 
@@ -438,7 +453,7 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRev.registerDeviceToken(deviceToken, deviceID);
 ```
 
-On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
+On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification service (APNs) token.
 
 ### Unregister from push notifications
 

@@ -17,19 +17,10 @@ colors:
     dark: "#131414"
     light: '#ffffff'
 
-logo: {}
-
-css:
-  - ./dist/output.css
-
-js:
-  - path: ./dist/output.js
-    strategy: beforeInteractive
-
-layout:
-  searchbar-placement: sidebar
-  tabs-placement: sidebar
-  disable-header: true
+logo: 
+  href: https://developer.devrev.ai
+  dark: ./docs/assets/logo_white.png
+  light: ./docs/assets/logo_black.png
 
 typography:
   bodyFont:
@@ -77,11 +68,8 @@ redirects:
   - source: /:path*/sdks/mobile/:slug*
     destination: /:path*/sdks/:slug*
     permanent: true
-  - source: /:path*/snapin-development/adaas/:slug*
-    destination: /:path*/airdrop/:slug*
-    permanent: true
-  - source: /:path*/airdrop/overview
-    destination: /:path*/airdrop
+  - source: /:path*/airdrop/:slug*
+    destination: /:path*/airsync/:slug*
     permanent: true
   - source: /beta/guides/object-customization
     destination: /public/guides/object-customization

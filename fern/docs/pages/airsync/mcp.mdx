@@ -1,0 +1,95 @@
+The Model Context Protocol (MCP) is an open protocol that enables large language models to interact with applications through standardized interfaces.
+
+Chef-cli provides MCP integration through the `chef-cli mcp initial-mapping` subcommand. 
+This integration allows AI assistants to programmatically edit and test initial domain mapping files.
+
+## Limitations
+
+<Warning>
+MCP integration is experimental. Functionality may vary across different AI models and MCP clients.
+</Warning>
+
+Cursor and Claude Code demonstrate reliable performance with this integration. AI assistants can prepare initial domain mappings with significant autonomy, though developer oversight remains essential.
+
+## Prerequisites
+
+- Chef-cli installed and configured
+- MCP-compatible client (Cursor, Claude Code, etc.)
+- External domain metadata file
+
+## Configuration
+
+Create a `mcp.json` file with the following content:
+
+```json
+{
+    "mcpServers": {
+        "AirSync": {
+            "command": "chef-cli",
+            "args": [
+                "mcp",
+                "initial-mapping"
+            ]
+        }
+    }
+}
+```
+
+### Cursor setup
+
+1. Place `mcp.json` in your `.cursor` directory (typically `~/.cursor/mcp.json`).
+2. Restart Cursor.
+3. In **Agent mode**, specify the initial domain mapping file location.
+    a. Use absolute file paths for optimal results.
+    b. Alternatively, provide an existing initial domain mapping file.
+4. Direct the AI to create the initial domain mappings.
+5. Run `initial-mapping check` to validate initial domain mappings against the local domain metadata file.
+
+<Tip>
+Add DevRev's AirSync documentation to your MCP server by including `https://developer.devrev.ai/public/airsync/` as a custom docs URL.
+
+See [Cursor documentation](https://cursor.com/docs/context/symbols#docs) for details.
+</Tip>
+
+### Claude Code setup
+
+1. Run `claude mcp add airsync chef-cli mcp initial-mapping`.
+2. Start Claude Code.
+3. Specify the initial domain mapping file location.
+    a. Alternatively, provide an existing initial domain mapping file.
+4. Direct the AI to create the initial domain mappings.
+5. Run `initial-mapping check` to validate initial domain mappings against the local domain metadata file.
+
+### Other IDEs
+
+You can use the same `mcp.json` file in other IDEs that support MCP servers.
+
+## Usage guidelines
+
+Provide these instructions to your AI assistant when using the MCP server:
+
+```markdown
+When performing AirSync initial mapping:
+
+- Use `metadata.json` for external domain metadata.
+- Use `mappings.json` as the initial domain mapping file.
+- Call `use_mapping` to test how the initial mapping behaves on the current metadata.
+- Use MCP tools for:
+    - Adding and removing record type mappings
+    - Unmapping fields
+    - Mapping simple fields
+- For complex field mappings, edit the mapping file directly:
+    - Refer to `initial_mappings_schema.yaml` for proper format.
+    - Always call `use_mapping` to verify the mapping file remains valid.
+```
+
+Adjust file paths according to your project structure.
+
+## Available operations
+
+The MCP server provides the following tools:
+
+- Test mappings against metadata files
+- Add and remove record type mappings
+- Map and unmap fields
+- Validate mapping file structure

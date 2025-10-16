@@ -325,10 +325,10 @@ navigation:
             path: ../docs/pages/airsync/data-extraction.mdx
           - page: "Attachments extraction"
             slug: extract-attachments
-            path: ../docs/pages/airdrop/attachments-extraction.mdx
+            path: ../docs/pages/airsync/attachments-extraction.mdx
           - page: "Customize attachment processing"
             slug: customize-attachment-processing
-            path: ../docs/pages/airdrop/customize-attachment-processing.mdx
+            path: ../docs/pages/airsync/customize-attachment-processing.mdx
           - page: "Loading phases"
             slug: loading-phases
             path: ../docs/pages/airsync/loading-phases.mdx

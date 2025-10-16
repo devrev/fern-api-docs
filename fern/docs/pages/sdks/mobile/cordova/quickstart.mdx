@@ -1,18 +1,18 @@
 # Quickstart guide
 
-This guide helps you integrate the DevRev SDK into your Cordova app.
-
 ## Requirements
 
-- Cordova CLI 10.0.0 or higher.
-- Minimum deployment target Android SDK 24 or iOS 15.
+- Cordova 12.0 or later.
+- Android: minimum API level 24.
+- iOS: minimum deployment target 15.0.
+- (Recommended) An SSH key configured locally and registered with [GitHub](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
 
 ## Installation
 
 To install the DevRev SDK, run the following command:
 
 ```sh
-npm install @devrev/sdk-cordova
+cordova plugin add @devrev/sdk-cordova
 ```
 
 ## Set up the DevRev SDK
@@ -21,7 +21,7 @@ npm install @devrev/sdk-cordova
 2. Under **PLuG settings**, copy the value under **Your unique App ID**.
 3. After obtaining the credentials, configure the DevRev SDK in your app.
 
-<Callout intent="note">
+<Callout intent="warning">
 The DevRev SDK must be configured before you can use any of its features.
 </Callout>
 
@@ -32,7 +32,7 @@ DevRev.configure(appID, successCallback, errorCallback)
 ```
 
 ## Sample app
-A sample app with use cases for the DevRev Cordova plugin is provided as part of our [public repository](https://github.com/devrev/devrev-sdk-cordova). To set up and run the sample app:
+A sample app with use cases for the DevRev SDK for Cordova has been provided as a part of our [public repository](https://github.com/devrev/devrev-sdk-cordova). To set up and run the sample app, follow these steps:
 
 ```sh
 cd sample
@@ -40,6 +40,32 @@ npm install
 cordova platform add android
 cordova platform add ios
 ```
+
+### Firebase configuration
+To enable push notifications in the sample app, you need to set up your Firebase project and replace the provided dummy configuration files for both Android and iOS.
+
+#### Push notifications
+
+<Tabs>
+  <Tab title="Android">
+  1. Go to the [Firebase Console](https://console.firebase.google.com/).
+  2. Create a new project or select an existing one.
+  3. Add an Android app (if not already added). Ensure the **Package Name** matches your Cordova app ID.
+  4. Go to **Project Settings** and download the `google-services.json` file.
+  5. Replace the `samples/google-services.json` file with the downloaded file.
+  </Tab>
+  <Tab title="iOS">
+  1. Go to the [Firebase Console](https://console.firebase.google.com/).
+  2. Create a new project or select an existing one.
+  3. Add an iOS app (if not already added). Ensure the **Bundle ID** matches your Cordova app ID.
+  1. Go to **Project Settings** and download the `GoogleService-Info.plist` file.
+  2. Replace the `samples/GoogleService-Info.plist` file with the downloaded file.
+  </Tab>
+</Tabs>
+
+<Callout intent="warning">
+The provided configuration files contain dummy placeholder values and must be replaced with your actual Firebase project configuration files to ensure proper push notifications functionality.
+</Callout>
 
 <Tabs>
   <Tab title="Android">

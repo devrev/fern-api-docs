@@ -1,13 +1,11 @@
 # Quickstart guide for React Native
 
-This guide helps you integrate the DevRev SDK into your React Native app.
-
 ## Requirements
 - React Native 0.79.0 or later.
 - For Expo apps, Expo 50.0.0 or later.
 - Android: minimum API level 24.
 - iOS: minimum deployment target 15.1.
-- Recommended: An SSH key configured locally and registered with [GitHub](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
+- (Recommended) An SSH key configured locally and registered with [GitHub](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
 
 ## Installation
 
@@ -33,27 +31,33 @@ The SDK becomes ready for use once the following configuration method is execute
 DevRev.configure(appID: string)
 ```
 
-## Sample app
-A sample app with use cases for the DevRev React Native plugin has been provided as a part of our [public repository](https://github.com/devrev/devrev-sdk-react-native). To set up and run the sample app:
+## Sample app (without framework)
+
+A sample app with use cases for the DevRev SDK for React Native has been provided as a part of our [public repository](https://github.com/devrev/devrev-sdk-react-native). To set up and run the sample app, follow these steps:
 
 1. Go to the sample directory:
-    ```sh
-    cd sample
+    ```bash
+    cd sample/react-native
     ```
-
-2. Install dependencies:
-    ```sh
+2. Install the dependencies:
+    ```bash
     yarn install
     ```
-
 3. For iOS, run:
-    ```sh
-    cd ios
-    pod install
+    ```bash
+    pod install --project-directory=ios --repo-update
     ```
-
-4. Run the app on Android or iOS using:
-    ```sh
+4. Start the React Native development server:
+    ```bash
     npx react-native start
     ```
-    Or open `android` directory in Android Studio or `ios/DevRevSDKSample.xcworkspace` in Xcode and run the app from there.
+5. Run the app on Android using:
+    ```bash
+    npx react-native run-android
+    ```
+    or open the `android` directory in Android Studio and run the app from there.
+6. Run the app on iOS using:
+    ```bash
+    npx react-native run-ios
+    ```
+    or open `ios/DevRevSDKSampleRN.xcworkspace` in Xcode and run the app from there.

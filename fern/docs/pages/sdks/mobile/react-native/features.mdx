@@ -48,7 +48,7 @@ For security reasons, it is **strongly recommended** that the token exchange is 
 #### Generate an AAT
 
 1. Open the DevRev web app at [https://app.devrev.ai](https://app.devrev.ai) and go to the **Settings** page.
-2. Open the **PLuG Tokens** page.
+2. Open the **Plug Tokens** page.
 3. Under the **Application access tokens** panel, click **New token** and copy the token that's displayed.
 
 <Callout intent="warning">
@@ -183,9 +183,9 @@ All properties in `AccountTraits` are optional.
 | `tier` | `string?` | The account's tier or plan level |
 | `customFields` | `{ [key: string]: any }` | Dictionary of custom fields configured in DevRev |
 
-## PLuG support chat
+## Support chat
 
-Once user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
+Once the user identification is complete, you can start using the chat (conversations) dialog supported by our DevRev SDK. The support chat feature can be shown as a modal screen from the top-most screen.
 
 ```typescript
 DevRev.showSupport()
@@ -289,11 +289,11 @@ To clear the session properties in scenarios such as user logout or when the ses
 DevRev.clearSessionProperties()
 ```
 
-### Masking sensitive data
+### Mask sensitive data
 
-To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as text fields, text views, and web views are automatically masked.
+To protect sensitive data, the DevRev SDK provides an auto-masking feature that masks data before sending to the server. Input views such as password text fields are automatically masked.
 
-While the auto-masking feature may be sufficient for most situations, you can manually mark additional views as sensitive using the following method:
+While the auto-masking feature is sufficient for most situations, you can manually mark additional views as sensitive using the following method:
 
 ```typescript
 DevRev.markSensitiveViews(tags: any[])
@@ -304,6 +304,59 @@ If any previously masked views need to be unmasked, you can use the following me
 ```typescript
 DevRev.unmarkSensitiveViews(tags: any[])
 ```
+
+For example:
+
+```typescript
+import * as DevRev from '@devrev/sdk-react-native';
+import { View, Text, findNodeHandle } from "react-native";
+import { useRef, useEffect } from "react";
+
+const YourComponent = () => {
+  const sensitiveViewRef = useRef(null);
+  const insensitiveViewRef = useRef(null);
+
+  useEffect(() => {
+    // Mark sensitive view
+    const sensitiveId = findNodeHandle(sensitiveViewRef.current);
+    if (sensitiveId) {
+      DevRev.markSensitiveViews([sensitiveId]);
+    }
+
+    // Unmark insensitive view
+    const insensitiveId = findNodeHandle(insensitiveViewRef.current);
+    if (insensitiveId) {
+      DevRev.unmarkSensitiveViews([insensitiveId]);
+    }
+  }, []);
+
+  return (
+    <View>
+      <View ref={sensitiveViewRef}>
+        <Text>Sensitive content (masked in recordings)</Text>
+      </View>
+      <View ref={insensitiveViewRef}>
+        <Text>Insensitive content (visible in recordings)</Text>
+      </View>
+    </View>
+  );
+};
+
+export default YourComponent;
+```
+
+### Mask elements inside web views
+
+To mark elements as sensitive inside a web view (`WebView`), apply the `devrev-mask` CSS class. To unmark them, use `devrev-unmask`.
+
+- Mark an element as masked:
+  ```html
+  <label class="devrev-mask">OTP: 12345</label>
+  ```
+- Mark an element as unmasked:
+  ```html
+  <input type="text" placeholder="Enter Username" name="username" required class="devrev-unmask">
+  ```
 
 ### Timers
 
@@ -348,7 +401,7 @@ DevRev.setInScreenTransitioning(false)
 
 You can configure your app to receive push notifications from the DevRev SDK. The SDK is able to handle push notifications and execute actions based on the notification's content.
 
-The DevRev backend sends push notifications to your app to notify users about new messages in the PLuG support chat.
+The DevRev backend sends push notifications to your app to notify users about new messages in the support chat.
 
 ### Configuration
 
@@ -366,7 +419,7 @@ The DevRev SDK offers a method to register your device for receiving push notifi
 DevRev.registerDeviceToken(deviceToken: string, deviceID: string)
 ```
 
-On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification Service (APNs) token.
+On Android devices, the `deviceToken` should be the Firebase Cloud Messaging (FCM) token value, while on iOS devices, it should be the Apple Push Notification service (APNs) token.
 
 ### Unregister from push notifications
 

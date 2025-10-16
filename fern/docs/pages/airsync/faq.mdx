@@ -1,4 +1,4 @@
-## Airdrop template repository
+## AirSync template repository
 <AccordionGroup>
   <Accordion title="Getting a *Conflict* error when running `make deploy`">
     A snap-in package with the same slug already exists.
@@ -45,7 +45,7 @@
   <Accordion title="Working with integer fields">
     The field type `int` is used to represent integer numeric values. 
     In certain external systems, identifiers of records or enum values are also stored as integers. 
-    These are, however, not *conceptually integers* in Airdrop's perspective.
+    These are, however, not *conceptually integers* in AirSync's perspective.
     
     The natural format of integers is `null` | JSON numbers without decimals.
     Numbers encoded to strings (e.g., `"2112"`), or empty strings should not be used.
@@ -118,7 +118,7 @@
     }
     ```
 
-    Such detailed references should not be declared as structs in Airdrop. 
+    Such detailed references should not be declared as structs in AirSync. 
     They should be transformed to either a simple ID reference or a dynamically typed reference with exactly the fields `id`, `fallback_record_name`, and `ref_type`. 
     Using references and structs inside structs is currently not supported.
   </Accordion>

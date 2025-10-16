@@ -1,0 +1,103 @@
+Object Mappers are a core component of AirSync that manage and track the relationships between objects imported from external systems and their corresponding entities in DevRev. Think of Object Mappers as a comprehensive lookup table that maintains the synchronization state between external and DevRev objects.
+
+Each sync mapper record contains external system identifiers, corresponding DevRev entity IDs, sync unit scope, operational status, and additional metadata. This bidirectional mapping system enables AirSync to efficiently track which external objects have been synchronized and locate their DevRev counterparts during ongoing operations. Object Mappers are available through the adapter object as `adapter.mappers` in your AirSync snap-in functions.
+
+## When to use Object Mappers
+
+Object Mappers are essential in several AirSync scenarios:
+
+**During data extraction and relationship management** - Check if sync mapper records already exist to avoid duplicates, find related DevRev entities for nested objects like comments and attachments, and link child objects to their parent entities.
+
+```typescript
+import { SyncMapperRecordTargetType } from "@devrev/ts-adaas";
+
+// Check if sync mapper record for attachment already exists
+const existingSyncMapperRecord = await adapter.mappers.getByExternalId({
+  sync_unit: adapter.event.payload.event_context.sync_unit,
+  external_id: attachment.id,
+  target_type: SyncMapperRecordTargetType.ARTIFACT,
+});
+
+// Find parent work item for comment
+const parentSyncMapperRecord = await adapter.mappers.getByExternalId({
+  sync_unit: adapter.event.payload.event_context.sync_unit,
+  external_id: externalComment.ticket_id,
+  target_type: SyncMapperRecordTargetType.WORK,
+});
+```
+
+**During loading operations** - Locate IDs of objects in external system for DevRev entities when pushing data back to external systems and maintain consistency between systems.
+
+```typescript
+// Find external ID to update external system
+const syncMapperRecord = await adapter.mappers.getByTargetId({
+  sync_unit: adapter.event.payload.event_context.sync_unit,
+  target: devrevWorkId,
+});
+```
+
+## Object Mapper methods
+
+### Get by DevRev ID
+
+Use `getByTargetId` when you have a DevRev entity ID and need to find the corresponding ID of an object in external system:
+
+```typescript
+const response = await adapter.mappers.getByTargetId({
+  sync_unit: adapter.event.payload.event_context.sync_unit,
+  target: devrevEntityId,
+});
+
+const externalIds = response.data.sync_mapper_record.external_ids;
+```
+
+### Get by external ID
+
+Use `getByExternalId` when you have an ID of an object in external system and need to find the corresponding DevRev entity:
+
+```typescript
+import { SyncMapperRecordTargetType } from "@devrev/ts-adaas";
+
+const response = await adapter.mappers.getByExternalId({
+  sync_unit: adapter.event.payload.event_context.sync_unit,
+  external_id: externalSystemId,
+  target_type: SyncMapperRecordTargetType.WORK,
+});
+
+const devrevTargets = response.data.sync_mapper_record.targets;
+```
+
+### Create new sync mapper record
+
+Use `create` to establish a new sync mapper record between external and DevRev entities. Create a mapper only when you are persisting a new link (for example, right after creating the external object in reverse sync), not for read-only extraction. This prevents duplicates in subsequent syncs by enabling lookups in both directions.
+
+```typescript
+import { SyncMapperRecordStatus } from "@devrev/ts-adaas";
+
+const response = await adapter.mappers.create({
+  sync_unit: adapter.event.payload.event_context.sync_unit,
+  external_ids: [externalSystemId],
+  targets: [devrevEntityId],
+  status: SyncMapperRecordStatus.OPERATIONAL,
+});
+```
+
+### Update existing sync mapper record
+
+Use `update` to modify an existing sync mapper record:
+
+```typescript
+import { SyncMapperRecordStatus } from "@devrev/ts-adaas";
+
+const response = await adapter.mappers.update({
+  id: syncMapperRecordId,
+  sync_unit: adapter.event.payload.event_context.sync_unit,
+  external_ids: {
+    add: [newExternalId],
+  },
+  targets: {
+    add: [newDevrevEntityId],
+  },
+  status: SyncMapperRecordStatus.OPERATIONAL,
+});
+```

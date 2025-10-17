@@ -134,7 +134,7 @@ be changed by the end user at any time, such as mandatory fields or custom field
   ### Declare the custom record types
 
     If the external system supports custom types, or custom variants of some base record type,
-    and you want to airdrop those too, you have to declare them in the metadata at runtime.
+    and you want to sync those too, you have to declare them in the metadata at runtime.
     That is, the extractor will use APIs of the external system to dynamically discover what
     custom record types exist.
 
@@ -256,15 +256,15 @@ be changed by the end user at any time, such as mandatory fields or custom field
     - `int`
     - `float`
     - `text`: Interpreted as plain text.
-    - `rich_text`: Formatted text with mentions and images. See the [rich text section](../airdrop/data-model/rich-text-fields.mdx) for more details.
+    - `rich_text`: Formatted text with mentions and images. See the [rich text section](../airsync/data-model/rich-text-fields.mdx) for more details.
     - `reference`: IDs referring to another record. References have to declare what they can refer
     to, which can be one or more record types (`#record:`) or categories (`#category:`).
     - `enum`: A string from a predefined set of values with the optional human-readable names for each value.
     - `date`
     - `timestamp`
     - `struct`
-    - `permission`: Used in article `shared_with` field. See the [permissions section](../airdrop/data-model/permissions.mdx) for more details.
-    - `type_key`: Used to map permissions to record types. See the [permissions section](../airdrop/data-model/permissions.mdx) for more details.
+    - `permission`: Used in article `shared_with` field. See the [permissions section](../airsync/data-model/permissions.mdx) for more details.
+    - `type_key`: Used to map permissions to record types. See the [permissions section](../airsync/data-model/permissions.mdx) for more details.
 
     Refer to the metadata schema file (`external_domain_metadata_schema.json`) to help choose the appropriate type for your fields.
 
